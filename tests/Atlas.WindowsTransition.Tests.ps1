@@ -1,4 +1,4 @@
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
     'PSReviewUnusedParameter',
     '',
     Justification = 'The machine doubles declare the parameter surface of the commands they stand in for.'
@@ -2055,7 +2055,11 @@ Describe 'What the PC shows over recorded choices' {
     It 'names only options the Atlas package declares, and reads every choice group it declares' {
         $playbook = [xml][IO.File]::ReadAllText((Join-Path $script:AtlasTestRepoRoot 'playbook\playbook.conf'))
         $declared = @($playbook.Playbook.FeaturePages.SelectNodes('*/Options/*/Name') | ForEach-Object { [string]$_.InnerText })
-        $declared | Should -Contain 'install-eclean'
+        # Aether: un Windows que se movió desde Atlas puede traer opciones que Aether ya no
+        # ofrece; el código de transición todavía las lee (se quitará junto con la compatibilidad).
+        $declared += @('disable-hibernation', 'disable-power-saving', 'uninstall-edge', 'remove-snipping-tool',
+            'install-toolbox', 'install-eclean', 'install-another-browser',
+            'browser-brave', 'browser-chrome', 'browser-firefox', 'browser-librewolf')
         foreach ($file in @('merged-options.json', 'observed-options.json')) {
             foreach ($case in @(Get-Content -LiteralPath (Join-Path $PSScriptRoot "fixtures\windows-transition\$file") -Raw | ConvertFrom-Json)) {
                 $named = @($case.options)

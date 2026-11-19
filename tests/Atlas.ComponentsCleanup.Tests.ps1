@@ -1,4 +1,4 @@
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
     'PSReviewUnusedParameter',
     '',
     Justification = 'The components-phase harness stubs declare the parameter surface of the commands they shadow.'
@@ -358,31 +358,17 @@ Describe 'Components phase deferred and exact-user cleanup behavior' {
         $script:CbsUninstallCalls | Should -Be 0
     }
 
-    It 'keeps the order of Edge, Security Center, Smart App Control, OneDrive, Defender and Teams' {
-        $script:PhaseOptions = @('uninstall-edge', 'defender-disable')
+    It 'keeps the order of Security Center, Smart App Control, OneDrive, Defender and Teams' {
+        # Aether: Edge se queda siempre, así que esta fase ya no lo quita.
+        $script:PhaseOptions = @('defender-disable')
 
         Invoke-ComponentsPhaseUnderTest
 
-        $order = @('EdgeRemoval', 'RemoveValue:SecurityHealth', 'SetValue:VerifiedAndReputablePolicyState',
+        $order = @('RemoveValue:SecurityHealth', 'SetValue:VerifiedAndReputablePolicyState',
             'OneDrive', 'Install:*Z-Atlas-NoDefender-Package*+*Z-Atlas-NoTelemetry-Package*', 'CoreService:Removed',
             'SetValue:ConfigureChatAutoInstall')
         @($script:Events | Where-Object { $order -contains $_ }) | Should -Be $order
-    }
-
-    It 'keeps Edge''s elevation service off and deprovisions both Edge families when it removes Edge' {
-        $script:PhaseOptions = @('uninstall-edge')
-        Mock Set-AtlasServiceStartup { }
-
-        Invoke-ComponentsPhaseUnderTest
-
-        Should -Invoke Set-AtlasServiceStartup -Times 1 -Exactly -ParameterFilter {
-            $Name -ceq 'MicrosoftEdgeElevationService' -and $StartupType -eq 4 -and $AllowMissing
-        }
-        @($script:RegistryWrites | Where-Object { $_.Operation -eq 'NewItem' -and $_.Path -like '*\Deprovisioned\*' } |
-                ForEach-Object { Split-Path -Leaf $_.Path }) | Should -Be @(
-            'Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe'
-            'Microsoft.MicrosoftEdge_8wekyb3d8bbwe'
-        )
+        @($script:Events | Where-Object { $_ -eq 'EdgeRemoval' }) | Should -BeNullOrEmpty
     }
 
     It 'leaves Edge alone when it isn''t chosen' {
@@ -422,24 +408,7 @@ Describe 'Components phase deferred and exact-user cleanup behavior' {
             }).Count | Should -Be 1
     }
 
-    It 'warns and reaches the remaining cleanup when Edge leftovers cannot be removed' {
-        $script:PhaseOptions = @('uninstall-edge')
-        $script:PhaseContext.IsOobe = $false
-        $script:AsUserExitCode = 1
-
-        { Invoke-ComponentsPhaseUnderTest } | Should -Not -Throw
-
-        @($script:HiddenProcessCalls).Count | Should -Be 1
-        @($script:AsUserCalls | Where-Object { $_.Arguments -like '*Remove-EdgeCurrentUserData.ps1*' }).Count | Should -Be 1
-        @($script:AsUserCalls | Where-Object { $_.Arguments -like '*Remove-OneDriveCurrentUserData.ps1*' }).Count | Should -Be 1
-        @($script:LogCalls | Where-Object {
-                $_.Level -eq 'Warning' -and
-                $_.Message -like '*Exact-user Edge leftover cleanup exited with code 1; continuing installation*'
-            }).Count | Should -Be 1
-    }
-
-    It 'leaves Edge and OneDrive in a Rebase when an account had them before Windows moved' {
-        $script:PhaseOptions = @('uninstall-edge')
+    It 'leaves OneDrive in a Rebase when an account had it before Windows moved' {
         $script:PhaseContext = [pscustomobject]@{ IsOobe = $false; IsRebase = $true; InteractiveUserSid = 'S-1-5-21-1000-2000-3000-1001' }
         Mock Get-AtlasWindowsTransitionRebase { [pscustomobject]@{ Carry = [pscustomobject]@{ edge = $true; oneDrive = $true } } }
         Mock Remove-AtlasOneDrive { }
@@ -449,20 +418,17 @@ Describe 'Components phase deferred and exact-user cleanup behavior' {
         @($script:HiddenProcessCalls).Count | Should -Be 0
         @($script:AsUserCalls).Count | Should -Be 0
         Should -Invoke Remove-AtlasOneDrive -Times 0
-        @($script:RegistryWrites | Where-Object { $_.Path -like '*Deprovisioned\Microsoft.MicrosoftEdge*' }).Count | Should -Be 0
-        @($script:LogCalls | Where-Object { $_.Message -like 'Left Edge*' }).Count | Should -Be 1
         @($script:LogCalls | Where-Object { $_.Message -like 'Left OneDrive*' }).Count | Should -Be 1
     }
 
-    It 'removes in a Rebase only the Edge and OneDrive Windows put back' {
-        $script:PhaseOptions = @('uninstall-edge')
+    It 'removes in a Rebase only the OneDrive Windows put back' {
         $script:PhaseContext = [pscustomobject]@{ IsOobe = $false; IsRebase = $true; InteractiveUserSid = 'S-1-5-21-1000-2000-3000-1001' }
         Mock Get-AtlasWindowsTransitionRebase { [pscustomobject]@{ Carry = [pscustomobject]@{ edge = $false; oneDrive = $false } } }
         Mock Remove-AtlasOneDrive { }
 
         Invoke-ComponentsPhaseUnderTest
 
-        @($script:HiddenProcessCalls).Count | Should -Be 1
+        @($script:HiddenProcessCalls).Count | Should -Be 0
         Should -Invoke Remove-AtlasOneDrive -Times 1 -Exactly
     }
 
@@ -473,24 +439,13 @@ Describe 'Components phase deferred and exact-user cleanup behavior' {
         { Invoke-ComponentsPhaseUnderTest } | Should -Throw '*OneDrive current-user cleanup requires*'
     }
 
-    It 'requires the install-state user SID for non-OOBE Edge cleanup' {
-        $script:PhaseOptions = @('uninstall-edge')
-        $script:PhaseContext.IsOobe = $false
-        $script:PhaseContext.InteractiveUserSid = ''
-
-        { Invoke-ComponentsPhaseUnderTest } | Should -Throw '*Edge current-user cleanup requires*'
-        @($script:AsUserCalls).Count | Should -Be 0
-    }
-
-    It 'skips both exact-user cleanup processes during OOBE' {
-        $script:PhaseOptions = @('uninstall-edge')
+    It 'skips the exact-user cleanup during OOBE' {
         # OOBE installs never bind a user.
         $script:PhaseContext.InteractiveUserSid = $null
 
         { Invoke-ComponentsPhaseUnderTest } | Should -Not -Throw
 
-        # Machine-wide Edge removal still runs.
-        @($script:HiddenProcessCalls).Count | Should -Be 1
+        @($script:HiddenProcessCalls).Count | Should -Be 0
         @($script:AsUserCalls).Count | Should -Be 0
     }
 
@@ -513,26 +468,6 @@ Describe 'Components phase deferred and exact-user cleanup behavior' {
             }).Count | Should -Be 1
     }
 
-    It 'passes Remove-Edge.ps1 only the switches it declares and leaves its services to it' {
-        $script:PhaseOptions = @('uninstall-edge')
-        Mock Stop-AtlasService { }
-
-        Invoke-ComponentsPhaseUnderTest
-
-        @($script:HiddenProcessCalls).Count | Should -Be 1
-        $arguments = @($script:HiddenProcessCalls[0].ArgumentList)
-        $fileIndex = [array]::IndexOf($arguments, '-File')
-        $edgeScript = $arguments[$fileIndex + 1]
-        $edgeScript | Should -BeLike '*\Operations\Remove-Edge.ps1'
-        # A switch the script doesn't declare fails parameter binding, and with it every install.
-        $declared = @([Management.Automation.Language.Parser]::ParseFile($edgeScript, [ref]$null, [ref]$null).
-            ParamBlock.Parameters | ForEach-Object { $_.Name.VariablePath.UserPath })
-        foreach ($switch in @($arguments[($fileIndex + 2)..($arguments.Count - 1)])) {
-            $declared | Should -Contain $switch.TrimStart('-') -Because "Remove-Edge.ps1 must bind '$switch'"
-        }
-        # Remove-Edge.ps1 stops Edge's services; stopping a missing one again only logs a false warning.
-        Should -Invoke Stop-AtlasService -Times 0 -Exactly
-    }
 }
 
 Describe 'OneDrive exact-user cleanup boundary' {

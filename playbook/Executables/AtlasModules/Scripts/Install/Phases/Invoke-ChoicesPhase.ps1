@@ -1,14 +1,14 @@
-# Choices phase.
+﻿# Choices phase.
 # Choosing again on an update (Upgrade or Reapply): applies each install choice where
 # this PC differs from it, as a first installation would, and nothing else, so a resumed
 # or repeated run redoes only what still differs. In order: Microsoft Defender,
-# Microsoft Edge, the AppX families a choice removes, then the choice toggles
+# then the choice toggles
 # (Choices.ps1). It records the toggles it set, which Defaults, running next, leaves out
 # of its replay; the others are replayed as when keeping choices.
 #
 # Runs as TrustedInstaller. A servicing failure throws at once, as on a first
-# installation, once Install-AtlasCbsPackage has armed the Safe Mode retry, and so does
-# Edge's removal, as in Components. Toggle and AppX failures are collected, so every
+# installation, once Install-AtlasCbsPackage has armed the Safe Mode retry. Toggle
+# failures are collected, so every
 # other choice is still applied, then thrown together.
 #
 # Not handled here: what an update never repeats (Atlas's other AppX removals, Phone
@@ -25,7 +25,6 @@ foreach ($module in @('Atlas.Services', 'Atlas.TasksProcs', 'Atlas.Software', 'A
 . (Join-Path $scriptsRoot 'Preparation\WindowsTransition.ps1')
 . (Join-Path $scriptsRoot 'Install\Tasks\Choices.ps1')
 . (Join-Path $scriptsRoot 'Install\Tasks\Set-AtlasDefenderChoice.ps1')
-. (Join-Path $scriptsRoot 'Install\Tasks\Invoke-AtlasEdgeRemoval.ps1')
 
 $context = Get-AtlasContext
 if (-not $context.IsChoosingAgain) {
@@ -71,108 +70,8 @@ if ($defender.Count -eq 1) {
     }
 }
 
-# Microsoft Edge and the AppX families a choice removes, removed as a first installation
-# removes them: for the accounts of this PC that have them installed, as completion reads
-# them, and for new accounts while Windows still provisions them, which a feature update
-# would also bring back. One left only staged, or registered to SYSTEM or a removed
-# account, is no removal to make on its own. An update can't put them back, so a cleared
-# box changes nothing.
-$installedFamilies = @($facts.Appx | Where-Object { $_ })
-# Read only when a chosen family isn't installed for anyone, as it takes a while.
-$provisioned = $null
-$removals = [Collections.Generic.List[object]]::new()
-foreach ($definition in @(Get-AtlasAppxRemovalDefinition)) {
-    $option = [string]$definition.Option
-    if (-not $option -or $options -cnotcontains $option) { continue }
-    $pattern = [string]$definition.Name
-    # Windows always has apps, so an empty list means they couldn't be listed; the
-    # removal plan then reads them itself.
-    $remove = $installedFamilies.Count -eq 0 -or @($installedFamilies | Where-Object { $_ -like $pattern }).Count -gt 0
-    if (-not $remove) {
-        if ($null -eq $provisioned) {
-            $provisioned = [pscustomobject]@{ Read = $true; Families = @() }
-            try { $provisioned.Families = @(Get-AtlasAppxProvisionedFamily) }
-            catch {
-                $provisioned.Read = $false
-                Write-AtlasLog -Level Warning -Message "Couldn't list the apps Windows provisions for new accounts, so the app removal looks for the chosen ones itself: $($_.Exception.Message)"
-            }
-        }
-        $remove = -not $provisioned.Read -or @($provisioned.Families | Where-Object { $_ -like $pattern }).Count -gt 0
-    }
-    if ($remove) {
-        $removals.Add($definition)
-    }
-}
-# An attempt stopped after msedge.exe went still owes the user's leftovers and Edge's
-# deprovisioning, which come after it. Removing Edge where it is gone only clears its
-# leftovers.
-$removeEdge = $options -ccontains 'uninstall-edge' -and ($true -eq $facts.Edge -or $unfinished -ccontains 'Edge')
-if ($removeEdge) {
-    if ($unfinished -cnotcontains 'Edge') {
-        $unfinished.Add('Edge')
-        & $saveRecord
-    }
-    Invoke-AtlasEdgeRemoval -ScriptsRoot $scriptsRoot -Context $context
-    [void]$unfinished.Remove('Edge')
-    & $saveRecord
-}
-
-$appxFailed = $false
-$finishAppx = $unfinished -ccontains 'Appx'
-if ($removals.Count -gt 0 -or $finishAppx) {
-    if ($finishAppx) {
-        Write-AtlasLog -Message 'Finishing the app removal an interrupted attempt of this installation began.'
-    }
-    else {
-        $unfinished.Add('Appx')
-        & $saveRecord
-    }
-    # The snapshot lets the families the plan removes be deprovisioned, so a feature
-    # update doesn't bring them back, and it keeps those an interrupted attempt's
-    # snapshot listed. Without it nothing is removed.
-    try {
-        Save-AtlasAppxSnapshot
-        if ($removals.Count -gt 0) {
-            try {
-                Invoke-AtlasAppxRemovalPlan -Definition $removals.ToArray()
-            }
-            catch {
-                $appxFailed = $true
-                $failures.Add("AppX removal: $($_.Exception.Message)")
-            }
-        }
-        try {
-            Set-AtlasAppxDeprovisioned
-        }
-        catch {
-            $appxFailed = $true
-            $message = "Deprovisioning removed AppX packages failed: $($_.Exception.Message)"
-            $failures.Add($message)
-            Write-AtlasLog -Level Error -Message $message
-        }
-    }
-    catch {
-        $appxFailed = $true
-        $message = "The AppX snapshot failed, so no app was removed: $($_.Exception.Message)"
-        $failures.Add($message)
-        Write-AtlasLog -Level Error -Message $message
-    }
-    if (-not $appxFailed) {
-        [void]$unfinished.Remove('Appx')
-        & $saveRecord
-    }
-}
-$planned = @($removals | ForEach-Object { [string]$_.Option })
-foreach ($option in @('uninstall-edge', 'remove-snipping-tool')) {
-    if ($options -cnotcontains $option) { continue }
-    $appsPlanned = $planned -ccontains $option
-    $outcome = if ($option -ceq 'uninstall-edge' -and $removeEdge) { 'Microsoft Edge removed' }
-    elseif (-not $appsPlanned) { $null }
-    elseif ($option -ceq 'uninstall-edge') { "Microsoft Edge's remaining apps removed" }
-    else { 'Snipping Tool removed for every account' }
-    if (-not $outcome) { Write-AtlasLog -Message "Choice '$option' already matches this PC." }
-    elseif (-not ($appsPlanned -and $appxFailed)) { Write-AtlasLog -Message "Applied choice '$option': $outcome." }
-}
+# Aether: ninguna opción quita apps (Edge y Recortes se quedan siempre), así que
+# elegir de nuevo no quita apps.
 
 # The choice toggles. Each state is applied and recorded only after its machine work
 # succeeds, as Defaults would replay it.

@@ -524,7 +524,6 @@ Describe 'Choices phase' {
         $info | Should -Contain "Applied choice 'auto-updates-disable': AutomaticUpdates set to Disable."
         $info | Should -Contain "Applied choice 'defender-enable': Microsoft Defender comes back at the restart."
         $info | Should -Contain "Choice 'disable-core-isolation': VbsState is already recorded as Disable."
-        $info | Should -Contain "Choice 'uninstall-edge' already matches this PC."
         Get-ChoicesWarning | Should -BeNullOrEmpty
         # Snipping Tool isn't chosen, so it stays.
         $script:Pc.Appx | Should -Contain $script:SnippingFamily
@@ -543,7 +542,7 @@ Describe 'Choices phase' {
 
     It 'changes what differs, then nothing on a second run' {
         Reset-ChoicesPc -Options @(
-            'defender-disable', 'uninstall-edge', 'remove-snipping-tool', 'mitigations-default'
+            'defender-disable', 'mitigations-default'
             'auto-updates-default', 'keyboard-shortcuts'
         )
         $script:Pc.Records = @{ PowerSaving = 0; Hibernation = 0; Mitigations = 0; AutomaticUpdates = 0; KeyboardShortcuts = 0 }
@@ -558,10 +557,6 @@ Describe 'Choices phase' {
         Get-MachineEvent | Should -Be @(
             'Install:*Z-Atlas-NoDefender-Package*+*Z-Atlas-NoTelemetry-Package*'
             'CoreService:Removed'
-            'EdgeRemoval'
-            'AppxSnapshot'
-            "AppxRemoval:$script:EdgeFamily+Microsoft.ScreenSketch*"
-            'AppxDeprovision'
             'Toggle:PowerSaving=Enable'
             'Toggle:Hibernation=Enable'
             'Toggle:Mitigations=WindowsDefault'
@@ -571,8 +566,6 @@ Describe 'Choices phase' {
         )
         @($script:VbsChecks) | Should -Be @('Enable')
         $info = Get-ChoicesInfo
-        $info | Should -Contain "Applied choice 'uninstall-edge': Microsoft Edge removed."
-        $info | Should -Contain "Applied choice 'remove-snipping-tool': Snipping Tool removed for every account."
         $info | Should -Contain "Applied choice 'disable-hibernation' left out: Hibernation set to Enable."
         $info | Should -Contain "Applied choice 'defender-disable': Microsoft Defender is removed at the restart."
         $record = Get-AtlasChoicesRecord
@@ -587,8 +580,6 @@ Describe 'Choices phase' {
         Get-ChoicesWarning | Should -BeNullOrEmpty
         @(Get-ChoicesInfo) | Should -Be @(
             "Choice 'defender-disable' already matches this PC."
-            "Choice 'uninstall-edge' already matches this PC."
-            "Choice 'remove-snipping-tool' already matches this PC."
             "Choice 'disable-power-saving' left out: PowerSaving is already recorded as Enable."
             "Choice 'disable-hibernation' left out: Hibernation is already recorded as Enable."
             "Choice 'mitigations-default': Mitigations is already recorded as WindowsDefault."
@@ -695,10 +686,8 @@ Describe 'Choices phase' {
         @(Get-ChoicesInfo | Where-Object { $_ -like "*'defender-enable'*" }) | Should -BeNullOrEmpty
     }
 
-    It 'collects toggle and AppX failures, applies everything else, then throws them together, and the next attempt finishes them' {
-        Reset-ChoicesPc -Options @('defender-enable', 'remove-snipping-tool', 'disable-power-saving', 'mitigations-disable', 'auto-updates-disable', 'keyboard-single')
-        $script:Pc.Appx = @($script:Pc.Appx + $script:SnippingFamily)
-        $script:AppxPlanFails = $true
+    It 'collects toggle failures, applies everything else, then throws them together, and the next attempt finishes them' {
+        Reset-ChoicesPc -Options @('defender-enable', 'disable-power-saving', 'mitigations-disable', 'auto-updates-disable', 'keyboard-single')
         $script:ToggleFailures = @('Mitigations')
 
         $failure = $null
@@ -707,30 +696,25 @@ Describe 'Choices phase' {
 
         $failure | Should -Not -BeNullOrEmpty
         $failure.Exception.Message | Should -BeExactly (
-            "The Choices phase failed for 2 choice(s): AppX removal: simulated AppX failure | " +
+            "The Choices phase failed for 1 choice(s): " +
             "Applying choice 'mitigations-disable' (Mitigations Disable) failed: simulated Mitigations failure")
         Get-MachineEvent | Should -Be @(
-            'AppxSnapshot'
-            'AppxRemoval:Microsoft.ScreenSketch*'
-            'AppxDeprovision'
             'Toggle:PowerSaving=Disable'
             'Toggle:Mitigations=Disable'
             'Toggle:AutomaticUpdates=Disable'
             'Toggle:KeyboardShortcuts=Disable'
         )
         $script:Pc.Records.ContainsKey('Mitigations') | Should -BeFalse -Because 'a state is recorded only after its machine work succeeds'
-        @(Get-ChoicesInfo | Where-Object { $_ -like "Applied choice 'remove-snipping-tool'*" }) | Should -BeNullOrEmpty
         # What this attempt set is recorded before the failure is thrown.
         $record = Get-AtlasChoicesRecord
         @($record.Applied) | Should -Be @('AutomaticUpdates', 'KeyboardShortcuts', 'PowerSaving')
-        @($record.Unfinished) | Should -Be @('Appx')
+        @($record.Unfinished).Count | Should -Be 0
 
         Reset-ChoicesRun
-        $script:AppxPlanFails = $false
         $script:ToggleFailures = @()
         Invoke-ChoicesPhaseUnderTest
 
-        Get-MachineEvent | Should -Be @('AppxSnapshot', 'AppxRemoval:Microsoft.ScreenSketch*', 'AppxDeprovision', 'Toggle:Mitigations=Disable')
+        Get-MachineEvent | Should -Be @('Toggle:Mitigations=Disable')
         $record = Get-AtlasChoicesRecord
         @($record.Applied) | Should -Be @('AutomaticUpdates', 'KeyboardShortcuts', 'Mitigations', 'PowerSaving')
         @($record.Unfinished).Count | Should -Be 0
@@ -738,167 +722,6 @@ Describe 'Choices phase' {
         Invoke-DefaultsPhaseForTest | Should -Be @('Reapply:AutomaticUpdates,KeyboardShortcuts,Mitigations,PowerSaving')
     }
 
-    It 'collects a deprovisioning failure, and the next attempt deprovisions what the first removed' {
-        Reset-ChoicesPc -Options @('defender-enable', 'remove-snipping-tool', 'mitigations-disable')
-        $script:Pc.Appx = @($script:Pc.Appx + $script:SnippingFamily)
-        $script:DeprovisionFails = $true
-
-        { Invoke-ChoicesPhaseUnderTest } | Should -Throw (
-            'The Choices phase failed for 1 choice(s): Deprovisioning removed AppX packages failed: simulated deprovisioning failure')
-
-        Get-MachineEvent | Should -Be @('AppxSnapshot', 'AppxRemoval:Microsoft.ScreenSketch*', 'AppxDeprovision', 'Toggle:Mitigations=Disable')
-        @(Get-ChoicesInfo | Where-Object { $_ -like "Applied choice 'remove-snipping-tool'*" }) | Should -BeNullOrEmpty
-        @((Get-AtlasChoicesRecord).Unfinished) | Should -Be @('Appx')
-
-        # Snipping Tool is gone now, so only the record says the removal isn't finished.
-        Reset-ChoicesRun
-        $script:DeprovisionFails = $false
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -Be @('AppxSnapshot', 'AppxDeprovision')
-        Get-ChoicesInfo | Should -Contain 'Finishing the app removal an interrupted attempt of this installation began.'
-        @((Get-AtlasChoicesRecord).Unfinished).Count | Should -Be 0
-
-        Reset-ChoicesRun
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -BeNullOrEmpty
-    }
-
-    It 'finishes the app removal an attempt stopped part way, after its apps were gone' {
-        # As an attempt stopped between the removal and the deprovisioning leaves it.
-        Reset-ChoicesPc -Options @('defender-enable', 'remove-snipping-tool')
-        Save-AtlasChoicesRecord -Applied @() -Unfinished @('Appx')
-
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -Be @('AppxSnapshot', 'AppxDeprovision')
-        @((Get-AtlasChoicesRecord).Unfinished).Count | Should -Be 0
-    }
-
-    It 'removes nothing, and records the failure, when the AppX snapshot fails' {
-        Reset-ChoicesPc -Options @('defender-enable', 'remove-snipping-tool')
-        $script:Pc.Appx = @($script:Pc.Appx + $script:SnippingFamily)
-        Mock Save-AtlasAppxSnapshot { $script:Events.Add('AppxSnapshot'); throw 'simulated snapshot failure' }
-
-        { Invoke-ChoicesPhaseUnderTest } | Should -Throw "*The AppX snapshot failed, so no app was removed: simulated snapshot failure*"
-
-        Get-MachineEvent | Should -Be @('AppxSnapshot')
-    }
-
-    It 'stops at once when Edge''s removal fails, and the next attempt finishes it once msedge.exe is gone' {
-        Reset-ChoicesPc -Options @('defender-enable', 'uninstall-edge', 'mitigations-disable')
-        $script:Pc.Edge = $true
-        $script:EdgeRemovalFails = $true
-
-        { Invoke-ChoicesPhaseUnderTest } | Should -Throw 'simulated Edge failure'
-
-        Get-MachineEvent | Should -Be @('EdgeRemoval')
-        @((Get-AtlasChoicesRecord).Unfinished) | Should -Be @('Edge')
-
-        Reset-ChoicesRun
-        $script:EdgeRemovalFails = $false
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -Be @('EdgeRemoval', 'Toggle:Mitigations=Disable')
-        Get-ChoicesInfo | Should -Contain "Applied choice 'uninstall-edge': Microsoft Edge removed."
-        @((Get-AtlasChoicesRecord).Unfinished).Count | Should -Be 0
-
-        Reset-ChoicesRun
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -BeNullOrEmpty
-        Get-ChoicesInfo | Should -Contain "Choice 'uninstall-edge' already matches this PC."
-    }
-
-    It 'removes Edge and Snipping Tool only when ticked and on this PC, and never another app' {
-        Reset-ChoicesPc -Options @('defender-enable')
-        $script:Pc.Edge = $true
-        $script:Pc.Appx = @($script:Pc.Appx + $script:EdgeFamily + $script:SnippingFamily)
-
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -BeNullOrEmpty
-
-        Reset-ChoicesPc -Options @('defender-enable', 'uninstall-edge')
-        $script:Pc.Appx = @($script:Pc.Appx + $script:SnippingFamily + 'Microsoft.Edge.GameAssist_8wekyb3d8bbwe')
-
-        Invoke-ChoicesPhaseUnderTest
-
-        # msedge.exe is gone, but an app Edge's removal covers is still there.
-        Get-MachineEvent | Should -Be @('AppxSnapshot', 'AppxRemoval:Microsoft.Edge.GameAssist*', 'AppxDeprovision')
-        Get-ChoicesInfo | Should -Contain "Applied choice 'uninstall-edge': Microsoft Edge's remaining apps removed."
-    }
-
-    It 'removes a chosen app no account has while Windows still provisions it, as a first installation does' {
-        # Each account uninstalled Snipping Tool itself, and new accounts still get it.
-        Reset-ChoicesPc -Options @('defender-enable', 'remove-snipping-tool')
-        $script:Pc.Provisioned = @($script:Pc.Provisioned + $script:SnippingFamily)
-
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -Be @('AppxSnapshot', 'AppxRemoval:Microsoft.ScreenSketch*', 'AppxDeprovision')
-        Get-ChoicesInfo | Should -Contain "Applied choice 'remove-snipping-tool': Snipping Tool removed for every account."
-
-        Reset-ChoicesRun
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -BeNullOrEmpty
-        Get-ChoicesInfo | Should -Contain "Choice 'remove-snipping-tool' already matches this PC."
-    }
-
-    It 'reads what Windows provisions only once, and only for a chosen app no account has' {
-        Reset-ChoicesPc -Options @('defender-enable', 'mitigations-disable')
-        Invoke-ChoicesPhaseUnderTest
-        $script:Pc.ProvisionedReads | Should -Be 0 -Because 'no app removal is chosen'
-
-        Reset-ChoicesPc -Options @('defender-enable', 'uninstall-edge', 'remove-snipping-tool')
-        $script:Pc.Appx = @($script:Pc.Appx + $script:SnippingFamily + $script:EdgeFamily +
-            'Microsoft.MicrosoftEdge_8wekyb3d8bbwe' + 'Microsoft.Edge.GameAssist_8wekyb3d8bbwe')
-        Invoke-ChoicesPhaseUnderTest
-        $script:Pc.ProvisionedReads | Should -Be 0 -Because 'every chosen app is installed for an account'
-
-        Reset-ChoicesPc -Options @('defender-enable', 'uninstall-edge', 'remove-snipping-tool')
-        Invoke-ChoicesPhaseUnderTest
-        $script:Pc.ProvisionedReads | Should -Be 1
-        Get-MachineEvent | Should -BeNullOrEmpty
-    }
-
-    It 'lets the removal plan look for a chosen app when what Windows provisions couldn''t be listed' {
-        Reset-ChoicesPc -Options @('defender-enable', 'remove-snipping-tool')
-        $script:Pc.Provisioned = $null
-
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -Be @('AppxSnapshot', 'AppxRemoval:Microsoft.ScreenSketch*', 'AppxDeprovision')
-        Get-ChoicesWarning | Should -Be @(
-            "Couldn't list the apps Windows provisions for new accounts, so the app removal looks for the chosen ones itself: simulated provisioning read failure"
-        )
-    }
-
-    It 'passes Edge''s removal the scripts root and the install context' {
-        Reset-ChoicesPc -Options @('defender-enable', 'uninstall-edge')
-        $script:Pc.Edge = $true
-
-        Invoke-ChoicesPhaseUnderTest
-
-        $script:EdgeCalls.Count | Should -Be 1
-        $script:EdgeCalls[0].ScriptsRoot | Should -Be (Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $script:ChoicesPhase)))
-        $script:EdgeCalls[0].Context.InteractiveUserSid | Should -BeExactly $script:UserSid
-    }
-
-    It 'lets the removal plan look for every chosen app when the app list couldn''t be read' {
-        Reset-ChoicesPc -Options @('defender-enable', 'uninstall-edge', 'remove-snipping-tool')
-        $script:Pc.Appx = @()
-
-        Invoke-ChoicesPhaseUnderTest
-
-        Get-MachineEvent | Should -Be @(
-            'AppxSnapshot'
-            'AppxRemoval:Microsoft.MicrosoftEdge_8wekyb3d8bbwe+Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe+Microsoft.Edge.GameAssist*+Microsoft.ScreenSketch*'
-            'AppxDeprovision'
-        )
-    }
 }
 
 Describe 'Defaults phase' {

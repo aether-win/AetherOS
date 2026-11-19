@@ -661,33 +661,6 @@ Describe 'Hardware toggle companions' {
 }
 
 Describe 'set-power-settings install tweak' {
-    It 'applies and records the power-saving choice through the toggle engine' {
-        Mock Test-AtlasOption { $Name -ceq 'disable-power-saving' }
-        Mock Import-AtlasModule
-        Mock Invoke-AtlasToggleMachineState
-
-        & $script:PowerTweakScript
-
-        Should -Invoke Import-AtlasModule -Times 1 -Exactly -ParameterFilter { $Name -ceq 'Atlas.Toggles' }
-        Should -Invoke Invoke-AtlasToggleMachineState -Times 1 -Exactly -ParameterFilter {
-            $Name -ceq 'PowerSaving' -and $State -ceq 'Disable'
-        }
-    }
-
-    It 'applies and records the hibernation choice through the toggle engine' {
-        Mock Test-AtlasOption { $Name -cin @('disable-power-saving', 'disable-hibernation') }
-        Mock Import-AtlasModule
-        Mock Invoke-AtlasToggleMachineState
-        Mock Invoke-AtlasToggleNativeCommand
-
-        & $script:PowerTweakScript
-
-        Should -Invoke Invoke-AtlasToggleMachineState -Times 1 -Exactly -ParameterFilter {
-            $Name -ceq 'Hibernation' -and $State -ceq 'Disable'
-        }
-        Should -Not -Invoke Invoke-AtlasToggleNativeCommand
-    }
-
     It 'selects Balanced through the checked native runner when power saving is kept' {
         # Literal GUIDs: a mock the companion calls resolves $script: in the companion's own scope.
         Mock Test-AtlasOption { $false }
