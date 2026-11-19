@@ -6,18 +6,11 @@ $script:AtlasTweakTopLevelKeys = @(
 )
 
 $script:AtlasKnownOptions = @(
-    'auto-updates-default', 'auto-updates-disable',
-    'browser-brave', 'browser-chrome', 'browser-firefox', 'browser-librewolf',
-    'defender-disable', 'defender-enable',
-    'disable-core-isolation', 'disable-hibernation', 'disable-power-saving',
-    'install-another-browser', 'install-toolbox', 'install-eclean',
-    'keyboard-shortcuts', 'keyboard-selector', 'keyboard-single',
-    'mitigations-default', 'mitigations-disable',
-    'remove-snipping-tool', 'uninstall-edge',
-    # Aether
-    'theme-dark', 'theme-light', 'experimental-cpu-power', 'wind-aether',
-    'app-claude', 'app-chatgpt', 'app-python', 'app-keyvault',
-    'app-pcmanager', 'app-steam', 'app-amd-drivers'
+    'app-amd-drivers', 'app-chatgpt', 'app-claude', 'app-keyvault', 'app-pcmanager',
+    'app-python', 'app-steam', 'auto-updates-default', 'auto-updates-disable',
+    'defender-disable', 'defender-enable', 'disable-core-isolation', 'experimental-cpu-power',
+    'keyboard-selector', 'keyboard-shortcuts', 'keyboard-single', 'mitigations-default',
+    'mitigations-disable', 'theme-dark', 'theme-light', 'wind-aether'
 )
 
 $script:AtlasRegistryValueTypes = @('String', 'ExpandString', 'Binary', 'DWord', 'MultiString', 'QWord', 'None')

@@ -1,0 +1,40 @@
+name: Regenerar archivos generados
+
+# Aether: corre a mano (Actions > Regenerar archivos generados > Run workflow).
+# Regenera el catálogo de toggles/tweaks y los lanzadores de AtlasDesktop con las
+# herramientas de PowerShell, y sube los cambios como un parche (artefacto
+# "regenerated-patch") para revisarlo y aplicarlo con git apply.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regenerate:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Regenerate launchers and catalog
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & .\tools\dev\New-ToggleLaunchers.ps1
+          if ($LASTEXITCODE -ne 0) { throw "New-ToggleLaunchers failed with $LASTEXITCODE" }
+          & .\tools\dev\Export-AtlasCatalog.ps1
+          if ($LASTEXITCODE -ne 0) { throw "Export-AtlasCatalog failed with $LASTEXITCODE" }
+
+      - name: Build patch
+        shell: pwsh
+        run: |
+          git add -A
+          git diff --cached --binary | Out-File -FilePath regenerated.patch -Encoding utf8NoBOM
+          git diff --cached --stat
+
+      - name: Upload patch
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: regenerated-patch
+          path: regenerated.patch

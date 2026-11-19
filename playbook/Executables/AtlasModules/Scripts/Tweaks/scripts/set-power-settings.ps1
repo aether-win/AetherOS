@@ -1,10 +1,12 @@
-# Companion of set-power-settings.psd1.
+﻿# Companion of set-power-settings.psd1.
 $ErrorActionPreference = 'Stop'
 $systemDirectory = [Environment]::SystemDirectory
 $powerCfgPath = [IO.Path]::Combine($systemDirectory, 'powercfg.exe')
 
-$disablePowerSaving = [bool](Test-AtlasOption -Name 'disable-power-saving')
-$disableHibernation = [bool](Test-AtlasOption -Name 'disable-hibernation')
+# Aether: la instalación no desactiva el ahorro de energía ni la hibernación;
+# el rendimiento lo manejan los modos Trabajo, Gaming y Batería.
+$disablePowerSaving = $false
+$disableHibernation = $false
 
 # The toggles' machine states apply and record these choices, so the install and the
 # AtlasDesktop launchers can't drift apart.

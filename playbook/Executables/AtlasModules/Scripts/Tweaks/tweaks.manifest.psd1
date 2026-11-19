@@ -108,7 +108,6 @@
                 'visual-effects'
                 'disable-tips'
                 'disable-win11-settings-banner'
-                'disable-screen-capture-hotkey'
                 'disable-dynamic-lighting'
                 'disable-auto-app-archival'
                 'add-sharing-settings-shortcut'

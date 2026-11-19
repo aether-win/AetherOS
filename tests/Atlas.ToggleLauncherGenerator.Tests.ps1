@@ -42,7 +42,6 @@ Describe 'Launcher generator' {
 
     It 'rejects a hand-written launcher that is not listed: <Tree>' -ForEach @(
         @{ Tree = 'AtlasDesktop'; Relative = 'playbook\Executables\AtlasDesktop\Extra.cmd' }
-        @{ Tree = 'Toolbox'; Relative = 'playbook\Executables\AtlasModules\Toolbox\Scripts\Extra.cmd' }
     ) {
         $root = New-LauncherFixture
         (Invoke-LauncherGenerator -Root $root).ExitCode | Should -Be 0

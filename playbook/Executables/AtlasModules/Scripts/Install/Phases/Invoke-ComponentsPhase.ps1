@@ -1,11 +1,10 @@
 # Components phase.
 # Removes Windows components: the Security Center startup item, Smart App Control,
-# Microsoft Edge (option gated), OneDrive, the Teams chat auto-install policy and the
+# OneDrive (Aether: Edge se queda siempre), the Teams chat auto-install policy and the
 # CBS component packages (option gated). Runs as TrustedInstaller; child-script and
 # CBS package failures throw to the one-shot orchestrator, which returns the install's
 # single nonzero status to the custom.yml shim.
 #
-# Not handled here: Edge's installed/provisioned package-family removal (the AppxSupport phase).
 
 Assert-AtlasPrivilege -TrustedInstaller
 
@@ -17,7 +16,6 @@ Import-Module -Name (Join-Path $modulesRoot 'Atlas.Software\Atlas.Software.psd1'
 Import-Module -Name (Join-Path $modulesRoot 'Atlas.Security\Atlas.Security.psd1') -Force -ErrorAction Stop
 # Shared with the Choices phase, which applies the same choices on a Choose again update.
 . (Join-Path $scriptsRoot 'Install\Tasks\Set-AtlasDefenderChoice.ps1')
-. (Join-Path $scriptsRoot 'Install\Tasks\Invoke-AtlasEdgeRemoval.ps1')
 
 $powerShellExe = [IO.Path]::Combine(
     [Environment]::SystemDirectory,
@@ -26,25 +24,16 @@ $powerShellExe = [IO.Path]::Combine(
     'powershell.exe'
 )
 
-# A Rebase leaves Edge and OneDrive when they were installed before Windows moved:
+# A Rebase leaves OneDrive when it was installed before Windows moved:
 # someone, on any account, kept or put them back and may use them. Without the
 # record, both are left.
-$keepEdge = $false
 $keepOneDrive = $false
 if ((Get-AtlasContext).IsRebase) {
     . (Join-Path $scriptsRoot 'Preparation\WindowsTransition.ps1')
     $rebase = Get-AtlasWindowsTransitionRebase
-    $keepEdge = $null -eq $rebase -or [bool]$rebase.Carry.edge
     $keepOneDrive = $null -eq $rebase -or [bool]$rebase.Carry.oneDrive
-    if ($keepEdge -and (Test-AtlasOption -Name 'uninstall-edge')) { Write-AtlasLog -Message 'Left Edge: it was installed before Windows moved.' }
     if ($keepOneDrive) { Write-AtlasLog -Message 'Left OneDrive: it was installed before Windows moved.' }
 }
-$removeEdge = (Test-AtlasOption -Name 'uninstall-edge') -and -not $keepEdge
-
-if ($removeEdge) {
-    Invoke-AtlasEdgeRemoval -ScriptsRoot $scriptsRoot -Context (Get-AtlasContext)
-}
-
 Remove-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run' -Name 'SecurityHealth' -Force -ErrorAction SilentlyContinue
 
 # Turn off Smart App Control: it slows app loading and sends data to Microsoft.

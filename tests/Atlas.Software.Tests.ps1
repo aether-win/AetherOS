@@ -286,36 +286,6 @@ Describe 'Get-AtlasSoftwareComponentMap' {
     }
 }
 
-Describe 'Install-AtlasEclean' {
-    It 'does not start the installer when publisher verification fails' {
-        InModuleScope Atlas.Software {
-            Mock Invoke-AtlasSoftwareDownload
-            Mock Assert-AtlasFileSignature { throw 'publisher verification failed' }
-            Mock Start-AtlasSoftwareInstaller
-
-            { Install-AtlasEclean -TempDir $TestDrive } | Should -Throw '*publisher verification failed*'
-            Should -Invoke Start-AtlasSoftwareInstaller -Times 0
-        }
-    }
-
-    It 'verifies the eclean publisher and installs silently' {
-        InModuleScope Atlas.Software {
-            Mock Invoke-AtlasSoftwareDownload
-            Mock Assert-AtlasFileSignature
-            Mock Start-AtlasSoftwareInstaller
-
-            Install-AtlasEclean -TempDir $TestDrive
-
-            Should -Invoke Assert-AtlasFileSignature -Times 1 -Exactly -ParameterFilter {
-                $ExpectedSubjectCn -ceq 'eclean Labs AB'
-            }
-            Should -Invoke Start-AtlasSoftwareInstaller -Times 1 -Exactly -ParameterFilter {
-                $ArgumentList.Count -eq 1 -and $ArgumentList[0] -ceq '/S'
-            }
-        }
-    }
-}
-
 Describe 'Test-AtlasSoftwareArm64' {
     It 'recognizes exactly one native <SystemType> computer-system result' -TestCases @(
         @{ SystemType = 'ARM64-based PC'; Expected = $true }
@@ -370,13 +340,13 @@ Describe 'Install-AtlasSoftware' {
             Mock Assert-AtlasPrivilege
             Mock New-AtlasProtectedStagingDirectory { $stage }
             Mock Resolve-AtlasProtectedExecutionPath { $Path }
-            Mock Install-AtlasBraveBrowser
+            Mock Install-AtlasDirectXRuntime
             Mock Remove-Item -ParameterFilter { $LiteralPath -eq $stage } -MockWith {
                 throw 'simulated cleanup failure'
             }
             Mock Write-AtlasLog
 
-            Install-AtlasSoftware -Component Brave | Should -BeFalse
+            Install-AtlasSoftware -Component DirectX | Should -BeFalse
             Test-Path -LiteralPath $stage | Should -BeTrue
             Should -Invoke Write-AtlasLog -Times 1 -ParameterFilter {
                 $Level -eq 'Warning' -and $Message -like '*staging cleanup failed*'
@@ -390,12 +360,12 @@ Describe 'Install-AtlasSoftware' {
             New-Item -Path $stage -ItemType Directory | Out-Null
             Mock Assert-AtlasPrivilege
             Mock New-AtlasProtectedStagingDirectory { $stage }
-            Mock Install-AtlasBraveBrowser { throw 'simulated containment failure' }
+            Mock Install-AtlasDirectXRuntime { throw 'simulated containment failure' }
             Mock Test-AtlasContainedProcessContainmentUnconfirmed { $true }
             Mock Remove-Item
             Mock Write-AtlasLog
 
-            Install-AtlasSoftware -Component Brave | Should -BeFalse
+            Install-AtlasSoftware -Component DirectX | Should -BeFalse
             Test-Path -LiteralPath $stage | Should -BeTrue
             Should -Invoke Remove-Item -Times 0 -ParameterFilter { $LiteralPath -eq $stage }
             Should -Invoke Write-AtlasLog -Times 1 -ParameterFilter {
@@ -411,10 +381,10 @@ Describe 'Install-AtlasSoftware' {
             Mock Assert-AtlasPrivilege
             Mock New-AtlasProtectedStagingDirectory { $stage }
             Mock Resolve-AtlasProtectedExecutionPath { $Path }
-            Mock Install-AtlasBraveBrowser { 'component diagnostic output' }
+            Mock Install-AtlasDirectXRuntime { 'component diagnostic output' }
             Mock Write-AtlasLog
 
-            $result = @(Install-AtlasSoftware -Component Brave)
+            $result = @(Install-AtlasSoftware -Component DirectX)
 
             $result.Count | Should -Be 1
             $result[0].GetType().FullName | Should -BeExactly 'System.Boolean'
@@ -786,199 +756,6 @@ Describe 'Invoke-AtlasSoftwareDownload' {
                     -Destination $destination -Description 'fixture' } |
                 Should -Throw -ExpectedMessage '*network failed*'
             Test-Path -LiteralPath $destination | Should -BeFalse
-        }
-    }
-}
-
-Describe 'LibreWolf latest-release identity and publisher boundary' {
-    BeforeEach {
-        $script:LibreWolfRelease = [pscustomobject]@{
-            tag_name   = '152.0.5-1'
-            draft      = $false
-            prerelease = $false
-            assets     = @(
-                [pscustomobject]@{
-                    name                 = 'librewolf-152.0.5-1-windows-x86_64-setup.exe'
-                    browser_download_url = 'https://dl.librewolf.net/librewolf/152.0.5-1/librewolf-152.0.5-1-windows-x86_64-setup.exe'
-                }
-                [pscustomobject]@{
-                    name                 = 'librewolf-152.0.5-1-windows-arm64-setup.exe'
-                    browser_download_url = 'https://dl.librewolf.net/librewolf/152.0.5-1/librewolf-152.0.5-1-windows-arm64-setup.exe'
-                }
-            )
-        }
-        $script:LibreWolfWingetManifestText = @'
-PackageIdentifier: LibreWolf.LibreWolf
-PackageVersion: 152.0.5-1
-InstallerType: nullsoft
-Scope: machine
-Installers:
-- InstallerSha256: 227F69A02C286F90E82B6155F7CBFD01EACC63DDAE7CA73594EC32C5F4BC84F6
-  InstallerUrl: https://dl.librewolf.net/librewolf/152.0.5-1/librewolf-152.0.5-1-windows-x86_64-setup.exe
-  Architecture: x64
-  ProductCode: ignored-extra-field
-- Architecture: arm64
-  InstallerUrl: https://dl.librewolf.net/librewolf/152.0.5-1/librewolf-152.0.5-1-windows-arm64-setup.exe
-  InstallerSha256: 03B5E2E68A4B17551CC0798C015EBA3DF528C5CA5F27EC9D53065A8FDC90123E
-ManifestType: installer
-'@
-        $manifestBytes = (New-Object Text.UTF8Encoding($false)).GetBytes(
-            $script:LibreWolfWingetManifestText
-        )
-        $script:LibreWolfWingetContent = [pscustomobject]@{
-            encoding = 'base64'
-            content  = [Convert]::ToBase64String($manifestBytes)
-        }
-        $script:LibreWolfResolvedRelease = [pscustomobject]@{
-            Tag = '152.0.5-1'
-            Uri = [uri]'https://dl.librewolf.net/librewolf/152.0.5-1/librewolf-152.0.5-1-windows-x86_64-setup.exe'
-        }
-    }
-
-    It 'selects the exact architecture-specific stable Codeberg asset' {
-        InModuleScope Atlas.Software -Parameters @{
-            Release = $script:LibreWolfRelease
-        } {
-            $metadata = Resolve-AtlasLibreWolfReleaseMetadata `
-                -Release $Release -Architecture x86_64
-
-            $metadata.Tag | Should -BeExactly '152.0.5-1'
-            $metadata.Name | Should -BeExactly 'librewolf-152.0.5-1-windows-x86_64-setup.exe'
-            $metadata.Uri.AbsoluteUri | Should -BeExactly 'https://dl.librewolf.net/librewolf/152.0.5-1/librewolf-152.0.5-1-windows-x86_64-setup.exe'
-            @($metadata.PSObject.Properties.Name) | Should -Be @('Tag', 'Name', 'Uri')
-        }
-    }
-
-    It 'rejects <Case>' -TestCases @(
-        @{
-            Case    = 'a duplicate installer asset'
-            Change  = { param($Release) $Release.assets += $Release.assets[0].PSObject.Copy() }
-            Message = '*exactly one*'
-        }
-        @{
-            Case    = 'an installer asset outside the canonical download host'
-            Change  = {
-                param($Release)
-                $Release.assets[0].browser_download_url =
-                'https://attacker.example/librewolf/152.0.5-1/librewolf-152.0.5-1-windows-x86_64-setup.exe'
-            }
-            Message = '*canonical LibreWolf download URL*'
-        }
-        @{
-            Case    = 'a prerelease'
-            Change  = { param($Release) $Release.prerelease = $true }
-            Message = '*not a stable LibreWolf release*'
-        }
-        @{
-            Case    = 'a draft'
-            Change  = { param($Release) $Release.draft = $true }
-            Message = '*not a stable LibreWolf release*'
-        }
-        @{
-            Case    = 'a tag that leaves the download path'
-            Change  = { param($Release) $Release.tag_name = '152.0.5-1/..' }
-            Message = '*not a stable LibreWolf release*'
-        }
-    ) {
-        & $Change $script:LibreWolfRelease
-        InModuleScope Atlas.Software -Parameters @{
-            Release = $script:LibreWolfRelease
-            Message = $Message
-        } {
-            { Resolve-AtlasLibreWolfReleaseMetadata `
-                    -Release $Release -Architecture x86_64 } |
-                Should -Throw -ExpectedMessage $Message
-        }
-    }
-
-    It 'reads the selected installer despite field reordering, extra fields, and another architecture' {
-        InModuleScope Atlas.Software -Parameters @{
-            ContentMetadata = $script:LibreWolfWingetContent
-            ReleaseMetadata = $script:LibreWolfResolvedRelease
-        } {
-            Resolve-AtlasLibreWolfWingetManifestHash `
-                -ContentMetadata $ContentMetadata `
-                -ReleaseMetadata $ReleaseMetadata `
-                -Architecture x86_64 |
-                Should -BeExactly '227f69a02c286f90e82b6155f7cbfd01eacc63ddae7ca73594ec32c5f4bc84f6'
-        }
-    }
-
-    It 'rejects an independent manifest that redirects the selected architecture' {
-        $script:LibreWolfWingetManifestText = $script:LibreWolfWingetManifestText.Replace(
-            'https://dl.librewolf.net/librewolf/152.0.5-1/librewolf-152.0.5-1-windows-x86_64-setup.exe',
-            'https://attacker.example/setup.exe'
-        )
-        $manifestBytes = (New-Object Text.UTF8Encoding($false)).GetBytes(
-            $script:LibreWolfWingetManifestText
-        )
-        $script:LibreWolfWingetContent.content = [Convert]::ToBase64String($manifestBytes)
-        InModuleScope Atlas.Software -Parameters @{
-            ContentMetadata = $script:LibreWolfWingetContent
-            ReleaseMetadata = $script:LibreWolfResolvedRelease
-        } {
-            { Resolve-AtlasLibreWolfWingetManifestHash `
-                    -ContentMetadata $ContentMetadata `
-                    -ReleaseMetadata $ReleaseMetadata `
-                    -Architecture x86_64 } |
-                Should -Throw -ExpectedMessage '*does not attest*'
-        }
-    }
-
-    It 'installs the newest release winget-pkgs has merged while a newer one awaits review' {
-        $newer = [pscustomobject]@{
-            tag_name   = '152.0.6-1'
-            draft      = $false
-            prerelease = $false
-            assets     = @([pscustomobject]@{
-                    name                 = 'librewolf-152.0.6-1-windows-x86_64-setup.exe'
-                    browser_download_url = 'https://dl.librewolf.net/librewolf/152.0.6-1/librewolf-152.0.6-1-windows-x86_64-setup.exe'
-                })
-        }
-        $draft = [pscustomobject]@{ tag_name = '152.0.7-1'; draft = $true; prerelease = $false; assets = @() }
-        InModuleScope Atlas.Software -Parameters @{
-            Releases = @($draft, $newer, $script:LibreWolfRelease)
-            Manifest = $script:LibreWolfWingetContent
-        } {
-            Mock Write-AtlasLog
-            Mock Invoke-AtlasSoftwareApiJson { $Releases }
-            Mock Invoke-AtlasGitHubApiJson { throw "Unexpected GitHub request for '$Uri'." }
-            Mock Invoke-AtlasGitHubApiJson -ParameterFilter {
-                $Uri.AbsolutePath -ceq '/repos/microsoft/winget-pkgs/contents/manifests/l/LibreWolf/LibreWolf'
-            } -MockWith {
-                [pscustomobject]@{ name = '152.0.4-1'; type = 'dir' }
-                [pscustomobject]@{ name = '152.0.5-1'; type = 'dir' }
-            }
-            Mock Invoke-AtlasGitHubApiJson -ParameterFilter {
-                $Uri.AbsolutePath -ceq '/repos/microsoft/winget-pkgs/contents/manifests/l/LibreWolf/LibreWolf/152.0.5-1/LibreWolf.LibreWolf.installer.yaml'
-            } -MockWith { $Manifest }
-
-            $metadata = Get-AtlasLatestLibreWolfInstallerMetadata -Architecture x86_64
-
-            $metadata.Tag | Should -BeExactly '152.0.5-1'
-            $metadata.Uri.AbsoluteUri | Should -BeExactly 'https://dl.librewolf.net/librewolf/152.0.5-1/librewolf-152.0.5-1-windows-x86_64-setup.exe'
-            $metadata.Sha256 | Should -BeExactly '227f69a02c286f90e82b6155f7cbfd01eacc63ddae7ca73594ec32c5f4bc84f6'
-            Should -Invoke Invoke-AtlasGitHubApiJson -Times 2 -Exactly
-            Should -Invoke Write-AtlasLog -Times 1 -Exactly -ParameterFilter {
-                $Message -like '*152.0.6-1 is awaiting Microsoft winget-pkgs review; installing 152.0.5-1*'
-            }
-        }
-    }
-
-    It 'fails before reading a manifest when winget-pkgs has merged none of the newest releases' {
-        InModuleScope Atlas.Software -Parameters @{ Releases = @($script:LibreWolfRelease) } {
-            Mock Write-AtlasLog
-            Mock Invoke-AtlasSoftwareApiJson { $Releases }
-            Mock Invoke-AtlasGitHubApiJson { throw "Unexpected GitHub request for '$Uri'." }
-            Mock Invoke-AtlasGitHubApiJson -ParameterFilter {
-                $Uri.AbsolutePath -ceq '/repos/microsoft/winget-pkgs/contents/manifests/l/LibreWolf/LibreWolf'
-            } -MockWith {
-                [pscustomobject]@{ name = '152.0.4-1'; type = 'dir' }
-            }
-
-            { Get-AtlasLatestLibreWolfInstallerMetadata -Architecture x86_64 } |
-                Should -Throw "*hasn't merged any of the newest LibreWolf releases (152.0.5-1)*"
-            Should -Invoke Invoke-AtlasGitHubApiJson -Times 1 -Exactly
         }
     }
 }

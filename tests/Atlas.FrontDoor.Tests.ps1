@@ -221,23 +221,23 @@ Describe 'Resolve-AtlasInstallMode' {
 
 Describe 'Install request validation' {
     It 'accepts a complete option set and rejects unknown, repeated and incomplete sets' {
-        $good = @('defender-enable', 'mitigations-default', 'auto-updates-disable', 'keyboard-shortcuts', 'install-another-browser', 'browser-brave')
+        $good = @('defender-enable', 'mitigations-default', 'auto-updates-disable', 'theme-dark', 'keyboard-shortcuts', 'app-claude', 'wind-aether')
         @(Assert-AtlasInstallOptionSet -Options $good -Groups $script:Groups) | Should -Be $good
 
         { Assert-AtlasInstallOptionSet -Options ($good + 'not-an-option') -Groups $script:Groups } | Should -Throw '*not declared*'
         { Assert-AtlasInstallOptionSet -Options ($good + 'defender-enable') -Groups $script:Groups } | Should -Throw '*repeats*'
-        { Assert-AtlasInstallOptionSet -Options @('defender-enable', 'defender-disable', 'mitigations-default', 'auto-updates-disable') -Groups $script:Groups } |
+        { Assert-AtlasInstallOptionSet -Options @('defender-enable', 'defender-disable', 'mitigations-default', 'auto-updates-disable', 'theme-dark', 'keyboard-single') -Groups $script:Groups } |
             Should -Throw '*Exactly one of*'
         { Assert-AtlasInstallOptionSet -Options @('defender-enable', 'mitigations-default') -Groups $script:Groups } |
             Should -Throw '*Exactly one of auto-updates*'
-        { Assert-AtlasInstallOptionSet -Options @('defender-enable', 'mitigations-default', 'auto-updates-disable', 'keyboard-shortcuts', 'browser-brave') -Groups $script:Groups } |
-            Should -Throw "*require 'install-another-browser'*"
-        { Assert-AtlasInstallOptionSet -Options @('defender-enable', 'mitigations-default', 'auto-updates-disable') -Groups $script:Groups } |
+        { Assert-AtlasInstallOptionSet -Options @('defender-enable', 'mitigations-default', 'auto-updates-disable', 'keyboard-single') -Groups $script:Groups } |
+            Should -Throw '*Exactly one of theme-*'
+        { Assert-AtlasInstallOptionSet -Options @('defender-enable', 'mitigations-default', 'auto-updates-disable', 'theme-light') -Groups $script:Groups } |
             Should -Throw '*Exactly one of keyboard-*'
         { Assert-AtlasInstallOptionSet -Options ($good + 'keyboard-single') -Groups $script:Groups } |
             Should -Throw '*Exactly one of keyboard-*'
-        { Assert-AtlasInstallOptionSet -Options ($good + 'browser-firefox') -Groups $script:Groups } |
-            Should -Throw '*Exactly one of browser-*'
+        { Assert-AtlasInstallOptionSet -Options ($good + 'theme-light') -Groups $script:Groups } |
+            Should -Throw '*Exactly one of theme-*'
     }
 
     It 'resumes an install begun before a required group with the options it began with' {
@@ -395,9 +395,9 @@ Describe 'Front door probe before the requirements' {
 Describe 'Install capture' {
     BeforeAll {
         $script:Target = Get-AtlasPlaybookVersion -PlaybookPath $script:PlaybookPath
-        $script:Asked = @('auto-updates-disable', 'defender-enable', 'keyboard-shortcuts', 'mitigations-default')
+        $script:Asked = @('auto-updates-disable', 'defender-enable', 'keyboard-shortcuts', 'mitigations-default', 'theme-dark')
         # What the PC shows: Atlas's NoDefender package is installed.
-        $script:Shown = @('auto-updates-disable', 'defender-disable', 'keyboard-shortcuts', 'mitigations-default')
+        $script:Shown = @('auto-updates-disable', 'defender-disable', 'keyboard-shortcuts', 'mitigations-default', 'theme-dark')
         function Write-AtlasSessionLog { param([string]$Message) $script:SessionLines.Add($Message) }
         function Invoke-TestCapture {
             param([string]$Choices)

@@ -8,10 +8,8 @@ BeforeAll {
 Describe 'Set-AtlasThemeMru' {
     BeforeAll {
         $script:themeMruNames = @(
-            'atlas-v0.4.x-dark.theme'
-            'atlas-v0.4.x-light.theme'
-            'atlas-v0.5.x-dark.theme'
-            'atlas-v0.5.x-light.theme'
+            'aether-oscuro.theme'
+            'aether-claro.theme'
             'dark.theme'
             'aero.theme'
         )
@@ -37,10 +35,10 @@ Describe 'Set-AtlasThemeMru' {
         Should -Invoke Stop-ThemeProcesses -ModuleName Atlas.Themes -Times 1 -Exactly
     }
 
-    It 'lists only Atlas themes that the Atlas package installs' {
+    It 'lists only Aether themes that the Aether package installs' {
         # Copy-AtlasPayload copies these to Resources\Themes; the other entries are inbox themes.
         $themesRoot = Join-Path -Path $PSScriptRoot -ChildPath '..\playbook\Executables\Themes'
-        foreach ($name in @($script:themeMruNames -like 'atlas-*')) {
+        foreach ($name in @($script:themeMruNames -like 'aether-*')) {
             Join-Path -Path $themesRoot -ChildPath $name | Should -Exist
         }
     }

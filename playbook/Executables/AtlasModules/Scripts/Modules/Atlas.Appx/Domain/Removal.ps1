@@ -28,9 +28,6 @@ function Get-AtlasAppxRemovalDefinition {
         Returns the ordered package-family removal list the AppxSupport phase applies.
     #>
     return @(
-        [pscustomobject]@{ Name = 'Microsoft.MicrosoftEdge_8wekyb3d8bbwe';        Option = 'uninstall-edge';      IgnoreErrors = $true }
-        [pscustomobject]@{ Name = 'Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe'; Option = 'uninstall-edge';      IgnoreErrors = $true }
-        [pscustomobject]@{ Name = 'Microsoft.Edge.GameAssist*';                   Option = 'uninstall-edge';      IgnoreErrors = $true }
         [pscustomobject]@{ Name = 'MicrosoftTeams*';                              Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'MSTeams*';                                     Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.Copilot*';                           Option = $null;                 IgnoreErrors = $false }
@@ -68,7 +65,6 @@ function Get-AtlasAppxRemovalDefinition {
         [pscustomobject]@{ Name = 'Microsoft.OneConnect*';                        Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.People*';                            Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.PowerAutomateDesktop*';              Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.ScreenSketch*';                      Option = 'remove-snipping-tool'; IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.SkypeApp*';                          Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.Todos*';                             Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.Wallet*';                            Option = $null;                 IgnoreErrors = $false }

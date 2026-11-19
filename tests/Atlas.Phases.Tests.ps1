@@ -154,73 +154,57 @@ Describe 'Software phase outcome aggregation' {
         $script:userIntegrationState = [pscustomobject]@{ Count = 0 }
     }
 
-    It 'continues after optional app failures on fresh and upgrade installs' -ForEach @(
-        @{ IsUpgrade = $false; ThrowFailures = $false }
-        @{ IsUpgrade = $false; ThrowFailures = $true }
-        @{ IsUpgrade = $true; ThrowFailures = $false }
-        @{ IsUpgrade = $true; ThrowFailures = $true }
+    # Aether: la fase solo instala los runtimes de Visual C++ y DirectX en instalaciones nuevas.
+    It 'installs only the runtimes on a fresh install and nothing on an upgrade' -ForEach @(
+        @{ IsUpgrade = $false; Expected = @('VCRedist', 'DirectX') }
+        @{ IsUpgrade = $true; Expected = @() }
     ) {
-        $context = [pscustomobject]@{
-            IsUpgrade = $IsUpgrade
-            IsOobe = $true
-            InteractiveUserSid = $null
-        }
-        $outcome = if ($ThrowFailures) {
-            [InvalidOperationException]::new('simulated optional app failure')
-        } else { $false }
+        $context = [pscustomobject]@{ IsUpgrade = $IsUpgrade; IsOobe = $true; InteractiveUserSid = $null }
 
         {
             Invoke-AtlasSoftwarePhaseForTest `
                 -Path $script:softwarePhasePath `
                 -Context $context `
-                -Options @{ 'install-toolbox' = $true; 'install-eclean' = $true; 'browser-chrome' = $true } `
-                -ComponentOutcomes @{ Toolbox = $outcome; Eclean = $outcome } `
+                -Options @{} `
+                -ComponentOutcomes @{} `
                 -Attempts $script:softwareAttempts `
                 -Logs $script:softwareLogs `
                 -UserIntegrationState $script:userIntegrationState
         } | Should -Not -Throw
 
-        $expected = if ($IsUpgrade) { @('Toolbox', 'Eclean', 'Chrome') } else {
-            @('VCRedist', 'SevenZip', 'DirectX', 'Toolbox', 'Eclean', 'Chrome')
-        }
-        @($script:softwareAttempts) | Should -Be $expected
-        $script:softwareLogs.Count | Should -Be 2
-        foreach ($entry in $script:softwareLogs) {
-            $entry.Level | Should -Be 'Warning'
-            $entry.Message | Should -Match 'Atlas setup will continue'
-            $entry.Message | Should -Match 'You can install it later from https://'
-        }
+        (@($script:softwareAttempts) -join ',') | Should -BeExactly (@($Expected) -join ',')
+        $script:softwareLogs.Count | Should -Be 0
     }
 
-    It 'attempts every selected component before throwing one aggregate for false and thrown outcomes' {
-        $context = [pscustomobject]@{
-            IsUpgrade = $false
-            IsOobe = $true
-            InteractiveUserSid = $null
-        }
-        $options = @{
-            'install-toolbox' = $true
-            'install-eclean' = $true
-            'browser-brave' = $true
-            'browser-firefox' = $true
-            'browser-librewolf' = $true
-            'browser-chrome' = $true
-        }
-        $outcomes = @{
-            SevenZip = $false
-            DirectX = $false
-            Toolbox = $false
-            Eclean = [InvalidOperationException]::new('simulated eclean failure')
-            Firefox = [InvalidOperationException]::new('simulated Firefox failure')
-        }
+    It 'only warns when the legacy DirectX runtime fails' {
+        $context = [pscustomobject]@{ IsUpgrade = $false; IsOobe = $true; InteractiveUserSid = $null }
+
+        {
+            Invoke-AtlasSoftwarePhaseForTest `
+                -Path $script:softwarePhasePath `
+                -Context $context `
+                -Options @{} `
+                -ComponentOutcomes @{ DirectX = [InvalidOperationException]::new('simulated DirectX failure') } `
+                -Attempts $script:softwareAttempts `
+                -Logs $script:softwareLogs `
+                -UserIntegrationState $script:userIntegrationState
+        } | Should -Not -Throw
+
+        @($script:softwareAttempts) | Should -Be @('VCRedist', 'DirectX')
+        $script:softwareLogs.Count | Should -Be 1
+        $script:softwareLogs[0].Message | Should -Match 'Optional legacy DirectX runtime was not installed; continuing'
+    }
+
+    It 'throws one aggregate when the Visual C++ runtimes fail' {
+        $context = [pscustomobject]@{ IsUpgrade = $false; IsOobe = $true; InteractiveUserSid = $null }
 
         $failure = $null
         try {
             Invoke-AtlasSoftwarePhaseForTest `
                 -Path $script:softwarePhasePath `
                 -Context $context `
-                -Options $options `
-                -ComponentOutcomes $outcomes `
+                -Options @{} `
+                -ComponentOutcomes @{ VCRedist = $false } `
                 -Attempts $script:softwareAttempts `
                 -Logs $script:softwareLogs `
                 -UserIntegrationState $script:userIntegrationState
@@ -230,53 +214,8 @@ Describe 'Software phase outcome aggregation' {
         }
 
         $failure | Should -Not -BeNullOrEmpty
-        $failure.Exception.Message | Should -BeExactly `
-            'Software phase failed for components: SevenZip, Firefox.'
-        @($script:softwareAttempts) | Should -Be @(
-            'VCRedist', 'SevenZip', 'DirectX', 'Toolbox', 'Eclean',
-            'Brave', 'Firefox', 'LibreWolf', 'Chrome'
-        )
-        $script:softwareLogs.Count | Should -Be 5
-        @($script:softwareLogs | Where-Object {
-                $_.Message -match 'Optional legacy DirectX runtime was not installed; continuing'
-            }).Count | Should -Be 1
-    }
-
-    It 'counts failed exact-user LibreWolf integration and still attempts later browsers' {
-        $context = [pscustomobject]@{
-            IsUpgrade = $true
-            IsOobe = $false
-            InteractiveUserSid = 'S-1-5-21-1000-1001-1002-1003'
-        }
-        $options = @{
-            'browser-librewolf' = $true
-            'browser-chrome' = $true
-        }
-
-        $failure = $null
-        try {
-            Invoke-AtlasSoftwarePhaseForTest `
-                -Path $script:softwarePhasePath `
-                -Context $context `
-                -Options $options `
-                -ComponentOutcomes @{} `
-                -Attempts $script:softwareAttempts `
-                -Logs $script:softwareLogs `
-                -UserIntegrationState $script:userIntegrationState `
-                -UserIntegrationExitCode 37
-        }
-        catch {
-            $failure = $_
-        }
-
-        $failure | Should -Not -BeNullOrEmpty
-        $failure.Exception.Message | Should -BeExactly `
-            'Software phase failed for components: LibreWolf.'
-        @($script:softwareAttempts) | Should -Be @('LibreWolf', 'Chrome')
-        $script:userIntegrationState.Count | Should -Be 1
-        $script:softwareLogs.Count | Should -Be 1
-        $script:softwareLogs[0].Message | Should -Match `
-            'Exact-user LibreWolf integration failed with exit code 37'
+        $failure.Exception.Message | Should -BeExactly 'Software phase failed for components: VCRedist.'
+        @($script:softwareAttempts) | Should -Be @('VCRedist', 'DirectX')
     }
 }
 

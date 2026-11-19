@@ -646,13 +646,9 @@ Describe 'AppX removal policy' {
     It 'declares the removal option gates and warning-only families' {
         $definitions = @(Get-AtlasAppxRemovalDefinition)
 
-        @($definitions | Where-Object Option -eq 'uninstall-edge').Name | Should -Be @(
-            'Microsoft.MicrosoftEdge_8wekyb3d8bbwe'
-            'Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe'
-            'Microsoft.Edge.GameAssist*'
-        )
-        @($definitions | Where-Object Option -eq 'remove-snipping-tool').Name |
-            Should -Be @('Microsoft.ScreenSketch*')
+        # Aether: Edge y Recortes se quedan siempre.
+        @($definitions | Where-Object { $_.Name -like 'Microsoft.MicrosoftEdge*' -or $_.Name -like 'Microsoft.ScreenSketch*' }) |
+            Should -BeNullOrEmpty
 
         [xml]$playbook = [IO.File]::ReadAllText((Join-Path $script:AtlasTestRepoRoot 'playbook\playbook.conf'))
         $featureOptions = @($playbook.SelectNodes('/Playbook/FeaturePages/*/Options/*/Name') | ForEach-Object { $_.InnerText })
@@ -662,9 +658,6 @@ Describe 'AppX removal policy' {
 
         # Ordered: WebExperience must be removed before the runtime it depends on.
         @($definitions | Where-Object IgnoreErrors).Name | Should -Be @(
-            'Microsoft.MicrosoftEdge_8wekyb3d8bbwe'
-            'Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe'
-            'Microsoft.Edge.GameAssist*'
             'MicrosoftWindows.Client.WebExperience*'
             'Microsoft.WidgetsPlatformRuntime*'
         )

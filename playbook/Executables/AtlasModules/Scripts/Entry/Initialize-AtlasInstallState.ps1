@@ -10,27 +10,27 @@ param(
     [switch]$Oobe,
 
     [ValidateSet(
+        'app-amd-drivers',
+        'app-chatgpt',
+        'app-claude',
+        'app-keyvault',
+        'app-pcmanager',
+        'app-python',
+        'app-steam',
         'auto-updates-default',
         'auto-updates-disable',
-        'browser-brave',
-        'browser-chrome',
-        'browser-firefox',
-        'browser-librewolf',
         'defender-disable',
         'defender-enable',
         'disable-core-isolation',
-        'disable-hibernation',
-        'disable-power-saving',
-        'install-another-browser',
-        'install-toolbox',
-        'install-eclean',
-        'keyboard-shortcuts',
+        'experimental-cpu-power',
         'keyboard-selector',
+        'keyboard-shortcuts',
         'keyboard-single',
         'mitigations-default',
         'mitigations-disable',
-        'remove-snipping-tool',
-        'uninstall-edge'
+        'theme-dark',
+        'theme-light',
+        'wind-aether'
     )]
     [string]$Option
 )
