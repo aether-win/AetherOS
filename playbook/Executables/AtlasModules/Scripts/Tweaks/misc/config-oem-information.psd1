@@ -1,10 +1,8 @@
 @{
     Name        = 'Configure OEM Information'
-    Description = 'Configures OEM information to contain the Atlas version and the Atlas Discord server'
+    Description = 'Pone la información de Aether OS en Configuración > Sistema > Información'
     Registry    = @(
-        @{ Path = 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation'; Name = 'Manufacturer'; Type = 'String'; Data = 'Atlas Team' }
-        @{ Path = 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation'; Name = 'SupportURL'; Type = 'String'; Data = 'https://discord.atlasos.net' }
-        @{ Path = 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation'; Name = 'SupportPhone'; Type = 'String'; Data = 'https://github.com/Atlas-OS/Atlas' }
+        @{ Path = 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation'; Name = 'Manufacturer'; Type = 'String'; Data = 'Aether OS' }
     )
     # Fills in the dynamic values (Atlas version/model) that cannot be expressed declaratively.
     Script      = 'config-oem-information.ps1'

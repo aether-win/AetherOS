@@ -1,7 +1,7 @@
 function Set-AtlasLockscreenImage {
     param (
         [ValidateNotNullOrEmpty()]
-        [string]$Path = "$([Environment]::GetFolderPath('Windows'))\AtlasModules\Wallpapers\lockscreen_dark.png"
+        [string]$Path = "$([Environment]::GetFolderPath('Windows'))\AtlasModules\Wallpapers\aether-bloqueo.jpg"
     )
 
     if (!(Test-Path $Path)) {

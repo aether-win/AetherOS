@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
 $version = 'AtlasVersionUndefined'
-$bootDescription = "AtlasOS 11 $version"
+$bootDescription = "Aether OS $version"
 $bcdEditPath = [IO.Path]::Combine([Environment]::SystemDirectory, 'bcdedit.exe')
 
 if (-not [IO.File]::Exists($bcdEditPath)) {
@@ -15,7 +15,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Output 'Setting other versioned OEM information...'
-$reportedVersion = "Atlas Playbook $version"
+$reportedVersion = "Aether OS $version"
 Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation' `
     -Name 'Model' -Value $reportedVersion -Type String -Force -ErrorAction Stop
 Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' `
