@@ -148,5 +148,30 @@ cuidado, en una pasada aparte.
       * App (Rust): página de reportes, opciones viejas del asistente, 14 idiomas que no son
         español (se rehace en el paso 3).
       * Tests que referencian lo borrado (actualizar cuando haya pwsh para correrlos).
-- [ ] Marca Aether y opciones del instalador.
+- [x] Marca Aether y opciones del instalador:
+      * `playbook.conf` en español con opciones nuevas: tema (`theme-dark`/`theme-light`),
+        `experimental-cpu-power`, `app-claude`, `app-chatgpt`, `app-python`, `app-keyvault`,
+        `app-pcmanager`, `app-steam`, `app-amd-drivers`, `wind-aether`. Sin hibernación,
+        ahorro de energía, quitar Recortes/Edge, navegadores, Toolbox ni eclean. Teclado por
+        defecto: un solo teclado. Nuevo UniqueId. (Version sigue 0.6.0 hasta la pasada de versión.)
+      * Opciones nuevas en `Atlas.Tweaks/Domain/Schema.ps1` (AtlasKnownOptions).
+      * Temas `Themes/aether-oscuro.theme` y `aether-claro.theme` (acento #2F8CFF); MRU actualizado.
+      * `config-pins.ps1`: ancla Edge y guarda `HKLM\SOFTWARE\AtlasOS\SetupOptions\theme`.
+      * `Initialize-NewUser.ps1`: aplica el tema elegido, fondo `aether-escritorio.jpg`,
+        acceso directo "Aether.lnk". Pantalla de bloqueo `aether-bloqueo.jpg`.
+      * OEM: "Aether OS <versión>" (Model, RegisteredOrganization, arranque), fabricante Aether OS.
+      * `Other/atlas-folder.ico` y `Other/user.png` ahora con la marca Aether (mismo nombre interno).
+      * PENDIENTE de implementar (paso 2/3): las opciones `app-*`, `wind-aether`,
+        `experimental-cpu-power` todavía no hacen nada; fondo claro propio (hoy ambos temas usan
+        el mismo fondo oscuro).
+- [ ] Traducir al español la carpeta de accesos directos (AtlasDesktop: 93 carpetas, 209
+      launchers), sus rutas en las definiciones de toggles (`Launcher`), `catalog.json`,
+      `Initialize-NewUser.ps1` (rutas fijas) y los textos de consola. Hacerlo con un mapa
+      inglés→español aplicado de forma consistente.
 - [ ] Revisión del paso 1.
+- [ ] NOTA paso 2 (red): `Initialize-NewUser.ps1` ejecuta "Disable Network Navigation Pane
+      (default).cmd" por usuario → cambiar a Enable. FileSharing por defecto → Enable.
+
+## 4. Limitación del entorno
+Aquí no hay PowerShell ni Windows: no se puede compilar el .apbx, la app ni correr las pruebas
+Pester. Para probar: GitHub Actions (los workflows de Atlas ya existen) o la VM del usuario.
