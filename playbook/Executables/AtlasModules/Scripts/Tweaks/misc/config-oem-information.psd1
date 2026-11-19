@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'Configure OEM Information'
     Description = 'Pone la información de Aether OS en Configuración > Sistema > Información'
     Registry    = @(

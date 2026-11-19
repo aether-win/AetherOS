@@ -1,4 +1,4 @@
-# Software phase.
+﻿# Software phase.
 # Installs machine-wide initial runtimes. Runs as
 # TrustedInstaller; downloads happen here at install time.
 # Every selected component is attempted. Optional app failures are warnings;

@@ -181,6 +181,11 @@ GitHub Actions en el repo: `test.yml` (Pester), `lint.yml` (PSScriptAnalyzer), `
 `integration.yml` necesita un runner propio con Hyper-V (no se usa). Ver resultados con
 `gh run list --repo aether-win/AetherOS`.
 
+### Reglas que exige CI
+- Todo `.ps1/.psm1/.psd1` con caracteres no ASCII (acentos, ñ) debe llevar BOM UTF-8
+  (PSScriptAnalyzer `PSUseBOMForUnicodeEncodedFile`; Windows PowerShell 5.1 lee mal sin BOM).
+- `playbook.conf` `<Title>` debe contener `v<Version>` (Test-Apbx). Set-AtlasVersion ya escribe "Aether OS v...".
+
 ## 5. Limitación del entorno
 Aquí no hay PowerShell ni Windows: no se puede compilar el .apbx, la app ni correr las pruebas
 Pester. Para probar: GitHub Actions (los workflows de Atlas ya existen) o la VM del usuario.

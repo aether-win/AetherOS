@@ -1,4 +1,4 @@
-# Companion of config-pins.psd1.
+﻿# Companion of config-pins.psd1.
 $ErrorActionPreference = 'Stop'
 
 # Aether: Edge es el navegador y no se puede quitar, así que se ancla primero.
