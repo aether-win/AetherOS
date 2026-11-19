@@ -181,6 +181,24 @@ GitHub Actions en el repo: `test.yml` (Pester), `lint.yml` (PSScriptAnalyzer), `
 `integration.yml` necesita un runner propio con Hyper-V (no se usa). Ver resultados con
 `gh run list --repo aether-win/AetherOS`.
 
+### Estado de CI (19-nov-2026, commit 619615d)
+- Lint PowerShell ✅, Lint YAML ✅, Build Playbook (.apbx) ✅, Pester PS7 (build tooling) ✅.
+- Pester Windows PowerShell 5.1: 2562 pasan, 44 fallan — TODAS por borrados/cambios intencionales.
+  Siguiente tarea (= "Borrado parte 2"), actualizar código muerto y pruebas:
+  1. Contrato de opciones (`Atlas.Contracts`/handoff): igualar opciones de FeaturePage, front door,
+     state (`Initialize-AtlasInstallState.ps1` ValidateSet), YAML (`custom.yml`) y tweaks; quitar
+     tweaks/gates de `remove-snipping-tool`, `uninstall-edge`, `browser-*`, `install-*`,
+     `disable-hibernation`, `disable-power-saving` (p. ej. `disable-screen-capture-hotkey.psd1`,
+     `Atlas.Appx/Domain/Removal.ps1`, `Invoke-ChoicesPhase.ps1`, `Choices.ps1`).
+  2. `catalog.json` y `docs/catalog/*.md` se generan con `tools/dev/Export-AtlasCatalog.ps1`:
+     regenerarlos en CI (workflow manual que suba el resultado como artefacto).
+  3. Pruebas a borrar o rehacer: Install-AtlasEclean, LibreWolf release identity, Software phase
+     aggregation (Toolbox/eclean/LibreWolf), Install-AtlasSoftware (usar VCRedist en vez de
+     navegadores), Install request validation e Install capture (conjuntos de opciones nuevos),
+     AppX removal policy, Toggles "Install or Remove Edge", Set-AtlasThemeMru (temas Aether),
+     Launcher generator (caso Toolbox), Paired registry assets (copias de Toolbox: borrar test y
+     `Scripts/Registry/README.md`).
+
 ### Reglas que exige CI
 - Todo `.ps1/.psm1/.psd1` con caracteres no ASCII (acentos, ñ) debe llevar BOM UTF-8
   (PSScriptAnalyzer `PSUseBOMForUnicodeEncodedFile`; Windows PowerShell 5.1 lee mal sin BOM).
