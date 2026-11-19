@@ -3,35 +3,9 @@ name: Desktop app
 # The paths cover every file outside app/ that the app or its tests compile in or read
 # (the include_str!, include_bytes! and CARGO_MANIFEST_DIR paths in app/src) and the
 # package build the tester-build step runs. Changes to any of them must rebuild the app.
+# Aether: la app se compila solo a mano (Actions > app > Run workflow) para ahorrar
+# minutos de GitHub mientras el trabajo está en los scripts. Reactivar push/PR en el paso 3.
 on:
-  push:
-    paths:
-      - "app/**"
-      - "playbook/playbook.conf"
-      - "playbook/Executables/AtlasModules/Scripts/Preparation/**"
-      - "playbook/Executables/AtlasModules/Scripts/Compatibility/**"
-      - "playbook/Executables/AtlasModules/Scripts/Entry/Install-Atlas.ps1"
-      - "playbook/Executables/AtlasModules/Scripts/Modules/Atlas.InstallState/**"
-      - "playbook/Executables/AtlasDesktop/2. Drivers/Drivers from Windows Update/*.reg"
-      - "tools/dev/Get-AtlasInstallReport.ps1"
-      - "tools/build/**"
-      - "tests/fixtures/**"
-      - "LICENSE"
-      - ".github/workflows/app.yml"
-  pull_request:
-    paths:
-      - "app/**"
-      - "playbook/playbook.conf"
-      - "playbook/Executables/AtlasModules/Scripts/Preparation/**"
-      - "playbook/Executables/AtlasModules/Scripts/Compatibility/**"
-      - "playbook/Executables/AtlasModules/Scripts/Entry/Install-Atlas.ps1"
-      - "playbook/Executables/AtlasModules/Scripts/Modules/Atlas.InstallState/**"
-      - "playbook/Executables/AtlasDesktop/2. Drivers/Drivers from Windows Update/*.reg"
-      - "tools/dev/Get-AtlasInstallReport.ps1"
-      - "tools/build/**"
-      - "tests/fixtures/**"
-      - "LICENSE"
-      - ".github/workflows/app.yml"
   workflow_dispatch:
 
 permissions:
