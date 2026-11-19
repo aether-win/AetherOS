@@ -1,0 +1,62 @@
+@{
+    RootModule        = 'Atlas.Core.psm1'
+    ModuleVersion     = '1.0.0'
+    GUID              = '0b7c9f3e-8a41-4f7e-b6a2-3d5c1e9f2a84'
+    Author            = 'AtlasOS'
+    Description       = 'Core Atlas framework: install context, option flags, logging, privilege checks and shared UI helpers.'
+    PowerShellVersion = '5.1'
+    FunctionsToExport = @(
+        # Context
+        'Import-AtlasDataFile'
+        'Import-AtlasModule'
+        'Get-AtlasContext'
+        'Test-AtlasOption'
+        # Native
+        'Initialize-AtlasNativeType'
+        # Logging
+        'Write-AtlasLog'
+        'Start-AtlasPhase'
+        'Stop-AtlasPhase'
+        'Set-AtlasLogConsoleStyle'
+        'Get-AtlasLogConsoleStyle'
+        'Get-AtlasInstallLogPath'
+        'Invoke-AtlasInstallLogRetention'
+        # Privilege
+        'Test-AtlasAdmin'
+        'Test-AtlasSystem'
+        'Test-AtlasTrustedInstaller'
+        'Assert-AtlasPrivilege'
+        'Invoke-AtlasTrustedInstaller'
+        'Invoke-AtlasAsUser'
+        'Get-AtlasUserSessionHelperStage'
+        'Get-AtlasUserProcessCommandLine'
+        # Process
+        'ConvertTo-AtlasWindowsArgumentString'
+        'Invoke-AtlasHiddenProcess'
+        # Console presentation (docs/console-presentation.md)
+        'Write-AtlasTitle'
+        'Write-AtlasBlankLine'
+        'Write-AtlasNote'
+        'Write-AtlasStep'
+        'Write-AtlasWarning'
+        'Write-AtlasSuccess'
+        'Write-AtlasFailure'
+        'Write-AtlasPartial'
+        'Write-AtlasNextStep'
+        'Write-AtlasManualStep'
+        'Write-AtlasRestartNotice'
+        'Write-AtlasNotApplied'
+        'Write-AtlasCompletion'
+        'Reset-AtlasRunOutcome'
+        'Get-AtlasRunOutcome'
+        'Set-AtlasRunOutcome'
+        'Read-AtlasYesNo'
+        'Read-AtlasChoice'
+        'Wait-AtlasContinue'
+        'Wait-AtlasExit'
+        'Read-MessageBox'
+    )
+    CmdletsToExport   = @()
+    VariablesToExport = @()
+    AliasesToExport   = @()
+}

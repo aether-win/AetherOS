@@ -1,0 +1,123 @@
+BeforeAll {
+    . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
+    $script:repoRoot = $script:AtlasTestRepoRoot
+    $script:ToolsHost = $script:AtlasTestToolsHost
+    $script:CatalogTool = Join-Path $script:repoRoot 'tools\dev\Export-AtlasCatalog.ps1'
+    $script:CatalogPath = Join-Path $script:repoRoot 'playbook\Executables\AtlasModules\Toggles\catalog.json'
+    $script:TogglesRoot = Join-Path $script:repoRoot 'playbook\Executables\AtlasModules\Toggles'
+}
+
+Describe 'Tweak catalog routes' {
+    BeforeEach {
+        $script:fixtureRoot = Join-Path $TestDrive ([guid]::NewGuid().ToString('N'))
+        $script:fixtureTweaks = Join-Path $script:fixtureRoot 'playbook\Executables\AtlasModules\Scripts\Tweaks'
+        $toggleDirectory = Join-Path $script:fixtureRoot 'playbook\Executables\AtlasModules\Toggles\General'
+        New-Item -ItemType Directory -Path $toggleDirectory -Force | Out-Null
+        New-Item -ItemType Directory -Path (Join-Path $script:fixtureTweaks 'example') -Force | Out-Null
+        "@{ Name = 'Fixture'; States = @(@{ Name = 'Disable'; StateValue = 0 }) }" |
+            Set-Content -LiteralPath (Join-Path $toggleDirectory 'Fixture.psd1')
+        @'
+@{
+    Categories = @(@{ Name = 'example'; ParentModes = @('Fresh'); Tweaks = @('category') })
+    Standalone = @(@{ Slug = 'example/standalone'; ParentModes = @('Upgrade') })
+    Disabled = @(@{ Slug = 'example/disabled'; Reason = 'Keep for comparison | not installed.' })
+}
+'@ | Set-Content -LiteralPath (Join-Path $script:fixtureTweaks 'tweaks.manifest.psd1')
+        @'
+@{
+    Name = 'Category fixture'
+    Option = 'fixture-option'
+    Registry = @(@{ Path = 'HKCU\Software\AtlasFixture'; Name = 'Test'; Type = 'DWord'; Data = 0 })
+    Script = 'category.ps1'
+    PostUserRegistryRefresh = 'ExplorerRefresh'
+}
+'@ | Set-Content -LiteralPath (Join-Path $script:fixtureTweaks 'example\category.psd1')
+        "@{ Name = 'Standalone fixture'; OnUpgrade = 'Only'; Script = 'standalone.ps1' }" |
+            Set-Content -LiteralPath (Join-Path $script:fixtureTweaks 'example\standalone.psd1')
+        "@{ Name = 'Disabled fixture' }" |
+            Set-Content -LiteralPath (Join-Path $script:fixtureTweaks 'example\disabled.psd1')
+        foreach ($name in 'category', 'standalone') {
+            "throw 'Catalog generation must not execute companion scripts.'" |
+                Set-Content -LiteralPath (Join-Path $script:fixtureTweaks "example\$name.ps1")
+        }
+        $script:fixtureDoc = Join-Path $script:fixtureRoot 'docs\catalog\tweaks.md'
+    }
+
+    It 'documents category gates, standalone work and disabled reasons without running companions' {
+        $output = & $script:ToolsHost -NoProfile -File $script:CatalogTool -RepoRoot $script:fixtureRoot 2>&1
+        $LASTEXITCODE | Should -Be 0 -Because ($output -join "`n")
+        $markdown = [IO.File]::ReadAllText($script:fixtureDoc)
+        $markdown | Should -Match 'Category tweaks: 1\. Standalone tweaks: 1\. Disabled definitions: 1\.'
+        $markdown | Should -Match '## example\n\nInstall modes: Fresh\.'
+        $markdown | Should -Match 'Option=fixture-option'
+        $markdown | Should -Match 'registry 1, Script `category.ps1`, PostUserRegistryRefresh `ExplorerRefresh`'
+        $markdown | Should -Match '## Standalone tweaks[\s\S]+`example/standalone`[\s\S]+ParentModes=Upgrade, OnUpgrade=Only[\s\S]+Script `standalone.ps1`'
+        $markdown | Should -Match '## Disabled definitions[\s\S]+`example/disabled` \| Keep for comparison \\\| not installed\.'
+        @($markdown -split "`n" | Where-Object { $_ -match '^\| `' }).Count | Should -Be 3
+
+        $output = & $script:ToolsHost -NoProfile -File $script:CatalogTool -RepoRoot $script:fixtureRoot -Validate 2>&1
+        $LASTEXITCODE | Should -Be 0 -Because ($output -join "`n")
+    }
+
+    It 'rejects a missing standalone definition before publishing any catalog output' {
+        Remove-Item -LiteralPath (Join-Path $script:fixtureTweaks 'example\standalone.psd1')
+        # Windows PowerShell turns redirected native stderr into error records.
+        # Capture the expected failure even when CI uses ErrorActionPreference=Stop.
+        $savedPreference = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = 'Continue'
+            $output = & $script:ToolsHost -NoProfile -File $script:CatalogTool -RepoRoot $script:fixtureRoot 2>&1
+        }
+        finally {
+            $ErrorActionPreference = $savedPreference
+        }
+        $LASTEXITCODE | Should -Be 1
+        ($output -join "`n") | Should -Match "Manifest entry 'example/standalone' has no definition"
+        $script:fixtureDoc | Should -Not -Exist
+        Join-Path $script:fixtureRoot 'playbook\Executables\AtlasModules\Toggles\catalog.json' | Should -Not -Exist
+    }
+}
+
+Describe 'Atlas catalog' {
+    It 'is generated from the definitions with no drift' {
+        $output = & $script:ToolsHost -NoProfile -ExecutionPolicy Bypass -File $script:CatalogTool -Validate 2>&1
+        $LASTEXITCODE | Should -Be 0 -Because ($output -join "`n")
+    }
+
+    It 'lists every toggle definition with only its public states' {
+        # catalog.json is the contract AtlasToolbox and other consumers read; -Validate
+        # only proves it matches the generator, so check it against the definitions.
+        $catalog = Get-Content -LiteralPath $script:CatalogPath -Raw | ConvertFrom-Json
+        $catalog.schemaVersion | Should -Be 1
+        $definitions = @(Get-ChildItem -LiteralPath $script:TogglesRoot -Recurse -File -Filter '*.psd1')
+        @($catalog.toggles.name | Sort-Object) | Should -Be @($definitions.BaseName | Sort-Object)
+
+        foreach ($file in $definitions) {
+            $public = @((Import-PowerShellDataFile -LiteralPath $file.FullName).States |
+                    Where-Object { -not $_['Internal'] } | ForEach-Object { $_['Name'] })
+            $entry = @($catalog.toggles | Where-Object name -ceq $file.BaseName)
+            @($entry[0].states.name) | Should -Be $public -Because $file.BaseName
+        }
+
+        # Indexing's power-mode variants are internal steps behind Enable, so the
+        # catalog must not list them even if their Internal flag is lost.
+        $indexing = @($catalog.toggles | Where-Object name -ceq 'Indexing')
+        @($indexing[0].states.name) | Should -Be @('Disable', 'Minimal', 'Enable')
+    }
+}
+
+Describe 'Catalog user work' {
+    It 'marks exactly the states the toggle engine runs only as the signed-in user' {
+        Import-Module (Join-Path $script:AtlasTestModulesRoot 'Atlas.Toggles\Atlas.Toggles.psd1') -Force
+        $catalog = [IO.File]::ReadAllText($script:CatalogPath) | ConvertFrom-Json
+        foreach ($toggle in @($catalog.toggles)) {
+            $definition = Get-AtlasToggleDefinition -Name $toggle.name -TogglesRoot $script:TogglesRoot
+            foreach ($state in @($toggle.states)) {
+                $work = & (Get-Module Atlas.Toggles) {
+                    param($Definition, $StateName) Get-AtlasToggleStateWork -Definition $Definition -StateEntry $Definition['States'][$StateName]
+                } $definition $state.name
+                [bool]$state.work.user | Should -Be ([bool]$work.User) -Because "$($toggle.name) $($state.name)"
+            }
+        }
+    }
+}

@@ -1,0 +1,33 @@
+# Line ending normalization
+*.ps1  eol=lf
+*.psm1 eol=lf
+*.psd1 eol=lf
+*.yml  eol=lf
+*.yaml eol=lf
+*.cpp  eol=lf
+*.h    eol=lf
+*.hlsl eol=lf
+app/vendor/gpui-pre-windows/prebuilt/* text eol=lf
+# Preserve FXC's generated array formatting for exact Windows comparisons.
+app/vendor/gpui-pre-windows/prebuilt/shaders_bytes.rs whitespace=-blank-at-eol
+*.rc   eol=lf
+*.manifest eol=lf
+*.bat  eol=crlf
+*.cmd  eol=crlf
+# Registry Editor 5.00 payloads are UTF-16LE. Git's byte-oriented EOL filters
+# corrupt their two-byte code units, so preserve registry payload bytes exactly.
+*.reg  -text
+*.sh   eol=lf
+# Generated catalogs are validated against deterministic LF output.
+playbook/Executables/AtlasModules/Toggles/catalog.json text eol=lf
+docs/catalog/*.md text eol=lf
+
+# Binary files
+*.apbx binary
+*.cab  binary
+*.zip  binary
+*.dll  binary
+*.exe  binary
+*.png  binary
+*.ico  binary
+*.lnk  binary

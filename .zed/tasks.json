@@ -1,0 +1,34 @@
+[
+  {
+    "label": "Build Atlas package (Test)",
+    "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"${ZED_WORKTREE_ROOT}/tools/build/Build-Playbook.ps1\" -LocalTest",
+    "cwd": "${ZED_WORKTREE_ROOT}/playbook",
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": "system"
+  },
+  {
+    "label": "Build Atlas package (Test w/o requirement gates)",
+    "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"${ZED_WORKTREE_ROOT}/tools/build/Build-Playbook.ps1\" -LocalTest -Removals Requirements",
+    "cwd": "${ZED_WORKTREE_ROOT}/playbook",
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": "system"
+  },
+  {
+    "label": "Build Atlas package (Release)",
+    "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"${ZED_WORKTREE_ROOT}/tools/build/Build-Playbook.ps1\" -FileName \"Atlas Release\"",
+    "cwd": "${ZED_WORKTREE_ROOT}/playbook",
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": "system"
+  },
+  {
+    "label": "Build Atlas package (Release Candidate)",
+    "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"${ZED_WORKTREE_ROOT}/tools/build/Build-Playbook.ps1\" -FileName \"Atlas RC\" -ReplaceOldPlaybook -Removals Verification",
+    "cwd": "${ZED_WORKTREE_ROOT}/playbook",
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": "system"
+  }
+]

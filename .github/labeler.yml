@@ -1,0 +1,72 @@
+readme:
+- changed-files:
+  - any-glob-to-any-file: '**/README.md'
+
+docs:
+- changed-files:
+  - any-glob-to-any-file:
+    - docs/**/*
+    - app/docs/**/*
+
+actions:
+- changed-files:
+  - any-glob-to-any-file:
+    - .github/workflows/**/*
+    - .github/requirements-ci.txt
+    - .github/labeler.yml
+
+# Atlas package
+
+playbook:
+- changed-files:
+  - any-glob-to-any-file: playbook/**/*
+
+appx:
+- changed-files:
+  - any-glob-to-any-file:
+    - playbook/Executables/AtlasModules/Scripts/Install/Phases/Invoke-AppxSupportPhase.ps1
+    - playbook/Executables/AtlasModules/Scripts/Modules/Atlas.Appx/**/*
+
+components:
+- changed-files:
+  - any-glob-to-any-file: playbook/Executables/AtlasModules/Scripts/Install/Phases/Invoke-ComponentsPhase.ps1
+
+services:
+- changed-files:
+  - any-glob-to-any-file:
+    - playbook/Executables/AtlasModules/Scripts/Install/Phases/Invoke-ServicesPhase.ps1
+    - playbook/Executables/AtlasModules/Scripts/Modules/Atlas.Services/**/*
+
+tweaks:
+- changed-files:
+  - any-glob-to-any-file:
+    - playbook/Configuration/custom.yml
+    - playbook/Executables/AtlasModules/Scripts/Install/Phases/Invoke-TweaksPhase.ps1
+    - playbook/Executables/AtlasModules/Scripts/Modules/Atlas.Tweaks/**/*
+    - playbook/Executables/AtlasModules/Scripts/Tweaks/**/*
+
+desktop folder:
+- changed-files:
+  - any-glob-to-any-file: playbook/Executables/AtlasDesktop/**/*
+
+build tooling:
+- changed-files:
+  - any-glob-to-any-file:
+    - tools/**/*
+    - app/tools/**/*
+    - build.cmd
+    - build.sh
+
+tests:
+- changed-files:
+  - any-glob-to-any-file: tests/**/*
+
+# Atlas Manager and the report service
+
+app:
+- changed-files:
+  - any-glob-to-any-file: app/**/*
+
+reports service:
+- changed-files:
+  - any-glob-to-any-file: services/**/*
