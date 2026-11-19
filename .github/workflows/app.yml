@@ -16,7 +16,6 @@ on:
       - "tools/dev/Get-AtlasInstallReport.ps1"
       - "tools/build/**"
       - "tests/fixtures/**"
-      - "services/reports/src/lib.rs"
       - "LICENSE"
       - ".github/workflows/app.yml"
   pull_request:
@@ -31,7 +30,6 @@ on:
       - "tools/dev/Get-AtlasInstallReport.ps1"
       - "tools/build/**"
       - "tests/fixtures/**"
-      - "services/reports/src/lib.rs"
       - "LICENSE"
       - ".github/workflows/app.yml"
   workflow_dispatch:

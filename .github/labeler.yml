@@ -61,12 +61,9 @@ tests:
 - changed-files:
   - any-glob-to-any-file: tests/**/*
 
-# Atlas Manager and the report service
+# Aether app
 
 app:
 - changed-files:
   - any-glob-to-any-file: app/**/*
 
-reports service:
-- changed-files:
-  - any-glob-to-any-file: services/**/*

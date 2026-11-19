@@ -3381,33 +3381,6 @@
       ]
     },
     {
-      "name": "RemoveEdge",
-      "group": "Software",
-      "description": "Install or remove Microsoft Edge through its interactive helper, hosted in the administrator window the engine opens. Records no state.",
-      "elevation": "Admin",
-      "noStateRecord": true,
-      "menu": false,
-      "launcher": null,
-      "warning": null,
-      "states": [
-        {
-          "name": "Run",
-          "stateValue": null,
-          "launcher": "1. Software\\Install or Remove Edge.cmd",
-          "reboot": "None",
-          "work": {
-            "registry": 0,
-            "services": 0,
-            "scheduledTasks": 0,
-            "machineAction": "Invoke-AtlasEdgeRemover",
-            "userAction": null,
-            "action": null,
-            "user": false
-          }
-        }
-      ]
-    },
-    {
       "name": "RemovePythonStorePrompt",
       "group": "Software",
       "description": "Opens Advanced app settings for selecting App execution aliases and disabling only the App Installer Python Store prompts, preserving installed Python distributions. Requires user selection and records no state.",
