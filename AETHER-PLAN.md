@@ -168,7 +168,9 @@ cuidado, en una pasada aparte.
       launchers), sus rutas en las definiciones de toggles (`Launcher`), `catalog.json`,
       `Initialize-NewUser.ps1` (rutas fijas) y los textos de consola. Hacerlo con un mapa
       inglés→español aplicado de forma consistente.
-- [ ] Revisión del paso 1.
+- [x] Revisión (parte 1): sin referencias a archivos borrados; `ToolboxLauncher` quitado de 11
+      toggles, del generador `tools/dev/New-ToggleLaunchers.ps1` y de `catalog.json`;
+      `atlas-theme-upgrade` usa el tema Aether.
 - [ ] NOTA paso 2 (red): `Initialize-NewUser.ps1` ejecuta "Disable Network Navigation Pane
       (default).cmd" por usuario → cambiar a Enable. FileSharing por defecto → Enable.
 
