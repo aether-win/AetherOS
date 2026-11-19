@@ -165,7 +165,7 @@ cuidado, en una pasada aparte.
       * PENDIENTE de implementar (paso 2/3): las opciones `app-*`, `wind-aether`,
         `experimental-cpu-power` todavía no hacen nada; fondo claro propio (hoy ambos temas usan
         el mismo fondo oscuro).
-- [ ] Traducir al español la carpeta de accesos directos (AtlasDesktop: 93 carpetas, 209
+- [ ] (Siguiente) Traducir al español la carpeta de accesos directos (AtlasDesktop: 93 carpetas, 209
       launchers), sus rutas en las definiciones de toggles (`Launcher`), `catalog.json`,
       `Initialize-NewUser.ps1` (rutas fijas) y los textos de consola. Hacerlo con un mapa
       inglés→español aplicado de forma consistente.
@@ -181,39 +181,22 @@ GitHub Actions en el repo: `test.yml` (Pester), `lint.yml` (PSScriptAnalyzer), `
 `integration.yml` necesita un runner propio con Hyper-V (no se usa). Ver resultados con
 `gh run list --repo aether-win/AetherOS`.
 
-### Estado de CI (19-nov-2026, commit 619615d)
-- Lint PowerShell ✅, Lint YAML ✅, Build Playbook (.apbx) ✅, Pester PS7 (build tooling) ✅.
-- Pester Windows PowerShell 5.1: 2562 pasan, 44 fallan — TODAS por borrados/cambios intencionales.
-  Siguiente tarea (= "Borrado parte 2"), actualizar código muerto y pruebas:
-  1. Contrato de opciones (`Atlas.Contracts`/handoff): igualar opciones de FeaturePage, front door,
-     state (`Initialize-AtlasInstallState.ps1` ValidateSet), YAML (`custom.yml`) y tweaks; quitar
-     tweaks/gates de `remove-snipping-tool`, `uninstall-edge`, `browser-*`, `install-*`,
-     `disable-hibernation`, `disable-power-saving` (p. ej. `disable-screen-capture-hotkey.psd1`,
-     `Atlas.Appx/Domain/Removal.ps1`, `Invoke-ChoicesPhase.ps1`, `Choices.ps1`).
-  2. `catalog.json` y `docs/catalog/*.md` se generan con `tools/dev/Export-AtlasCatalog.ps1`:
-     regenerarlos en CI (workflow manual que suba el resultado como artefacto).
-  3. Pruebas a borrar o rehacer: Install-AtlasEclean, LibreWolf release identity, Software phase
-     aggregation (Toolbox/eclean/LibreWolf), Install-AtlasSoftware (usar VCRedist en vez de
-     navegadores), Install request validation e Install capture (conjuntos de opciones nuevos),
-     AppX removal policy, Toggles "Install or Remove Edge", Set-AtlasThemeMru (temas Aether),
-     Launcher generator (caso Toolbox), Paired registry assets (copias de Toolbox: borrar test y
-     `Scripts/Registry/README.md`).
+### Estado de CI — TODO EN VERDE ✅ (commit 8246b8a)
+Build Playbook ✅ · Lint PowerShell ✅ · Lint YAML ✅ · Test (Pester PS7 + Windows PowerShell 5.1) ✅.
+Hecho en la limpieza: contrato de opciones igualado (playbook.conf = state = schema = custom.yml);
+sin tweak del atajo de captura; set-power-settings sin opciones viejas; Components y Choices
+sin quitar Edge ni apps; AppX sin Edge ni Recortes; catálogo regenerado en CI
+(`regenerate.yml` → rama `regenerado`; traer con `git fetch --depth=2 origin regenerado &&
+git cherry-pick -n FETCH_HEAD`). Los artefactos de Actions NO se pueden descargar desde aquí.
 
-### Estado de CI (actualización)
-- Hecho: contrato de opciones (state/schema/custom.yml = playbook.conf), sin tweak del atajo de
-  captura, set-power-settings sin opciones viejas, Components sin quitar Edge, AppX sin Edge ni
-  Recortes, catálogo regenerado con `.github/workflows/regenerate.yml` (deja el resultado en la
-  rama `regenerado`; traer con `git fetch --depth=2 origin regenerado && git cherry-pick -n FETCH_HEAD`).
-  Los artefactos de Actions NO se pueden descargar desde aquí (proxy); usar ramas o logs.
-- Pester 5.1: 2564 pasan, 20 fallan (todas de comportamiento quitado):
-  * `Atlas.Phases`/Components: pruebas de quitar Edge → borrar; ajustar la de orden.
-  * Choices phase (9): usan uninstall-edge/remove-snipping-tool → limpiar también el código
-    de Edge/Recortes en `Invoke-ChoicesPhase.ps1` y adaptar pruebas.
-  * set-power-settings (2): ya no aplica opciones → borrar esas pruebas.
-  * "What the PC shows over recorded choices": `Preparation/WindowsTransition.ps1` grupos
-    hibernation/powerSaving/edge/snippingTool/toolbox/browser → quitar.
-- Pendiente revisar con el usuario (paso 2): Atlas quita Paint, Cámara, Notas rápidas,
-  Alarmas y reloj, Grabadora, To Do, Outlook nuevo, etc. (`Atlas.Appx/Domain/Removal.ps1`).
+Código heredado que sigue (no se puede elegir, no rompe nada; quitar en la pasada de
+compatibilidad): transición de Windows/Rebase con opciones de Atlas (`WindowsTransition.ps1`,
+fixtures `tests/fixtures/windows-transition/*.json`, app Rust `legacy_choices.rs`/`rebase.rs`),
+`Invoke-AtlasEdgeRemoval.ps1`/`Remove-Edge*.ps1` (usados aún por Widgets y Test-EdgeState),
+`Initialize-AtlasLibreWolfUser.ps1`, AME `custom.yml` y su validador de build.
+
+Pendiente revisar con el usuario (paso 2): Atlas quita Paint, Cámara, Notas rápidas, Alarmas y
+reloj, Grabadora de sonido, To Do, Outlook nuevo, etc. (`Atlas.Appx/Domain/Removal.ps1`).
 
 ### Reglas que exige CI
 - Todo `.ps1/.psm1/.psd1` con caracteres no ASCII (acentos, ñ) debe llevar BOM UTF-8
