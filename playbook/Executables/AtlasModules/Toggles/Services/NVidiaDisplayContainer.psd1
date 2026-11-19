@@ -9,7 +9,6 @@
             Name             = 'Disable'
             StateValue       = 0
             Launcher         = '6. Advanced Configuration\Services\NVIDIA Display Container\Disable NVIDIA Display Container LS.cmd'
-            ToolboxLauncher  = 'Scripts\NVidia\DisableNVIDIADisplayContainerLS.cmd'
             Reboot           = 'None'
             MachineAction    = 'Set-AtlasNVidiaDisplayContainerState'
             ReplayApplicable = 'Test-AtlasNVidiaDisplayContainerInstalled'
@@ -18,7 +17,6 @@
             Name             = 'Enable'
             StateValue       = 1
             Launcher         = '6. Advanced Configuration\Services\NVIDIA Display Container\Enable NVIDIA Display Container LS (default).cmd'
-            ToolboxLauncher  = 'Scripts\NVidia\EnableNVIDIADisplayContainerLS.cmd'
             Reboot           = 'None'
             MachineAction    = 'Set-AtlasNVidiaDisplayContainerState'
             ReplayApplicable = 'Test-AtlasNVidiaDisplayContainerInstalled'

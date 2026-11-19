@@ -9,7 +9,6 @@
             Name            = 'Disable'
             StateValue      = 0
             Launcher        = '6. Advanced Configuration\Services\Superfetch\Disable SuperFetch.cmd'
-            ToolboxLauncher = 'Scripts\SuperFetch\DisableSuperFetch.cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Set-AtlasSuperFetchMachineState'
         }

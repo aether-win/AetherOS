@@ -9,7 +9,6 @@
         @{
             Name            = 'Run'
             Launcher        = '9. Troubleshooting\Repair Windows Components.cmd'
-            ToolboxLauncher = 'Scripts\Troubleshooting\Repair Windows Components.cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Repair-AtlasWindowsComponents'
         }

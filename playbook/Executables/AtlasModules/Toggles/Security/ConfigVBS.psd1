@@ -8,7 +8,6 @@
         @{
             Name            = 'Run'
             Launcher        = '7. Security\Core Isolation (VBS)\Current Configuration.cmd'
-            ToolboxLauncher = 'Scripts\vbsCurrentConfig.cmd'
             Reboot          = 'None'
             Action          = 'Show-AtlasVbsConfiguration'
         }

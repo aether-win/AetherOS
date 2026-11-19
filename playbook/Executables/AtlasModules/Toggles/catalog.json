@@ -452,7 +452,7 @@
           "stateValue": null,
           "launcher": "6. Advanced Configuration\\Boot Configuration\\View Current Values.cmd",
           "reboot": "None",
-          "toolboxLauncher": "Scripts\\viewBootValues.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -2790,7 +2790,7 @@
           "stateValue": null,
           "launcher": "7. Security\\Core Isolation (VBS)\\Current Configuration.cmd",
           "reboot": "None",
-          "toolboxLauncher": "Scripts\\vbsCurrentConfig.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -3001,7 +3001,7 @@
           "stateValue": null,
           "launcher": "7. Security\\Defender\\Toggle Defender.cmd",
           "reboot": "Prompt",
-          "toolboxLauncher": "Scripts\\toggleDefender.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -3197,7 +3197,7 @@
           "stateValue": 0,
           "launcher": "6. Advanced Configuration\\Services\\NVIDIA Display Container\\Disable NVIDIA Display Container LS.cmd",
           "reboot": "None",
-          "toolboxLauncher": "Scripts\\NVidia\\DisableNVIDIADisplayContainerLS.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -3213,7 +3213,7 @@
           "stateValue": 1,
           "launcher": "6. Advanced Configuration\\Services\\NVIDIA Display Container\\Enable NVIDIA Display Container LS (default).cmd",
           "reboot": "None",
-          "toolboxLauncher": "Scripts\\NVidia\\EnableNVIDIADisplayContainerLS.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -3325,7 +3325,7 @@
           "stateValue": 0,
           "launcher": "6. Advanced Configuration\\Services\\Superfetch\\Disable SuperFetch.cmd",
           "reboot": "Recommend",
-          "toolboxLauncher": "Scripts\\SuperFetch\\DisableSuperFetch.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -3449,7 +3449,7 @@
           "stateValue": 1,
           "launcher": "9. Troubleshooting\\Network\\Reset Network to Atlas Default.cmd",
           "reboot": "Recommend",
-          "toolboxLauncher": "Scripts\\Troubleshooting\\TroubleshootingNetwork\\AtlasDefault.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -3465,7 +3465,7 @@
           "stateValue": 0,
           "launcher": "9. Troubleshooting\\Network\\Reset Network to Windows Default.cmd",
           "reboot": "Recommend",
-          "toolboxLauncher": "Scripts\\Troubleshooting\\TroubleshootingNetwork\\WindowsDefault.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -3493,7 +3493,7 @@
           "stateValue": null,
           "launcher": "9. Troubleshooting\\Fix Errors 2502 and 2503.cmd",
           "reboot": "None",
-          "toolboxLauncher": "Scripts\\Troubleshooting\\Fix Errors 2502 and 2503.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -3575,7 +3575,7 @@
           "stateValue": null,
           "launcher": "9. Troubleshooting\\Repair Windows Components.cmd",
           "reboot": "Recommend",
-          "toolboxLauncher": "Scripts\\Troubleshooting\\Repair Windows Components.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,
@@ -3675,7 +3675,7 @@
           "stateValue": null,
           "launcher": "9. Troubleshooting\\Telemetry Components.cmd",
           "reboot": "Prompt",
-          "toolboxLauncher": "Scripts\\Troubleshooting\\Telemetry Components.cmd",
+          "toolboxLauncher": null,
           "work": {
             "registry": 0,
             "services": 0,

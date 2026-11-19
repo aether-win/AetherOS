@@ -42,7 +42,6 @@ $desktopRoot = Join-Path -Path $RepoRoot -ChildPath 'playbook\Executables\AtlasD
 $toolboxRoot = Join-Path -Path $RepoRoot -ChildPath 'playbook\Executables\AtlasModules\Toolbox'
 # The only launchers no toggle describes; docs/architecture.md gives each one's reason.
 $handWrittenLaunchers = @(
-    'Install AtlasOS Toolbox.cmd'
     '4. Interface Tweaks\Start Menu\Install Open-Shell.cmd'
     '9. Troubleshooting\Set services to defaults.cmd'
 ) | ForEach-Object { [IO.Path]::GetFullPath((Join-Path -Path $desktopRoot -ChildPath $_)).ToLowerInvariant() }
@@ -55,10 +54,7 @@ if (-not (Test-Path -LiteralPath $desktopRoot -PathType Container)) {
     Write-Error "AtlasDesktop root '$desktopRoot' does not exist."
     exit 1
 }
-if (-not (Test-Path -LiteralPath $toolboxRoot -PathType Container)) {
-    Write-Error "AtlasToolbox root '$toolboxRoot' does not exist."
-    exit 1
-}
+# Aether: Toolbox ya no existe; sin ToolboxLauncher no se genera nada en esa carpeta.
 
 function Assert-LauncherIdentifier {
     param(
@@ -296,7 +292,7 @@ if ($Validate) {
 
     # Check both launcher trees for stubs no longer declared by a definition, and for
     # hand-written launchers that nothing here keeps in step.
-    foreach ($orphanRoot in @($desktopRoot, $toolboxRoot)) {
+    foreach ($orphanRoot in @($desktopRoot)) {
         foreach ($cmdFile in @(Get-ChildItem -LiteralPath $orphanRoot -Recurse -File -Filter '*.cmd')) {
             $key = $cmdFile.FullName.ToLowerInvariant()
             if ($expected.ContainsKey($key)) {

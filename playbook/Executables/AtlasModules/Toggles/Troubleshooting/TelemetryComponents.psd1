@@ -8,7 +8,6 @@
         @{
             Name             = 'Run'
             Launcher         = '9. Troubleshooting\Telemetry Components.cmd'
-            ToolboxLauncher  = 'Scripts\Troubleshooting\Telemetry Components.cmd'
             Reboot           = 'Prompt'
             MachineAction    = 'Invoke-AtlasTelemetryComponentsMenu'
             InteractiveState = 'Select-AtlasTelemetryComponentsState'

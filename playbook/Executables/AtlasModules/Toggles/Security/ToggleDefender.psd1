@@ -8,7 +8,6 @@
         @{
             Name             = 'Run'
             Launcher         = '7. Security\Defender\Toggle Defender.cmd'
-            ToolboxLauncher  = 'Scripts\toggleDefender.cmd'
             Reboot           = 'Prompt'
             MachineAction    = 'Invoke-AtlasDefenderToggle'
             InteractiveState = 'Select-AtlasDefenderToggleState'
