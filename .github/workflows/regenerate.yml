@@ -2,13 +2,13 @@ name: Regenerar archivos generados
 
 # Aether: corre a mano (Actions > Regenerar archivos generados > Run workflow).
 # Regenera el catálogo de toggles/tweaks y los lanzadores de AtlasDesktop con las
-# herramientas de PowerShell, y sube los cambios como un parche (artefacto
-# "regenerated-patch") para revisarlo y aplicarlo con git apply.
+# herramientas de PowerShell y deja el resultado en la rama "regenerado" para revisarlo
+# y traerlo a main.
 on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   regenerate:
@@ -26,15 +26,12 @@ jobs:
           & .\tools\dev\Export-AtlasCatalog.ps1
           if ($LASTEXITCODE -ne 0) { throw "Export-AtlasCatalog failed with $LASTEXITCODE" }
 
-      - name: Build patch
+      - name: Push to the regenerado branch
         shell: pwsh
         run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
-          git diff --cached --binary | Out-File -FilePath regenerated.patch -Encoding utf8NoBOM
           git diff --cached --stat
-
-      - name: Upload patch
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: regenerated-patch
-          path: regenerated.patch
+          git commit -m 'Regenerar catálogo y lanzadores' --allow-empty
+          git push --force origin HEAD:refs/heads/regenerado
