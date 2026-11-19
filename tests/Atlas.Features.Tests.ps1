@@ -176,13 +176,13 @@ Describe 'A failed DISM run' {
     }
 
     It 'stops the install with what DISM said, without its banner or progress' {
-        $dism = $script:fakeDism
+        Set-Variable -Name dism -Value $script:fakeDism
         { Invoke-AtlasDism -Description 'Enabling DirectPlay' -Arguments @('/Online') } |
             Should -Throw -ExpectedMessage "DISM 'Enabling DirectPlay' failed with exit code 5. Error: 5 Access is denied."
     }
 
     It 'warns and carries on when the work is optional' {
-        $dism = $script:fakeDism
+        Set-Variable -Name dism -Value $script:fakeDism
         Invoke-AtlasDism -Description 'Cleaning the component store' -Arguments @('/Online') -Optional
         Should -Invoke Write-AtlasLog -Times 1 -Exactly -ParameterFilter {
             $Level -ceq 'Warning' -and
