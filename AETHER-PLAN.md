@@ -126,7 +126,7 @@ cuidado, en una pasada aparte.
 
 ## 3. Progreso
 - [x] Proyecto creado desde Atlas con git (commit base).
-- [ ] Recursos de marca (logo, .ico, fondos).
+- [x] Recursos de marca (logo, .ico, fondos) en `branding/`.
 - [ ] Borrado de lo que no sirve.
 - [ ] Marca Aether y opciones del instalador.
 - [ ] Revisión del paso 1.
