@@ -1,5 +1,5 @@
 # Software phase.
-# Installs machine-wide initial utilities and the selected browser and apps. Runs as
+# Installs machine-wide initial runtimes. Runs as
 # TrustedInstaller; downloads happen here at install time.
 # Every selected component is attempted. Optional app failures are warnings;
 # other failures are reported together after the remaining installation attempts.
@@ -14,35 +14,14 @@ $context = Get-AtlasContext
 $requestedComponents = New-Object 'Collections.Generic.List[string]'
 $failedComponents = New-Object 'Collections.Generic.List[string]'
 
-# Initial software: Visual C++ Runtimes, NanaZip, DirectX (fresh installs only)
+# Initial software: Visual C++ Runtimes and DirectX (fresh installs only).
+# Aether: NanaZip ya no se instala (Windows 11 abre .zip, .rar y .7z por sí mismo).
+# Las apps que el usuario marca en el asistente (Claude, ChatGPT, Python, Steam...)
+# se instalan en una fase propia de Aether, como el usuario y no como SYSTEM.
 if (-not $context.IsUpgrade) {
-    foreach ($component in @('VCRedist', 'SevenZip', 'DirectX')) {
+    foreach ($component in @('VCRedist', 'DirectX')) {
         $requestedComponents.Add($component)
     }
-}
-
-# Toolbox
-if (Test-AtlasOption -Name 'install-toolbox') {
-    $requestedComponents.Add('Toolbox')
-}
-
-if (Test-AtlasOption -Name 'install-eclean') {
-    $requestedComponents.Add('Eclean')
-}
-
-# Browsers ('browser-*' options are only set when 'install-another-browser' was picked;
-# AME Wizard resolves that dependency before the option flags are written)
-if (Test-AtlasOption -Name 'browser-brave') {
-    $requestedComponents.Add('Brave')
-}
-if (Test-AtlasOption -Name 'browser-firefox') {
-    $requestedComponents.Add('Firefox')
-}
-if (Test-AtlasOption -Name 'browser-librewolf') {
-    $requestedComponents.Add('LibreWolf')
-}
-if (Test-AtlasOption -Name 'browser-chrome') {
-    $requestedComponents.Add('Chrome')
 }
 
 foreach ($component in $requestedComponents) {
@@ -51,45 +30,8 @@ foreach ($component in $requestedComponents) {
         if (-not $componentInstalled) {
             throw "The '$component' installer reported an unsuccessful outcome."
         }
-
-        if ($component -ceq 'LibreWolf' -and -not $context.IsOobe) {
-            $interactiveUserSid = [string]$context.InteractiveUserSid
-            if ([string]::IsNullOrWhiteSpace($interactiveUserSid)) {
-                throw 'LibreWolf user integration requires the install-state user SID.'
-            }
-
-            $powerShellPath = [IO.Path]::Combine(
-                [Environment]::SystemDirectory,
-                'WindowsPowerShell',
-                'v1.0',
-                'powershell.exe'
-            )
-            $userIntegration = Join-Path -Path $scriptsRoot `
-                -ChildPath 'Operations\Initialize-AtlasLibreWolfUser.ps1'
-            if (-not (Test-Path -LiteralPath $userIntegration -PathType Leaf)) {
-                throw "The LibreWolf user-integration helper is missing at '$userIntegration'."
-            }
-            $arguments = '-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{0}" -ExpectedUserSid "{1}"' -f `
-                $userIntegration,
-                $interactiveUserSid
-            $exitCode = Invoke-AtlasAsUser -FilePath $powerShellPath -Arguments $arguments
-            if ($exitCode -ne 0) {
-                throw "Exact-user LibreWolf integration failed with exit code $exitCode."
-            }
-        }
     }
     catch {
-        if ($component -in @('Toolbox', 'Eclean')) {
-            $appName = if ($component -ceq 'Toolbox') { 'Atlas Toolbox' } else { 'eclean' }
-            $downloadUrl = if ($component -ceq 'Toolbox') {
-                'https://github.com/Atlas-OS/atlas-toolbox/releases/latest'
-            } else {
-                'https://eclean.gg/atlasos/'
-            }
-            Write-AtlasLog -Level Warning -Message `
-                "Optional app '$appName' could not be installed; Atlas setup will continue. You can install it later from $downloadUrl. Details: $($_.Exception.Message)"
-            continue
-        }
         if ($component -ceq 'DirectX') {
             Write-AtlasLog -Level Warning -Message `
                 "Optional legacy DirectX runtime was not installed; continuing: $($_.Exception.Message)"
