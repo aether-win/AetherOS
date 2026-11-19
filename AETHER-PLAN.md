@@ -127,6 +127,26 @@ cuidado, en una pasada aparte.
 ## 3. Progreso
 - [x] Proyecto creado desde Atlas con git (commit base).
 - [x] Recursos de marca (logo, .ico, fondos) en `branding/`.
-- [ ] Borrado de lo que no sirve.
+- [x] Borrado (parte 1): servicio de reportes (`services/`), Toolbox (carpeta, launcher,
+      Install-Toolbox.ps1, Toolbox-Package.ps1, tests), instaladores de navegadores/Toolbox/eclean
+      en Atlas.Software, NanaZip por defecto (Windows 11 abre .rar/.7z), toggle y launcher
+      "Quitar Edge" + entrada en catalog.json, enlaces .url de Atlas, FUNDING.yml, refs de CI.
+- [ ] Borrado (parte 2, pasada aparte con cuidado):
+      * AME Wizard: `playbook/Configuration/custom.yml`, `Entry/Invoke-AtlasInstall.ps1` y los
+        validadores de build que lo exigen (`tools/build/AtlasBuild/AtlasYamlAction.ps1`,
+        `Test-Apbx.ps1`, `Set-AtlasVersion.ps1`).
+      * Código muerto de opciones eliminadas (ya no se pueden elegir): quitar Edge
+        (`Install/Tasks/Invoke-AtlasEdgeRemoval.ps1`, `Operations/Remove-Edge*.ps1`, ramas en
+        Components/Choices phase, Initialize-NewUser, Test-EdgeState.cmd, Widgets.ps1 usa
+        Remove-Edge.ps1 como helper — revisar), quitar Recortes (`Atlas.Appx` Removal,
+        `disable-screen-capture-hotkey` tweak), LibreWolf (`Operations/Initialize-AtlasLibreWolfUser.ps1`,
+        Initialize-NewUser), listas de opciones conocidas (`Atlas.Tweaks/Domain/Schema.ps1`,
+        `Entry/Initialize-AtlasInstallState.ps1`, `Atlas.InstallState.psm1`,
+        `Preparation/WindowsTransition.ps1`), `Repair-AtlasToolboxRecord`.
+      * Actualizaciones desde Atlas 0.4.1/0.5.0 (Compat/, LegacyChoices, Rebase de Atlas).
+      * `Scripts/Registry/README.md` habla de copias en Toolbox (ya no existe).
+      * App (Rust): página de reportes, opciones viejas del asistente, 14 idiomas que no son
+        español (se rehace en el paso 3).
+      * Tests que referencian lo borrado (actualizar cuando haya pwsh para correrlos).
 - [ ] Marca Aether y opciones del instalador.
 - [ ] Revisión del paso 1.
