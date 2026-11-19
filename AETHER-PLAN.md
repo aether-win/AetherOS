@@ -1,7 +1,8 @@
 # Aether OS — Plan maestro y progreso
 
 > Si la sesión se corta: este archivo es la fuente de verdad. Leer "Progreso" y seguir
-> desde la primera casilla sin marcar. Proyecto en `/home/claude/AetherOS` (git).
+> desde la primera casilla sin marcar. Repositorio: **github.com/aether-win/AetherOS** (privado),
+> clon de trabajo en `/home/claude/aetheros` (rama `main`). Commits con las líneas Co-Authored-By/Claude-Session.
 > Recursos de Wind-Aether en `/home/claude/aether-assets`. Script de red probado en
 > `/home/claude/aether-red`.
 
@@ -174,6 +175,12 @@ cuidado, en una pasada aparte.
 - [ ] NOTA paso 2 (red): `Initialize-NewUser.ps1` ejecuta "Disable Network Navigation Pane
       (default).cmd" por usuario → cambiar a Enable. FileSharing por defecto → Enable.
 
-## 4. Limitación del entorno
+## 4. Compilación y pruebas
+GitHub Actions en el repo: `test.yml` (Pester), `lint.yml` (PSScriptAnalyzer), `yaml.yml`, `build.yml`
+(paquete .apbx) corren en cada push. `app.yml` (app Rust, pesada) solo manual por ahora.
+`integration.yml` necesita un runner propio con Hyper-V (no se usa). Ver resultados con
+`gh run list --repo aether-win/AetherOS`.
+
+## 5. Limitación del entorno
 Aquí no hay PowerShell ni Windows: no se puede compilar el .apbx, la app ni correr las pruebas
 Pester. Para probar: GitHub Actions (los workflows de Atlas ya existen) o la VM del usuario.
