@@ -819,7 +819,8 @@ Describe 'Front door requirements and staging' {
         $results = @(Test-AtlasInstallRequirement -SupportedBuilds @(26200) -WindowsBuild 22631 -EditionId Professional -InstallationType Client -DeclaredRequirements @('NoAntivirus', 'PluggedIn'))
         ($results | Where-Object { $_.Name -eq 'Windows build' }).Passed | Should -BeFalse
         ($results | Where-Object { $_.Name -eq 'Windows build' }).Blocking | Should -BeTrue
-        @($results | Where-Object { -not $_.Passed -and $_.Blocking }).Count | Should -Be 4
+        # Aether: el antivirus de terceros ya no bloquea (antes eran 4).
+        @($results | Where-Object { -not $_.Passed -and $_.Blocking }).Count | Should -Be 3
         ($results | Where-Object { $_.Name -eq 'Windows edition' }).Passed | Should -BeTrue
 
         Mock Test-Path { $false }
