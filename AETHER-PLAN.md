@@ -176,6 +176,26 @@ cuidado, en una pasada aparte.
       Se dejaron en inglés a propósito las rutas viejas de Atlas que usa el código de
       compatibilidad (WindowsTransition, Legacy*, fixtures, `legacy_choices.rs`) y los textos de la
       app Rust (se rehace en el paso 3). Pendiente: textos de consola de los scripts (en inglés).
+- [x] Marca: **nada visible se llama Atlas** (pedido del usuario, 20-nov-2026). Cambiado a "Aether"/"Aether OS":
+      mensajes de consola, avisos, títulos y preguntas de los scripts (`playbook/`, `app/resources/`),
+      encabezado de consola (`$script:AtlasUiBrand = 'Aether OS'`), plan de energía "Aether OS", catálogos
+      de la app (es, en-GB, en-US), título de ventana, datos del .exe (versión/propiedades), ícono y
+      logo de la app (`assets/brand/atlas-mark.svg` ahora es la "A" con órbita), enlaces (repo de
+      Aether; sin Discord ni reportes, que iban a servidores de Atlas). **Se quedan con nombre interno
+      Atlas** (no los ve el usuario normal y cambiarlos rompería todo): módulos `Atlas.*`, funciones
+      `*-Atlas*`, carpetas `C:\Windows\AtlasModules` y `C:\Windows\AtlasDesktop` (el acceso del
+      escritorio se llama "Aether"), claves `HKLM\SOFTWARE\AtlasOS`, `%LOCALAPPDATA%\AtlasOS`, nombre
+      interno del binario. Las herramientas de desarrollo (`tools/`) y sus pruebas siguen diciendo Atlas.
+      La licencia GPL y "basado en AtlasOS" se mantienen (obligatorio).
+- [x] Paso 3 (primera versión): la app ya muestra el asistente de `playbook.conf` (en español) sin cambios
+      de código: las páginas nuevas (tema, apps, Wind-Aether) salen como "Elige una" / "Extras" genéricas.
+      La app se fuerza a español (`i18n::activate`). Workflow nuevo **`.github/workflows/aether-app.yml`**
+      (manual): arma `Aether OS.apbx`, lo mete dentro de la app (`embedded-playbook`, sin GitHub ni
+      servidores de Atlas) y deja el artefacto `Aether-OS-<sha>` con `Aether.exe`. Compiló bien
+      (run 44676763609). `app.yml` (clippy/pruebas de Rust) NO se corrió: sus pruebas de catálogo
+      esperan el playbook.conf en inglés de Atlas; arreglarlo es pendiente.
+      Pendientes del paso 3: textos fijos de la app sobre opciones de Atlas (navegador, Toolbox, quitar
+      Edge…), avisos "versión de prueba (RC)" del modo embebido, páginas ISO/USB.
 - [x] Revisión (parte 1): sin referencias a archivos borrados; `ToolboxLauncher` quitado de 11
       toggles, del generador `tools/dev/New-ToggleLaunchers.ps1` y de `catalog.json`;
       `atlas-theme-upgrade` usa el tema Aether.
