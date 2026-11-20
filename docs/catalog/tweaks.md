@@ -15,7 +15,7 @@ Install modes: Fresh, Upgrade.
 
 | Tweak | Description | Gates | Work |
 | --- | --- | --- | --- |
-| `atlas-network-settings`<br>Applies Atlas' Network Settings | Applies Atlas' optimised network settings. Disables vendor NIC power-saving features (green Ethernet, DMA coalescing and similar) for consistent latency, which slightly increases idle power draw - relevant on laptops. |  | toggle 1 |
+| `atlas-network-settings`<br>Applies Aether' Network Settings | Applies Aether' optimised network settings. Disables vendor NIC power-saving features (green Ethernet, DMA coalescing and similar) for consistent latency, which slightly increases idle power draw - relevant on laptops. |  | toggle 1 |
 | `shares/disable-smb-bandwidth-throttling`<br>Disable SMB Bandwidth Throttling | Disables SMB client bandwidth throttling. Mainly improves file-share throughput on high-latency links (the redirector throttles there by design); little effect on a LAN. Same setting as Set-SmbClientConfiguration -EnableBandwidthThrottling 0. |  | registry 1 |
 | `aether-red`<br>Red de trabajo Aether | Aether: aplica sin preguntas lo que hace Reparar-Red-Aether (probado contra el error 0x80070035): drivers y servicios del cliente SMB, proveedor de red, enlaces de los adaptadores, NetBIOS, redes en Privada, reglas de firewall de detección y uso compartido, impresión, y quita la firma SMB obligatoria y el bloqueo de invitado de Windows 11 24H2+. |  | Script `aether-red.ps1` |
 
@@ -108,7 +108,7 @@ Install modes: Fresh, Upgrade.
 | `disable-win11-settings-banner`<br>Disable Windows 11 Settings Banner | Disables the Windows 11 Settings banner (ValueBanner), which normally displays 'advertisements' such as Microsoft 365 on non-Enterprise editions |  | registry 1 |
 | `disable-dynamic-lighting`<br>Disable Dynamic Lighting | Disables Dynamic Lighting by default |  | registry 1 |
 | `disable-auto-app-archival`<br>Disable Automatic Store App Archiving | Disables automatic Store app archiving so that less commonly apps don't disappear and have to be redownloaded |  | toggle 1 |
-| `add-sharing-settings-shortcut`<br>Add Network Sharing Shortcut | Adds a network sharing settings shortcut to the Atlas 'File Sharing' folder for QoL |  | Script `add-sharing-settings-shortcut.ps1` |
+| `add-sharing-settings-shortcut`<br>Add Network Sharing Shortcut | Adds a network sharing settings shortcut to the Aether 'File Sharing' folder for QoL |  | Script `add-sharing-settings-shortcut.ps1` |
 | `aether-edge`<br>Edge de Aether (Google y limpieza) | Aether: Edge se queda. Deja Google como buscador para los perfiles nuevos de Edge (archivo initial_preferences) y limpia Edge con directivas que funcionan en PCs no administradas: sin primer arranque, sin arranque en segundo plano ni Startup Boost, sin asistente de compras ni recomendaciones, y con pestañas en suspensión. |  | registry 8, Script `aether-edge.ps1` |
 | `appearance/atlas-theme`<br>Add Theme | Lock-screen policy for fresh installs. The dark theme and lock-screen image need shell COM in a real user session, so Initialize-NewUser applies them: during the install for the installing account (-FromInstall), at first logon for new accounts. | OnUpgrade=Skip | registry 1, Script `atlas-theme.ps1` |
 | `appearance/disallow-theme-changes`<br>Disallow Themes to Change Certain Personalized Features | Disallows themes to change certain personalized features, as most of the time people only really apply themes for wallpapers or Windows style skins (custom themes) |  | registry 2 |
@@ -211,8 +211,8 @@ Install modes: Fresh, Upgrade.
 | `set-file-associations`<br>Set File Associations | Registers safe current-user handlers; default-app choices remain user-controlled. | OnUpgrade=Skip, Oobe=false | Script `set-file-associations.ps1` |
 | `disable-core-isolation`<br>Disable Virtualization-Based Security | Disables VBS and Memory Integrity through Microsoft's documented runtime registry controls. Credential Guard preferences, LSA protection, kernel stack protection preferences, and optional Windows features are preserved rather than guessed or removed. | Option=disable-core-isolation | Script `disable-core-isolation.ps1` |
 | `disable-mitigations`<br>Disable Mitigations | Disables Windows exploit-protection mitigations when the user selected the option. | Option=mitigations-disable | toggle 1 |
-| `set-profile-pictures`<br>Set Profile Pictures | Sets the default Atlas profile pictures. | OnUpgrade=Skip | Script `set-profile-pictures.ps1` |
-| `backup-services`<br>Backup Atlas Services and Drivers | Backs up the default Atlas services and drivers after all the tweaks are finished. | OnUpgrade=Skip | Script `backup-services.ps1` |
+| `set-profile-pictures`<br>Set Profile Pictures | Sets the default Aether profile pictures. | OnUpgrade=Skip | Script `set-profile-pictures.ps1` |
+| `backup-services`<br>Backup Aether Services and Drivers | Backs up the default Aether services and drivers after all the tweaks are finished. | OnUpgrade=Skip | Script `backup-services.ps1` |
 | `update-client-cbs`<br>Modify Client.CBS | Modifies components related to Client.CBS, the miscellaneous system package in Windows 10+. |  | run 1 |
 
 ## misc
@@ -222,13 +222,13 @@ Install modes: Fresh, Upgrade.
 | Tweak | Description | Gates | Work |
 | --- | --- | --- | --- |
 | `config-time`<br>Configure Time Servers | Configures time servers to be more reliable and accurate than the defaults |  | services 1, run 3 |
-| `delete-windows-specific-files`<br>Delete Windows-version Specific Tweaks | Removes AtlasDesktop tweak scripts that do not apply to this machine (currently: Open-Shell Start Menu items on ARM64). Only touches Atlas's own desktop folder, never Windows files. | Arch=ARM64, OnUpgrade=Skip | Script `delete-windows-specific-files.ps1` |
+| `delete-windows-specific-files`<br>Delete Windows-version Specific Tweaks | Removes AtlasDesktop tweak scripts that do not apply to this machine (currently: Open-Shell Start Menu items on ARM64). Only touches Aether's own desktop folder, never Windows files. | Arch=ARM64, OnUpgrade=Skip | Script `delete-windows-specific-files.ps1` |
 | `rebuild-perf-counters`<br>Rebuild Performance Counters | Manually rebuilds performance counters to ensure that there is no issues with them |  | run 3 |
 | `make-measuresleep-admin`<br>Make MeasureSleep run as admin | It requires admin |  | Script `make-measuresleep-admin.ps1` |
 | `add-newUser-script`<br>Add Initialize-NewUser.ps1 script | Adds the Initialize-NewUser.ps1 script to RunOnce, which applies any tweaks that are dynamically generated on new user creation |  | registry 3, Script `add-newUser-script.ps1` |
 | `register-user-upgrade`<br>Register user upgrade migration | Applies the installed version to existing profiles at their next sign-in, preserving desktop layout. | OnUpgrade=Only | registry 1 |
 | `config-oem-information`<br>Configure OEM Information | Pone la información de Aether OS en Configuración > Sistema > Información |  | registry 1, Script `config-oem-information.ps1` |
-| `create-shortcuts`<br>Create Shortcuts | Creates the Atlas desktop and Start Menu shortcuts. |  | Script `create-shortcuts.ps1` |
+| `create-shortcuts`<br>Create Shortcuts | Creates the Aether desktop and Start Menu shortcuts. |  | Script `create-shortcuts.ps1` |
 | `aether-apps`<br>Apps elegidas de Aether | Aether: guarda las casillas de apps del asistente (Claude, ChatGPT, Python, KeyVault, PC Manager, Steam, drivers AMD, Wind-Aether) en HKLM\SOFTWARE\AtlasOS\SetupOptions\Apps. Las instala Aether\Install-AetherApps.ps1 al primer inicio de sesión, como el usuario y nunca como SYSTEM. |  | Script `aether-apps.ps1` |
 
 ## Standalone tweaks

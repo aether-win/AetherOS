@@ -335,7 +335,7 @@ Elevation: Admin
 
 ### PowerSaving
 
-Power-saving. Disable applies the documented Atlas AC power policy; Enable restores the prior power plan, or Balanced when none was saved. Both states use the same helper.
+Power-saving. Disable applies the documented Aether AC power policy; Enable restores the prior power plan, or Balanced when none was saved. Both states use the same helper.
 
 Elevation: Admin
 
@@ -394,7 +394,7 @@ Global timer resolution: a scheduled task that forces a high timer resolution.
 
 Elevation: Admin
 
-> Changes the global timer request policy and an Atlas scheduled task. A forced high timer resolution can increase power use; any latency benefit depends on the workload.
+> Changes the global timer request policy and an Aether scheduled task. A forced high timer resolution can increase power use; any latency benefit depends on the workload.
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -472,7 +472,7 @@ Elevation: Admin
 
 ### Animation
 
-Visual effects and animations. Disable applies the Atlas minimal set; Enable restores the Windows defaults. Both states offer to sign out after the choice is recorded, so the changes apply.
+Visual effects and animations. Disable applies the Aether minimal set; Enable restores the Windows defaults. Both states offer to sign out after the choice is recorded, so the changes apply.
 
 Elevation: Admin
 
@@ -692,7 +692,7 @@ Elevation: Admin
 
 ### SendToContextMenu (no state record)
 
-Hides or shows entries of the Explorer Send To context menu for the current user. Interactive by default; /silent applies the Atlas defaults. Runs in the user's own session and records no state.
+Hides or shows entries of the Explorer Send To context menu for the current user. Interactive by default; /silent applies the Aether defaults. Runs in the user's own session and records no state.
 
 Elevation: None
 
@@ -931,7 +931,7 @@ Elevation: Admin
 
 ### InstallSoftware (no state record)
 
-Opens the Atlas software picker. Records no state.
+Opens the Aether software picker. Records no state.
 
 Elevation: None
 
@@ -953,7 +953,7 @@ Elevation: None
 
 ### AtlasHealth (no state record)
 
-Reports what Atlas installed and which recorded toggle states or install tweaks have since drifted. Changes nothing and records no state.
+Reports what Aether installed and which recorded toggle states or install tweaks have since drifted. Changes nothing and records no state.
 
 Elevation: Admin
 
@@ -963,7 +963,7 @@ Elevation: Admin
 
 ### DefaultAtlasNetwork (no state record)
 
-Network adapter reset. Enable applies Atlas defaults; Disable restores Windows defaults. Both states share the Atlas.Network Set-AtlasNetworkDefaults implementation.
+Network adapter reset. Enable applies Aether defaults; Disable restores Windows defaults. Both states share the Atlas.Network Set-AtlasNetworkDefaults implementation.
 
 Elevation: Admin
 
@@ -984,7 +984,7 @@ Elevation: TrustedInstaller
 
 ### FixExplorerRuntimeError (no state record)
 
-Fixes blank Microsoft Visual C++ Runtime Library errors from File Explorer by removing the search redirect that older Atlas builds left. Records no state.
+Fixes blank Microsoft Visual C++ Runtime Library errors from File Explorer by removing the search redirect that older Aether builds left. Records no state.
 
 Elevation: Admin
 
@@ -1008,7 +1008,7 @@ Repairs Windows components and system files with DISM RestoreHealth and SFC. Rec
 
 Elevation: Admin
 
-> Repairs corrupt Windows components and system files with DISM and SFC. It can take a long time and needs an Internet connection for missing files. Atlas settings are not reverted.
+> Repairs corrupt Windows components and system files with DISM and SFC. It can take a long time and needs an Internet connection for missing files. Aether settings are not reverted.
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -1029,7 +1029,7 @@ Elevation: Admin
 
 ### TelemetryComponents (no state record)
 
-Adds or removes the Atlas NoTelemetry CBS package. The menu runs in the administrator window and its choice crosses the silent TrustedInstaller broker as a fixed internal state; records no state.
+Adds or removes the Aether NoTelemetry CBS package. The menu runs in the administrator window and its choice crosses the silent TrustedInstaller broker as a fixed internal state; records no state.
 
 Elevation: TrustedInstaller
 

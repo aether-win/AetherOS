@@ -1196,7 +1196,7 @@
     {
       "name": "PowerSaving",
       "group": "General",
-      "description": "Power-saving. Disable applies the documented Atlas AC power policy; Enable restores the prior power plan, or Balanced when none was saved. Both states use the same helper.",
+      "description": "Power-saving. Disable applies the documented Aether AC power policy; Enable restores the prior power plan, or Balanced when none was saved. Both states use the same helper.",
       "elevation": "Admin",
       "noStateRecord": false,
       "menu": false,
@@ -1411,7 +1411,7 @@
       "noStateRecord": true,
       "menu": false,
       "launcher": null,
-      "warning": "Changes the global timer request policy and an Atlas scheduled task. A forced high timer resolution can increase power use; any latency benefit depends on the workload.",
+      "warning": "Changes the global timer request policy and an Aether scheduled task. A forced high timer resolution can increase power use; any latency benefit depends on the workload.",
       "states": [
         {
           "name": "Disable",
@@ -1685,7 +1685,7 @@
     {
       "name": "Animation",
       "group": "Interface",
-      "description": "Visual effects and animations. Disable applies the Atlas minimal set; Enable restores the Windows defaults. Both states offer to sign out after the choice is recorded, so the changes apply.",
+      "description": "Visual effects and animations. Disable applies the Aether minimal set; Enable restores the Windows defaults. Both states offer to sign out after the choice is recorded, so the changes apply.",
       "elevation": "Admin",
       "noStateRecord": false,
       "menu": false,
@@ -2525,7 +2525,7 @@
     {
       "name": "SendToContextMenu",
       "group": "Interface",
-      "description": "Hides or shows entries of the Explorer Send To context menu for the current user. Interactive by default; /silent applies the Atlas defaults. Runs in the user's own session and records no state.",
+      "description": "Hides or shows entries of the Explorer Send To context menu for the current user. Interactive by default; /silent applies the Aether defaults. Runs in the user's own session and records no state.",
       "elevation": "None",
       "noStateRecord": true,
       "menu": false,
@@ -3350,7 +3350,7 @@
     {
       "name": "InstallSoftware",
       "group": "Software",
-      "description": "Opens the Atlas software picker. Records no state.",
+      "description": "Opens the Aether software picker. Records no state.",
       "elevation": "None",
       "noStateRecord": true,
       "menu": false,
@@ -3404,7 +3404,7 @@
     {
       "name": "AtlasHealth",
       "group": "Troubleshooting",
-      "description": "Reports what Atlas installed and which recorded toggle states or install tweaks have since drifted. Changes nothing and records no state.",
+      "description": "Reports what Aether installed and which recorded toggle states or install tweaks have since drifted. Changes nothing and records no state.",
       "elevation": "Admin",
       "noStateRecord": true,
       "menu": false,
@@ -3431,7 +3431,7 @@
     {
       "name": "DefaultAtlasNetwork",
       "group": "Troubleshooting",
-      "description": "Network adapter reset. Enable applies Atlas defaults; Disable restores Windows defaults. Both states share the Atlas.Network Set-AtlasNetworkDefaults implementation.",
+      "description": "Network adapter reset. Enable applies Aether defaults; Disable restores Windows defaults. Both states share the Atlas.Network Set-AtlasNetworkDefaults implementation.",
       "elevation": "Admin",
       "noStateRecord": true,
       "menu": false,
@@ -3500,7 +3500,7 @@
     {
       "name": "FixExplorerRuntimeError",
       "group": "Troubleshooting",
-      "description": "Fixes blank Microsoft Visual C++ Runtime Library errors from File Explorer by removing the search redirect that older Atlas builds left. Records no state.",
+      "description": "Fixes blank Microsoft Visual C++ Runtime Library errors from File Explorer by removing the search redirect that older Aether builds left. Records no state.",
       "elevation": "Admin",
       "noStateRecord": true,
       "menu": false,
@@ -3559,7 +3559,7 @@
       "noStateRecord": true,
       "menu": false,
       "launcher": null,
-      "warning": "Repairs corrupt Windows components and system files with DISM and SFC. It can take a long time and needs an Internet connection for missing files. Atlas settings are not reverted.",
+      "warning": "Repairs corrupt Windows components and system files with DISM and SFC. It can take a long time and needs an Internet connection for missing files. Aether settings are not reverted.",
       "states": [
         {
           "name": "Run",
@@ -3653,7 +3653,7 @@
     {
       "name": "TelemetryComponents",
       "group": "Troubleshooting",
-      "description": "Adds or removes the Atlas NoTelemetry CBS package. The menu runs in the administrator window and its choice crosses the silent TrustedInstaller broker as a fixed internal state; records no state.",
+      "description": "Adds or removes the Aether NoTelemetry CBS package. The menu runs in the administrator window and its choice crosses the silent TrustedInstaller broker as a fixed internal state; records no state.",
       "elevation": "TrustedInstaller",
       "noStateRecord": true,
       "menu": false,
