@@ -1,8 +1,8 @@
-# Companion of delete-windows-specific-files.psd1: removes the Open-Shell launchers
+﻿# Companion of delete-windows-specific-files.psd1: removes the Open-Shell launchers
 # from the AtlasDesktop Start Menu folder on Windows versions that do not use them.
 $ErrorActionPreference = 'Stop'
 
-$target = Join-Path -Path ([Environment]::GetFolderPath('Windows')) -ChildPath 'AtlasDesktop\4. Interface Tweaks\Start Menu'
+$target = Join-Path -Path ([Environment]::GetFolderPath('Windows')) -ChildPath 'AtlasDesktop\4. Interfaz\Menú Inicio'
 if (-not (Test-Path -LiteralPath $target -PathType Container)) {
     return
 }

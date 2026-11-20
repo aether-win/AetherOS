@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'Bluetooth'
     Description = 'Bluetooth drivers, services, devices, the Send To entry and the connectivity policy.'
     Elevation   = 'Admin'
@@ -8,7 +8,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '6. Advanced Configuration\Services\Bluetooth\Disable Bluetooth.cmd'
+            Launcher      = '6. Configuración avanzada\Servicios\Bluetooth\Desactivar Bluetooth.cmd'
             Reboot        = 'Recommend'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Connectivity\AllowBluetooth'; Name = 'value'; Type = 'DWord'; Data = 0 }
@@ -37,7 +37,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Advanced Configuration\Services\Bluetooth\Enable Bluetooth (default).cmd'
+            Launcher      = '6. Configuración avanzada\Servicios\Bluetooth\Activar Bluetooth (predeterminado).cmd'
             Reboot        = 'Recommend'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Connectivity\AllowBluetooth'; Name = 'value'; Type = 'DWord'; Data = 2 }

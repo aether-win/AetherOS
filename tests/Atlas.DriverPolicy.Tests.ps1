@@ -1,6 +1,6 @@
 BeforeAll {
     . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
-    $script:policyFiles = Join-Path $script:AtlasTestRepoRoot 'playbook\Executables\AtlasDesktop\2. Drivers\Drivers from Windows Update'
+    $script:policyFiles = Join-Path $script:AtlasTestRepoRoot 'playbook\Executables\AtlasDesktop\2. Controladores\Controladores desde Windows Update'
     $script:isolatedKey = 'Software\AtlasRewriteTest\DriverPolicy\' + [guid]::NewGuid().ToString('N')
     function Import-IsolatedDriverPolicy([string]$Mode) {
         # Exercise the included .reg pair without changing any host driver policy.
@@ -31,7 +31,7 @@ Describe 'Manual and automatic driver policy' {
     It 'gives the release ZIP the same disable policy as the package' {
         # The release ZIP carries its own copy beside the APBX, so it must not drift from the package's.
         $release = Join-Path $script:AtlasTestRepoRoot 'tools\release-zip\Disable Automatic Driver Installation.reg'
-        $package = Join-Path $script:policyFiles 'Disable Drivers from Windows Update.reg'
+        $package = Join-Path $script:policyFiles 'Desactivar controladores desde Windows Update.reg'
         (Get-FileHash -LiteralPath $release -Algorithm SHA256).Hash |
             Should -Be (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash -Because 'edit both copies together'
     }
@@ -53,7 +53,7 @@ Describe 'Applying the drivers choice' {
     }
 
     It 'gets drivers through Windows Update without creating keys only to delete values from them' {
-        Import-AtlasRegistryFile (Join-Path $script:policyFiles 'Enable Drivers from Windows Update.reg') $script:registryLog $script:preparationRoot
+        Import-AtlasRegistryFile (Join-Path $script:policyFiles 'Activar controladores desde Windows Update.reg') $script:registryLog $script:preparationRoot
         Test-Path -LiteralPath ($script:preparationBase + 'Policies\Microsoft\Windows\DriverSearching') | Should -BeFalse
         Test-Path -LiteralPath ($script:preparationBase + 'Policies\Microsoft\Windows\WindowsUpdate') | Should -BeFalse
         Test-Path -LiteralPath ($script:preparationBase + 'Microsoft\PolicyManager\default\Update') | Should -BeFalse
@@ -61,10 +61,10 @@ Describe 'Applying the drivers choice' {
     }
 
     It 'turns drivers off and back on, deleting values only where they are' {
-        Import-AtlasRegistryFile (Join-Path $script:policyFiles 'Disable Drivers from Windows Update.reg') $script:registryLog $script:preparationRoot
+        Import-AtlasRegistryFile (Join-Path $script:policyFiles 'Desactivar controladores desde Windows Update.reg') $script:registryLog $script:preparationRoot
         (Get-ItemProperty ($script:preparationBase + 'Policies\Microsoft\Windows\DriverSearching')).SearchOrderConfig | Should -Be 0
         (Get-ItemProperty ($script:preparationBase + 'Microsoft\PolicyManager\default\Update\ExcludeWUDriversInQualityUpdate')).value | Should -Be 1
-        Import-AtlasRegistryFile (Join-Path $script:policyFiles 'Enable Drivers from Windows Update.reg') $script:registryLog $script:preparationRoot
+        Import-AtlasRegistryFile (Join-Path $script:policyFiles 'Activar controladores desde Windows Update.reg') $script:registryLog $script:preparationRoot
         (Get-ItemProperty ($script:preparationBase + 'Policies\Microsoft\Windows\DriverSearching')).PSObject.Properties['SearchOrderConfig'] | Should -BeNullOrEmpty
         (Get-ItemProperty ($script:preparationBase + 'Policies\Microsoft\Windows\WindowsUpdate')).PSObject.Properties['ExcludeWUDriversInQualityUpdate'] | Should -BeNullOrEmpty
         Test-Path -LiteralPath ($script:preparationBase + 'Microsoft\PolicyManager\default\Update\ExcludeWUDriversInQualityUpdate') | Should -BeFalse

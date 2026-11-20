@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'Hibernation'
     Description = 'Hibernation (powercfg /hibernate) and the Start flyout hibernate option.'
     Elevation   = 'Admin'
@@ -7,7 +7,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. General Configuration\Hibernation\Disable Hibernation (default).cmd'
+            Launcher      = '3. Configuración general\Hibernación\Desactivar hibernación.cmd'
             Reboot        = 'Prompt'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings'; Name = 'ShowHibernateOption'; Type = 'DWord'; Data = 0 }
@@ -17,7 +17,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. General Configuration\Hibernation\Enable Hibernation.cmd'
+            Launcher      = '3. Configuración general\Hibernación\Activar hibernación (predeterminado).cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings'; Name = 'ShowHibernateOption'; Type = 'DWord'; Data = 1 }

@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'Widgets'
     Description = 'Widgets (News and Interests) feeds. The Edge/WebView helper and the ms-settings:taskbar page are gated to interactive mode so upgrade re-apply never blocks.'
     Elevation   = 'Admin'
@@ -7,7 +7,7 @@
         @{
             Name                  = 'Disable'
             StateValue            = 0
-            Launcher              = '3. General Configuration\Widgets (News and Interests)\Disable Widgets (default).cmd'
+            Launcher              = '3. Configuración general\Widgets (noticias e intereses)\Desactivar widgets (predeterminado).cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'ExplorerRefresh'
             # Let Windows process the supported device policy through the local GPO.
@@ -22,7 +22,7 @@
         @{
             Name                  = 'Enable'
             StateValue            = 1
-            Launcher              = '3. General Configuration\Widgets (News and Interests)\Enable Widgets.cmd'
+            Launcher              = '3. Configuración general\Widgets (noticias e intereses)\Activar widgets.cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'ExplorerRefresh'
             MachineAction         = 'Enable-AtlasWidgetsMachine'

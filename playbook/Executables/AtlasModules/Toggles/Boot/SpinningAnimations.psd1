@@ -1,9 +1,9 @@
-@{
+﻿@{
     Name          = 'SpinningAnimations'
     Description   = 'Boot spinning animation.'
     Elevation     = 'Admin'
     Menu          = $true
-    Launcher      = '6. Advanced Configuration\Boot Configuration\Appearance\Spinning Animation.cmd'
+    Launcher      = '6. Configuración avanzada\Arranque\Apariencia\Animación de carga.cmd'
     SilentDefault = 'Enable'
     Script        = 'SpinningAnimations.ps1'
     States        = @(

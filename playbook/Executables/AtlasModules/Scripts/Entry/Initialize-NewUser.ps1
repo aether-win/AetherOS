@@ -420,8 +420,8 @@ if ($setupMarker -lt 1) {
 
     $env:ATLAS_USER_CONTEXT = '1'
     try {
-        Invoke-AtlasDesktopCommand '4. Interface Tweaks\Context Menus\Windows 11\Old Context Menu (default).cmd'
-        Invoke-AtlasDesktopCommand '4. Interface Tweaks\File Explorer Customization\Gallery\Disable Gallery (default).cmd'
+        Invoke-AtlasDesktopCommand '4. Interfaz\Menús contextuales\Windows 11\Menú contextual clásico (predeterminado).cmd'
+        Invoke-AtlasDesktopCommand '4. Interfaz\Explorador de archivos\Galería\Ocultar Galería (predeterminado).cmd'
 
         # Aether: tema Claro u Oscuro elegido en el asistente (lo guarda config-pins.ps1).
         $aetherTheme = 'aether-oscuro.theme'
@@ -496,9 +496,9 @@ if ($setupMarker -lt 1) {
             Write-Warning "No se pudo programar la instalación de las apps de Aether: $($_.Exception.Message)"
         }
 
-        Invoke-AtlasDesktopCommand '3. General Configuration\File Sharing\Network Navigation Pane\Enable Network Navigation Pane.cmd'
-        Invoke-AtlasDesktopCommand '4. Interface Tweaks\File Explorer Customization\Automatic Folder Discovery\Disable Automatic Folder Discovery (default).cmd'
-        Invoke-AtlasDesktopCommand '4. Interface Tweaks\Visual Effects (Animations)\Atlas Visual Effects (default).cmd'
+        Invoke-AtlasDesktopCommand '3. Configuración general\Uso compartido\Red en el Explorador\Mostrar Red en el Explorador (predeterminado).cmd'
+        Invoke-AtlasDesktopCommand '4. Interfaz\Explorador de archivos\Detección automática de carpetas\Desactivar detección automática de carpetas (predeterminado).cmd'
+        Invoke-AtlasDesktopCommand '4. Interfaz\Efectos visuales (animaciones)\Efectos visuales de Aether (predeterminado).cmd'
     }
     finally {
         Remove-Item Env:\ATLAS_USER_CONTEXT -ErrorAction SilentlyContinue

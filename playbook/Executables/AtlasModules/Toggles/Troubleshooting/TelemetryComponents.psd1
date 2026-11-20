@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name          = 'TelemetryComponents'
     Description   = 'Adds or removes the Atlas NoTelemetry CBS package. The menu runs in the administrator window and its choice crosses the silent TrustedInstaller broker as a fixed internal state; records no state.'
     Elevation     = 'TrustedInstaller'
@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name             = 'Run'
-            Launcher         = '9. Troubleshooting\Telemetry Components.cmd'
+            Launcher         = '9. Solución de problemas\Componentes de telemetría.cmd'
             Reboot           = 'Prompt'
             MachineAction    = 'Invoke-AtlasTelemetryComponentsMenu'
             InteractiveState = 'Select-AtlasTelemetryComponentsState'

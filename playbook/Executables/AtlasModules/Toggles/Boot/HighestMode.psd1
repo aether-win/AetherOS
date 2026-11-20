@@ -1,9 +1,9 @@
-@{
+﻿@{
     Name          = 'HighestMode'
     Description   = 'Highest graphical mode for boot applications.'
     Elevation     = 'Admin'
     Menu          = $true
-    Launcher      = '6. Advanced Configuration\Boot Configuration\Behavior\Highest Mode.cmd'
+    Launcher      = '6. Configuración avanzada\Arranque\Comportamiento\Resolución más alta.cmd'
     SilentDefault = 'Disable'
     Script        = 'HighestMode.ps1'
     States        = @(

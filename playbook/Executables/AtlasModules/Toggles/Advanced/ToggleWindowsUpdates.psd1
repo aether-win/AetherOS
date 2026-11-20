@@ -1,9 +1,9 @@
-@{
+﻿@{
     Name        = 'ToggleWindowsUpdates'
     Description = 'Windows Update services, scheduled tasks and policies through one menu launcher. Replay resolves the recorded state, so no SilentDefault is needed.'
     Elevation   = 'TrustedInstaller'
     Menu        = $true
-    Launcher    = '6. Advanced Configuration\Toggle Windows Updates\Toggle Windows Updates.cmd'
+    Launcher    = '6. Configuración avanzada\Activar o desactivar Windows Update\Activar o desactivar Windows Update.cmd'
     Script      = 'ToggleWindowsUpdates.ps1'
     States      = @(
         @{

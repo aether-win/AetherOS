@@ -1,9 +1,9 @@
-@{
+﻿@{
     Name          = 'BootLogo'
     Description   = 'Windows boot logo.'
     Elevation     = 'Admin'
     Menu          = $true
-    Launcher      = '6. Advanced Configuration\Boot Configuration\Appearance\Boot Logo.cmd'
+    Launcher      = '6. Configuración avanzada\Arranque\Apariencia\Logo de arranque.cmd'
     SilentDefault = 'Enable'
     Script        = 'BootLogo.ps1'
     States        = @(

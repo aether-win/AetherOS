@@ -51,7 +51,7 @@ existing recorded choices. Direct callers using old state identifiers must updat
     Elevation       = 'Admin'                # 'None' | 'Admin' | 'TrustedInstaller' (default None)
     Warning         = 'Shown and confirmed before an interactive run.'   # optional
     Menu            = $true                  # optional: one launcher with a numbered state picker
-    Launcher        = '6. Advanced Configuration\...\Toggle X.cmd'      # Menu toggles only
+    Launcher        = '6. Configuración avanzada\...\Toggle X.cmd'      # Menu toggles only
     ToolboxLauncher = 'Scripts\X\toggleX.cmd'                            # only for a path a Toolbox release before 0.2.0 opens (docs/compatibility.md)
     SilentDefault   = 'Enable'               # Menu toggles: state used silently with no record
     NoStateRecord   = $true                  # optional: never record this toggle
@@ -60,7 +60,7 @@ existing recorded choices. Direct callers using old state identifiers must updat
         @{
             Name             = 'Disable'     # required identifier
             StateValue       = 0             # REG_DWORD recorded under HKLM\SOFTWARE\AtlasOS\Services\<Name>
-            Launcher         = '6. Advanced Configuration\Services\Bluetooth\Disable Bluetooth.cmd'
+            Launcher         = '6. Configuración avanzada\Servicios\Bluetooth\Desactivar Bluetooth.cmd'
             ToolboxLauncher  = 'Scripts\X\disableX.cmd'             # only for a path a Toolbox release before 0.2.0 opens (docs/compatibility.md)
             MenuLabel        = 'Disable Bluetooth'                  # Menu toggles
             Reboot           = 'Recommend'   # 'None' | 'Recommend' | 'Prompt' | 'RestartExplorer' | 'SignOut'
@@ -175,7 +175,7 @@ Recorded states can be verified: `Test-AtlasToggleState` reads one state's `Regi
 `Services` and `ScheduledTasks` declarations back for a scope, and `Test-AtlasToggleDrift`
 does that for every recorded state, flagging records whose definition or value no longer
 exists. Companion functions are not verified. The health check launcher
-(`9. Troubleshooting\Check Atlas Health.cmd`) and the Defaults phase after an upgrade
+(`9. Solución de problemas\Revisar la salud de Aether.cmd`) and the Defaults phase after an upgrade
 replay both use it.
 
 `catalog.json` beside this file is generated from the definitions by

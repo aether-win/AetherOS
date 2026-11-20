@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
     $script:GeneratorScript = Join-Path $script:AtlasTestRepoRoot 'tools\dev\New-ToggleLaunchers.ps1'
 
@@ -9,10 +9,10 @@ BeforeAll {
         $toggles = Join-Path $root 'playbook\Executables\AtlasModules\Toggles\Troubleshooting'
         $desktop = Join-Path $root 'playbook\Executables\AtlasDesktop'
         $toolbox = Join-Path $root 'playbook\Executables\AtlasModules\Toolbox'
-        New-Item -Path $toggles, (Join-Path $desktop '9. Troubleshooting'), $toolbox -ItemType Directory -Force | Out-Null
-        $definition = "@{ Name = 'Repair'; States = @(@{ Name = 'Run'; Launcher = '9. Troubleshooting\Fix Visual C++ Errors.cmd' }) }"
+        New-Item -Path $toggles, (Join-Path $desktop '9. Solución de problemas'), $toolbox -ItemType Directory -Force | Out-Null
+        $definition = "@{ Name = 'Repair'; States = @(@{ Name = 'Run'; Launcher = '9. Solución de problemas\Fix Visual C++ Errors.cmd' }) }"
         [IO.File]::WriteAllText((Join-Path $toggles 'Repair.psd1'), $definition, [Text.UTF8Encoding]::new($false))
-        [IO.File]::WriteAllText((Join-Path $desktop '9. Troubleshooting\Set services to defaults.cmd'), "@echo off`r`n", [Text.Encoding]::ASCII)
+        [IO.File]::WriteAllText((Join-Path $desktop '9. Solución de problemas\Servicios a sus valores por defecto.cmd'), "@echo off`r`n", [Text.Encoding]::ASCII)
         return $root
     }
 
@@ -33,7 +33,7 @@ Describe 'Launcher generator' {
         $root = New-LauncherFixture
         $generated = Invoke-LauncherGenerator -Root $root
         $generated.ExitCode | Should -Be 0 -Because $generated.Output
-        Join-Path $root 'playbook\Executables\AtlasDesktop\9. Troubleshooting\Fix Visual C++ Errors.cmd' |
+        Join-Path $root 'playbook\Executables\AtlasDesktop\9. Solución de problemas\Fix Visual C++ Errors.cmd' |
             Should -Exist
 
         $validated = Invoke-LauncherGenerator -Root $root -Validate

@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name     = 'Run'
-            Launcher = '4. Interface Tweaks\Restart Explorer.cmd'
+            Launcher = '4. Interfaz\Reiniciar el Explorador.cmd'
             Reboot   = 'RestartExplorer'
             Action   = 'Show-AtlasRestartExplorerMessage'
         }

@@ -218,7 +218,7 @@ policy; otherwise Windows Update is recommended.
 | **Install drivers myself** | Filters driver updates out of preparation, the front door's pre-install readiness check and the pending-update check. Sets machine `DriverSearching\SearchOrderConfig` to 0, never searching Windows Update ([`DeviceSetup.admx`](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-devicesetup#driversearchplaces-searchorderconfiguration)). |
 
 Both apply the paired AtlasDesktop policies in
-`2. Drivers\Drivers from Windows Update`, shared by the app and the ISO. A normal
+`2. Controladores\Controladores desde Windows Update`, shared by the app and the ISO. A normal
 install applies the choice before the first update scan. Neither choice removes
 drivers installed before Atlas opened. Inbox drivers bundled with Windows
 servicing are outside the

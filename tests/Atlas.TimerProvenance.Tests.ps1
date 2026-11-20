@@ -1,4 +1,4 @@
-Describe 'Timer source provenance' {
+﻿Describe 'Timer source provenance' {
     BeforeAll {
         . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
         Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -8,7 +8,7 @@ Describe 'Timer source provenance' {
     It 'includes the reviewed executable bytes recorded by the accepted build' {
         $paths = @{
             'SetTimerResolution.exe' = 'playbook/Executables/AtlasModules/Tools/SetTimerResolution.exe'
-            'MeasureSleep.exe' = 'playbook/Executables/AtlasDesktop/3. General Configuration/Timer Resolution/! MeasureSleep.exe'
+            'MeasureSleep.exe' = 'playbook/Executables/AtlasDesktop/3. Configuración general/Resolución del temporizador/! MeasureSleep.exe'
         }
         foreach ($output in $manifest.outputs) {
             (Get-FileHash (Join-Path $repo $paths[$output.name]) -Algorithm SHA256).Hash | Should -Be $output.sha256

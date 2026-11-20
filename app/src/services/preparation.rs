@@ -252,10 +252,10 @@ impl Drivers {
     pub fn policy(self) -> &'static [u8] {
         match self {
             Self::Automatic => include_bytes!(
-                "../../../playbook/Executables/AtlasDesktop/2. Drivers/Drivers from Windows Update/Enable Drivers from Windows Update.reg"
+                "../../../playbook/Executables/AtlasDesktop/2. Controladores/Controladores desde Windows Update/Activar controladores desde Windows Update.reg"
             ),
             Self::Manual => include_bytes!(
-                "../../../playbook/Executables/AtlasDesktop/2. Drivers/Drivers from Windows Update/Disable Drivers from Windows Update.reg"
+                "../../../playbook/Executables/AtlasDesktop/2. Controladores/Controladores desde Windows Update/Desactivar controladores desde Windows Update.reg"
             ),
         }
     }

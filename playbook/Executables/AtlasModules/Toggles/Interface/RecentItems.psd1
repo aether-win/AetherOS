@@ -7,7 +7,7 @@
         @{
             Name                  = 'Disable'
             StateValue            = 0
-            Launcher              = '4. Interface Tweaks\Unlock Recent Items\Disable Recent Items (default).cmd'
+            Launcher              = '4. Interfaz\Elementos recientes\Desactivar elementos recientes (predeterminado).cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'ExplorerAndSettingsRefresh'
             Registry              = @(
@@ -27,7 +27,7 @@
         @{
             Name                  = 'Enable'
             StateValue            = 1
-            Launcher              = '4. Interface Tweaks\Unlock Recent Items\Unlock Recent Items.cmd'
+            Launcher              = '4. Interfaz\Elementos recientes\Activar elementos recientes.cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'ExplorerAndSettingsRefresh'
             Registry              = @(

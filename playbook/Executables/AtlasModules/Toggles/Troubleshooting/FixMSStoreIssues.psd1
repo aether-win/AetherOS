@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name          = 'FixMSStoreIssues'
     Description   = 'Fixes Microsoft Store issues by running StoreFixer. Records no state.'
     Elevation     = 'TrustedInstaller'
@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name          = 'Run'
-            Launcher      = '9. Troubleshooting\Fix MS Store Issues.cmd'
+            Launcher      = '9. Solución de problemas\Arreglar problemas de la Microsoft Store.cmd'
             Reboot        = 'None'
             MachineAction = 'Invoke-AtlasStoreFixer'
         }

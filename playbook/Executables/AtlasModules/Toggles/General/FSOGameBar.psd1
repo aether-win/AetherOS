@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'FSOGameBar'
     Description = 'Fullscreen Optimizations (FSO) and Game Bar / Game DVR support. Machine changes run as TrustedInstaller; current-user changes run in the caller''s session.'
     Elevation   = 'TrustedInstaller'
@@ -8,7 +8,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. General Configuration\FSO and Game Bar\Disable FSO and Game Bar Support.cmd'
+            Launcher      = '3. Configuración general\Pantalla completa y Game Bar\Desactivar optimización de pantalla completa y Game Bar.cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment'; Name = '__COMPAT_LAYER'; Type = 'String'; Data = '~ DISABLEDXMAXIMIZEDWINDOWEDMODE' }
@@ -32,7 +32,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '3. General Configuration\FSO and Game Bar\Enable FSO and Game Bar Support (default).cmd'
+            Launcher   = '3. Configuración general\Pantalla completa y Game Bar\Activar optimización de pantalla completa y Game Bar (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment'; Name = '__COMPAT_LAYER'; Operation = 'Delete' }

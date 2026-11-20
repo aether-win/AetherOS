@@ -6,7 +6,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '4. Interface Tweaks\Keyboard Languages\Enable Language Shortcuts.cmd'
+            Launcher   = '4. Interfaz\Idiomas del teclado\Activar atajos de idioma.cmd'
             Reboot     = 'Recommend'
             Registry   = @(
                 @{ Path = 'HKCU\Keyboard Layout\Toggle'; Name = 'Hotkey'; Type = 'String'; Data = '1' }
@@ -17,7 +17,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interface Tweaks\Keyboard Languages\Disable Language Shortcuts.cmd'
+            Launcher   = '4. Interfaz\Idiomas del teclado\Desactivar atajos de idioma.cmd'
             Reboot     = 'Recommend'
             Registry   = @(
                 @{ Path = 'HKCU\Keyboard Layout\Toggle'; Name = 'Hotkey'; Type = 'String'; Data = '3' }

@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
     $script:RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).ProviderPath
     $script:ScriptsRoot = Join-Path $script:RepoRoot `
@@ -72,13 +72,13 @@ BeforeAll {
 
         $windowsRoot = Join-Path $TestDrive $Name
         foreach ($child in @(
-                'AtlasDesktop\1. Software'
+                'AtlasDesktop\1. Programas'
                 'AtlasModules\Scripts'
                 'UnrelatedComponent'
             )) {
             $null = New-Item -Path (Join-Path $windowsRoot $child) -ItemType Directory -Force
         }
-        [IO.File]::WriteAllText((Join-Path $windowsRoot 'AtlasDesktop\1. Software\launcher.cmd'), 'x')
+        [IO.File]::WriteAllText((Join-Path $windowsRoot 'AtlasDesktop\1. Programas\launcher.cmd'), 'x')
         [IO.File]::WriteAllText((Join-Path $windowsRoot 'AtlasModules\Scripts\helper.ps1'), 'x')
         [IO.File]::WriteAllText((Join-Path $windowsRoot 'UnrelatedComponent\keep.dat'), 'x')
         [IO.File]::WriteAllText((Join-Path $windowsRoot 'notepad.exe.txt'), 'x')
@@ -221,12 +221,12 @@ Describe 'Atlas file copy' {
         $script:CopyScript = Join-Path $script:ScriptsRoot 'Install\Tasks\Copy-AtlasPayload.ps1'
         $script:Staged = Join-Path $TestDrive 'Staged\Executables'
         $tasks = Join-Path $script:Staged 'AtlasModules\Scripts\Install\Tasks'
-        $null = New-Item -Path $tasks, (Join-Path $script:Staged 'AtlasDesktop\1. Software'), (Join-Path $script:Staged 'Themes'), (Join-Path $script:Staged 'AtlasModules\Logs') -ItemType Directory -Force
+        $null = New-Item -Path $tasks, (Join-Path $script:Staged 'AtlasDesktop\1. Programas'), (Join-Path $script:Staged 'Themes'), (Join-Path $script:Staged 'AtlasModules\Logs') -ItemType Directory -Force
         [IO.File]::WriteAllText((Join-Path $tasks 'Copy-AtlasPayload.ps1'), (ConvertTo-RehostedRemovalScript -Path $script:CopyScript))
         Copy-Item -LiteralPath $script:TrustBootstrap -Destination (Join-Path $script:Staged 'AtlasModules\Scripts\Initialize-AtlasPowerShell.ps1')
         [IO.File]::WriteAllText((Join-Path $script:Staged 'AtlasModules\Logs\install-run.log'), 'the staged copy, still being written')
         [IO.File]::WriteAllText((Join-Path $script:Staged 'AtlasModules\Scripts\new.ps1'), 'new code')
-        [IO.File]::WriteAllText((Join-Path $script:Staged 'AtlasDesktop\1. Software\launcher.cmd'), 'new launcher')
+        [IO.File]::WriteAllText((Join-Path $script:Staged 'AtlasDesktop\1. Programas\launcher.cmd'), 'new launcher')
         [IO.File]::WriteAllText((Join-Path $script:Staged 'Themes\atlas.theme'), 'theme')
     }
 
@@ -251,7 +251,7 @@ Describe 'Atlas file copy' {
         $exitCode | Should -Be 0 -Because ($output | Out-String)
         [IO.File]::ReadAllText((Join-Path $windowsRoot 'AtlasModules\Logs\install-run.log')) | Should -BeExactly 'the machine''s own'
         [IO.File]::ReadAllText((Join-Path $windowsRoot 'AtlasModules\Scripts\new.ps1')) | Should -BeExactly 'new code'
-        [IO.File]::ReadAllText((Join-Path $windowsRoot 'AtlasDesktop\1. Software\launcher.cmd')) | Should -BeExactly 'new launcher'
+        [IO.File]::ReadAllText((Join-Path $windowsRoot 'AtlasDesktop\1. Programas\launcher.cmd')) | Should -BeExactly 'new launcher'
         Test-Path -LiteralPath (Join-Path $windowsRoot 'Resources\Themes\atlas.theme') | Should -BeTrue
     }
 
@@ -274,7 +274,7 @@ Describe 'Version-specific file removal' {
     BeforeEach {
         $script:windowsRoot = Join-Path $TestDrive ('VsWinDir-' + [Guid]::NewGuid().ToString('N'))
         $script:startMenuRoot = Join-Path $script:windowsRoot `
-            'AtlasDesktop\4. Interface Tweaks\Start Menu'
+            'AtlasDesktop\4. Interfaz\Menú Inicio'
         $env:ATLAS_TEST_WINDIR = $script:windowsRoot
     }
 
@@ -293,7 +293,7 @@ Describe 'Version-specific file removal' {
         [IO.File]::WriteAllText(
             (Join-Path $script:startMenuRoot 'Keep Start Tweak.cmd'), 'x')
         $sibling = Join-Path $script:windowsRoot `
-            'AtlasDesktop\4. Interface Tweaks\Taskbar\Open-Shell lookalike.cmd'
+            'AtlasDesktop\4. Interfaz\Taskbar\Open-Shell lookalike.cmd'
         $null = New-Item -Path (Split-Path -Parent $sibling) -ItemType Directory -Force
         [IO.File]::WriteAllText($sibling, 'x')
 

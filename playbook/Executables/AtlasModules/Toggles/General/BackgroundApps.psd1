@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'BackgroundApps'
     Description = 'Per-user global background app access.'
     Elevation   = 'Admin'
@@ -6,7 +6,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '3. General Configuration\Background Apps\Disable Background Apps (default).cmd'
+            Launcher   = '3. Configuración general\Apps en segundo plano\Desactivar apps en segundo plano.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications'; Name = 'GlobalUserDisabled'; Type = 'DWord'; Data = 1 }
@@ -16,7 +16,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '3. General Configuration\Background Apps\Enable Background Apps.cmd'
+            Launcher   = '3. Configuración general\Apps en segundo plano\Permitir apps en segundo plano (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications'; Name = 'GlobalUserDisabled'; Operation = 'Delete' }

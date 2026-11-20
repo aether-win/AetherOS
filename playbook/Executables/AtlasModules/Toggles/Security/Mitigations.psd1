@@ -7,7 +7,7 @@
         @{
             Name            = 'Disable'
             StateValue      = 0
-            Launcher        = '7. Security\Mitigations\Disable All Mitigations.cmd'
+            Launcher        = '7. Seguridad\Mitigaciones\Desactivar todas las mitigaciones.cmd'
             Reboot          = 'Recommend'
             Registry        = @(
                 @{ Path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management'; Name = 'FeatureSettingsOverride'; Type = 'DWord'; Data = 3 }
@@ -20,7 +20,7 @@
         @{
             Name            = 'WindowsDefault'
             StateValue      = 1
-            Launcher        = '7. Security\Mitigations\Set Windows Default Mitigations.cmd'
+            Launcher        = '7. Seguridad\Mitigaciones\Mitigaciones de Windows por defecto.cmd'
             Reboot          = 'Recommend'
             Registry        = @(
                 @{ Path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management'; Name = 'FeatureSettingsOverride'; Operation = 'Delete' }
@@ -36,7 +36,7 @@
         @{
             Name             = 'Enable'
             StateValue       = 2
-            Launcher         = '7. Security\Mitigations\Enable All Mitigations.cmd'
+            Launcher         = '7. Seguridad\Mitigaciones\Activar todas las mitigaciones.cmd'
             Reboot           = 'Recommend'
             MachineAction    = 'Enable-AtlasMitigations'
             InteractiveState = 'Confirm-AtlasMitigationsEnable'

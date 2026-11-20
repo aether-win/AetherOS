@@ -1,4 +1,4 @@
-# Companion of make-measuresleep-admin.psd1: flags the MeasureSleep utility to always
+﻿# Companion of make-measuresleep-admin.psd1: flags the MeasureSleep utility to always
 # run elevated (it requires admin). The value name embeds the Windows directory, so it
 # cannot be expressed declaratively.
 $ErrorActionPreference = 'Stop'
@@ -9,5 +9,5 @@ if (-not (Test-Path -LiteralPath $layersKey)) {
 }
 
 Set-ItemProperty -Path $layersKey `
-    -Name "$([Environment]::GetFolderPath('Windows'))\AtlasDesktop\3. General Configuration\Timer Resolution\! MeasureSleep.exe" `
+    -Name "$([Environment]::GetFolderPath('Windows'))\AtlasDesktop\3. Configuración general\Resolución del temporizador\! MeasureSleep.exe" `
     -Value '~ RUNASADMIN' -Force

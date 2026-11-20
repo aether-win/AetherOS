@@ -6,7 +6,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interface Tweaks\Visual Effects (Animations)\Atlas Visual Effects (default).cmd'
+            Launcher   = '4. Interfaz\Efectos visuales (animaciones)\Efectos visuales de Aether (predeterminado).cmd'
             Reboot     = 'SignOut'
             Registry   = @(
                 @{ Path = 'HKCU:\Control Panel\Desktop'; Name = 'FontSmoothing'; Type = 'String'; Data = '2' }
@@ -25,7 +25,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '4. Interface Tweaks\Visual Effects (Animations)\Default Windows Visual Effects.cmd'
+            Launcher   = '4. Interfaz\Efectos visuales (animaciones)\Efectos visuales de Windows.cmd'
             Reboot     = 'SignOut'
             Registry   = @(
                 @{ Path = 'HKCU:\Control Panel\Desktop'; Name = 'FontSmoothing'; Type = 'String'; Data = '2' }

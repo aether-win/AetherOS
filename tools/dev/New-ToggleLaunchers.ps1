@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Generates the AtlasDesktop and Toolbox .cmd launcher stubs from the data-only toggle
     definitions (*.psd1) under playbook\Executables\AtlasModules\Toggles.
@@ -42,8 +42,8 @@ $desktopRoot = Join-Path -Path $RepoRoot -ChildPath 'playbook\Executables\AtlasD
 $toolboxRoot = Join-Path -Path $RepoRoot -ChildPath 'playbook\Executables\AtlasModules\Toolbox'
 # The only launchers no toggle describes; docs/architecture.md gives each one's reason.
 $handWrittenLaunchers = @(
-    '4. Interface Tweaks\Start Menu\Install Open-Shell.cmd'
-    '9. Troubleshooting\Set services to defaults.cmd'
+    '4. Interfaz\Menú Inicio\Instalar Open-Shell.cmd'
+    '9. Solución de problemas\Servicios a sus valores por defecto.cmd'
 ) | ForEach-Object { [IO.Path]::GetFullPath((Join-Path -Path $desktopRoot -ChildPath $_)).ToLowerInvariant() }
 
 if (-not (Test-Path -LiteralPath $togglesRoot -PathType Container)) {

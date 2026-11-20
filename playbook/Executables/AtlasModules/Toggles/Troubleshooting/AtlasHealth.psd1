@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name          = 'AtlasHealth'
     Description   = 'Reports what Atlas installed and which recorded toggle states or install tweaks have since drifted. Changes nothing and records no state.'
     Elevation     = 'Admin'
@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name          = 'Run'
-            Launcher      = '9. Troubleshooting\Check Atlas Health.cmd'
+            Launcher      = '9. Solución de problemas\Revisar la salud de Aether.cmd'
             Reboot        = 'None'
             MachineAction = 'Show-AtlasHealthReport'
         }

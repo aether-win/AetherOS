@@ -1,4 +1,4 @@
-$windir = [Environment]::GetFolderPath('Windows')
+﻿$windir = [Environment]::GetFolderPath('Windows')
 . (Join-Path -Path $windir -ChildPath 'AtlasModules\Scripts\Initialize-AtlasPowerShell.ps1')
 
 Write-AtlasStep -Text 'Creating Desktop and Start Menu shortcuts...'
@@ -16,4 +16,4 @@ Copy-Item $defaultShortcut -Destination "$([Environment]::GetFolderPath('CommonS
 
 Write-AtlasStep -Text 'Creating the services restore shortcut...'
 $desktop = "$windir\AtlasDesktop"
-New-AtlasShortcut -Source "$desktop\9. Troubleshooting\Set services to defaults.cmd" -Destination "$desktop\6. Advanced Configuration\Services\Set services to defaults.lnk"
+New-AtlasShortcut -Source "$desktop\9. Solución de problemas\Servicios a sus valores por defecto.cmd" -Destination "$desktop\6. Configuración avanzada\Servicios\Servicios a sus valores por defecto.lnk"

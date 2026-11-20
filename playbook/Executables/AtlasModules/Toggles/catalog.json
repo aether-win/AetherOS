@@ -14,7 +14,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "6. Advanced Configuration\\Microsoft Store\\Disable Microsoft Store.cmd",
+          "launcher": "6. Configuración avanzada\\Microsoft Store\\Desactivar Microsoft Store.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -29,7 +29,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "6. Advanced Configuration\\Microsoft Store\\Enable Microsoft Store (default).cmd",
+          "launcher": "6. Configuración avanzada\\Microsoft Store\\Activar Microsoft Store (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -56,7 +56,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "6. Advanced Configuration\\Process Explorer\\Install Process Explorer.cmd",
+          "launcher": "6. Configuración avanzada\\Process Explorer\\Instalar Process Explorer.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -71,7 +71,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "6. Advanced Configuration\\Process Explorer\\Uninstall Process Explorer.cmd",
+          "launcher": "6. Configuración avanzada\\Process Explorer\\Desinstalar Process Explorer.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -92,7 +92,7 @@
       "elevation": "TrustedInstaller",
       "noStateRecord": false,
       "menu": true,
-      "launcher": "6. Advanced Configuration\\Toggle Windows Updates\\Toggle Windows Updates.cmd",
+      "launcher": "6. Configuración avanzada\\Activar o desactivar Windows Update\\Activar o desactivar Windows Update.cmd",
       "warning": null,
       "states": [
         {
@@ -136,7 +136,7 @@
       "elevation": "Admin",
       "noStateRecord": false,
       "menu": true,
-      "launcher": "6. Advanced Configuration\\Boot Configuration\\Behavior\\Always Go to Advanced Boot Options.cmd",
+      "launcher": "6. Configuración avanzada\\Arranque\\Comportamiento\\Abrir siempre opciones de arranque avanzadas.cmd",
       "warning": null,
       "states": [
         {
@@ -180,7 +180,7 @@
       "elevation": "Admin",
       "noStateRecord": false,
       "menu": true,
-      "launcher": "6. Advanced Configuration\\Boot Configuration\\Behavior\\Automatic Repair.cmd",
+      "launcher": "6. Configuración avanzada\\Arranque\\Comportamiento\\Reparación automática.cmd",
       "warning": null,
       "states": [
         {
@@ -224,7 +224,7 @@
       "elevation": "Admin",
       "noStateRecord": false,
       "menu": true,
-      "launcher": "6. Advanced Configuration\\Boot Configuration\\Appearance\\Boot Logo.cmd",
+      "launcher": "6. Configuración avanzada\\Arranque\\Apariencia\\Logo de arranque.cmd",
       "warning": null,
       "states": [
         {
@@ -268,7 +268,7 @@
       "elevation": "Admin",
       "noStateRecord": false,
       "menu": true,
-      "launcher": "6. Advanced Configuration\\Boot Configuration\\Behavior\\Highest Mode.cmd",
+      "launcher": "6. Configuración avanzada\\Arranque\\Comportamiento\\Resolución más alta.cmd",
       "warning": null,
       "states": [
         {
@@ -312,7 +312,7 @@
       "elevation": "Admin",
       "noStateRecord": false,
       "menu": true,
-      "launcher": "6. Advanced Configuration\\Boot Configuration\\Behavior\\Editing Kernel Parameters on Startup.cmd",
+      "launcher": "6. Configuración avanzada\\Arranque\\Comportamiento\\Editar parámetros del kernel al arrancar.cmd",
       "warning": null,
       "states": [
         {
@@ -356,7 +356,7 @@
       "elevation": "Admin",
       "noStateRecord": false,
       "menu": true,
-      "launcher": "6. Advanced Configuration\\Boot Configuration\\Appearance\\New Boot Menu.cmd",
+      "launcher": "6. Configuración avanzada\\Arranque\\Apariencia\\Menú de arranque nuevo.cmd",
       "warning": null,
       "states": [
         {
@@ -400,7 +400,7 @@
       "elevation": "Admin",
       "noStateRecord": false,
       "menu": true,
-      "launcher": "6. Advanced Configuration\\Boot Configuration\\Appearance\\Spinning Animation.cmd",
+      "launcher": "6. Configuración avanzada\\Arranque\\Apariencia\\Animación de carga.cmd",
       "warning": null,
       "states": [
         {
@@ -450,7 +450,7 @@
         {
           "name": "View",
           "stateValue": null,
-          "launcher": "6. Advanced Configuration\\Boot Configuration\\View Current Values.cmd",
+          "launcher": "6. Configuración avanzada\\Arranque\\Ver valores actuales.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -477,7 +477,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Store App Archiving\\Disable Store App Archiving (default).cmd",
+          "launcher": "3. Configuración general\\Archivado de apps de la Store\\Desactivar archivado de apps (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -492,7 +492,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Store App Archiving\\Enable Store App Archiving.cmd",
+          "launcher": "3. Configuración general\\Archivado de apps de la Store\\Activar archivado de apps.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -519,7 +519,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Automatic Updates\\Disable Automatic Updates (default).cmd",
+          "launcher": "3. Configuración general\\Actualizaciones automáticas\\Desactivar actualizaciones automáticas.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -534,7 +534,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Automatic Updates\\Enable Automatic Updates.cmd",
+          "launcher": "3. Configuración general\\Actualizaciones automáticas\\Activar actualizaciones automáticas (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -561,7 +561,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Background Apps\\Disable Background Apps (default).cmd",
+          "launcher": "3. Configuración general\\Apps en segundo plano\\Desactivar apps en segundo plano.cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -576,7 +576,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Background Apps\\Enable Background Apps.cmd",
+          "launcher": "3. Configuración general\\Apps en segundo plano\\Permitir apps en segundo plano (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -603,7 +603,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\AI Features\\Click To Do\\Disable Click To Do (default).cmd",
+          "launcher": "3. Configuración general\\Funciones de IA\\Click To Do\\Desactivar Click To Do (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -618,7 +618,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\AI Features\\Click To Do\\Enable Click To Do.cmd",
+          "launcher": "3. Configuración general\\Funciones de IA\\Click To Do\\Activar Click To Do.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -645,7 +645,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\AI Features\\Microsoft Copilot\\Disable Microsoft Copilot (default).cmd",
+          "launcher": "3. Configuración general\\Funciones de IA\\Microsoft Copilot\\Desactivar Microsoft Copilot (predeterminado).cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 2,
@@ -660,7 +660,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\AI Features\\Microsoft Copilot\\Enable Microsoft Copilot.cmd",
+          "launcher": "3. Configuración general\\Funciones de IA\\Microsoft Copilot\\Activar Microsoft Copilot.cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 0,
@@ -687,7 +687,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\CPU Idle\\Disable Idle.cmd",
+          "launcher": "3. Configuración general\\Reposo del procesador\\Desactivar reposo.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -702,7 +702,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\CPU Idle\\Enable Idle (default).cmd",
+          "launcher": "3. Configuración general\\Reposo del procesador\\Activar reposo (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -729,7 +729,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\CPU Idle\\Desktop Context Menu\\Add Idle Toggle in Desktop Context Menu.cmd",
+          "launcher": "3. Configuración general\\Reposo del procesador\\Menú contextual del escritorio\\Agregar reposo al menú del escritorio.cmd",
           "reboot": "None",
           "work": {
             "registry": 12,
@@ -744,7 +744,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\CPU Idle\\Desktop Context Menu\\Remove Idle Toggle in Desktop Context Menu (default).cmd",
+          "launcher": "3. Configuración general\\Reposo del procesador\\Menú contextual del escritorio\\Quitar reposo del menú del escritorio (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -771,7 +771,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Delivery Optimization\\Disable Delivery Optimization (default).cmd",
+          "launcher": "3. Configuración general\\Optimización de distribución\\Desactivar optimización de distribución (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -786,7 +786,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Delivery Optimization\\Enable Delivery Optimization.cmd",
+          "launcher": "3. Configuración general\\Optimización de distribución\\Activar optimización de distribución.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -813,7 +813,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\File Sharing\\Disable File Sharing (default).cmd",
+          "launcher": "3. Configuración general\\Uso compartido\\Desactivar uso compartido.cmd",
           "reboot": "Prompt",
           "work": {
             "registry": 0,
@@ -828,7 +828,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\File Sharing\\Enable File Sharing.cmd",
+          "launcher": "3. Configuración general\\Uso compartido\\Activar uso compartido (predeterminado).cmd",
           "reboot": "Prompt",
           "work": {
             "registry": 0,
@@ -855,7 +855,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\FSO and Game Bar\\Disable FSO and Game Bar Support.cmd",
+          "launcher": "3. Configuración general\\Pantalla completa y Game Bar\\Desactivar optimización de pantalla completa y Game Bar.cmd",
           "reboot": "None",
           "work": {
             "registry": 15,
@@ -870,7 +870,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\FSO and Game Bar\\Enable FSO and Game Bar Support (default).cmd",
+          "launcher": "3. Configuración general\\Pantalla completa y Game Bar\\Activar optimización de pantalla completa y Game Bar (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 15,
@@ -897,7 +897,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\File Sharing\\Give Access To Menu\\Disable Give Access To Menu (default).cmd",
+          "launcher": "3. Configuración general\\Uso compartido\\Menú Conceder acceso a\\Quitar menú Conceder acceso a (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 6,
@@ -912,7 +912,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\File Sharing\\Give Access To Menu\\Enable Give Access To Menu.cmd",
+          "launcher": "3. Configuración general\\Uso compartido\\Menú Conceder acceso a\\Mostrar menú Conceder acceso a.cmd",
           "reboot": "None",
           "work": {
             "registry": 6,
@@ -939,7 +939,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Hibernation\\Disable Hibernation (default).cmd",
+          "launcher": "3. Configuración general\\Hibernación\\Desactivar hibernación.cmd",
           "reboot": "Prompt",
           "work": {
             "registry": 1,
@@ -954,7 +954,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Hibernation\\Enable Hibernation.cmd",
+          "launcher": "3. Configuración general\\Hibernación\\Activar hibernación (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -981,7 +981,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Search Indexing\\Disable Search Indexing.cmd",
+          "launcher": "3. Configuración general\\Indexado de búsqueda\\Desactivar indexado.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -996,7 +996,7 @@
         {
           "name": "Minimal",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Search Indexing\\Minimal Search Indexing (default).cmd",
+          "launcher": "3. Configuración general\\Indexado de búsqueda\\Indexado mínimo.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1011,7 +1011,7 @@
         {
           "name": "Enable",
           "stateValue": 2,
-          "launcher": "3. General Configuration\\Search Indexing\\Enable Search Indexing.cmd",
+          "launcher": "3. Configuración general\\Indexado de búsqueda\\Indexado normal (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1038,7 +1038,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Location\\Disable Location (default).cmd",
+          "launcher": "3. Configuración general\\Ubicación\\Desactivar ubicación (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -1053,7 +1053,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Location\\Enable Location.cmd",
+          "launcher": "3. Configuración general\\Ubicación\\Activar ubicación.cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -1080,7 +1080,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\File Sharing\\Network Navigation Pane\\Disable Network Navigation Pane (default).cmd",
+          "launcher": "3. Configuración general\\Uso compartido\\Red en el Explorador\\Ocultar Red en el Explorador.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1095,7 +1095,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\File Sharing\\Network Navigation Pane\\Enable Network Navigation Pane.cmd",
+          "launcher": "3. Configuración general\\Uso compartido\\Red en el Explorador\\Mostrar Red en el Explorador (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1122,7 +1122,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Pause Updates\\Pause Windows Updates.cmd",
+          "launcher": "3. Configuración general\\Pausar actualizaciones\\Pausar Windows Update (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 13,
@@ -1137,7 +1137,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Pause Updates\\Unpause Windows Updates.cmd",
+          "launcher": "3. Configuración general\\Pausar actualizaciones\\Quitar pausa de Windows Update.cmd",
           "reboot": "None",
           "work": {
             "registry": 15,
@@ -1164,7 +1164,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Mobile Devices (Phone Link)\\Disable Mobile Device Settings (default).cmd",
+          "launcher": "3. Configuración general\\Dispositivos móviles (Vincular teléfono)\\Desactivar dispositivos móviles.cmd",
           "reboot": "None",
           "work": {
             "registry": 7,
@@ -1179,7 +1179,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Mobile Devices (Phone Link)\\Enable Mobile Device Settings.cmd",
+          "launcher": "3. Configuración general\\Dispositivos móviles (Vincular teléfono)\\Activar dispositivos móviles (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 3,
@@ -1206,7 +1206,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Power-saving\\Disable Power-saving.cmd",
+          "launcher": "3. Configuración general\\Ahorro de energía\\Desactivar ahorro de energía.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1221,7 +1221,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Power-saving\\Default Power-saving (default).cmd",
+          "launcher": "3. Configuración general\\Ahorro de energía\\Ahorro de energía normal (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1248,7 +1248,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\AI Features\\Recall\\Disable Recall Support (default).cmd",
+          "launcher": "3. Configuración general\\Funciones de IA\\Recall\\Desactivar Recall (predeterminado).cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 2,
@@ -1263,7 +1263,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\AI Features\\Recall\\Enable Recall Support.cmd",
+          "launcher": "3. Configuración general\\Funciones de IA\\Recall\\Activar Recall.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 2,
@@ -1290,7 +1290,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Sleep\\Disable Sleep.cmd",
+          "launcher": "3. Configuración general\\Suspensión\\Desactivar suspensión.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1305,7 +1305,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Sleep\\Enable Sleep (default).cmd",
+          "launcher": "3. Configuración general\\Suspensión\\Activar suspensión (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1332,7 +1332,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Sleep Study\\Disable Sleep Study (default).cmd",
+          "launcher": "3. Configuración general\\Sleep Study\\Desactivar Sleep Study (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1347,7 +1347,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Sleep Study\\Enable Sleep Study.cmd",
+          "launcher": "3. Configuración general\\Sleep Study\\Activar Sleep Study.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1374,7 +1374,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\System Restore\\Disable System Restore.cmd",
+          "launcher": "3. Configuración general\\Restaurar sistema\\Desactivar restaurar sistema.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1389,7 +1389,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\System Restore\\Enable System Restore (default).cmd",
+          "launcher": "3. Configuración general\\Restaurar sistema\\Activar restaurar sistema (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1416,7 +1416,7 @@
         {
           "name": "Disable",
           "stateValue": null,
-          "launcher": "3. General Configuration\\Timer Resolution\\Disable timer resolution (default).cmd",
+          "launcher": "3. Configuración general\\Resolución del temporizador\\Desactivar resolución del temporizador (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1431,7 +1431,7 @@
         {
           "name": "Enable",
           "stateValue": null,
-          "launcher": "3. General Configuration\\Timer Resolution\\Enable timer resolution.cmd",
+          "launcher": "3. Configuración general\\Resolución del temporizador\\Activar resolución del temporizador.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 1,
@@ -1458,7 +1458,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "2. Drivers\\Run Update Drivers.cmd",
+          "launcher": "2. Controladores\\Buscar controladores en Windows Update.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1485,7 +1485,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Update Notifications\\Disable Update Notifications.cmd",
+          "launcher": "3. Configuración general\\Avisos de actualización\\Desactivar avisos de actualización.cmd",
           "reboot": "None",
           "work": {
             "registry": 4,
@@ -1500,7 +1500,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Update Notifications\\Enable Update Notifications (default).cmd",
+          "launcher": "3. Configuración general\\Avisos de actualización\\Activar avisos de actualización (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 4,
@@ -1527,7 +1527,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Web Search (includes Search Highlights)\\Disable Web Search (default).cmd",
+          "launcher": "3. Configuración general\\Búsqueda web (incluye destacados)\\Desactivar búsqueda web (predeterminado).cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 13,
@@ -1542,7 +1542,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Web Search (includes Search Highlights)\\Enable Web Search.cmd",
+          "launcher": "3. Configuración general\\Búsqueda web (incluye destacados)\\Activar búsqueda web.cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 12,
@@ -1569,7 +1569,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Widgets (News and Interests)\\Disable Widgets (default).cmd",
+          "launcher": "3. Configuración general\\Widgets (noticias e intereses)\\Desactivar widgets (predeterminado).cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 3,
@@ -1584,7 +1584,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Widgets (News and Interests)\\Enable Widgets.cmd",
+          "launcher": "3. Configuración general\\Widgets (noticias e intereses)\\Activar widgets.cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 0,
@@ -1611,7 +1611,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Windows Spotlight\\Disable Windows Spotlight (default).cmd",
+          "launcher": "3. Configuración general\\Windows Spotlight\\Desactivar Windows Spotlight (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 12,
@@ -1626,7 +1626,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Windows Spotlight\\Enable Windows Spotlight.cmd",
+          "launcher": "3. Configuración general\\Windows Spotlight\\Activar Windows Spotlight.cmd",
           "reboot": "None",
           "work": {
             "registry": 12,
@@ -1653,7 +1653,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "3. General Configuration\\Workplace\\Disable Workplace.cmd",
+          "launcher": "3. Configuración general\\Cuentas de trabajo o escuela\\Desactivar cuentas de trabajo o escuela.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1668,7 +1668,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "3. General Configuration\\Workplace\\Enable Workplace.cmd",
+          "launcher": "3. Configuración general\\Cuentas de trabajo o escuela\\Activar cuentas de trabajo o escuela.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1695,7 +1695,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Visual Effects (Animations)\\Atlas Visual Effects (default).cmd",
+          "launcher": "4. Interfaz\\Efectos visuales (animaciones)\\Efectos visuales de Aether (predeterminado).cmd",
           "reboot": "SignOut",
           "work": {
             "registry": 11,
@@ -1710,7 +1710,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Visual Effects (Animations)\\Default Windows Visual Effects.cmd",
+          "launcher": "4. Interfaz\\Efectos visuales (animaciones)\\Efectos visuales de Windows.cmd",
           "reboot": "SignOut",
           "work": {
             "registry": 11,
@@ -1737,7 +1737,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\App Icons on Thumbnails\\Disable App Icons on Thumbnails.cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Ícono de la app en miniaturas\\Desactivar ícono de la app en miniaturas.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1752,7 +1752,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\App Icons on Thumbnails\\Enable App Icons on Thumbnails (default).cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Ícono de la app en miniaturas\\Activar ícono de la app en miniaturas (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1779,7 +1779,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Automatic Folder Discovery\\Disable Automatic Folder Discovery (default).cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Detección automática de carpetas\\Desactivar detección automática de carpetas (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -1794,7 +1794,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Automatic Folder Discovery\\Enable Automatic Folder Discovery.cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Detección automática de carpetas\\Activar detección automática de carpetas.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1821,7 +1821,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Compact View\\Disable Compact View.cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Vista compacta\\Desactivar vista compacta.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1836,7 +1836,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Compact View\\Enable Compact View (default).cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Vista compacta\\Activar vista compacta (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1863,7 +1863,7 @@
         {
           "name": "Remove",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Terminals\\Remove Terminals Context Menu (default).cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Terminales\\Quitar terminales del menú (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1878,7 +1878,7 @@
         {
           "name": "Add",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Terminals\\Add Terminals.cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Terminales\\Agregar terminales.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1893,7 +1893,7 @@
         {
           "name": "AddNoWindowsTerminal",
           "stateValue": 2,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Terminals\\Add Terminals (no Windows Terminal).cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Terminales\\Agregar terminales (sin Windows Terminal).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -1920,7 +1920,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Edge Swipe\\Allow Edge Swipe (default).cmd",
+          "launcher": "4. Interfaz\\Deslizar desde el borde\\Permitir deslizar desde el borde (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1935,7 +1935,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Edge Swipe\\Disallow Edge Swipe.cmd",
+          "launcher": "4. Interfaz\\Deslizar desde el borde\\No permitir deslizar desde el borde.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -1962,7 +1962,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Extract\\Add Extract.cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Extraer\\Agregar Extraer.cmd",
           "reboot": "None",
           "work": {
             "registry": 4,
@@ -1977,7 +1977,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Extract\\Remove Extract (default).cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Extraer\\Quitar Extraer (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 4,
@@ -2004,7 +2004,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Gallery\\Disable Gallery (default).cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Galería\\Ocultar Galería (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2019,7 +2019,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Gallery\\Enable Gallery.cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Galería\\Mostrar Galería.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2046,7 +2046,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Home\\Disable Home (default).cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Inicio\\Ocultar Inicio (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 3,
@@ -2061,7 +2061,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Home\\Enable Home.cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Inicio\\Mostrar Inicio.cmd",
           "reboot": "None",
           "work": {
             "registry": 3,
@@ -2088,7 +2088,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Keyboard Languages\\Enable Language Shortcuts.cmd",
+          "launcher": "4. Interfaz\\Idiomas del teclado\\Activar atajos de idioma.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 3,
@@ -2103,7 +2103,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Keyboard Languages\\Disable Language Shortcuts.cmd",
+          "launcher": "4. Interfaz\\Idiomas del teclado\\Desactivar atajos de idioma.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 3,
@@ -2130,7 +2130,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Lock Screen\\Show Lock Screen (default).cmd",
+          "launcher": "4. Interfaz\\Pantalla de bloqueo\\Mostrar pantalla de bloqueo (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -2145,7 +2145,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Lock Screen\\Hide Lock Screen.cmd",
+          "launcher": "4. Interfaz\\Pantalla de bloqueo\\Ocultar pantalla de bloqueo.cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -2172,7 +2172,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Old Flyouts\\Battery Flyout\\Modern Battery Flyout (default).cmd",
+          "launcher": "4. Interfaz\\Paneles clásicos\\Panel de batería\\Panel de batería moderno (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2187,7 +2187,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Old Flyouts\\Battery Flyout\\Old Battery Flyout.cmd",
+          "launcher": "4. Interfaz\\Paneles clásicos\\Panel de batería\\Panel de batería clásico.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2214,7 +2214,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Old Flyouts\\Date and Time Flyout\\Modern Date and Time Flyout (default).cmd",
+          "launcher": "4. Interfaz\\Paneles clásicos\\Panel de fecha y hora\\Panel de fecha y hora moderno (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2229,7 +2229,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Old Flyouts\\Date and Time Flyout\\Old Date and Time Flyout.cmd",
+          "launcher": "4. Interfaz\\Paneles clásicos\\Panel de fecha y hora\\Panel de fecha y hora clásico.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2256,7 +2256,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Old Flyouts\\Volume Flyout\\Modern Volume Flyout (default).cmd",
+          "launcher": "4. Interfaz\\Paneles clásicos\\Panel de volumen\\Panel de volumen moderno (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2271,7 +2271,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Old Flyouts\\Volume Flyout\\Old Volume Flyout.cmd",
+          "launcher": "4. Interfaz\\Paneles clásicos\\Panel de volumen\\Panel de volumen clásico.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2298,7 +2298,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Windows 11\\Old Context Menu (default).cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Windows 11\\Menú contextual clásico (predeterminado).cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 1,
@@ -2313,7 +2313,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Windows 11\\New Context Menu.cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Windows 11\\Menú contextual nuevo.cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 1,
@@ -2340,7 +2340,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Quick Access\\Remove Quick Access.cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Acceso rápido\\Quitar Acceso rápido.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2355,7 +2355,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Quick Access\\Show Quick Access (default).cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Acceso rápido\\Mostrar Acceso rápido (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2382,7 +2382,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Unlock Recent Items\\Disable Recent Items (default).cmd",
+          "launcher": "4. Interfaz\\Elementos recientes\\Desactivar elementos recientes (predeterminado).cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 9,
@@ -2397,7 +2397,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Unlock Recent Items\\Unlock Recent Items.cmd",
+          "launcher": "4. Interfaz\\Elementos recientes\\Activar elementos recientes.cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 7,
@@ -2424,7 +2424,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Removable Drives in Sidebar\\Disable Removable Drives in Sidebar (default).cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Unidades extraíbles en el panel\\Ocultar unidades extraíbles en el panel (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -2439,7 +2439,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\File Explorer Customization\\Removable Drives in Sidebar\\Enable Removable Drives in Sidebar.cmd",
+          "launcher": "4. Interfaz\\Explorador de archivos\\Unidades extraíbles en el panel\\Mostrar unidades extraíbles en el panel.cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -2466,7 +2466,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "4. Interface Tweaks\\Restart Explorer.cmd",
+          "launcher": "4. Interfaz\\Reiniciar el Explorador.cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 0,
@@ -2493,7 +2493,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Run With Priority\\Add Run With Priority In Context Menu.cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Ejecutar con prioridad\\Agregar Ejecutar con prioridad al menú.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -2508,7 +2508,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Run With Priority\\Remove Run With Priority In Context Menu (default).cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Ejecutar con prioridad\\Quitar Ejecutar con prioridad del menú (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2535,7 +2535,7 @@
         {
           "name": "Debloat",
           "stateValue": null,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Send To\\Debloat Send To Context Menu.cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Enviar a\\Limpiar el menú Enviar a.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -2562,7 +2562,7 @@
         {
           "name": "Default",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Shortcut Icon\\Default Windows (default).cmd",
+          "launcher": "4. Interfaz\\Flecha de accesos directos\\La de Windows (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2577,7 +2577,7 @@
         {
           "name": "Classic",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Shortcut Icon\\Classic.cmd",
+          "launcher": "4. Interfaz\\Flecha de accesos directos\\Clásica.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2592,7 +2592,7 @@
         {
           "name": "None",
           "stateValue": 2,
-          "launcher": "4. Interface Tweaks\\Shortcut Icon\\None (security risk).cmd",
+          "launcher": "4. Interfaz\\Flecha de accesos directos\\Sin flecha (riesgo de seguridad).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2619,7 +2619,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Shortcut Text\\Disable Shortcut Text (default).cmd",
+          "launcher": "4. Interfaz\\Texto de accesos directos\\Quitar texto - Acceso directo (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2634,7 +2634,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Shortcut Text\\Restore Shortcut Text.cmd",
+          "launcher": "4. Interfaz\\Texto de accesos directos\\Restaurar texto - Acceso directo.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2661,7 +2661,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Snap Layouts\\Enable Snap Layouts (default).cmd",
+          "launcher": "4. Interfaz\\Diseños de ajuste\\Activar diseños de ajuste (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -2676,7 +2676,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Snap Layouts\\Disable Snap Layouts.cmd",
+          "launcher": "4. Interfaz\\Diseños de ajuste\\Desactivar diseños de ajuste.cmd",
           "reboot": "None",
           "work": {
             "registry": 2,
@@ -2703,7 +2703,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Take Ownership\\Remove Take Ownership to Context Menu (default).cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Tomar posesión\\Quitar Tomar posesión del menú (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -2718,7 +2718,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Context Menus\\Take Ownership\\Add Take Ownership to Context Menu.cmd",
+          "launcher": "4. Interfaz\\Menús contextuales\\Tomar posesión\\Agregar Tomar posesión al menú.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -2745,7 +2745,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "4. Interface Tweaks\\Verbose Status Messages\\Disable Verbose Messages (default).cmd",
+          "launcher": "4. Interfaz\\Mensajes de estado detallados\\Desactivar mensajes detallados (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2760,7 +2760,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "4. Interface Tweaks\\Verbose Status Messages\\Enable Verbose Messages.cmd",
+          "launcher": "4. Interfaz\\Mensajes de estado detallados\\Activar mensajes detallados.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2787,7 +2787,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "7. Security\\Core Isolation (VBS)\\Current Configuration.cmd",
+          "launcher": "7. Seguridad\\Aislamiento del núcleo (VBS)\\Configuración actual.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -2814,7 +2814,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "7. Security\\Mitigations\\Fault Tolerant Heap\\Disable FTH (default).cmd",
+          "launcher": "7. Seguridad\\Mitigaciones\\Montón tolerante a errores (FTH)\\Desactivar FTH (predeterminado).cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 1,
@@ -2829,7 +2829,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "7. Security\\Mitigations\\Fault Tolerant Heap\\Enable FTH.cmd",
+          "launcher": "7. Seguridad\\Mitigaciones\\Montón tolerante a errores (FTH)\\Activar FTH.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 1,
@@ -2856,7 +2856,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "7. Security\\Defender\\Hide App and Browser Control\\Hide App and Browser Control (default).cmd",
+          "launcher": "7. Seguridad\\Defender\\Control de aplicaciones y navegador\\Ocultar control de aplicaciones y navegador (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2871,7 +2871,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "7. Security\\Defender\\Hide App and Browser Control\\Show App and Browser Control.cmd",
+          "launcher": "7. Seguridad\\Defender\\Control de aplicaciones y navegador\\Mostrar control de aplicaciones y navegador.cmd",
           "reboot": "None",
           "work": {
             "registry": 1,
@@ -2898,7 +2898,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "7. Security\\Mitigations\\Disable All Mitigations.cmd",
+          "launcher": "7. Seguridad\\Mitigaciones\\Desactivar todas las mitigaciones.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 4,
@@ -2913,7 +2913,7 @@
         {
           "name": "WindowsDefault",
           "stateValue": 1,
-          "launcher": "7. Security\\Mitigations\\Set Windows Default Mitigations.cmd",
+          "launcher": "7. Seguridad\\Mitigaciones\\Mitigaciones de Windows por defecto.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 7,
@@ -2928,7 +2928,7 @@
         {
           "name": "Enable",
           "stateValue": 2,
-          "launcher": "7. Security\\Mitigations\\Enable All Mitigations.cmd",
+          "launcher": "7. Seguridad\\Mitigaciones\\Activar todas las mitigaciones.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -2955,7 +2955,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "7. Security\\Defender\\Security Health Tray\\Remove Security Tray from Startup (default).cmd",
+          "launcher": "7. Seguridad\\Defender\\Ícono de seguridad en la bandeja\\Quitar ícono de seguridad del inicio (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -2970,7 +2970,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "7. Security\\Defender\\Security Health Tray\\Add Security Tray to Startup.cmd",
+          "launcher": "7. Seguridad\\Defender\\Ícono de seguridad en la bandeja\\Agregar ícono de seguridad al inicio.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -2997,7 +2997,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "7. Security\\Defender\\Toggle Defender.cmd",
+          "launcher": "7. Seguridad\\Defender\\Activar o desactivar Defender.cmd",
           "reboot": "Prompt",
           "work": {
             "registry": 0,
@@ -3024,7 +3024,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "7. Security\\Core Isolation (VBS)\\Disable VBS.cmd",
+          "launcher": "7. Seguridad\\Aislamiento del núcleo (VBS)\\Desactivar VBS.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3039,7 +3039,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "7. Security\\Core Isolation (VBS)\\Enable VBS.cmd",
+          "launcher": "7. Seguridad\\Aislamiento del núcleo (VBS)\\Activar VBS.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3066,7 +3066,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "6. Advanced Configuration\\Services\\Bluetooth\\Disable Bluetooth.cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Bluetooth\\Desactivar Bluetooth.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 1,
@@ -3081,7 +3081,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "6. Advanced Configuration\\Services\\Bluetooth\\Enable Bluetooth (default).cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Bluetooth\\Activar Bluetooth (predeterminado).cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 1,
@@ -3108,7 +3108,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "6. Advanced Configuration\\Services\\Lanman Workstation (SMB)\\Disable Lanman Workstation.cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Estación de trabajo (SMB)\\Desactivar Estación de trabajo.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3123,7 +3123,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "6. Advanced Configuration\\Services\\Lanman Workstation (SMB)\\Enable Lanman Workstation (default).cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Estación de trabajo (SMB)\\Activar Estación de trabajo (predeterminado).cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3150,7 +3150,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "6. Advanced Configuration\\Services\\Network Discovery\\Disable Network Discovery Services.cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Detección de redes\\Desactivar detección de redes.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3165,7 +3165,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "6. Advanced Configuration\\Services\\Network Discovery\\Enable Network Discovery Services (default).cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Detección de redes\\Activar detección de redes (predeterminado).cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3192,7 +3192,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "6. Advanced Configuration\\Services\\NVIDIA Display Container\\Disable NVIDIA Display Container LS.cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\NVIDIA Display Container\\Desactivar NVIDIA Display Container LS.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -3207,7 +3207,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "6. Advanced Configuration\\Services\\NVIDIA Display Container\\Enable NVIDIA Display Container LS (default).cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\NVIDIA Display Container\\Activar NVIDIA Display Container LS (predeterminado).cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -3234,7 +3234,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "6. Advanced Configuration\\Services\\NVIDIA Display Container\\Context Menu\\Add Container Context Menu.cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\NVIDIA Display Container\\Menú contextual\\Agregar Container al menú.cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 0,
@@ -3249,7 +3249,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "6. Advanced Configuration\\Services\\NVIDIA Display Container\\Context Menu\\Remove Container Context Menu (default).cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\NVIDIA Display Container\\Menú contextual\\Quitar Container del menú (predeterminado).cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 1,
@@ -3276,7 +3276,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "6. Advanced Configuration\\Services\\Printing\\Disable Printing.cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Impresión\\Desactivar impresión.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3291,7 +3291,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "6. Advanced Configuration\\Services\\Printing\\Enable Printing (default).cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Impresión\\Activar impresión (predeterminado).cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3318,7 +3318,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "6. Advanced Configuration\\Services\\Superfetch\\Disable SuperFetch.cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Superfetch\\Desactivar SuperFetch.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3333,7 +3333,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "6. Advanced Configuration\\Services\\Superfetch\\Enable SuperFetch (default).cmd",
+          "launcher": "6. Configuración avanzada\\Servicios\\Superfetch\\Activar SuperFetch (predeterminado).cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3360,7 +3360,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "1. Software\\Install Software.cmd",
+          "launcher": "1. Programas\\Instalar programas.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -3387,7 +3387,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "1. Software\\Remove Python Store Prompt.cmd",
+          "launcher": "1. Programas\\Quitar aviso de Python de la Store.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -3414,7 +3414,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Check Atlas Health.cmd",
+          "launcher": "9. Solución de problemas\\Revisar la salud de Aether.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -3441,7 +3441,7 @@
         {
           "name": "Enable",
           "stateValue": 1,
-          "launcher": "9. Troubleshooting\\Network\\Reset Network to Atlas Default.cmd",
+          "launcher": "9. Solución de problemas\\Red\\Restablecer red a la de Aether.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3456,7 +3456,7 @@
         {
           "name": "Disable",
           "stateValue": 0,
-          "launcher": "9. Troubleshooting\\Network\\Reset Network to Windows Default.cmd",
+          "launcher": "9. Solución de problemas\\Red\\Restablecer red a la de Windows.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3483,7 +3483,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Fix Errors 2502 and 2503.cmd",
+          "launcher": "9. Solución de problemas\\Arreglar errores 2502 y 2503.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -3510,7 +3510,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Fix File Explorer Visual C++ Runtime Error.cmd",
+          "launcher": "9. Solución de problemas\\Arreglar error de Visual C++ del Explorador.cmd",
           "reboot": "RestartExplorer",
           "work": {
             "registry": 3,
@@ -3537,7 +3537,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Fix MS Store Issues.cmd",
+          "launcher": "9. Solución de problemas\\Arreglar problemas de la Microsoft Store.cmd",
           "reboot": "None",
           "work": {
             "registry": 0,
@@ -3564,7 +3564,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Repair Windows Components.cmd",
+          "launcher": "9. Solución de problemas\\Reparar componentes de Windows.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3591,7 +3591,7 @@
         {
           "name": "Minimal",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Safe Mode\\Safe Mode.cmd",
+          "launcher": "9. Solución de problemas\\Modo seguro\\Modo seguro.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3606,7 +3606,7 @@
         {
           "name": "CommandPrompt",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Safe Mode\\Safe Mode with Command Prompt.cmd",
+          "launcher": "9. Solución de problemas\\Modo seguro\\Modo seguro con símbolo del sistema.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3621,7 +3621,7 @@
         {
           "name": "Networking",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Safe Mode\\Safe Mode with Networking.cmd",
+          "launcher": "9. Solución de problemas\\Modo seguro\\Modo seguro con red.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3636,7 +3636,7 @@
         {
           "name": "Exit",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Safe Mode\\Exit Safe Mode.cmd",
+          "launcher": "9. Solución de problemas\\Modo seguro\\Salir del modo seguro.cmd",
           "reboot": "Recommend",
           "work": {
             "registry": 0,
@@ -3663,7 +3663,7 @@
         {
           "name": "Run",
           "stateValue": null,
-          "launcher": "9. Troubleshooting\\Telemetry Components.cmd",
+          "launcher": "9. Solución de problemas\\Componentes de telemetría.cmd",
           "reboot": "Prompt",
           "work": {
             "registry": 0,

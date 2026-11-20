@@ -1,9 +1,9 @@
-@{
+﻿@{
     Name          = 'KernelParameters'
     Description   = 'Editing of kernel parameters on startup.'
     Elevation     = 'Admin'
     Menu          = $true
-    Launcher      = '6. Advanced Configuration\Boot Configuration\Behavior\Editing Kernel Parameters on Startup.cmd'
+    Launcher      = '6. Configuración avanzada\Arranque\Comportamiento\Editar parámetros del kernel al arrancar.cmd'
     SilentDefault = 'Disable'
     Script        = 'KernelParameters.ps1'
     States        = @(

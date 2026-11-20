@@ -28,7 +28,7 @@ function Enable-AtlasCopilotMachine {
     param($Toggle)
 
     if (-not (Test-AtlasCopilotEdgeInstalled -Toggle $Toggle)) {
-        throw 'Copilot needs Microsoft Edge, which is not installed. Install Edge from 1. Software, then try again.'
+        throw 'Copilot needs Microsoft Edge, which is not installed. Install Edge from 1. Programas, then try again.'
     }
 
     Remove-AtlasRegistryValue -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI' -Name 'RemoveMicrosoftCopilotApp'

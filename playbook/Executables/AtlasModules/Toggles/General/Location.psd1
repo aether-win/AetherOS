@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'Location'
     Description = 'Location services (lfsvc / MapsBroker) and Find My Device. The Enable prompt to unlock Find My Device is interactive-only so silent/upgrade re-apply never hangs; in silent mode Find My Device is preserved.'
     Elevation   = 'Admin'
@@ -7,7 +7,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. General Configuration\Location\Disable Location (default).cmd'
+            Launcher      = '3. Configuración general\Ubicación\Desactivar ubicación (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Disable-AtlasLocation'
             Registry      = @(
@@ -19,7 +19,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. General Configuration\Location\Enable Location.cmd'
+            Launcher      = '3. Configuración general\Ubicación\Activar ubicación.cmd'
             Reboot        = 'None'
             MachineAction = 'Enable-AtlasLocation'
             UserAction    = 'Show-AtlasLocationSettings'

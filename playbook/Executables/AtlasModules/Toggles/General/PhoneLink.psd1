@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'PhoneLink'
     Description = 'Mobile Devices and Phone Link: the CDPSvc service, cross-device resume and the YourPhone app. The settings page is opened only for an interactive enable.'
     Elevation   = 'Admin'
@@ -7,7 +7,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. General Configuration\Mobile Devices (Phone Link)\Disable Mobile Device Settings (default).cmd'
+            Launcher      = '3. Configuración general\Dispositivos móviles (Vincular teléfono)\Desactivar dispositivos móviles.cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'; Name = 'NoConnectedUser'; Type = 'DWord'; Data = 1 }
@@ -31,7 +31,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. General Configuration\Mobile Devices (Phone Link)\Enable Mobile Device Settings.cmd'
+            Launcher      = '3. Configuración general\Dispositivos móviles (Vincular teléfono)\Activar dispositivos móviles (predeterminado).cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\CrossDeviceResume\Configuration'; Name = 'IsResumeAllowed'; Type = 'DWord'; Data = 1 }

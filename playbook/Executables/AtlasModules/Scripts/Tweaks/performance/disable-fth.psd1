@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'Disable Fault Tolerant Heap (FTH)'
     Description = 'FTH is a feature in Windows 7+ that applies mitigations (non-CPU related) to applications that repeatedly crash to prevent further crashes, but when the FTH is active for a certain application, there''s a performance hit.'
     Registry    = @(
@@ -13,6 +13,6 @@
         # Document listed as only affected in Windows 7, is also in 7+
         # https://docs.microsoft.com/en-us/windows/win32/win7appqual/fault-tolerant-heap
         # Delete folder on ARM64, as FTH doesn't exist
-        @{ Path = '{windir}\AtlasDesktop\7. Security\Mitigations\Fault Tolerant Heap'; Arch = 'ARM64' }
+        @{ Path = '{windir}\AtlasDesktop\7. Seguridad\Mitigaciones\Montón tolerante a errores (FTH)'; Arch = 'ARM64' }
     )
 }

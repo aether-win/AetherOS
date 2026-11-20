@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'PowerSaving'
     Description = 'Power-saving. Disable applies the documented Atlas AC power policy; Enable restores the prior power plan, or Balanced when none was saved. Both states use the same helper.'
     Elevation   = 'Admin'
@@ -7,14 +7,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. General Configuration\Power-saving\Disable Power-saving.cmd'
+            Launcher      = '3. Configuración general\Ahorro de energía\Desactivar ahorro de energía.cmd'
             Reboot        = 'None'
             MachineAction = 'Invoke-AtlasPowerSavingToggle'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. General Configuration\Power-saving\Default Power-saving (default).cmd'
+            Launcher      = '3. Configuración general\Ahorro de energía\Ahorro de energía normal (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Invoke-AtlasPowerSavingToggle'
         }

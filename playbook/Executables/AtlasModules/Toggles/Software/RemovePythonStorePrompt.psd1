@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name     = 'Run'
-            Launcher = '1. Software\Remove Python Store Prompt.cmd'
+            Launcher = '1. Programas\Quitar aviso de Python de la Store.cmd'
             Reboot   = 'None'
             Action   = 'Remove-AtlasPythonStoreAlias'
         }

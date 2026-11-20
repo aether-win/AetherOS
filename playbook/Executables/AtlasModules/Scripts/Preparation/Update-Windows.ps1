@@ -1,4 +1,4 @@
-# Brings Windows and Store apps up to date before Atlas changes Windows. Windows
+﻿# Brings Windows and Store apps up to date before Atlas changes Windows. Windows
 # Update and Store work is never killed; cancellation waits for the active operation.
 [CmdletBinding()]
 param([Parameter(Mandatory)][string]$JobPath, [switch]$FunctionsOnly, [switch]$VerifyOnly,
@@ -1713,7 +1713,7 @@ function Invoke-PreparationStoreFixer {
     $windows = [Environment]::GetFolderPath('Windows')
     $launcher = [IO.Path]::Combine($windows, 'AtlasModules\Scripts\Entry\Invoke-AtlasToggleLauncher.cmd')
     $definition = [IO.Path]::Combine($windows, 'AtlasModules\Toggles\Troubleshooting\FixMSStoreIssues.psd1')
-    $shortcut = [IO.Path]::Combine($windows, 'AtlasDesktop\9. Troubleshooting\Fix MS Store Issues.cmd')
+    $shortcut = [IO.Path]::Combine($windows, 'AtlasDesktop\9. Solución de problemas\Arreglar problemas de la Microsoft Store.cmd')
     if (-not ([IO.File]::Exists($launcher) -and [IO.File]::Exists($definition))) {
         Write-PreparationStoreEvidence "StoreFixer: this PC has no Atlas 0.6 Fix MS Store Issues to start it; left out"
         return $false

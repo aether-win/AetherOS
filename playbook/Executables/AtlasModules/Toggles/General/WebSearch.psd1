@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'WebSearch'
     Description = 'Web Search and Search Highlights. Explorer and SearchHost are refreshed unless the launcher was called with /noAction. Enable installs the Bing search provider through the trusted WinGet resolver and, with search indexing stopped, offers to enable indexing (a graphical-bug fix).'
     Elevation   = 'Admin'
@@ -7,7 +7,7 @@
         @{
             Name                  = 'Disable'
             StateValue            = 0
-            Launcher              = '3. General Configuration\Web Search (includes Search Highlights)\Disable Web Search (default).cmd'
+            Launcher              = '3. Configuración general\Búsqueda web (incluye destacados)\Desactivar búsqueda web (predeterminado).cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'SearchShellRefresh'
             Registry              = @(
@@ -30,7 +30,7 @@
         @{
             Name                  = 'Enable'
             StateValue            = 1
-            Launcher              = '3. General Configuration\Web Search (includes Search Highlights)\Enable Web Search.cmd'
+            Launcher              = '3. Configuración general\Búsqueda web (incluye destacados)\Activar búsqueda web.cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'SearchShellRefresh'
             Registry              = @(

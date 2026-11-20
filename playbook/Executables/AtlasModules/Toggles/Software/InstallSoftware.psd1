@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name     = 'Run'
-            Launcher = '1. Software\Install Software.cmd'
+            Launcher = '1. Programas\Instalar programas.cmd'
             Reboot   = 'None'
             Action   = 'Invoke-AtlasSoftwarePicker'
         }

@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'NetworkDiscovery'
     Description = 'Network Discovery services. Enable first enables SMB; network profiles and firewall discovery rules remain separate choices in Advanced sharing settings. Explorer visibility is controlled by Network Navigation Pane.'
     Elevation   = 'Admin'
@@ -8,7 +8,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '6. Advanced Configuration\Services\Network Discovery\Disable Network Discovery Services.cmd'
+            Launcher   = '6. Configuración avanzada\Servicios\Detección de redes\Desactivar detección de redes.cmd'
             Reboot     = 'Recommend'
             Services   = @(
                 @{ Name = 'fdPHost'; StartupType = 4 }
@@ -20,7 +20,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Advanced Configuration\Services\Network Discovery\Enable Network Discovery Services (default).cmd'
+            Launcher      = '6. Configuración avanzada\Servicios\Detección de redes\Activar detección de redes (predeterminado).cmd'
             Reboot        = 'Recommend'
             MachineAction = 'Enable-AtlasNetworkDiscoveryServices'
         }

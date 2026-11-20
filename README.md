@@ -68,7 +68,7 @@ Atlas Manager and AME Wizard install the same Atlas package, and the installatio
 
 You can also run the installer yourself, without either app. Extract the Atlas package (it is a renamed ZIP), open an elevated Windows PowerShell prompt in its `Executables` folder, and run `.\AtlasModules\Scripts\Entry\Install-Atlas.ps1 -Option defender-enable, mitigations-default, auto-updates-disable, keyboard-shortcuts`. The script checks that Windows and Microsoft Store updates are finished, copies Atlas's files to a protected directory and runs the same install plan as TrustedInstaller; see [`docs/architecture.md`](docs/architecture.md#the-atlas-front-door).
 
-After installing, `AtlasDesktop\9. Troubleshooting\Check Atlas Health.cmd` reports what Atlas installed and which of its settings have changed since, without changing anything. The full list of toggles and install tweaks is generated into [`docs/catalog`](docs/catalog/toggles.md).
+After installing, `AtlasDesktop\9. Solución de problemas\Revisar la salud de Aether.cmd` reports what Atlas installed and which of its settings have changed since, without changing anything. The full list of toggles and install tweaks is generated into [`docs/catalog`](docs/catalog/toggles.md).
 
 Optional Atlas Toolbox installation resolves the latest stable Toolbox release at install time. Toolbox is intentionally not pinned to an Atlas version, so a Toolbox update does not require a new Atlas release.
 

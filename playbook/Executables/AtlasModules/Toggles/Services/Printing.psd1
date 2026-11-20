@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'Printing'
     Description = 'Printing services, Windows features and the Print context menu entries. The context menu part can be run alone with /justcontext.'
     Elevation   = 'Admin'
@@ -8,7 +8,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '6. Advanced Configuration\Services\Printing\Disable Printing.cmd'
+            Launcher      = '6. Configuración avanzada\Servicios\Impresión\Desactivar impresión.cmd'
             Reboot        = 'Recommend'
             ContextAction = 'Set-AtlasPrintContextMenu'
             MachineAction = 'Set-AtlasPrintingMachineState'
@@ -16,7 +16,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Advanced Configuration\Services\Printing\Enable Printing (default).cmd'
+            Launcher      = '6. Configuración avanzada\Servicios\Impresión\Activar impresión (predeterminado).cmd'
             Reboot        = 'Recommend'
             ContextAction = 'Set-AtlasPrintContextMenu'
             MachineAction = 'Set-AtlasPrintingMachineState'

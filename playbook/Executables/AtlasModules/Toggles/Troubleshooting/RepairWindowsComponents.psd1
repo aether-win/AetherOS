@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name          = 'RepairWindowsComponents'
     Description   = 'Repairs Windows components and system files with DISM RestoreHealth and SFC. Records no state.'
     Elevation     = 'Admin'
@@ -8,7 +8,7 @@
     States        = @(
         @{
             Name            = 'Run'
-            Launcher        = '9. Troubleshooting\Repair Windows Components.cmd'
+            Launcher        = '9. Solución de problemas\Reparar componentes de Windows.cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Repair-AtlasWindowsComponents'
         }

@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name          = 'Run'
-            Launcher      = '2. Drivers\Run Update Drivers.cmd'
+            Launcher      = '2. Controladores\Buscar controladores en Windows Update.cmd'
             Reboot        = 'None'
             MachineAction = 'Invoke-AtlasDriverUpdate'
         }

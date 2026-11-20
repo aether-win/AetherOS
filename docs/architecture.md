@@ -224,7 +224,7 @@ tree for toggles.
 ## The health check
 
 [Entry\Test-AtlasHealth.ps1](../playbook/Executables/AtlasModules/Scripts/Entry/Test-AtlasHealth.ps1)
-is available as the AtlasDesktop launcher `9. Troubleshooting\Check Atlas Health.cmd`. It
+is available as the AtlasDesktop launcher `9. Solución de problemas\Revisar la salud de Aether.cmd`. It
 verifies every recorded toggle state and applicable tweak, in machine scope and the
 calling user's own HKCU, using the checks in [Verification](#verification). It changes
 nothing and prints a report, or JSON with `-Json`.
@@ -675,10 +675,10 @@ schema has the full rules.
 - Three AtlasDesktop launchers are hand-written because no toggle describes them. They
   call the same environment helper, and the lines they print themselves reuse the Ui.ps1
   sentences:
-  - `Install AtlasOS Toolbox.cmd` and `4. Interface Tweaks\Start Menu\Install Open-Shell.cmd`
+  - `Install AtlasOS Toolbox.cmd` and `4. Interfaz\Menú Inicio\Instalar Open-Shell.cmd`
     start their own elevated installer. Install Open-Shell then restarts File Explorer in
     the caller's session.
-  - `9. Troubleshooting\Set services to defaults.cmd` forwards to
+  - `9. Solución de problemas\Servicios a sus valores por defecto.cmd` forwards to
     `Entry\Invoke-AtlasResetServices.ps1`.
 - The engine and the Atlas.Core console vocabulary (`Domain\Ui.ps1`) own what an
   interactive run prints; companions only add steps, questions and facts through the same

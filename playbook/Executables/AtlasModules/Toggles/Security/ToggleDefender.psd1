@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name             = 'Run'
-            Launcher         = '7. Security\Defender\Toggle Defender.cmd'
+            Launcher         = '7. Seguridad\Defender\Activar o desactivar Defender.cmd'
             Reboot           = 'Prompt'
             MachineAction    = 'Invoke-AtlasDefenderToggle'
             InteractiveState = 'Select-AtlasDefenderToggleState'

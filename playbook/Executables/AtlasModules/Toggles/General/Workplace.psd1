@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'Workplace'
     Description = 'Workplace (Access work or school) settings page visibility. The page is opened interactively only.'
     Elevation   = 'Admin'
@@ -8,14 +8,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. General Configuration\Workplace\Disable Workplace.cmd'
+            Launcher      = '3. Configuración general\Cuentas de trabajo o escuela\Desactivar cuentas de trabajo o escuela.cmd'
             Reboot        = 'None'
             MachineAction = 'Hide-AtlasWorkplaceSettingsPage'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. General Configuration\Workplace\Enable Workplace.cmd'
+            Launcher      = '3. Configuración general\Cuentas de trabajo o escuela\Activar cuentas de trabajo o escuela.cmd'
             Reboot        = 'None'
             MachineAction = 'Show-AtlasWorkplaceSettingsPage'
         }

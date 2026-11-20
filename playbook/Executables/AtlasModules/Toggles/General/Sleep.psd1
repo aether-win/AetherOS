@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'Sleep'
     Description = 'Sleep power-scheme settings, with an optional hibernation follow-up on an interactive disable.'
     Elevation   = 'Admin'
@@ -7,14 +7,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. General Configuration\Sleep\Disable Sleep.cmd'
+            Launcher      = '3. Configuración general\Suspensión\Desactivar suspensión.cmd'
             Reboot        = 'None'
             MachineAction = 'Set-AtlasSleepState'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. General Configuration\Sleep\Enable Sleep (default).cmd'
+            Launcher      = '3. Configuración general\Suspensión\Activar suspensión (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Set-AtlasSleepState'
         }

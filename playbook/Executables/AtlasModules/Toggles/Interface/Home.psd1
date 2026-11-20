@@ -6,7 +6,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interface Tweaks\File Explorer Customization\Home\Disable Home (default).cmd'
+            Launcher   = '4. Interfaz\Explorador de archivos\Inicio\Ocultar Inicio (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}'; Operation = 'DeleteKey' }
@@ -17,7 +17,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '4. Interface Tweaks\File Explorer Customization\Home\Enable Home.cmd'
+            Launcher   = '4. Interfaz\Explorador de archivos\Inicio\Mostrar Inicio.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{f874310e-b6b7-47dc-bc84-b9e6b38f5903}'; Operation = 'AddKey' }

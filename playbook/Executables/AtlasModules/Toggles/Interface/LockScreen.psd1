@@ -7,7 +7,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '4. Interface Tweaks\Lock Screen\Show Lock Screen (default).cmd'
+            Launcher      = '4. Interfaz\Pantalla de bloqueo\Mostrar pantalla de bloqueo (predeterminado).cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization'; Name = 'NoLockScreen'; Operation = 'Delete' }
@@ -18,7 +18,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interface Tweaks\Lock Screen\Hide Lock Screen.cmd'
+            Launcher   = '4. Interfaz\Pantalla de bloqueo\Ocultar pantalla de bloqueo.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization'; Name = 'NoLockScreen'; Type = 'DWord'; Data = 1 }

@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'NVidiaDisplayContainerContextMenu'
     Description = 'Desktop context menu that enables or disables the NVIDIA Display Container LS service.'
     Elevation   = 'Admin'
@@ -8,7 +8,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Advanced Configuration\Services\NVIDIA Display Container\Context Menu\Add Container Context Menu.cmd'
+            Launcher      = '6. Configuración avanzada\Servicios\NVIDIA Display Container\Menú contextual\Agregar Container al menú.cmd'
             Reboot        = 'RestartExplorer'
             MachineAction = 'Add-AtlasNVidiaContainerContextMenu'
             ReplayApplicable = 'Test-AtlasNVidiaContainerContextMenuApplicable'
@@ -16,7 +16,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '6. Advanced Configuration\Services\NVIDIA Display Container\Context Menu\Remove Container Context Menu (default).cmd'
+            Launcher      = '6. Configuración avanzada\Servicios\NVIDIA Display Container\Menú contextual\Quitar Container del menú (predeterminado).cmd'
             Reboot        = 'RestartExplorer'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Classes\DesktopBackground\Shell\NVIDIAContainer'; Operation = 'DeleteKey' }

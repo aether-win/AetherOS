@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'SuperFetch'
     Description = 'SuperFetch (SysMain) and ReadyBoost.'
     Elevation   = 'Admin'
@@ -8,14 +8,14 @@
         @{
             Name            = 'Disable'
             StateValue      = 0
-            Launcher        = '6. Advanced Configuration\Services\Superfetch\Disable SuperFetch.cmd'
+            Launcher        = '6. Configuración avanzada\Servicios\Superfetch\Desactivar SuperFetch.cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Set-AtlasSuperFetchMachineState'
         }
         @{
             Name            = 'Enable'
             StateValue      = 1
-            Launcher        = '6. Advanced Configuration\Services\Superfetch\Enable SuperFetch (default).cmd'
+            Launcher        = '6. Configuración avanzada\Servicios\Superfetch\Activar SuperFetch (predeterminado).cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Set-AtlasSuperFetchMachineState'
         }

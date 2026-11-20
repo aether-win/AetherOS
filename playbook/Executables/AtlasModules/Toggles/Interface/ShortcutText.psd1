@@ -6,7 +6,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interface Tweaks\Shortcut Text\Disable Shortcut Text (default).cmd'
+            Launcher   = '4. Interfaz\Texto de accesos directos\Quitar texto - Acceso directo (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates'; Name = 'ShortcutNameTemplate'; Type = 'String'; Data = '"%s.lnk"' }
@@ -15,7 +15,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '4. Interface Tweaks\Shortcut Text\Restore Shortcut Text.cmd'
+            Launcher   = '4. Interfaz\Texto de accesos directos\Restaurar texto - Acceso directo.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates'; Name = 'ShortcutNameTemplate'; Operation = 'Delete' }

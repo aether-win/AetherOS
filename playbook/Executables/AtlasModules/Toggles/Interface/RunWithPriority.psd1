@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'RunWithPriority'
     Description = 'The Run with priority cascading entry in the .exe context menu.'
     Elevation   = 'Admin'
@@ -7,14 +7,14 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '4. Interface Tweaks\Context Menus\Run With Priority\Add Run With Priority In Context Menu.cmd'
+            Launcher      = '4. Interfaz\Menús contextuales\Ejecutar con prioridad\Agregar Ejecutar con prioridad al menú.cmd'
             Reboot        = 'None'
             MachineAction = 'Add-AtlasRunWithPriorityContextMenu'
         }
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interface Tweaks\Context Menus\Run With Priority\Remove Run With Priority In Context Menu (default).cmd'
+            Launcher   = '4. Interfaz\Menús contextuales\Ejecutar con prioridad\Quitar Ejecutar con prioridad del menú (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Classes\exefile\Shell\Priority'; Operation = 'DeleteKey' }

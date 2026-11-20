@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name          = 'FixExplorerRuntimeError'
     Description   = 'Fixes blank Microsoft Visual C++ Runtime Library errors from File Explorer by removing the search redirect that older Atlas builds left. Records no state.'
     Elevation     = 'Admin'
@@ -6,7 +6,7 @@
     States        = @(
         @{
             Name     = 'Run'
-            Launcher = '9. Troubleshooting\Fix File Explorer Visual C++ Runtime Error.cmd'
+            Launcher = '9. Solución de problemas\Arreglar error de Visual C++ del Explorador.cmd'
             Reboot   = 'RestartExplorer'
             # Machine keys only: HKCU entries would be user work, which an elevated caller can't run.
             Registry = @(

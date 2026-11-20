@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'FileSharing'
     Description = 'File Sharing (network discovery, SMB, NetBIOS bindings) through the same Operations helpers the fresh install uses; Enable optionally adds Network to the Explorer navigation pane.'
     Elevation   = 'Admin'
@@ -7,14 +7,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. General Configuration\File Sharing\Disable File Sharing (default).cmd'
+            Launcher      = '3. Configuración general\Uso compartido\Desactivar uso compartido.cmd'
             Reboot        = 'Prompt'
             MachineAction = 'Set-AtlasFileSharingMachineState'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. General Configuration\File Sharing\Enable File Sharing.cmd'
+            Launcher      = '3. Configuración general\Uso compartido\Activar uso compartido (predeterminado).cmd'
             Reboot        = 'Prompt'
             MachineAction = 'Set-AtlasFileSharingMachineState'
             UserAction    = 'Add-AtlasFileSharingNetworkNavigationPane'

@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'LanmanWorkstation'
     Description = 'Lanman Workstation and SMB services plus the SmbDirect feature.'
     Elevation   = 'Admin'
@@ -8,7 +8,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '6. Advanced Configuration\Services\Lanman Workstation (SMB)\Disable Lanman Workstation.cmd'
+            Launcher      = '6. Configuración avanzada\Servicios\Estación de trabajo (SMB)\Desactivar Estación de trabajo.cmd'
             Reboot        = 'Recommend'
             Services      = @(
                 @{ Name = 'KSecPkg'; StartupType = 4 }
@@ -24,7 +24,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Advanced Configuration\Services\Lanman Workstation (SMB)\Enable Lanman Workstation (default).cmd'
+            Launcher      = '6. Configuración avanzada\Servicios\Estación de trabajo (SMB)\Activar Estación de trabajo (predeterminado).cmd'
             Reboot        = 'Recommend'
             Services      = @(
                 @{ Name = 'KSecPkg'; StartupType = 0 }

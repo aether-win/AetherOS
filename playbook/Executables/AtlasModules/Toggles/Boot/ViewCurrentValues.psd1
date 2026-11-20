@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name          = 'ViewCurrentValues'
     Description   = 'Prints the current boot configuration (bcdedit /enum {current}); records no state.'
     Elevation     = 'Admin'
@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name            = 'View'
-            Launcher        = '6. Advanced Configuration\Boot Configuration\View Current Values.cmd'
+            Launcher        = '6. Configuración avanzada\Arranque\Ver valores actuales.cmd'
             Reboot          = 'None'
             MachineAction   = 'Show-AtlasBootValues'
         }

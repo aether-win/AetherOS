@@ -1,4 +1,4 @@
-@{
+﻿@{
     Name        = 'TakeOwnership'
     Description = 'The Take Ownership context menu entries. Each state is applied from its .reg file under Scripts\Registry\TakeOwnership.'
     Elevation   = 'Admin'
@@ -7,14 +7,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '4. Interface Tweaks\Context Menus\Take Ownership\Remove Take Ownership to Context Menu (default).cmd'
+            Launcher      = '4. Interfaz\Menús contextuales\Tomar posesión\Quitar Tomar posesión del menú (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Import-AtlasTakeOwnershipContextMenu'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '4. Interface Tweaks\Context Menus\Take Ownership\Add Take Ownership to Context Menu.cmd'
+            Launcher      = '4. Interfaz\Menús contextuales\Tomar posesión\Agregar Tomar posesión al menú.cmd'
             Reboot        = 'None'
             MachineAction = 'Import-AtlasTakeOwnershipContextMenu'
         }
