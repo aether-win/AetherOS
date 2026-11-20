@@ -17,7 +17,7 @@ Install modes: Fresh, Upgrade.
 | --- | --- | --- | --- |
 | `atlas-network-settings`<br>Applies Aether' Network Settings | Applies Aether' optimised network settings. Disables vendor NIC power-saving features (green Ethernet, DMA coalescing and similar) for consistent latency, which slightly increases idle power draw - relevant on laptops. |  | toggle 1 |
 | `shares/disable-smb-bandwidth-throttling`<br>Disable SMB Bandwidth Throttling | Disables SMB client bandwidth throttling. Mainly improves file-share throughput on high-latency links (the redirector throttles there by design); little effect on a LAN. Same setting as Set-SmbClientConfiguration -EnableBandwidthThrottling 0. |  | registry 1 |
-| `aether-red`<br>Red de trabajo Aether | Aether: aplica sin preguntas lo que hace Reparar-Red-Aether (probado contra el error 0x80070035): drivers y servicios del cliente SMB, proveedor de red, enlaces de los adaptadores, NetBIOS, redes en Privada, reglas de firewall de detección y uso compartido, impresión, y quita la firma SMB obligatoria y el bloqueo de invitado de Windows 11 24H2+. |  | Script `aether-red.ps1` |
+| `aether-red`<br>Red de trabajo Aether | Aether: aplica sin preguntas lo que hace Reparar-Red-Aether (probado contra el error 0x80070035): drivers y servicios del cliente SMB, proveedor de red, enlaces de los adaptadores, NetBIOS, redes en Privada (también las Wi-Fi nuevas, con la tarea "Aether Redes privadas"), reglas de firewall de detección y uso compartido, impresión, y quita la firma SMB obligatoria y el bloqueo de invitado de Windows 11 24H2+. |  | Script `aether-red.ps1` |
 
 ## performance
 
