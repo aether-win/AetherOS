@@ -29,7 +29,7 @@ Describe 'Console vocabulary' {
 
         $lines | Should -Be @(
             'Aether OS - Enable Sleep'
-            '----------------------'
+            '------------------------'
             'Restores the Windows sleep timers.'
             ''
         )
@@ -103,7 +103,7 @@ Describe 'Run outcome and closing line' {
             Write-AtlasTitle -Text 'Enable Sleep'
             Write-AtlasCompletion -Title 'Enable Sleep'
         }
-        $lines | Should -Be @('Aether OS - Enable Sleep', '----------------------', '', 'Done: Enable Sleep.')
+        $lines | Should -Be @('Aether OS - Enable Sleep', '------------------------', '', 'Done: Enable Sleep.')
     }
 
     It 'becomes Manual after a manual step so the closing line does not claim success' {
