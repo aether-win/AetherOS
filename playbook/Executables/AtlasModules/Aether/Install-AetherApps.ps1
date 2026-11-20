@@ -188,10 +188,10 @@ if ($apps -contains 'wind-aether') {
         $paquete = Join-Path $carpetaAether 'Wind-Aether\Wind-Aether-mods.json'
         $copia = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Wind-Aether-mods.json'
         Copy-Item -LiteralPath $paquete -Destination $copia -Force -ErrorAction SilentlyContinue
-        $cli = @(
-            (Join-Path $env:ProgramFiles 'Windhawk\windhawk-cli.exe'),
-            (Join-Path ${env:ProgramFiles(x86)} 'Windhawk\windhawk-cli.exe')
-        ) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+        $cli = @($env:ProgramFiles, ${env:ProgramFiles(x86)}) |
+            Where-Object { $_ -and $_.Trim() } |
+            ForEach-Object { Join-Path $_ 'Windhawk\windhawk-cli.exe' } |
+            Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
         if ($cli) {
             & $cli data import $paquete --yes
             if ($LASTEXITCODE -eq 0) { Ok 'Mods de Wind-Aether importados (todos desactivados; actívalos desde la app de Aether)' }

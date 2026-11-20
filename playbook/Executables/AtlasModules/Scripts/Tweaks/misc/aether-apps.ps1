@@ -2,6 +2,14 @@
 # hace el usuario al iniciar sesión (Initialize-NewUser registra Install-AetherApps.ps1).
 $ErrorActionPreference = 'Stop'
 
+# Aether: red de seguridad. Este companion configura cosas de Aether durante la
+# instalación; si algo inesperado falla, se registra un aviso y se continúa, nunca
+# se aborta la instalación (regla de Aether: nada bloquea el acceso, solo avisa).
+trap {
+    try { Write-AtlasLog -Level Warning -Message ("aether-apps: paso omitido por un error no crítico: " + $_.Exception.Message) -ErrorRecord $_ } catch { }
+    continue
+}
+
 $opciones = @('app-claude', 'app-chatgpt', 'app-python', 'app-keyvault', 'app-pcmanager',
     'app-steam', 'app-amd-drivers', 'wind-aether')
 $elegidas = @($opciones | Where-Object { Test-AtlasOption -Name $_ })

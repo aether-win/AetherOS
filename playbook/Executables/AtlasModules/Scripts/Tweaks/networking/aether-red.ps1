@@ -4,6 +4,14 @@
 # y se sigue con las demás.
 $ErrorActionPreference = 'Stop'
 
+# Aether: red de seguridad. Este companion configura cosas de Aether durante la
+# instalación; si algo inesperado falla, se registra un aviso y se continúa, nunca
+# se aborta la instalación (regla de Aether: nada bloquea el acceso, solo avisa).
+trap {
+    try { Write-AtlasLog -Level Warning -Message ("aether-red: paso omitido por un error no crítico: " + $_.Exception.Message) -ErrorRecord $_ } catch { }
+    continue
+}
+
 function Invoke-AetherRedPaso {
     param([string]$Nombre, [scriptblock]$Accion)
     try {

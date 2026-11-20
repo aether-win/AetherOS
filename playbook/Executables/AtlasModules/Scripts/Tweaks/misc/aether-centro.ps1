@@ -2,6 +2,14 @@
 # iniciar sesión (HKLM Run: corre como cada usuario, sin permisos de administrador).
 $ErrorActionPreference = 'Stop'
 
+# Aether: red de seguridad. Este companion configura cosas de Aether durante la
+# instalación; si algo inesperado falla, se registra un aviso y se continúa, nunca
+# se aborta la instalación (regla de Aether: nada bloquea el acceso, solo avisa).
+trap {
+    try { Write-AtlasLog -Level Warning -Message ("aether-centro: paso omitido por un error no crítico: " + $_.Exception.Message) -ErrorRecord $_ } catch { }
+    continue
+}
+
 $carpeta = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules\Aether\Centro'
 $centro = Join-Path $carpeta 'Centro-Aether.ps1'
 $icono = Join-Path $carpeta 'aether.ico'
