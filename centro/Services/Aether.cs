@@ -118,7 +118,56 @@ public static class Aether
 
     public static string NombreEquipo => Environment.MachineName;
 
+    // --- Limpieza ----------------------------------------------------------------------
     public static Task<string> Limpiar() => Ejecutar("Clear-AetherTemporales");
+
+    public static Task<string> AbrirAlmacenamiento() =>
+        CorrerPowerShell("Start-Process 'ms-settings:storagesense'");
+
+    // --- Bateria y salud ---------------------------------------------------------------
+    public static async Task<string> Bateria()
+    {
+        string s = (await Ejecutar("$b=Get-AetherBateria; if($null -eq $b){'SIN'}else{$b}")).Trim();
+        return s;
+    }
+
+    public static async Task<string> SaludBateria()
+    {
+        string s = (await Ejecutar(
+            "$h=Get-AetherSaludBateria; if($null -eq $h){'SIN'}else{\"$($h.Salud)|$($h.Actual)|$($h.Diseno)\"}")).Trim();
+        return s;
+    }
+
+    // --- Ajustes (HKCU\Software\AetherOS\Centro) ---------------------------------------
+    public static async Task<string> LeerAjuste(string nombre, string porDefecto)
+    {
+        string s = (await Ejecutar($"Get-AetherAjuste -Nombre '{nombre}' -PorDefecto '{porDefecto}'")).Trim();
+        return string.IsNullOrEmpty(s) ? porDefecto : s;
+    }
+
+    public static Task<string> GuardarAjuste(string nombre, int valor) =>
+        Ejecutar($"Set-AetherAjuste -Nombre '{nombre}' -Valor {valor}");
+
+    // --- Tema --------------------------------------------------------------------------
+    public static Task<string> AplicarTema(string tema) => Ejecutar($"Set-AetherTema -Tema {tema}");
+
+    // --- Respaldo ----------------------------------------------------------------------
+    public static Task<string> ConfigurarRespaldo(string destino)
+    {
+        string esc = destino.Replace("'", "''");
+        return CorrerPowerShell(
+            "$d=Join-Path $env:APPDATA 'Aether'; New-Item -ItemType Directory -Path $d -Force | Out-Null; " +
+            "$f=Join-Path $d 'respaldo.json'; " +
+            "$c=if(Test-Path $f){Get-Content $f -Raw | ConvertFrom-Json}else{[pscustomobject]@{}}; " +
+            $"$c | Add-Member -NotePropertyName Destino -NotePropertyValue '{esc}' -Force; " +
+            "$c | ConvertTo-Json | Set-Content -LiteralPath $f -Encoding UTF8");
+    }
+
+    public static Task<string> HacerRespaldo()
+    {
+        string script = Path.Combine(CarpetaAether, "Centro", "Respaldo-Aether.ps1");
+        return CorrerPowerShell($"& '{script.Replace("'", "''")}'");
+    }
 
     public static async Task<string> ModoActual()
     {

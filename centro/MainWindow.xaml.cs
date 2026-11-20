@@ -37,10 +37,15 @@ public sealed partial class MainWindow : Window
     {
         Type pagina = tag switch
         {
+            "inicio" => typeof(InicioPage),
             "modos" => typeof(ModosPage),
             "red" => typeof(RedPage),
             "actualizar" => typeof(ActualizarPage),
+            "limpieza" => typeof(LimpiezaPage),
+            "bateria" => typeof(BateriaPage),
+            "respaldo" => typeof(RespaldoPage),
             "wind" => typeof(WindPage),
+            "salud" => typeof(SaludPage),
             _ => typeof(PlaceholderPage),
         };
 
