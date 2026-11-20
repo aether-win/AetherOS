@@ -1,4 +1,4 @@
-# Atlas.Appx domain: installed and provisioned package-family removal.
+﻿# Atlas.Appx domain: installed and provisioned package-family removal.
 #
 # Patterns match package family names (Name_PublisherId), not only the Name that
 # Get-AppxPackage shows, so exact family names such as Edge's *_8wekyb3d8bbwe match.
@@ -28,6 +28,8 @@ function Get-AtlasAppxRemovalDefinition {
         Returns the ordered package-family removal list the AppxSupport phase applies.
     #>
     return @(
+        # Aether: Paint, Cámara, Notas rápidas, Alarmas y reloj, Grabadora de sonido, To Do y
+        # Outlook nuevo se quedan (los usa el usuario). OneDrive se quita en la fase Components.
         [pscustomobject]@{ Name = 'MicrosoftTeams*';                              Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'MSTeams*';                                     Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.Copilot*';                           Option = $null;                 IgnoreErrors = $false }
@@ -44,8 +46,6 @@ function Get-AtlasAppxRemovalDefinition {
         [pscustomobject]@{ Name = 'Microsoft.XboxSpeechToTextOverlay*';           Option = $null;                 IgnoreErrors = $true }
         [pscustomobject]@{ Name = '7EE7776C.LinkedInforWindows*';                 Option = $null;                 IgnoreErrors = $true }
         [pscustomobject]@{ Name = 'microsoft.windowscommunicationsapps*';          Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.MSPaint*';                           Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.Paint*';                             Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.Getstarted*';                        Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.WindowsBackup*';                     Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.ZuneVideo*';                         Option = $null;                 IgnoreErrors = $false }
@@ -59,26 +59,19 @@ function Get-AtlasAppxRemovalDefinition {
         [pscustomobject]@{ Name = 'Microsoft.BingFinance*';                       Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.BingSports*';                        Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.BingSearch*';                        Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.OutlookForWindows*';                 Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.GetHelp*';                           Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.Microsoft3DViewer*';                 Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.MicrosoftOfficeHub*';                Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.MicrosoftSolitaireCollection*';       Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.MicrosoftStickyNotes*';              Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.StickyNotesPreview*';                Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.Office.OneNote*';                    Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.OneConnect*';                        Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.People*';                            Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.PowerAutomateDesktop*';              Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.SkypeApp*';                          Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.Todos*';                             Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.Wallet*';                            Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.Whiteboard*';                        Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.WindowsAlarms*';                     Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.WindowsCamera*';                     Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.WindowsFeedbackHub*';                Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.WindowsMaps*';                       Option = $null;                 IgnoreErrors = $false }
-        [pscustomobject]@{ Name = 'Microsoft.WindowsSoundRecorder*';              Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.StartExperiencesApp*';               Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Ink.Handwriting.Main.Store.en-US1.0';           Option = $null;                 IgnoreErrors = $false }
     )

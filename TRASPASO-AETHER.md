@@ -24,9 +24,9 @@ Este documento tiene dos partes:
 > **TRASPASO-AETHER.md** y después **AETHER-PLAN.md**. Sigue exactamente desde donde quedó,
 > respeta todas las decisiones y reglas que están ahí, y háblame siempre en español.
 
-### 3. Lo que tienes pendiente de responder
-- **¿Qué apps de Windows conservas?** Atlas las borra: Paint, Cámara, Notas rápidas,
-  Alarmas y reloj, Grabadora de sonido, Microsoft To Do, Outlook nuevo.
+### 3. Decisiones ya respondidas
+- Apps de Windows: conserva Paint, Cámara, Notas rápidas, Alarmas y reloj, Grabadora de sonido,
+  To Do y Outlook nuevo. Solo se borra OneDrive.
 
 ---
 
@@ -77,7 +77,7 @@ después de cada avance.
 
 ### B.4 Qué sigue, en orden de prioridad
 El usuario tiene poco límite de uso esta semana. Prioridad: **una primera versión que funcione**.
-1. **Paso 2 — ajustes en los scripts del playbook** (lo más importante):
+1. **Paso 2 — HECHO (20-nov, ver Progreso en AETHER-PLAN.md).** Lo que se pidió era:
    - **Red automática** (obligatorio): integrar `aether/red/Reparar-Red-Aether.ps1` (PROBADO en su
      laptop, resolvió el error 0x80070035) como tarea del instalador; FileSharing en Enable;
      quitar los tweaks `restrict-anonymous-access`, `restrict-anonymous-enumeration`,

@@ -203,8 +203,10 @@ cuidado, en una pasada aparte.
         disable-game-bar; Vincular teléfono se queda (sin Remove-AtlasPhoneLinkAppx ni toggle
         PhoneLink Disable); se quitan GamingApp, XboxGamingOverlay, SpeechToTextOverlay y LinkedIn.
         Hibernación ya estaba activa (set-power-settings).
-      * Sin hacer todavía: `experimental-cpu-power` (va con los modos, paso 4); apps de Windows que
-        conserva el usuario (Paint, Cámara, etc.: falta su respuesta).
+      * DECISIÓN del usuario (19-nov): conserva Paint, Cámara, Notas rápidas, Alarmas y reloj,
+        Grabadora de sonido, To Do y Outlook nuevo (quitados de `Atlas.Appx/Domain/Removal.ps1`);
+        de esas solo se borra OneDrive (ya lo quita la fase Components).
+      * Sin hacer todavía: `experimental-cpu-power` (va con los modos, paso 4).
 
 ## 4. Compilación y pruebas
 GitHub Actions en el repo: `test.yml` (Pester), `lint.yml` (PSScriptAnalyzer), `yaml.yml`, `build.yml`
@@ -212,7 +214,7 @@ GitHub Actions en el repo: `test.yml` (Pester), `lint.yml` (PSScriptAnalyzer), `
 `integration.yml` necesita un runner propio con Hyper-V (no se usa). Ver resultados con
 `gh run list --repo aether-win/AetherOS`.
 
-### Estado de CI — TODO EN VERDE ✅ (commit 8246b8a)
+### Estado de CI — TODO EN VERDE ✅ (commit 303b0f6, paso 2)
 Build Playbook ✅ · Lint PowerShell ✅ · Lint YAML ✅ · Test (Pester PS7 + Windows PowerShell 5.1) ✅.
 Hecho en la limpieza: contrato de opciones igualado (playbook.conf = state = schema = custom.yml);
 sin tweak del atajo de captura; set-power-settings sin opciones viejas; Components y Choices
@@ -226,8 +228,8 @@ fixtures `tests/fixtures/windows-transition/*.json`, app Rust `legacy_choices.rs
 `Invoke-AtlasEdgeRemoval.ps1`/`Remove-Edge*.ps1` (usados aún por Widgets y Test-EdgeState),
 `Initialize-AtlasLibreWolfUser.ps1`, AME `custom.yml` y su validador de build.
 
-Pendiente revisar con el usuario (paso 2): Atlas quita Paint, Cámara, Notas rápidas, Alarmas y
-reloj, Grabadora de sonido, To Do, Outlook nuevo, etc. (`Atlas.Appx/Domain/Removal.ps1`).
+Resuelto: el usuario conserva Paint, Cámara, Notas rápidas, Alarmas y reloj, Grabadora de sonido,
+To Do y Outlook nuevo; solo se borra OneDrive.
 
 ### Reglas que exige CI
 - Todo `.ps1/.psm1/.psd1` con caracteres no ASCII (acentos, ñ) debe llevar BOM UTF-8
