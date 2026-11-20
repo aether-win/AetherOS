@@ -408,7 +408,7 @@ function Assert-AtlasProcessExplorerInstallOwnership {
                 [string]$ExistingState.InstalledBinarySha256,
                 $ExpectedBinarySha256
             )) {
-            throw 'Process Explorer will not overwrite a package Atlas no longer owns.'
+            throw 'Process Explorer will not overwrite a package Aether no longer owns.'
         }
     }
     if ($null -eq $ExistingState -and [IO.File]::Exists($Layout.BinaryPath)) {
@@ -667,7 +667,7 @@ function Uninstall-AtlasProcessExplorerPackageCore {
     Restore-AtlasProcessExplorerIntegration -Layout $layout -State $state
     $debugger = Get-AtlasProcessExplorerDebugger -IfeoPath $layout.IfeoPath
     if (Test-AtlasProcessExplorerDebuggerValue -State $debugger -ExpectedPath $layout.BinaryPath) {
-        throw 'Task Manager still redirects to the Atlas Process Explorer package; the package was retained.'
+        throw 'Task Manager still redirects to the Aether Process Explorer package; the package was retained.'
     }
     Close-AtlasProcessExplorerPackageProcess -PackagePath $layout.PackagePath
     if ([IO.File]::Exists($layout.BinaryPath)) {

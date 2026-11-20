@@ -296,7 +296,7 @@ function Invoke-AtlasPriorityLaunch {
                 [IO.Path]::GetFullPath($handlerPath),
                 [StringComparison]::OrdinalIgnoreCase
             )) {
-            throw 'Realtime and elevated launches are available only through the installed Atlas handler.'
+            throw 'Realtime and elevated launches are available only through the installed Aether handler.'
         }
         if ($Elevated -and -not $isAdministrator) {
             throw 'The elevated priority handler does not have an administrator token.'

@@ -24,7 +24,7 @@ Import-Module -Name (Join-Path $scriptsRoot 'Modules\Atlas.InstallState\Atlas.In
 
 $rebase = Get-AtlasWindowsTransitionRebase
 if ($null -eq $rebase) {
-    throw 'A Rebase install needs Atlas Manager''s record of the Windows move, which is gone or unreadable.'
+    throw 'A Rebase install needs Aether Manager''s record of the Windows move, which is gone or unreadable.'
 }
 foreach ($name in @('winServices.reg', 'atlasServices.reg')) {
     Write-AtlasLog -Message (Copy-AtlasRebaseServiceBackup -Name $name)

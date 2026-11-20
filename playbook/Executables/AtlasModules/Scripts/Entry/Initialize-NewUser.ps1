@@ -255,13 +255,13 @@ if ($FinalizeSearch) {
         }
     }
     catch {
-        Write-Warning "Failed to open the Atlas app: $($_.Exception.Message)"
+        Write-Warning "Failed to open the Aether app: $($_.Exception.Message)"
     }
     if (-not $opened) {
         try {
             # Stays on screen until dismissed: the user may have left the PC to install.
             & (Join-Path $windir 'AtlasModules\Scripts\Operations\Show-AtlasToast.ps1') `
-                -Title Atlas -Message 'Atlas is installed and your PC is ready to use.' -Persistent
+                -Title Aether -Message 'Aether is installed and your PC is ready to use.' -Persistent
         }
         catch {
             Write-Warning "Failed to show the completion toast: $($_.Exception.Message)"
@@ -319,11 +319,11 @@ if (-not $FromInstall -and $tokenBlock -ne 'BuiltInAdministrator') {
 
 if ($null -ne $tokenBlock) {
     if ($tokenBlock -eq 'UacOff') {
-        Write-Warning ('Atlas skipped user setup for this account: User Account Control (UAC) is off, so it has a full administrator token, and setup needs a standard user token. ' +
+        Write-Warning ('Aether skipped user setup for this account: User Account Control (UAC) is off, so it has a full administrator token, and setup needs a standard user token. ' +
             'Turn on UAC and restart Windows; setup runs again at the next sign-in.')
     }
     else {
-        Write-Warning ('Atlas skipped user setup for this account: the built-in Administrator account has a full administrator token, and setup needs a standard user token. ' +
+        Write-Warning ('Aether skipped user setup for this account: the built-in Administrator account has a full administrator token, and setup needs a standard user token. ' +
             "Use another account to get Atlas's user settings.")
     }
     return
@@ -334,7 +334,7 @@ $atlasDesktop = Join-Path $windir 'AtlasDesktop'
 if (-not (Test-Path -LiteralPath $atlasModules -PathType Container) -or
     -not (Test-Path -LiteralPath $atlasDesktop -PathType Container) -or
     -not [IO.File]::Exists($bootstrap)) {
-    throw 'Atlas user-setup files are missing from the Windows directory.'
+    throw 'Aether user-setup files are missing from the Windows directory.'
 }
 $modulesRoot = Join-Path $atlasModules 'Scripts\Modules'
 # Atlas.Core carries Initialize-AtlasNativeType, the single native compile entry point.
@@ -353,7 +353,7 @@ if ([string]::IsNullOrWhiteSpace($desktopPath) -or
 }
 $atlasFolderIcon = Join-Path $atlasModules 'Other\atlas-folder.ico'
 if (-not (Test-Path -LiteralPath $atlasFolderIcon -PathType Leaf)) {
-    throw "The Atlas folder icon is missing at '$atlasFolderIcon'."
+    throw "The Aether folder icon is missing at '$atlasFolderIcon'."
 }
 New-AtlasShortcut -Source $atlasDesktop `
     -Destination (Join-Path $desktopPath 'Aether.lnk') `
@@ -364,14 +364,14 @@ function Invoke-AtlasDesktopCommand {
 
     $path = Join-Path $atlasDesktop $RelativePath
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
-        throw "Atlas desktop command '$path' was not found."
+        throw "Aether desktop command '$path' was not found."
     }
 
     # Setup owns the final shell refresh. A nested toggle must not restart Explorer
     # while the RunOnce retry is still armed, which can launch setup concurrently.
     & $path /silent /noaction
     if ($LASTEXITCODE -ne 0) {
-        throw "Atlas desktop command '$path' exited with code $LASTEXITCODE."
+        throw "Aether desktop command '$path' exited with code $LASTEXITCODE."
     }
 }
 
@@ -410,7 +410,7 @@ if ($setupMarker -lt 1) {
     if (-not $FromInstall) {
         try {
             & (Join-Path $atlasModules 'Scripts\Operations\Show-AtlasToast.ps1') `
-                -Title Atlas `
+                -Title Aether `
                 -Message 'Finishing setup. Your desktop may briefly flash.'
         }
         catch {

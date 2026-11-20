@@ -132,7 +132,7 @@ Describe 'Set-AtlasDefenderChoice' {
             $script:PackageStates['Z-Atlas-NoDefender-Package'] = 'InstallPending'
 
             { Set-AtlasDefenderChoice -State Enable } |
-                Should -Throw "Microsoft Defender couldn't be restored: Atlas's NoDefender package is still waiting for a restart to finish installing.*"
+                Should -Throw "Microsoft Defender couldn't be restored: Aether's NoDefender package is still waiting for a restart to finish installing.*"
 
             $script:Events | Should -BeNullOrEmpty
         }

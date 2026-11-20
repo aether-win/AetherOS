@@ -47,7 +47,7 @@ static LOG_LOCATION: OnceLock<PathBuf> = OnceLock::new();
 static PANIC_SHOWN: AtomicBool = AtomicBool::new(false);
 /// Not translated: it is shown when the app has no window (or no working
 /// one) to speak through, and must never depend on anything that can fail.
-const DIALOG_TITLE: &str = "Atlas Manager";
+const DIALOG_TITLE: &str = "Aether OS";
 
 /// A message box owned by no window, for the moments the app has none: a
 /// panic, or a headless command-line run. Blocks until dismissed.

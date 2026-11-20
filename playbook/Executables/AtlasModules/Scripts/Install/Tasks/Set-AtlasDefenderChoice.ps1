@@ -113,7 +113,7 @@ function Set-AtlasDefenderChoice {
         if ($null -eq $defender) {
             $packages = @($defenderPattern)
             if ($telemetryMissing) { $packages += $telemetryPattern }
-            Write-AtlasLog -Message "Removing Microsoft Defender with Atlas's NoDefender package."
+            Write-AtlasLog -Message "Removing Microsoft Defender with Aether's NoDefender package."
             Install-AtlasCbsPackage -Packages $packages -NonInteractive | Out-Null
             $telemetryMissing = $false
             $changed = $true
@@ -133,7 +133,7 @@ function Set-AtlasDefenderChoice {
     elseif ($defender -ceq 'Installed') {
         # The core service goes back first, while Defender is still removed and Tamper
         # Protection can't refuse the write.
-        Write-AtlasLog -Message "Bringing Microsoft Defender back: removing Atlas's NoDefender package."
+        Write-AtlasLog -Message "Bringing Microsoft Defender back: removing Aether's NoDefender package."
         Set-AtlasDefenderCoreService -State Restored
         $restore = Uninstall-AtlasCbsPackage -Packages @($defenderPattern)
         if ($telemetryMissing) {
@@ -148,7 +148,7 @@ function Set-AtlasDefenderChoice {
     elseif ($defender -ceq 'InstallPending') {
         # Defender goes at the restart whatever this run does, so carrying on would
         # report success to a user who chose to keep it.
-        throw "Microsoft Defender couldn't be restored: Atlas's NoDefender package is still waiting for a restart to finish installing. Restart Windows, then run the installation again."
+        throw "Microsoft Defender couldn't be restored: Aether's NoDefender package is still waiting for a restart to finish installing. Restart Windows, then run the installation again."
     }
     elseif ($null -eq $defender -and -not (Test-AtlasDefenderServicePresent)) {
         Write-AtlasLog -Level Warning -Message `

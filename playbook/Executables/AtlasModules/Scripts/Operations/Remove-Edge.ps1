@@ -217,7 +217,7 @@ function Invoke-MicrosoftWebViewDownload {
     $parentItem = Get-Item -LiteralPath $protectedParent -Force -ErrorAction Stop
     if (($parentItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0 -or
         -not (Test-AtlasProtectedStagingAcl -Acl (Get-Acl -LiteralPath $protectedParent -ErrorAction Stop))) {
-        throw 'The WebView download destination is not an Atlas protected staging directory.'
+        throw 'The WebView download destination is not an Aether protected staging directory.'
     }
 
     $curlPath = [IO.Path]::Combine([Environment]::GetFolderPath('System'), 'curl.exe')

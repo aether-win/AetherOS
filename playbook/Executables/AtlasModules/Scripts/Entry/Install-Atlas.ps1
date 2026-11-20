@@ -105,7 +105,7 @@ function Get-AtlasRestartComment {
 
 function Write-AtlasInstallStep {
     param([Parameter(Mandatory = $true)][string]$Message)
-    Write-Host "[Atlas] $Message"
+    Write-Host "[Aether] $Message"
 }
 
 function Get-AtlasPowerStatus {
@@ -241,7 +241,7 @@ function Invoke-AtlasPreparationCheck([string]$PayloadRoot, [string]$JobPath) {
         # The worker records why it stopped; a check can stop for reasons other than updates.
         $reason = try { [string](Get-Content -LiteralPath (Join-Path $JobPath 'state.json') -Raw -ErrorAction Stop | ConvertFrom-Json).activity.failureMessage } catch { '' }
         $detail = if ($reason) { " The check reported: $reason" } else { '' }
-        throw "Preparation verification failed. Finish Windows and Store updates in Atlas, then retry.$detail See '$JobPath'."
+        throw "Preparation verification failed. Finish Windows and Store updates in Aether, then retry.$detail See '$JobPath'."
     }
     $result = Get-Content -LiteralPath (Join-Path $JobPath 'state.json') -Raw -ErrorAction Stop | ConvertFrom-Json
     if ($result.schema -ne 1 -or $result.status -cne 'complete' -or
@@ -592,7 +592,7 @@ function New-AtlasProtectedStagingRoot {
     $stateSecurity = New-AtlasFrontDoorDirectorySecurity -ReadableState
     if ([IO.Directory]::Exists($atlasRoot)) {
         if (([IO.File]::GetAttributes($atlasRoot) -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
-            throw "The Atlas state root '$atlasRoot' must not be a reparse point."
+            throw "The Aether state root '$atlasRoot' must not be a reparse point."
         }
         # Repairs the restrictive ACL that pre-release builds of this script gave
         # AtlasOS by creating Staging first. Remove once no such machine remains.
@@ -607,14 +607,14 @@ function New-AtlasProtectedStagingRoot {
     $installRoot = [IO.Path]::Combine($atlasRoot, 'Install')
     if ([IO.Directory]::Exists($installRoot)) {
         if (([IO.File]::GetAttributes($installRoot) -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
-            throw "The Atlas install-state root '$installRoot' must not be a reparse point."
+            throw "The Aether install-state root '$installRoot' must not be a reparse point."
         }
         [IO.Directory]::SetAccessControl($installRoot, $stateSecurity)
         foreach ($name in @('active.json', 'active.json.bak')) {
             $stateFile = [IO.Path]::Combine($installRoot, $name)
             if (-not [IO.File]::Exists($stateFile)) { continue }
             if (([IO.File]::GetAttributes($stateFile) -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
-                throw "The Atlas install-state file '$stateFile' must not be a reparse point."
+                throw "The Aether install-state file '$stateFile' must not be a reparse point."
             }
             $fileSecurity = [IO.File]::GetAccessControl($stateFile)
             $fileSecurity.AddAccessRule((New-Object Security.AccessControl.FileSystemAccessRule(
@@ -861,7 +861,7 @@ try {
     }
 
     if ($WindowsSetup) {
-        throw 'WindowsSetup cannot verify per-user Microsoft Store preparation. Finish setup and run Atlas as the signed-in user.'
+        throw 'WindowsSetup cannot verify per-user Microsoft Store preparation. Finish setup and run Aether as the signed-in user.'
     }
 
     # The extracted package root holds playbook.conf; this script sits under

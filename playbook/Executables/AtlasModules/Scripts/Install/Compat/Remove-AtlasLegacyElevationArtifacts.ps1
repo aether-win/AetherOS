@@ -404,7 +404,7 @@ function Invoke-AtlasLegacyElevationMigrationCore {
         }
         elseif ($toolbox.Exists) {
             $retained++
-            Write-Warning "Customized old Atlas Toolbox record 'HKLM\$toolboxPath' was retained."
+            Write-Warning "Customized old Aether Toolbox record 'HKLM\$toolboxPath' was retained."
         }
     }
 

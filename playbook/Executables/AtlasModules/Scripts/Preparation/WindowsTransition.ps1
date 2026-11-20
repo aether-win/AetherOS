@@ -1258,7 +1258,7 @@ function New-AtlasTransitionEntry($Item, [bool]$Lift) {
     if ($Item.Group -eq 'pin' -and $value.Present -and
         -not (Test-AtlasTransitionItemValue $Item ([pscustomobject]@{ present = $true; kind = $value.Kind; data = $value.Data }))) {
         Write-AtlasTransitionEvidence "refused: $($Item.Id) is $(Format-AtlasTransitionValue $value)"
-        throw (New-AtlasTransitionFailure "The feature-update policy value $($Item.Name) has a value Atlas can't put back later." 'feature-pin' @{ setting = $Item.Name })
+        throw (New-AtlasTransitionFailure "The feature-update policy value $($Item.Name) has a value Aether can't put back later." 'feature-pin' @{ setting = $Item.Name })
     }
     if ($value.Present -and $Item.Kinds -cnotcontains $value.Kind) {
         Write-AtlasTransitionEvidence "left $($Item.Id): unexpected kind $($value.Kind)"
@@ -1389,7 +1389,7 @@ function Invoke-AtlasWindowsUpdateLift($Journal) {
         Write-AtlasTransitionEvidence "lifted $($item.Id): $(Format-AtlasTransitionValue $before) -> $(Format-AtlasTransitionValue $after)"
         $stuck = if ($null -eq $item.Lift) { $after.Present } else { -not ($after.Present -and [int64]$after.Data -eq $item.Lift) }
         if ($stuck) {
-            throw (New-AtlasTransitionFailure "$($item.Id) went back to $(Format-AtlasTransitionValue $after) after Atlas changed it." 'feature-policy' @{ setting = $item.Name })
+            throw (New-AtlasTransitionFailure "$($item.Id) went back to $(Format-AtlasTransitionValue $after) after Aether changed it." 'feature-policy' @{ setting = $item.Name })
         }
     }
 }
@@ -1487,7 +1487,7 @@ function Restore-AtlasWindowsTransition {
     if ($failed.Count -gt 0) {
         Add-AtlasTransitionHistory $journal 'restore' "outcome=$Outcome restored=$($restored.Count) failed=$($failed -join ',')"
         Write-AtlasWindowsTransition $journal $Root
-        throw (New-AtlasTransitionFailure "Atlas couldn't put back $($failed -join ', ')." 'feature-restore' @{ setting = $failed -join ', ' })
+        throw (New-AtlasTransitionFailure "Aether couldn't put back $($failed -join ', ')." 'feature-restore' @{ setting = $failed -join ', ' })
     }
     $pin = 'kept'
     if ($Outcome -eq 'Abandoned' -and $journal.kind -eq 'transition') {
@@ -1558,10 +1558,10 @@ function Assert-AtlasWindowsTransitionAllowsAme([int]$WindowsBuild, [string]$Roo
     $open = Test-AtlasWindowsTransitionOpen $Root
     if ($null -eq $open) { return }
     if (-not $open.Readable) {
-        throw "Atlas Manager's record of the Windows Update settings it changed can't be read: $($open.Error) Open Atlas Manager to continue."
+        throw "Aether Manager's record of the Windows Update settings it changed can't be read: $($open.Error) Open Aether Manager to continue."
     }
     if ($open.Kind -eq 'transition' -and ($WindowsBuild -ne $open.TargetBuild -or $open.Rebuild -ne 'in-place')) {
-        throw 'Atlas Manager is moving this PC to a newer Windows release. Finish the move in Atlas Manager, which then installs Atlas.'
+        throw 'Aether Manager is moving this PC to a newer Windows release. Finish the move in Aether Manager, which then installs Atlas.'
     }
 }
 
@@ -1571,6 +1571,6 @@ function Assert-AtlasWindowsTransitionAllowsAme([int]$WindowsBuild, [string]$Roo
 function Assert-AtlasToggleAllowedDuringTransition([string]$Name, [string]$Root = (Get-AtlasWindowsTransitionRoot)) {
     if (@('ToggleWindowsUpdates', 'PauseUpdates') -notcontains $Name) { return }
     if ($null -ne (Test-AtlasWindowsTransitionOpen $Root)) {
-        throw 'Atlas Manager is updating Windows and has turned Windows Update on for now. Finish or stop that update in Atlas Manager, then change this setting.'
+        throw 'Aether Manager is updating Windows and has turned Windows Update on for now. Finish or stop that update in Aether Manager, then change this setting.'
     }
 }

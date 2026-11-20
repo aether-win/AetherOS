@@ -14,7 +14,7 @@ Import-Module -Name $stateManifest -Force -DisableNameChecking -ErrorAction Stop
 
 $state = Get-AtlasInstallState
 if ($null -eq $state) {
-    throw 'No active Atlas install state is available to publish the install user.'
+    throw 'No active Aether install state is available to publish the install user.'
 }
 if ([bool]$state.isOobe) {
     throw 'OOBE installs do not publish an interactive-user marker.'
@@ -30,7 +30,7 @@ if ($null -eq $identity.User) {
 }
 # The install plan's per-user steps accept only account SIDs, which Entra ID accounts lack.
 if (-not $identity.User.IsAccountSid()) {
-    throw "Atlas can't be installed from a work or school (Microsoft Entra ID) account. Sign in with a local account or a Microsoft account, then try again."
+    throw "Aether can't be installed from a work or school (Microsoft Entra ID) account. Sign in with a local account or a Microsoft account, then try again."
 }
 $userSid = $identity.User.Value
 $sessionId = [Diagnostics.Process]::GetCurrentProcess().SessionId

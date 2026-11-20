@@ -20,10 +20,10 @@ Assert-AtlasPrivilege -TrustedInstaller
 
 $context = Get-AtlasContext -Refresh
 if (-not $context.IsInstallStateBacked) {
-    throw 'Tweaks phase requires active Atlas install state.'
+    throw 'Tweaks phase requires active Aether install state.'
 }
 if ([string]::IsNullOrWhiteSpace([string]$context.TransactionId)) {
-    throw 'Tweaks phase requires the Atlas transaction id.'
+    throw 'Tweaks phase requires the Aether transaction id.'
 }
 if (-not $context.IsOobe -and
     [string]::IsNullOrWhiteSpace([string]$context.InteractiveUserSid)) {

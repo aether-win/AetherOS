@@ -153,7 +153,7 @@ function Assert-PreparationUser(
 ) {
     if ($SessionId -lt 1 -or $UserSid -in @('S-1-5-18','S-1-5-19','S-1-5-20') -or
         (Get-PreparationSessionOwner) -cne $UserSid) {
-        throw (New-PreparationFailure 'Windows and Store preparation must run as the signed-in session owner. Open Atlas in that account; SYSTEM setup and another administrator account are not supported.' 'session-owner')
+        throw (New-PreparationFailure 'Windows and Store preparation must run as the signed-in session owner. Open Aether in that account; SYSTEM setup and another administrator account are not supported.' 'session-owner')
     }
 }
 
@@ -1017,12 +1017,12 @@ function Invoke-PreparationStore {
 function Assert-PreparationCurrent {
     Assert-PreparationContinue
     Assert-PreparationUser
-    if (Test-PreparationRestart) { throw "Restart Windows and run preparation again before installing Atlas (pending: $($script:PreparationRestartReasons -join ', '))." }
+    if (Test-PreparationRestart) { throw "Restart Windows and run preparation again before installing Aether (pending: $($script:PreparationRestartReasons -join ', '))." }
     if (-not (Test-PreparationNetwork)) { throw 'Connect to unrestricted internet before verifying Windows and Store updates.' }
     Write-PreparationState running windows-search
     $session = New-Object -ComObject Microsoft.Update.Session
     $session.ClientApplicationID = 'Atlas preparation verification'
-    if (@(Find-PreparationWindowsUpdate $session).Count -gt 0) { throw 'Windows still offers required updates. Finish preparation in Atlas, then retry installation.' }
+    if (@(Find-PreparationWindowsUpdate $session).Count -gt 0) { throw 'Windows still offers required updates. Finish preparation in Aether, then retry installation.' }
     Assert-PreparationContinue
     # A Store the user removed has nothing to check; preparation skipped it too.
     if (Test-PreparationStoreRemoved) { $pending = @() }
@@ -1037,10 +1037,10 @@ function Assert-PreparationCurrent {
         $found = @(Wait-PreparationStoreSearch ($manager.SearchForAllUpdatesAsync('', 'Atlas', $options)))
         $pending = @(@($found) + @($manager.AppInstallItems) | Where-Object { [string]$_.GetCurrentStatus().InstallState -ne 'Completed' })
     }
-    if ($pending.Count -gt 0) { throw 'Microsoft Store apps still need updates. Finish the queued updates in Atlas or Microsoft Store, then retry installation.' }
+    if ($pending.Count -gt 0) { throw 'Microsoft Store apps still need updates. Finish the queued updates in Aether or Microsoft Store, then retry installation.' }
     Assert-PreparationContinue
     if (@(Find-PreparationWindowsUpdate $session).Count -gt 0) { throw 'Windows offered additional updates during verification. Finish preparation, then retry.' }
-    if (Test-PreparationRestart) { throw "Restart Windows before installing Atlas (pending: $($script:PreparationRestartReasons -join ', '))." }
+    if (Test-PreparationRestart) { throw "Restart Windows before installing Aether (pending: $($script:PreparationRestartReasons -join ', '))." }
     if (-not (Test-PreparationNetwork)) { throw 'The internet connection changed during preparation verification.' }
 }
 
@@ -1867,7 +1867,7 @@ function Find-PreparationFeatureOffer($Session) {
         $chosen = if ($known.Count -gt 0) { $known[0] } elseif ($titled.Count -eq 1) { $titled[0] }
         if ($null -eq $chosen -and $titled.Count -gt 1) {
             foreach ($update in $titled) { Write-AtlasTransitionEvidence "unexpected-offer, one of several for $WindowsTarget, not installed: $(Format-PreparationOffer $update)" }
-            throw (New-AtlasTransitionFailure "Windows Update offers $($titled.Count) different updates to $WindowsTarget, so Atlas did not choose one." 'feature-failed')
+            throw (New-AtlasTransitionFailure "Windows Update offers $($titled.Count) different updates to $WindowsTarget, so Aether did not choose one." 'feature-failed')
         }
         if ($null -ne $chosen) {
             foreach ($update in @($known) + @($titled)) {
@@ -2105,7 +2105,7 @@ function Install-PreparationFeatureUpdate($Session, $Update, $Journal, [bool]$Ma
 function Test-PreparationRebuild($Journal) {
     $decided = Get-AtlasTransitionRebuildDecision $Journal
     if ($decided -eq 'components-lost') {
-        throw (New-AtlasTransitionFailure "Atlas components were missing after the update, without a sign of Setup (recorded: $(@($Journal.rebuild.signals) -join ','))." 'feature-components-lost')
+        throw (New-AtlasTransitionFailure "Aether components were missing after the update, without a sign of Setup (recorded: $(@($Journal.rebuild.signals) -join ','))." 'feature-components-lost')
     }
     if ($null -ne $decided) { return }
     $since = [DateTime]::Parse([string]$Journal.createdAt, [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::AdjustToUniversal)
@@ -2119,7 +2119,7 @@ function Test-PreparationRebuild($Journal) {
             rebuilt = [bool]$rebuild.rebuilt; signals = @($rebuild.signals); checkedAt = $rebuild.checkedAt }) -Force
     Write-PreparationJournal $Journal $(if ($rebuild.rebuilt) { 'rebuilt' } else { 'moved' }) "$path; signals: $(@($rebuild.signals) -join ',')"
     if ($rebuild.lost -and -not $rebuild.setup) {
-        throw (New-AtlasTransitionFailure "Atlas packages are missing after the update: $(@($rebuild.missing) -join ', ')." 'feature-components-lost')
+        throw (New-AtlasTransitionFailure "Aether packages are missing after the update: $(@($rebuild.missing) -join ', ')." 'feature-components-lost')
     }
 }
 
@@ -2293,14 +2293,14 @@ function Invoke-PreparationCommit {
 # an Atlas install is unfinished: its own closing step does it then.
 function Invoke-PreparationRestore {
     if ([IO.File]::Exists([IO.Path]::Combine($env:WINDIR, 'AtlasOS\Install\active.json'))) {
-        throw (New-AtlasTransitionFailure 'An Atlas install is unfinished; its closing step puts the settings back.' 'feature-install-active')
+        throw (New-AtlasTransitionFailure 'An Aether install is unfinished; its closing step puts the settings back.' 'feature-install-active')
     }
     $journal = Read-AtlasWindowsTransition
     if ($null -eq $journal) { return }
     # After Windows rebuilt itself, the install needs the record to put Atlas back,
     # and its own last step puts the settings back then.
     if ($null -ne (Get-AtlasWindowsTransitionRebase)) {
-        throw (New-AtlasTransitionFailure 'Windows reinstalled itself during the update; the Atlas install puts the settings back when it puts Atlas back.' 'feature-install-active')
+        throw (New-AtlasTransitionFailure 'Windows reinstalled itself during the update; the Aether install puts the settings back when it puts Aether back.' 'feature-install-active')
     }
     $version = Get-PreparationWindowsVersion
     $boot = Get-PreparationBootId
@@ -2325,7 +2325,7 @@ try {
     # runs, such as an install started while another one checks, can overlap.
     $lockWait = if ($VerifyOnly) { 120000 } else { 0 }
     try { $owned = $mutex.WaitOne($lockWait) } catch [Threading.AbandonedMutexException] { $owned = $true }
-    if (-not $owned) { throw 'Another Atlas preparation is running.' }
+    if (-not $owned) { throw 'Another Aether preparation is running.' }
     Write-PreparationState running verify
     if ($VerifyOnly) {
         # Keep the existing Atlas manual-driver policy without importing or

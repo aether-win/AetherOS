@@ -724,10 +724,10 @@ pub mod links {
     pub const NETWORK: &str = "ms-settings:network";
     pub const POWER: &str = "ms-settings:powersleep";
     pub const ACTIVATION: &str = "ms-settings:activation";
-    pub const DOCS: &str = "https://docs.atlasos.net/";
-    pub const GITHUB: &str = "https://github.com/Atlas-OS/Atlas";
-    pub const RELEASES: &str = "https://github.com/Atlas-OS/Atlas/releases";
-    pub const DISCORD: &str = "https://discord.atlasos.net/";
+    pub const DOCS: &str = "https://github.com/aether-win/AetherOS#readme";
+    pub const GITHUB: &str = "https://github.com/aether-win/AetherOS";
+    pub const RELEASES: &str = "https://github.com/aether-win/AetherOS/releases";
+    pub const DISCORD: &str = "https://github.com/aether-win/AetherOS";
 }
 
 #[cfg(test)]

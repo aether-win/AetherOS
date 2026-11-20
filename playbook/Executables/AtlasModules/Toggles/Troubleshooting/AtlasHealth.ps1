@@ -3,7 +3,7 @@ function Show-AtlasHealthReport {
 
     $health = Join-Path -Path $Toggle.ScriptsPath -ChildPath 'Entry\Test-AtlasHealth.ps1'
     if (-not (Test-Path -LiteralPath $health -PathType Leaf)) {
-        throw "The Atlas health check is missing at '$health'."
+        throw "The Aether health check is missing at '$health'."
     }
 
     # The entry script reloads Atlas modules. Run it in its own process so those

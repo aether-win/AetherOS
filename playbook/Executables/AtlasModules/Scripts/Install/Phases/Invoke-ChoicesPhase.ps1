@@ -62,7 +62,7 @@ if ($defender.Count -eq 1) {
         Write-AtlasLog -Message "Applied choice '$($defender[0])': $outcome."
     }
     elseif ($coreServiceOn) {
-        Write-AtlasLog -Message "Applied choice 'defender-disable': Atlas's NoDefender package already removes Microsoft Defender, and its core service is turned off at the next startup."
+        Write-AtlasLog -Message "Applied choice 'defender-disable': Aether's NoDefender package already removes Microsoft Defender, and its core service is turned off at the next startup."
     }
     elseif (($state -ceq 'Disable' -and $removed) -or
         ($state -ceq 'Enable' -and ($package -ceq 'UninstallPending' -or (-not $package -and $true -eq $facts.Defender)))) {

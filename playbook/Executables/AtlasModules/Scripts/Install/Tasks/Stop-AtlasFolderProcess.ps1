@@ -14,14 +14,14 @@ $ErrorActionPreference = 'Stop'
 $executablesRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)))
 $coreModule = Join-Path -Path $executablesRoot -ChildPath 'AtlasModules\Scripts\Modules\Atlas.Core\Atlas.Core.psd1'
 if (-not (Test-Path -LiteralPath $coreModule -PathType Leaf)) {
-    throw "Atlas core module '$coreModule' is missing."
+    throw "Aether core module '$coreModule' is missing."
 }
 
 Import-Module $coreModule -Force
 
 $tasksProcsModule = Join-Path -Path $executablesRoot -ChildPath 'AtlasModules\Scripts\Modules\Atlas.TasksProcs\Atlas.TasksProcs.psd1'
 if (-not (Test-Path -LiteralPath $tasksProcsModule -PathType Leaf)) {
-    throw "Atlas tasks/processes module '$tasksProcsModule' is missing."
+    throw "Aether tasks/processes module '$tasksProcsModule' is missing."
 }
 
 Import-Module $tasksProcsModule -Force

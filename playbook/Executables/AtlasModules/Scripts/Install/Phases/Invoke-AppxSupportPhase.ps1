@@ -32,7 +32,7 @@ $context = Get-AtlasContext
 if ($context.IsRebase) {
     . (Join-Path (Split-Path -Parent $modulesRoot) 'Preparation\WindowsTransition.ps1')
     $rebase = Get-AtlasWindowsTransitionRebase
-    if ($null -eq $rebase) { throw 'A Rebase install needs Atlas Manager''s record of the Windows move.' }
+    if ($null -eq $rebase) { throw 'A Rebase install needs Aether Manager''s record of the Windows move.' }
     $before = @($rebase.Carry.appx)
     $selection = @(Select-AtlasRebaseAppxRemoval $definitions $before)
     if ($before.Count -eq 0) {

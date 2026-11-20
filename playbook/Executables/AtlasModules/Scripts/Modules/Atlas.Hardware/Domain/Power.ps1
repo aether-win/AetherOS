@@ -130,7 +130,7 @@ function Get-AtlasPreviousPowerScheme {
         }
         if ($key.GetValueKind($script:PowerStateValue) -ne
             [Microsoft.Win32.RegistryValueKind]::String) {
-            throw 'The saved Atlas power scheme has an unexpected registry type.'
+            throw 'The saved Aether power scheme has an unexpected registry type.'
         }
         return ConvertTo-AtlasPowerSchemeGuid -Value ([string]$key.GetValue(
                 $script:PowerStateValue,
@@ -259,8 +259,8 @@ function Invoke-AtlasPowerSavingState {
                 -ArgumentList @(
                     '/changename',
                     $script:AtlasPowerScheme,
-                    'Atlas Power Scheme',
-                    'Atlas AC power policy with documented Windows settings.'
+                    'Aether OS',
+                    'Plan de energía de Aether OS.'
                 ))
 
         foreach ($setting in @(
@@ -347,7 +347,7 @@ function Set-AtlasPowerSavingState {
             $ownsMutex = $true
         }
         if (-not $ownsMutex) {
-            throw 'Timed out waiting for another Atlas power operation to finish.'
+            throw 'Timed out waiting for another Aether power operation to finish.'
         }
 
         if (-not $Silent) {

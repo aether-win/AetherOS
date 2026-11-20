@@ -1676,7 +1676,7 @@ Describe 'Install and toggle guards while Windows Update is turned on' {
         Write-AtlasWindowsTransition $journal
         $lost = Test-AtlasWindowsUpdateInProgress -WindowsBuild 26300
         $lost.Passed | Should -BeFalse
-        $lost.Detail | Should -Match 'Atlas packages are gone'
+        $lost.Detail | Should -Match 'Aether packages are gone'
     }
 
     It 'lets AME Wizard install only after a move finished in place on its target' {
@@ -1711,8 +1711,8 @@ Describe 'Install and toggle guards while Windows Update is turned on' {
     It 'refuses the Windows Update and pause toggles by hand while the record is open, and only those' {
         { Assert-AtlasToggleAllowedDuringTransition -Name ToggleWindowsUpdates } | Should -Not -Throw
         [void](Save-AtlasWindowsTransitionSnapshot -Kind access -Source ([pscustomobject]@{ build = 26200 }) -Target $null -UserSid 'S')
-        { Assert-AtlasToggleAllowedDuringTransition -Name ToggleWindowsUpdates } | Should -Throw '*Atlas Manager is updating Windows*'
-        { Assert-AtlasToggleAllowedDuringTransition -Name PauseUpdates } | Should -Throw '*Atlas Manager is updating Windows*'
+        { Assert-AtlasToggleAllowedDuringTransition -Name ToggleWindowsUpdates } | Should -Throw '*Aether Manager is updating Windows*'
+        { Assert-AtlasToggleAllowedDuringTransition -Name PauseUpdates } | Should -Throw '*Aether Manager is updating Windows*'
         { Assert-AtlasToggleAllowedDuringTransition -Name AutomaticUpdates } | Should -Not -Throw
     }
 }

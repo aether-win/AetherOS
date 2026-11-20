@@ -1021,6 +1021,7 @@ fn step_line(
 /// Where to read more, follow the project, ask for help or report a problem.
 /// A problem is reported privately, in the app; the rest open the browser.
 fn project_links(model: &Entity<AppModel>, state: &AppModel) -> AnyElement {
+    let _ = (model, state);
     div()
         .flex()
         .flex_wrap()
@@ -1037,18 +1038,7 @@ fn project_links(model: &Entity<AppModel>, state: &AppModel) -> AnyElement {
                 .trailing_icon(Icon::OpenInNewWindow)
                 .opens(links::GITHUB),
         )
-        .child(
-            Button::new("home-discord", t!("home-discord"))
-                .hyperlink()
-                .trailing_icon(Icon::OpenInNewWindow)
-                .opens(links::DISCORD),
-        )
-        .child(
-            Button::new("home-report", t!("home-report-problem"))
-                .hyperlink()
-                .disabled(!state.can_navigate(Page::Report))
-                .on_click(on_model(model, |m, cx| m.navigate(Page::Report, cx))),
-        )
+        // Aether: sin Discord ni reportes (iban a los servidores de Atlas).
         .into_any_element()
 }
 

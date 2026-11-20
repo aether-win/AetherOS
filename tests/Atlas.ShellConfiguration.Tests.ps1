@@ -491,7 +491,7 @@ Describe 'Installing-user desktop command and Explorer refresh' {
         Remove-Variable -Name atlasDesktop -Scope Global -ErrorAction SilentlyContinue
     }
 
-    It 'runs an Atlas desktop command silently and accepts a zero exit code' {
+    It 'runs an Aether desktop command silently and accepts a zero exit code' {
         $probe = Join-Path $global:atlasDesktop 'probe.cmd'
         $argumentLog = Join-Path $TestDrive 'desktop-command-args.txt'
         Set-Content -LiteralPath $probe -Value "@echo %*> `"$argumentLog`"`r`n@exit /b 0" `

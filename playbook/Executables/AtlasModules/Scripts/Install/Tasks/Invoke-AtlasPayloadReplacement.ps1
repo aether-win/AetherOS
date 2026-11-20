@@ -34,10 +34,10 @@ function Resolve-AtlasPayloadReplacementPlan {
         }
     }
     if ([string]$InstallState.status -cne 'Running') {
-        throw "Replacing Atlas's files requires a Running install state, not '$($InstallState.status)'."
+        throw "Replacing Aether's files requires a Running install state, not '$($InstallState.status)'."
     }
     if (@('Fresh', 'Upgrade', 'Reapply', 'Rebase') -cnotcontains [string]$InstallState.mode) {
-        throw "Replacing Atlas's files does not support install mode '$($InstallState.mode)'."
+        throw "Replacing Aether's files does not support install mode '$($InstallState.mode)'."
     }
     if ($InstallState.isOobe -isnot [bool]) {
         throw 'Install state isOobe must be a Boolean.'
@@ -61,7 +61,7 @@ function Assert-AtlasPayloadReplacementAllowed {
     Clear-AtlasUnarmedCbsRetry
     $retryState = Read-AtlasCbsRetryState
     if ($null -ne $retryState) {
-        throw "Replacing Atlas's files is blocked while the CBS retry state is '$($retryState.Phase)' ('$(Get-AtlasCbsRetryStatePath)'). $(Get-AtlasCbsRetryInstruction -Phase ([string]$retryState.Phase))"
+        throw "Replacing Aether's files is blocked while the CBS retry state is '$($retryState.Phase)' ('$(Get-AtlasCbsRetryStatePath)'). $(Get-AtlasCbsRetryInstruction -Phase ([string]$retryState.Phase))"
     }
 }
 
@@ -120,13 +120,13 @@ function Assert-AtlasPayloadInstalled {
             throw "Required extracted directory '$source' is missing."
         }
         if (-not [IO.Directory]::Exists($destination)) {
-            throw "Installed Atlas directory '$destination' is missing."
+            throw "Installed Aether directory '$destination' is missing."
         }
     }
 
     $installedBootstrap = Join-Path -Path $destinationRoot -ChildPath 'AtlasModules\Scripts\Initialize-AtlasPowerShell.ps1'
     if (-not [IO.File]::Exists($installedBootstrap)) {
-        throw "Installed Atlas bootstrap '$installedBootstrap' is missing."
+        throw "Installed Aether bootstrap '$installedBootstrap' is missing."
     }
 
     $themesSource = Join-Path -Path $sourceRoot -ChildPath 'Themes'
@@ -138,7 +138,7 @@ function Assert-AtlasPayloadInstalled {
         $installedTheme = Join-Path -Path $themesDestination -ChildPath $theme.Name
         $installedItem = Get-Item -LiteralPath $installedTheme -Force -ErrorAction SilentlyContinue
         if ($null -eq $installedItem -or $installedItem.PSIsContainer -ne $theme.PSIsContainer) {
-            throw "Installed Atlas theme '$installedTheme' is missing."
+            throw "Installed Aether theme '$installedTheme' is missing."
         }
     }
 }
@@ -210,7 +210,7 @@ Import-Module -Name $installStateManifest -Force -DisableNameChecking -ErrorActi
 
 $installState = Get-AtlasInstallState
 if ($null -eq $installState) {
-    throw 'No Atlas install state is active.'
+    throw 'No Aether install state is active.'
 }
 $plan = Resolve-AtlasPayloadReplacementPlan -InstallState $installState
 Invoke-AtlasPayloadReplacementCore -Plan $plan
@@ -226,6 +226,6 @@ if ([bool]$plan.RemoveInstalledPayload) {
         Write-Output "Atlas packages' repair source: $(Update-AtlasCbsRepairSource -AtlasPackages @(Get-AtlasInstalledAtlasPackage))."
     }
     catch {
-        Write-Warning "The Atlas packages' repair source was not checked after replacing Atlas's files: $($_.Exception.Message)"
+        Write-Warning "The Aether packages' repair source was not checked after replacing Aether's files: $($_.Exception.Message)"
     }
 }

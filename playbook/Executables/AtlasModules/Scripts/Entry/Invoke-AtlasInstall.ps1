@@ -186,11 +186,11 @@ function Invoke-AtlasInstallPlanCore {
     )
 
     if ([string]$State.status -cne 'Running') {
-        throw "Atlas install state must be committed and Running, not '$($State.status)'."
+        throw "Aether install state must be committed and Running, not '$($State.status)'."
     }
     if (-not [bool]$State.isOobe -and
         [string]::IsNullOrWhiteSpace([string]$State.userSid)) {
-        throw 'A non-OOBE Atlas install requires its captured user SID.'
+        throw 'A non-OOBE Aether install requires its captured user SID.'
     }
 
     $scriptsRoot = [IO.Path]::GetFullPath($SourceScriptsRoot)
@@ -400,7 +400,7 @@ try {
     Assert-AtlasPrivilege -TrustedInstaller
     $state = Get-AtlasInstallState
     if ($null -eq $state) {
-        throw 'No committed Atlas install state is active.'
+        throw 'No committed Aether install state is active.'
     }
     # An install state written before the update path existed keeps the choices.
     $choices = $state.PSObject.Properties['choices']
@@ -450,7 +450,7 @@ try {
             param($Completed, $Total)
             Write-AtlasInstallMessage -Message "[AtlasProgress] $Completed/$Total"
         }
-    Write-AtlasInstallMessage -Message 'Atlas installation completed successfully.'
+    Write-AtlasInstallMessage -Message 'Aether installation completed successfully.'
     exit 0
 }
 catch {

@@ -23,7 +23,7 @@ $executablesRoot = [IO.Path]::GetFullPath([IO.Path]::Combine(
 foreach ($folderName in @('AtlasModules', 'AtlasDesktop')) {
     $source = Join-Path -Path $executablesRoot -ChildPath $folderName
     if (-not (Test-Path -LiteralPath $source -PathType Container)) {
-        throw "Required Atlas folder '$source' is missing."
+        throw "Required Aether folder '$source' is missing."
     }
     if ($folderName -cne 'AtlasModules') {
         Copy-Item -LiteralPath $source -Destination $windowsPath -Force -Recurse -ErrorAction Stop

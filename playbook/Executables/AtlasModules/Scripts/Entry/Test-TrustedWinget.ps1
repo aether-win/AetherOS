@@ -12,7 +12,7 @@ try {
     $scriptsRoot = [IO.Path]::GetDirectoryName($PSScriptRoot)
     $downloadManifest = [IO.Path]::Combine($scriptsRoot, 'Modules', 'Atlas.Download', 'Atlas.Download.psd1')
     if (-not [IO.File]::Exists($downloadManifest)) {
-        throw "The Atlas download module manifest is missing at '$downloadManifest'."
+        throw "The Aether download module manifest is missing at '$downloadManifest'."
     }
     Import-Module -Name $downloadManifest -Force -ErrorAction Stop
 

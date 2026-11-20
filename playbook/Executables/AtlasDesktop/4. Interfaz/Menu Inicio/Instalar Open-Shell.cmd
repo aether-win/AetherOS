@@ -27,7 +27,7 @@ if not errorlevel 1 goto alreadyElevated
 
 :: This window only waits for the elevated one, which prints the rest of the run.
 if not defined AtlasLauncherArgument (
-	echo AtlasOS - Install Open-Shell
+	echo Aether OS - Install Open-Shell
 	echo ----------------------------
 	echo.
 	echo Asking for administrator permission...

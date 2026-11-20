@@ -238,7 +238,7 @@ Describe 'Atlas CBS retry lifecycle' {
         (Read-AtlasCbsRetryState -Path $script:statePath).Phase | Should -BeExactly 'Pending'
     }
 
-    Context 'The Atlas 0.5 Safe Mode package list' {
+    Context 'The Aether 0.5 Safe Mode package list' {
         BeforeEach {
             $script:legacyPath = Join-Path $TestDrive 'safeModePackagesToInstall.atlasmodule'
             if (Test-Path -LiteralPath $script:legacyPath) {

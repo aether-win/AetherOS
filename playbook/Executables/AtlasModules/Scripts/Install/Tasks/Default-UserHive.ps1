@@ -132,7 +132,7 @@ function Set-AtlasDefaultUserHiveState {
     )
 
     if ($MountName -cne 'Atlas_DefaultUser') {
-        throw "Atlas only supports the fixed default-user mount name 'Atlas_DefaultUser'."
+        throw "Aether only supports the fixed default-user mount name 'Atlas_DefaultUser'."
     }
 
     $target = "HKU\$MountName"

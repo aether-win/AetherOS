@@ -1033,7 +1033,7 @@ function Invoke-AtlasToggle {
                 throw
             }
             Write-AtlasLog -Level Warning -NoConsole -Message $_.Exception.Message
-            Write-AtlasPartial -Text "The administrator permission prompt was cancelled, so Atlas didn't save this choice. The setting has changed for this account, but an Atlas update can change it back, and new accounts won't get it."
+            Write-AtlasPartial -Text "The administrator permission prompt was cancelled, so Aether didn't save this choice. The setting has changed for this account, but an Aether update can change it back, and new accounts won't get it."
         }
 
         $actualBinding = Get-AtlasToggleUserCallerBinding

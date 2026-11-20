@@ -477,7 +477,7 @@ Describe 'Install-state-bound AppX cache launcher' {
                 Invoke-AtlasUserAppxCacheCleanupCore -Context $Context `
                     -Mode AppxSupport -Launcher { return 0 }
             }
-        } | Should -Throw -ExpectedMessage '*requires active Atlas install state*'
+        } | Should -Throw -ExpectedMessage '*requires active Aether install state*'
     }
 
     It 'propagates a failed pre-removal quiesce child as a checked failure' {

@@ -86,31 +86,31 @@ function Assert-AtlasStateDocument {
 
     foreach ($field in $script:AtlasStateFields) {
         if ($null -eq $State.PSObject.Properties[$field]) {
-            throw "The Atlas state document is missing '$field'."
+            throw "The Aether state document is missing '$field'."
         }
     }
     foreach ($property in $State.PSObject.Properties) {
         if ($script:AtlasStateFields -cnotcontains $property.Name) {
-            throw "The Atlas state document has an unknown field '$($property.Name)'."
+            throw "The Aether state document has an unknown field '$($property.Name)'."
         }
     }
     if ([int]$State.schemaVersion -ne $script:AtlasStateSchemaVersion) {
-        throw "The Atlas state document schema version $($State.schemaVersion) is not supported."
+        throw "The Aether state document schema version $($State.schemaVersion) is not supported."
     }
     if ($null -ne $State.mode -and [string]$State.mode -cnotin @('Fresh', 'Upgrade', 'Reapply', 'Rebase')) {
-        throw "The Atlas state document mode '$($State.mode)' is invalid."
+        throw "The Aether state document mode '$($State.mode)' is invalid."
     }
     foreach ($option in @($State.options)) {
         if ([string]$option -cnotmatch $script:AtlasStateNamePattern) {
-            throw "The Atlas state document option '$option' is invalid."
+            throw "The Aether state document option '$option' is invalid."
         }
     }
     foreach ($property in $State.toggles.PSObject.Properties) {
         if ($property.Name -cnotmatch $script:AtlasStateNamePattern) {
-            throw "The Atlas state document toggle name '$($property.Name)' is invalid."
+            throw "The Aether state document toggle name '$($property.Name)' is invalid."
         }
         if ($null -eq $property.Value.PSObject.Properties['state'] -or $property.Value.state -isnot [int] -and $property.Value.state -isnot [long]) {
-            throw "The Atlas state document toggle '$($property.Name)' has no integer state."
+            throw "The Aether state document toggle '$($property.Name)' has no integer state."
         }
     }
 }
@@ -122,14 +122,14 @@ function Read-AtlasStateFile {
         return $null
     }
     if (([IO.File]::GetAttributes($Path) -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
-        throw "The Atlas state document '$Path' is a reparse point."
+        throw "The Aether state document '$Path' is a reparse point."
     }
 
     try {
         $state = [IO.File]::ReadAllText($Path) | ConvertFrom-Json -ErrorAction Stop
     }
     catch {
-        throw "The Atlas state document '$Path' is malformed: $($_.Exception.Message)"
+        throw "The Aether state document '$Path' is malformed: $($_.Exception.Message)"
     }
     Assert-AtlasStateDocument -State $state
     return $state
@@ -190,7 +190,7 @@ function Invoke-AtlasStateLocked {
             $lockTaken = $true
         }
         if (-not $lockTaken) {
-            throw 'Timed out waiting for the Atlas state-document lock.'
+            throw 'Timed out waiting for the Aether state-document lock.'
         }
         return & $LockedAction
     }
@@ -279,7 +279,7 @@ function Merge-AtlasStateChoice {
     }
 
     if ($script:AtlasStateCheckboxChoices -cnotcontains $Option) {
-        throw "'$Option' isn't an install choice Atlas keeps in step between installs."
+        throw "'$Option' isn't an install choice Aether keeps in step between installs."
     }
     if ($Absent) {
         return @($Options | Where-Object { $_ -cne $Option })

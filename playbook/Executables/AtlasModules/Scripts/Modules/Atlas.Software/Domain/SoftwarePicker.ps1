@@ -177,7 +177,7 @@ function Invoke-AtlasSoftwarePickerPackageBatch {
         try {
             $catalogItem = $Catalog | Where-Object { $_.Package -ceq $package } | Select-Object -First 1
             if ($null -eq $catalogItem) {
-                throw "Package '$package' is not present in the Atlas software catalog."
+                throw "Package '$package' is not present in the Aether software catalog."
             }
             if ($catalogItem.Source -notin @('winget', 'msstore')) {
                 throw "No trusted WinGet source is declared for package '$package'."

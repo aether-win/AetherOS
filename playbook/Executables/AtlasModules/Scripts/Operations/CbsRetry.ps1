@@ -124,7 +124,7 @@ function Remove-AtlasLegacyCbsRetryList {
     # 0.5 armed its retry by adding packageInstall.ps1 -SafeMode to the Winlogon shell,
     # and that run put the shell back.
     if ((Get-AtlasLegacyCbsRetryShell) -like '*packageInstall.ps1*-SafeMode*') {
-        throw 'Atlas 0.5 is still set to retry installing its Windows component packages when Windows next starts. Restart Windows to let it finish, then update Atlas again.'
+        throw 'Aether 0.5 is still set to retry installing its Windows component packages when Windows next starts. Restart Windows to let it finish, then update Aether again.'
     }
     $packages = try {
         @(Get-Content -LiteralPath $Path -ErrorAction Stop |
@@ -135,7 +135,7 @@ function Remove-AtlasLegacyCbsRetryList {
     Write-Output "Removing the Safe Mode package list Atlas 0.5 left at '$Path' (packages: $packages)."
     try { [IO.File]::Delete($Path) }
     catch {
-        Write-Warning "The Atlas 0.5 Safe Mode package list '$Path' couldn't be removed: $($_.Exception.Message)"
+        Write-Warning "The Aether 0.5 Safe Mode package list '$Path' couldn't be removed: $($_.Exception.Message)"
     }
 }
 
@@ -188,7 +188,7 @@ function Invoke-WithAtlasCbsRetryLock {
     try {
         try { $held = $mutex.WaitOne([TimeSpan]::FromSeconds(30)) }
         catch [Threading.AbandonedMutexException] { $held = $true }
-        if (!$held) { throw 'Timed out waiting for the Atlas CBS retry lock.' }
+        if (!$held) { throw 'Timed out waiting for the Aether CBS retry lock.' }
         & $Action
     }
     finally {

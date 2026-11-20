@@ -136,7 +136,9 @@ fn override_tag(argument: Option<&str>) -> Option<String> {
 /// the Windows display-language list, then English. A failure anywhere
 /// leaves the app usable in English and is recorded in the decision.
 pub fn activate(preference: &LanguagePreference, override_argument: Option<&str>) -> Localization {
-    activate_with(preference, override_argument, current_windows_languages())
+    // Aether: la app siempre está en español, sin importar el idioma de Windows.
+    let _ = preference;
+    activate_with(&LanguagePreference::Explicit("es".into()), override_argument, current_windows_languages())
 }
 
 /// Environment variable that stands in for the Windows display-language

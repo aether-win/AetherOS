@@ -172,7 +172,7 @@ Describe 'Previous-install file removal' {
         Test-Path -LiteralPath (Join-Path $windowsRoot 'notepad.exe.txt') | Should -BeTrue
     }
 
-    It 'succeeds when no previous Atlas files exist' {
+    It 'succeeds when no previous Aether files exist' {
         $windowsRoot = Join-Path $TestDrive 'WinDirClean'
         $null = New-Item -Path (Join-Path $windowsRoot 'UnrelatedComponent') `
             -ItemType Directory -Force

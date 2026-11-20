@@ -863,7 +863,7 @@ Describe 'Security toggle companions' {
 
     It 'ToggleDefender still succeeds, with a warning, when Defender changed but the record can''t be written' {
         Mock Set-AtlasDefenderState -ModuleName Atlas.Toggles
-        Mock Set-AtlasStateChoice -ModuleName Atlas.Toggles { throw 'Timed out waiting for the Atlas state-document lock.' }
+        Mock Set-AtlasStateChoice -ModuleName Atlas.Toggles { throw 'Timed out waiting for the Aether state-document lock.' }
 
         { Invoke-CompanionFunction -Definition $script:ToggleDefender -FunctionName 'Enable-AtlasDefenderToggle' `
                 -Toggle (New-ToggleContext -Name 'ToggleDefender' -State 'Enable' -Silent $true) } |

@@ -18,7 +18,7 @@ function Clear-AtlasTelemetryLogFiles {
     Assert-AtlasPrivilege -TrustedInstaller
     $context = Get-AtlasContext -Refresh
     if (-not $context.IsInstallStateBacked) {
-        throw 'Telemetry-log cleanup requires active Atlas install state.'
+        throw 'Telemetry-log cleanup requires active Aether install state.'
     }
 
     if ([string]::IsNullOrWhiteSpace($ProgramDataPath) -or

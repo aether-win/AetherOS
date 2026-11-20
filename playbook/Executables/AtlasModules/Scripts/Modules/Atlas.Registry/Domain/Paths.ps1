@@ -80,14 +80,14 @@ function Get-AtlasActiveRegistryTransaction {
 
     $transaction = Get-AtlasContext -Refresh
     if (-not [bool]$transaction.IsInstallStateBacked) {
-        throw "$Mode registry identity requires an active Atlas install state."
+        throw "$Mode registry identity requires an active Aether install state."
     }
     if (-not [string]::Equals(
             [string]$transaction.TransactionId,
             $TransactionId,
             [StringComparison]::Ordinal
         )) {
-        throw "The active Atlas transaction '$($transaction.TransactionId)' does not match expected transaction '$TransactionId'."
+        throw "The active Aether transaction '$($transaction.TransactionId)' does not match expected transaction '$TransactionId'."
     }
     return $transaction
 }
@@ -181,7 +181,7 @@ function Initialize-AtlasRegistryIdentityContext {
                 -Label 'Expected installing-user SID'
             $transaction = Get-AtlasActiveRegistryTransaction -Mode 'InstallingUserPoliciesOnly' -TransactionId $TransactionId
             if ([string]::IsNullOrWhiteSpace([string]$transaction.InteractiveUserSid)) {
-                throw 'The active Atlas install state has no installing-user SID.'
+                throw 'The active Aether install state has no installing-user SID.'
             }
             $activeSid = ConvertTo-AtlasCanonicalRegistrySid `
                 -Sid ([string]$transaction.InteractiveUserSid) -Label 'Active installing-user SID'
@@ -348,7 +348,7 @@ function Resolve-AtlasRegistryTarget {
                 throw 'The DefaultUserOnly registry identity context lost strict TrustedInstaller identity.'
             }
             if (-not (Test-AtlasDefaultUserHiveLoaded)) {
-                throw "The fixed Atlas default-user hive is not loaded at '$($script:AtlasDefaultUserHiveRoot)'."
+                throw "The fixed Aether default-user hive is not loaded at '$($script:AtlasDefaultUserHiveRoot)'."
             }
 
             $primary = $script:AtlasDefaultUserHiveRoot

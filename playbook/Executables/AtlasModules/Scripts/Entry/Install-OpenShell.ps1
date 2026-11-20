@@ -57,7 +57,7 @@ $coreManifest = [IO.Path]::Combine($scriptsRoot, 'Modules', 'Atlas.Core', 'Atlas
 Import-Module -Name $coreManifest -ErrorAction Stop
 if (-not $Silent) {
     Set-AtlasLogConsoleStyle -Style Interactive
-    Write-AtlasTitle -Text $title -Explanation 'Installs Open-Shell with the Atlas Fluent Metro start-menu theme.'
+    Write-AtlasTitle -Text $title -Explanation 'Installs Open-Shell with the Aether Fluent Metro start-menu theme.'
 }
 
 try {

@@ -85,7 +85,7 @@ function Invoke-AtlasInstallLogRetention {
         return
     }
     if (([IO.File]::GetAttributes($Path) -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
-        throw "Refusing to tidy Atlas's install logs through a reparse point at '$Path'."
+        throw "Refusing to tidy Aether's install logs through a reparse point at '$Path'."
     }
 
     foreach ($name in @('atlas-install.log', 'warnings-summary.log')) {
@@ -98,7 +98,7 @@ function Invoke-AtlasInstallLogRetention {
         try {
             try { $acquired = $mutex.WaitOne(5000) }
             catch [System.Threading.AbandonedMutexException] { $acquired = $true }
-            if (-not $acquired) { throw "Timed out waiting for the Atlas install log lock to move '$name' aside." }
+            if (-not $acquired) { throw "Timed out waiting for the Aether install log lock to move '$name' aside." }
             $previous = [IO.Path]::Combine($Path, [IO.Path]::GetFileNameWithoutExtension($name) + '.previous.log')
             if ([IO.File]::Exists($previous)) { [IO.File]::Delete($previous) }
             [IO.File]::Move($log.FullName, $previous)
@@ -152,7 +152,7 @@ function Write-AtlasLogFile {
         # Losing append serialization beats losing the log line, so a lock timeout
         # degrades to an unserialized append with a warning.
         if (-not $acquired) {
-            Write-Warning "Timed out acquiring the Atlas install log lock; appending to '$FileName' without serialization." `
+            Write-Warning "Timed out acquiring the Aether install log lock; appending to '$FileName' without serialization." `
                 -WarningAction Continue
         }
         [System.IO.File]::AppendAllText($logPath, $Line + [Environment]::NewLine, [System.Text.Encoding]::UTF8)
@@ -203,7 +203,7 @@ function Write-AtlasLog {
     catch {
         # Helpers running as the user use ErrorActionPreference=Stop. A failed log
         # write must only warn, never make a handled best-effort step fail the process.
-        Write-Warning "Failed to write to the Atlas install log: $($_.Exception.Message)" `
+        Write-Warning "Failed to write to the Aether install log: $($_.Exception.Message)" `
             -WarningAction Continue
     }
 

@@ -6,7 +6,7 @@ Assert-AtlasPrivilege -TrustedInstaller
 
 $context = Get-AtlasContext -Refresh
 if (-not $context.IsInstallStateBacked -or $context.IsOobe) {
-    throw 'Shell refresh requires a non-OOBE active Atlas install state.'
+    throw 'Shell refresh requires a non-OOBE active Aether install state.'
 }
 $interactiveUserSid = [string]$context.InteractiveUserSid
 if ([string]::IsNullOrWhiteSpace($interactiveUserSid)) {

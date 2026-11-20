@@ -5,7 +5,7 @@ function Set-AtlasNetworkDefaultState {
     $mode = if ($Toggle.State -ceq 'Enable') { 'Atlas' } else { 'Windows' }
     if (-not $Toggle.Silent) {
         if ($mode -ceq 'Atlas') {
-            Write-AtlasStep -Text 'Applying the Atlas network adapter defaults...'
+            Write-AtlasStep -Text 'Applying the Aether network adapter defaults...'
         }
         else {
             Write-AtlasStep -Text 'Resetting the network stack and adapters to the Windows defaults. This can take a minute...'

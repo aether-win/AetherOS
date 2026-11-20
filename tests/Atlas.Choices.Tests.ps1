@@ -671,7 +671,7 @@ Describe 'Choices phase' {
         Invoke-ChoicesPhaseUnderTest
 
         Get-MachineEvent | Should -Be @('CoreService:Removed')
-        @(Get-ChoicesInfo) | Should -Contain "Applied choice 'defender-disable': Atlas's NoDefender package already removes Microsoft Defender, and its core service is turned off at the next startup."
+        @(Get-ChoicesInfo) | Should -Contain "Applied choice 'defender-disable': Aether's NoDefender package already removes Microsoft Defender, and its core service is turned off at the next startup."
         @(Get-ChoicesInfo | Where-Object { $_ -like "*'defender-disable' already matches*" }) | Should -BeNullOrEmpty
     }
 

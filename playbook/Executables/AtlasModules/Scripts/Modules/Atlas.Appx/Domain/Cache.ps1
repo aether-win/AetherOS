@@ -537,7 +537,7 @@ function Invoke-AtlasUserAppxCacheCleanupCore {
     )
 
     if ($Context.IsInstallStateBacked -isnot [bool] -or -not [bool]$Context.IsInstallStateBacked) {
-        throw 'AppX user cache cleanup requires active Atlas install state.'
+        throw 'AppX user cache cleanup requires active Aether install state.'
     }
     if ($Context.IsOobe -isnot [bool]) {
         throw 'The install state has an invalid OOBE value for AppX cache cleanup.'

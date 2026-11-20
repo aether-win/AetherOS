@@ -9,7 +9,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 
-const LATEST_URL: &str = "https://api.github.com/repos/Atlas-OS/Atlas/releases/latest";
+const LATEST_URL: &str = "https://api.github.com/repos/aether-win/AetherOS/releases/latest";
 /// Sent on every request the app makes of its own accord (GitHub and, in the
 /// stable build, Microsoft's release page), so a server sees one identity.
 pub(crate) const USER_AGENT: &str = concat!("AtlasApp/", env!("CARGO_PKG_VERSION"));

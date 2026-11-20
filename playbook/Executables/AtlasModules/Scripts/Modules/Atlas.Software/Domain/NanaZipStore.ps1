@@ -118,7 +118,7 @@ function Stop-AtlasNanaZipStoreInstall {
         if ($active.Count -eq 0 -and $queue.Count -eq 0) { return }
         Start-Sleep -Seconds 1
     }
-    throw 'Microsoft Store has not confirmed NanaZip cancellation. No fallback installer was started. Finish or cancel NanaZip in Microsoft Store, then retry with your original Atlas choices.'
+    throw 'Microsoft Store has not confirmed NanaZip cancellation. No fallback installer was started. Finish or cancel NanaZip in Microsoft Store, then retry with your original Aether choices.'
 }
 
 function Install-AtlasNanaZipFromStore {

@@ -868,7 +868,7 @@ function Invoke-AtlasAppxRemovalPlan {
         # while it settles, so look again before judging, after one more removal for
         # each account a leftover is installed for.
         foreach ($message in $remaining.Failures) {
-            Write-AtlasLog -Level Warning -Message "$message Atlas looks again shortly."
+            Write-AtlasLog -Level Warning -Message "$message Aether looks again shortly."
         }
         Invoke-AtlasAppxPerUserRemoval -Leftover $leftovers
         Start-Sleep -Seconds $script:AtlasAppxRemovalSettleSeconds

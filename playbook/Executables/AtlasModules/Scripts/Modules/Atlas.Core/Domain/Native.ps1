@@ -129,11 +129,11 @@ function Initialize-AtlasNativeType {
 
     $sourcePath = Join-Path -Path $PSScriptRoot -ChildPath '..\Native\Atlas.Native.cs'
     if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
-        throw "The Atlas native source '$sourcePath' is missing."
+        throw "The Aether native source '$sourcePath' is missing."
     }
     $sourceItem = Get-Item -LiteralPath $sourcePath -Force
     if ($sourceItem.Attributes -band [IO.FileAttributes]::ReparsePoint) {
-        throw "The Atlas native source '$sourcePath' is a reparse point."
+        throw "The Aether native source '$sourcePath' is a reparse point."
     }
 
     Add-AtlasNativeType -TypeDefinition ([IO.File]::ReadAllText($sourceItem.FullName))

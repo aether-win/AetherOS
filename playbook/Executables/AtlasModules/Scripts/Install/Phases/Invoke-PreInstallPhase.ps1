@@ -4,7 +4,7 @@ Assert-AtlasPrivilege -TrustedInstaller
 
 $context = Get-AtlasContext -Refresh
 if (-not $context.IsInstallStateBacked) {
-    throw 'Pre-install requires active Atlas install state.'
+    throw 'Pre-install requires active Aether install state.'
 }
 if (-not $context.IsOobe -and
     [string]::IsNullOrWhiteSpace([string]$context.InteractiveUserSid)) {

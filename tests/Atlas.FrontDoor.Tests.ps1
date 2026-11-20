@@ -199,7 +199,7 @@ Describe 'Resolve-AtlasInstallMode' {
         { Resolve-AtlasInstallMode -TargetVersion '0.6.0' -WindowsPath $windows } | Should -Throw '*version could not be established*'
     }
 
-    It 'is Rebase after Windows rebuilt itself while Atlas Manager moved it, with or without the markers' {
+    It 'is Rebase after Windows rebuilt itself while Aether Manager moved it, with or without the markers' {
         Mock Get-AtlasWindowsTransitionRebase -ModuleName Atlas.InstallState { [pscustomobject]@{ AtlasVersion = '0.5.0'; Options = @('defender-disable') } }
         Mock Get-ItemProperty -ModuleName Atlas.InstallState { [pscustomobject]@{ Model = 'Atlas Playbook v0.5.0'; RegisteredOrganization = 'Atlas Playbook v0.5.0' } }
         $windows = Join-Path $TestDrive 'Rebuilt'
@@ -458,7 +458,7 @@ Describe 'Install capture' {
         $script:CaptureCalls.ToArray() | Should -Be (ConvertTo-TestCall $Calls) -Because $Case
         $script:SessionLines[0] | Should -BeExactly "Install mode: $Summary."
         $options = if ($Recorded -eq 'shown') { $script:Shown } else { $script:Asked }
-        $message | Should -BeExactly "Atlas install state ready for $Mode of $script:Target with options: $($options -join ', ')."
+        $message | Should -BeExactly "Aether install state ready for $Mode of $script:Target with options: $($options -join ', ')."
         if ($Calls -contains 'Repair:0.5.0') {
             $script:SessionLines | Should -Contain "Removed the 'Mitigations' record (state 2): only the old Atlas Toolbox wrote it, and its choices never reached this PC."
         }
@@ -536,7 +536,7 @@ Describe 'AME Wizard''s start of an install' {
         $lines = @(Start-AtlasWizardInstallState -Mode $Mode -IsOobe $true)
 
         $script:WizardCalls.ToArray() | Should -Be @("Start:$Mode", 'Repair:0.5.0')
-        $lines | Should -Be @($script:Repaired, "Atlas install state ready for $Mode (OOBE=True).")
+        $lines | Should -Be @($script:Repaired, "Aether install state ready for $Mode (OOBE=True).")
     }
 
     It 'leaves the records alone for <Case>' -TestCases @(
@@ -551,7 +551,7 @@ Describe 'AME Wizard''s start of an install' {
         $lines = @(Start-AtlasWizardInstallState -Mode $Mode -IsOobe $false)
 
         Should -Invoke Repair-AtlasToolboxRecord -Times 0 -Exactly -Because $Case
-        $lines | Should -Be @("Atlas install state ready for $Mode (OOBE=False).")
+        $lines | Should -Be @("Aether install state ready for $Mode (OOBE=False).")
     }
 
     It 'changes no record when another install holds the PC' {
@@ -628,12 +628,12 @@ exit $fixture.exitCode
         [void][IO.Directory]::CreateDirectory($workerRoot)
         Set-Content -LiteralPath (Join-Path $workerRoot 'Update-Windows.ps1') -Value @'
 param([string]$JobPath, [switch]$VerifyOnly)
-@{ schema = 1; status = 'failed'; activity = @{ failureMessage = 'Another Atlas preparation is running.' } } |
+@{ schema = 1; status = 'failed'; activity = @{ failureMessage = 'Another Aether preparation is running.' } } |
     ConvertTo-Json | Set-Content -LiteralPath (Join-Path $JobPath 'state.json')
 exit 1
 '@
         { Invoke-AtlasPreparationCheck -PayloadRoot $payload -JobPath (Join-Path $payload 'Verification') } |
-            Should -Throw '*The check reported: Another Atlas preparation is running.*'
+            Should -Throw '*The check reported: Another Aether preparation is running.*'
     }
 }
 
@@ -800,7 +800,7 @@ Describe 'Front door requirements and staging' {
         $result = Get-TestRequirement -Name 'User account' -Arguments @{ AccountSid = 'S-1-12-1-2933642503-1247987907-1399130510-4207851353' }
         $result.Passed | Should -BeFalse
         $result.Blocking | Should -BeTrue
-        $result.Detail | Should -BeLike "Atlas can't be installed from a work or school (Microsoft Entra ID) account.*"
+        $result.Detail | Should -BeLike "Aether can't be installed from a work or school (Microsoft Entra ID) account.*"
         Should -Invoke Test-AtlasUserAccountReady -Times 0 -Exactly
     }
 

@@ -19,13 +19,13 @@ function Read-AtlasActiveInstallState {
         return $null
     }
     if (-not (Test-Path -LiteralPath $statePath -PathType Leaf -ErrorAction Stop)) {
-        throw "The Atlas install-state path is not a regular file: '$statePath'."
+        throw "The Aether install-state path is not a regular file: '$statePath'."
     }
 
     $stateManifest = [IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot `
         -ChildPath '..\..\Atlas.InstallState\Atlas.InstallState.psd1'))
     if (-not (Test-Path -LiteralPath $stateManifest -PathType Leaf)) {
-        throw "The active Atlas install state exists, but its reader module is missing: '$stateManifest'."
+        throw "The active Aether install state exists, but its reader module is missing: '$stateManifest'."
     }
 
     Import-Module -Name $stateManifest -DisableNameChecking -ErrorAction Stop
@@ -46,7 +46,7 @@ function Read-AtlasStateDocument {
     $stateManifest = [IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot `
         -ChildPath '..\..\Atlas.State\Atlas.State.psd1'))
     if (-not (Test-Path -LiteralPath $stateManifest -PathType Leaf)) {
-        throw "The Atlas state document exists, but its reader module is missing: '$stateManifest'."
+        throw "The Aether state document exists, but its reader module is missing: '$stateManifest'."
     }
 
     Import-Module -Name $stateManifest -ErrorAction Stop
@@ -140,13 +140,13 @@ function Get-AtlasContext {
     if ($isInstallStateBacked) {
         $mode = [string]$installState.mode
         if ($mode -cnotin @('Fresh', 'Upgrade', 'Reapply', 'Rebase')) {
-            throw "The Atlas install-state mode '$mode' is invalid."
+            throw "The Aether install-state mode '$mode' is invalid."
         }
         $storedChoices = $installState.PSObject.Properties['choices']
         if ($null -ne $storedChoices) {
             $choices = [string]$storedChoices.Value
             if ($choices -cnotin @('Keep', 'ChooseAgain')) {
-                throw "The Atlas install-state choices value '$choices' is invalid."
+                throw "The Aether install-state choices value '$choices' is invalid."
             }
         }
         $targetVersion = [string]$installState.targetVersion

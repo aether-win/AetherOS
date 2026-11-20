@@ -269,7 +269,7 @@ function Invoke-AtlasInstallStateLocked {
             $lockTaken = $true
         }
         if (-not $lockTaken) {
-            throw 'Timed out waiting for the Atlas install-state lock.'
+            throw 'Timed out waiting for the Aether install-state lock.'
         }
         return & $Action
     } finally {
@@ -398,7 +398,7 @@ function Start-AtlasInstallState {
                     $began = if ([bool]$existing.isOobe) { ', begun during Windows setup,' } else { '' }
                     $article = if ($installMode -cmatch '^[AEIOU]') { 'an' } else { 'a' }
                     $requested = if ($oobeValue) { ' during Windows setup' } else { '' }
-                    throw ("An unfinished Atlas $($existing.mode) installation of $($existing.targetVersion)$began is waiting to finish, " +
+                    throw ("An unfinished Aether $($existing.mode) installation of $($existing.targetVersion)$began is waiting to finish, " +
                         "so $article $installMode installation$requested can't start. Finish it first: in Atlas Manager, choose " +
                         "Finish installing Atlas $($existing.targetVersion), or run Install-Atlas.ps1 again with the options it started with.")
                 }
@@ -482,7 +482,7 @@ function Set-AtlasInstallOptions {
     $resolvedPath = Resolve-AtlasInstallStatePath -StatePath $StatePath
     return Invoke-AtlasInstallStateLocked {
         $state = Get-AtlasInstallStateUnlocked -StatePath $resolvedPath
-        if ($null -eq $state) { throw 'No Atlas install state is active.' }
+        if ($null -eq $state) { throw 'No Aether install state is active.' }
         if ($state.status -ceq 'Running' -or @($state.completedSteps).Count -gt 0) {
             if ((@($state.options | Sort-Object) -join "`n") -cne (@($Options | Sort-Object) -join "`n")) {
                 throw (Get-AtlasInstallOptionLockMessage -State $state)
@@ -508,7 +508,7 @@ function Add-AtlasInstallOption {
     return Invoke-AtlasInstallStateLocked {
         $state = Get-AtlasInstallStateUnlocked -StatePath $resolvedPath
         if ($null -eq $state) {
-            throw 'No Atlas install state is active.'
+            throw 'No Aether install state is active.'
         }
         if ($state.status -eq 'Running' -or @($state.completedSteps).Count -gt 0) {
             if (@($state.options) -inotcontains $Name) {
@@ -545,7 +545,7 @@ function Set-AtlasInstallUser {
     return Invoke-AtlasInstallStateLocked {
         $state = Get-AtlasInstallStateUnlocked -StatePath $resolvedPath
         if ($null -eq $state) {
-            throw 'No Atlas install state is active.'
+            throw 'No Aether install state is active.'
         }
         if (@('Capturing', 'Running') -notcontains $state.status) {
             throw "The install user cannot be changed while install state is '$($state.status)'."
@@ -579,7 +579,7 @@ function Commit-AtlasInstallState {
     return Invoke-AtlasInstallStateLocked {
         $state = Get-AtlasInstallStateUnlocked -StatePath $resolvedPath
         if ($null -eq $state) {
-            throw 'No Atlas install state is active.'
+            throw 'No Aether install state is active.'
         }
         if ($state.status -eq 'Running') {
             return $state
@@ -612,7 +612,7 @@ function Invoke-AtlasInstallStep {
     $decision = Invoke-AtlasInstallStateLocked {
         $state = Get-AtlasInstallStateUnlocked -StatePath $resolvedPath
         if ($null -eq $state) {
-            throw 'No Atlas install state is active.'
+            throw 'No Aether install state is active.'
         }
         if ($state.status -ne 'Running') {
             throw "Install steps cannot run while install state is '$($state.status)'."
@@ -755,7 +755,7 @@ function Complete-AtlasInstallState {
     return Invoke-AtlasInstallStateLocked {
         $state = Get-AtlasInstallStateUnlocked -StatePath $resolvedPath
         if ($null -eq $state) {
-            throw 'No Atlas install state is active.'
+            throw 'No Aether install state is active.'
         }
         if ($state.status -ne 'Running') {
             throw "Install state cannot be completed from '$($state.status)'."
@@ -815,7 +815,7 @@ function Get-AtlasPlaybookDocument {
         $PlaybookPath = [IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot -ChildPath '..\..\..\..\..\playbook.conf'))
     }
     if (-not [IO.File]::Exists($PlaybookPath)) {
-        throw "Atlas playbook.conf was not found at '$PlaybookPath'."
+        throw "Aether playbook.conf was not found at '$PlaybookPath'."
     }
     [xml]$playbook = [IO.File]::ReadAllText($PlaybookPath)
     return $playbook.Playbook
@@ -830,7 +830,7 @@ function Get-AtlasPlaybookVersion {
 
     $version = [string](Get-AtlasPlaybookDocument -PlaybookPath $PlaybookPath).Version
     if ($version -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') {
-        throw "Atlas target version '$version' is invalid."
+        throw "Aether target version '$version' is invalid."
     }
     return $version
 }
@@ -906,7 +906,7 @@ function Get-AtlasInstalledVersion {
                 $Matches[1]
             }
         }) | Sort-Object -Unique
-        if (@($legacyVersions).Count -gt 1) { throw 'Installed Atlas version markers disagree.' }
+        if (@($legacyVersions).Count -gt 1) { throw 'Installed Aether version markers disagree.' }
         if (@($legacyVersions).Count -eq 1) { $installedVersion = [string]@($legacyVersions)[0] }
     }
     if ([string]::IsNullOrWhiteSpace($installedVersion) -and $null -ne $Rebase) {
@@ -955,7 +955,7 @@ function Resolve-AtlasInstallMode {
         }
         $playbook = Get-AtlasPlaybookDocument -PlaybookPath $PlaybookPath
         if (@($playbook.UpgradableFrom.string) -cnotcontains $installedVersion) {
-            throw "Atlas $installedVersion is not a declared upgrade source for $TargetVersion. A fresh Windows installation is required."
+            throw "Aether $installedVersion is not a declared upgrade source for $TargetVersion. A fresh Windows installation is required."
         }
         if ($null -ne $rebase) { return 'Rebase' }
         return 'Upgrade'
@@ -963,7 +963,7 @@ function Resolve-AtlasInstallMode {
 
     # Atlas files without a version are not evidence of a supported upgrade source.
     if ([IO.Directory]::Exists((Join-Path -Path $WindowsPath -ChildPath 'AtlasModules\Scripts'))) {
-        throw 'Atlas files exist but their installed version could not be established. A supported upgrade source is required.'
+        throw 'Aether files exist but their installed version could not be established. A supported upgrade source is required.'
     }
     return 'Fresh'
 }
@@ -1022,7 +1022,7 @@ function Resolve-AtlasInstallChoices {
         }
     }
     elseif ($Mode -ceq 'Rebase' -and $Requested -ceq 'ChooseAgain') {
-        throw ('Windows reinstalled itself while Atlas Manager moved it to a newer version, so this installation first ' +
+        throw ('Windows reinstalled itself while Aether Manager moved it to a newer version, so this installation first ' +
             'puts back the choices you had. Run it again without -ChooseAgain; once it has finished, you can reinstall ' +
             'Atlas and choose again.')
     }

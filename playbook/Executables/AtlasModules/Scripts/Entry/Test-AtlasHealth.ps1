@@ -97,7 +97,7 @@ function Get-AtlasHealthStandaloneTweakPath {
 function Write-AtlasHealthReport {
     param([Parameter(Mandatory = $true)]$Report)
 
-    Write-Host "Atlas $($Report.installedVersion) installed $($Report.installedAt) ($($Report.mode)) on Windows build $($Report.windowsBuild)."
+    Write-Host "Aether $($Report.installedVersion) installed $($Report.installedAt) ($($Report.mode)) on Windows build $($Report.windowsBuild)."
     Write-Host "Options: $(if (@($Report.options).Count) { $Report.options -join ', ' } else { 'none' })"
     $toggleNames = @($Report.toggles.PSObject.Properties | ForEach-Object { $_.Name } | Sort-Object)
     Write-Host "Recorded toggles: $($toggleNames.Count)"

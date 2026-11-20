@@ -195,7 +195,7 @@ Describe 'Clear-AtlasTelemetryLogFiles' {
             [pscustomobject]@{ IsInstallStateBacked = $false }
         }
         { Clear-AtlasTelemetryLogFiles -ProgramDataPath $script:programData } |
-            Should -Throw '*requires active Atlas install state*'
+            Should -Throw '*requires active Aether install state*'
 
         Mock Get-AtlasContext -ModuleName Atlas.Privacy {
             [pscustomobject]@{ IsInstallStateBacked = $true }

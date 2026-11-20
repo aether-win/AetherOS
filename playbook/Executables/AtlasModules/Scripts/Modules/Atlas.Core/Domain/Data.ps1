@@ -34,7 +34,7 @@ function Import-AtlasModule {
         [IO.Path]::Combine($PSScriptRoot, '..', '..', $Name, "$Name.psd1")
     )
     if (-not [IO.File]::Exists($manifest)) {
-        throw "The Atlas module manifest '$manifest' is missing."
+        throw "The Aether module manifest '$manifest' is missing."
     }
 
     # Import into the global session state, where entry scripts and toggle companion

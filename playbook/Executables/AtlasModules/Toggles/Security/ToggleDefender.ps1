@@ -47,6 +47,6 @@ function Set-AtlasDefenderToggleChoice {
         $null = Set-AtlasStateChoice -Option $Option
     }
     catch {
-        Write-AtlasLog -Level Warning -Message "Couldn't record '$Option' in the Atlas state document: $($_.Exception.Message)" -ErrorRecord $_
+        Write-AtlasLog -Level Warning -Message "Couldn't record '$Option' in the Aether state document: $($_.Exception.Message)" -ErrorRecord $_
     }
 }

@@ -41,7 +41,7 @@ if (-not $Silent) {
         'features broken by disabled services.'
     )
 
-    if (-not (Read-AtlasYesNo -Question 'Restore the Atlas service defaults now?')) {
+    if (-not (Read-AtlasYesNo -Question 'Restore the Aether service defaults now?')) {
         Write-AtlasNote -Text 'Nothing was changed.'
         Wait-AtlasExit
         return
@@ -107,7 +107,7 @@ try {
     }
     else {
         if (-not $Silent) {
-            Write-AtlasStep -Text 'Restoring the Atlas service defaults...'
+            Write-AtlasStep -Text 'Restoring the Aether service defaults...'
         }
         Invoke-AtlasTrustedInstaller `
             -Operation ResetServices `

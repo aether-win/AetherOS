@@ -129,4 +129,4 @@ else {
     ) -DeferredExitCode @(-2146498554) -Optional # 0x800f0806: pending operations
 }
 
-Write-AtlasLog -Message "Atlas packages' repair source: $(Update-AtlasCbsRepairSource -AtlasPackages $atlasPackages)."
+Write-AtlasLog -Message "Aether packages' repair source: $(Update-AtlasCbsRepairSource -AtlasPackages $atlasPackages)."

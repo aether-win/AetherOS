@@ -23,13 +23,13 @@ function Import-AtlasRegistryFile([string]$Path, [string]$Log, [Microsoft.Win32.
             }
             continue
         }
-        if ($null -eq $key -or $line -notmatch '^"([^"]+)"=(.+)$') { throw "$file has a line Atlas doesn't apply: $line" }
+        if ($null -eq $key -or $line -notmatch '^"([^"]+)"=(.+)$') { throw "$file has a line Aether doesn't apply: $line" }
         $name = $Matches[1]
         if ($Matches[2] -eq '-') { $operations.Add([pscustomobject]@{ Kind = 'delete-value'; Key = $key; Name = $name; Data = $null }) }
         elseif ($Matches[2] -match '^dword:([0-9a-fA-F]{8})$') {
             $operations.Add([pscustomobject]@{ Kind = 'dword'; Key = $key; Name = $name; Data = [Convert]::ToUInt32($Matches[1], 16) })
         }
-        else { throw "$file has a value Atlas doesn't apply: $line" }
+        else { throw "$file has a value Aether doesn't apply: $line" }
     }
     foreach ($operation in $operations) {
         switch ($operation.Kind) {

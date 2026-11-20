@@ -623,7 +623,7 @@ function Install-AtlasArchiveTool {
     # The install engine runs without a desktop, so nobody could answer a question
     # about replacing 7-Zip. Keep the archive tool the user already chose.
     if (Test-Path -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7-Zip') {
-        Write-AtlasLog -Message '7-Zip is installed, so Atlas keeps it and skips NanaZip.'
+        Write-AtlasLog -Message '7-Zip is installed, so Aether keeps it and skips NanaZip.'
         return
     }
 

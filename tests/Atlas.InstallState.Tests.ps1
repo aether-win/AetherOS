@@ -409,7 +409,7 @@ Describe 'Atlas.InstallState update path' {
         It 'refuses to choose again on a Rebase, naming the next step' {
             {
                 Resolve-AtlasInstallChoices -StatePath (New-TestInstallStatePath) -TargetVersion '0.6.0' -Mode Rebase -Requested ChooseAgain
-            } | Should -Throw -ExpectedMessage ('Windows reinstalled itself while Atlas Manager moved it to a newer version, so this installation first puts back the choices you had. ' +
+            } | Should -Throw -ExpectedMessage ('Windows reinstalled itself while Aether Manager moved it to a newer version, so this installation first puts back the choices you had. ' +
                 'Run it again without -ChooseAgain; once it has finished, you can reinstall Atlas and choose again.')
         }
 

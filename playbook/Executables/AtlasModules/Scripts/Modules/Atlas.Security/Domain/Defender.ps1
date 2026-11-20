@@ -203,7 +203,7 @@ function Read-AtlasDefenderMenuChoice {
     )
 
     $currentIndex = if ($CurrentState -ceq 'Disabled') { 1 } else { 2 }
-    Write-AtlasNote -Text 'Only disable Windows Defender after reading the Atlas documentation.'
+    Write-AtlasNote -Text 'Only disable Windows Defender after reading the Aether documentation.'
     Write-AtlasBlankLine
     while ($true) {
         $choice = Read-AtlasChoice -Question 'What would you like to do?' `

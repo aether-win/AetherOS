@@ -15,7 +15,7 @@ Import-Module -Name $installStateModule -Force -DisableNameChecking -ErrorAction
 
 $installState = Get-AtlasInstallState
 if ($null -eq $installState -or [string]$installState.status -cne 'Running') {
-    throw 'Notification changes require committed Atlas install state.'
+    throw 'Notification changes require committed Aether install state.'
 }
 
 $script:AtlasNotificationPolicyPath =
@@ -134,7 +134,7 @@ function Write-AtlasNotificationSnapshot {
 
 $workRoot = Get-AtlasInstallWorkRoot
 if (-not [IO.Directory]::Exists($workRoot)) {
-    throw "Atlas install work directory '$workRoot' does not exist."
+    throw "Aether install work directory '$workRoot' does not exist."
 }
 $snapshotPath = Join-Path -Path $workRoot -ChildPath 'notification.json'
 

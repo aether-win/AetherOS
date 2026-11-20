@@ -98,7 +98,7 @@ function Read-AtlasConsoleLine {
     }
     catch {
         Write-Host ''
-        throw "Atlas needed an answer to '$($Prompt.Trim())' but this window cannot take keyboard input: $($_.Exception.Message)"
+        throw "Aether needed an answer to '$($Prompt.Trim())' but this window cannot take keyboard input: $($_.Exception.Message)"
     }
 }
 

@@ -17,7 +17,7 @@ function Wait-AtlasChildProcess {
 
     if (-not $Process.WaitForExit($TimeoutMilliseconds)) {
         $timeoutSeconds = [Math]::Round($TimeoutMilliseconds / 1000)
-        throw "$Description did not exit within $timeoutSeconds seconds. Child completion is unknown, so removing the old Atlas files is blocked."
+        throw "$Description did not exit within $timeoutSeconds seconds. Child completion is unknown, so removing the old Aether files is blocked."
     }
 
     return [int]$Process.ExitCode
@@ -73,7 +73,7 @@ foreach ($taskManager in @(Get-Process -Name 'taskmgr' -ErrorAction SilentlyCont
 }
 
 if (@(Get-Process -Name 'taskmgr' -ErrorAction SilentlyContinue).Count -gt 0) {
-    throw 'Task Manager opened again while Atlas was stopping it. Close Task Manager, then try again.'
+    throw 'Task Manager opened again while Aether was stopping it. Close Task Manager, then try again.'
 }
 
 $processExplorerRoot = Join-Path -Path $windowsPath -ChildPath 'AtlasModules\Apps\ProcessExplorer'
@@ -100,7 +100,7 @@ $blockingProcesses = foreach ($process in @(Get-Process -Name 'procexp', 'procex
 
 if (@($blockingProcesses).Count -gt 0) {
     $processList = (@($blockingProcesses) | ForEach-Object { "$($_.ProcessName) ($($_.Id))" }) -join ', '
-    throw "Process Explorer is still running from the Atlas folder: $processList."
+    throw "Process Explorer is still running from the Aether folder: $processList."
 }
 
 $taskManagerIfeo = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe'
@@ -108,5 +108,5 @@ $taskManagerConfiguration = Get-ItemProperty -LiteralPath $taskManagerIfeo -Name
 $debugger = if ($null -eq $taskManagerConfiguration) { '' } else { [string]$taskManagerConfiguration.Debugger }
 if (-not [string]::IsNullOrWhiteSpace($debugger) -and
     $debugger.IndexOf($processExplorerRoot, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
-    throw "Task Manager still redirects to Atlas's Process Explorer: '$debugger'."
+    throw "Task Manager still redirects to Aether's Process Explorer: '$debugger'."
 }

@@ -178,7 +178,7 @@ fn main() {
                 WindowBounds::Windowed(bounds)
             }),
             titlebar: Some(TitlebarOptions {
-                title: Some("Atlas Manager".into()),
+                title: Some("Aether OS".into()),
                 appears_transparent: true,
                 traffic_light_position: None,
             }),

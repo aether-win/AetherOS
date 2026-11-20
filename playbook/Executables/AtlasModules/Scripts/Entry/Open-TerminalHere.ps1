@@ -143,7 +143,7 @@ function Show-AtlasTerminalFailure {
     }
     try {
         & ([IO.Path]::Combine($scriptsRoot, 'Operations', 'Show-AtlasToast.ps1')) `
-            -Title Atlas -Message "Couldn't open the terminal. $reason"
+            -Title Aether -Message "Couldn't open the terminal. $reason"
     }
     catch {
         $null = $_

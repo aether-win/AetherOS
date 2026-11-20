@@ -91,7 +91,7 @@ function New-AtlasToggleProductionStateRoot {
             $acl
         )
         if ($null -eq $stateKey) {
-            throw 'Creating the Atlas toggle state root returned no registry key.'
+            throw 'Creating the Aether toggle state root returned no registry key.'
         }
     }
     finally {

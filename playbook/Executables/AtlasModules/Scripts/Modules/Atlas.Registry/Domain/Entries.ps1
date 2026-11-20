@@ -180,7 +180,7 @@ function Invoke-AtlasRegistryEntries {
 
             $targetScope = Get-AtlasRegistryEntryTargetScope -Path ([string]$entry['Path'])
             if ($targetScope -ceq 'ExplicitUserHive') {
-                throw "Registry entry path '$($entry['Path'])' targets an explicit user hive; only ambient current-token HKCU or the fixed Atlas default-user hive is supported."
+                throw "Registry entry path '$($entry['Path'])' targets an explicit user hive; only ambient current-token HKCU or the fixed Aether default-user hive is supported."
             }
 
             if (-not (Test-AtlasRegistryEntryInScope -Entry $entry -TargetScope $targetScope -Scope $Scope -IsArm64 $arm64)) {

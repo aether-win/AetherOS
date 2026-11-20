@@ -204,7 +204,7 @@ function Invoke-AtlasAdministratorMergeTransition {
     $command = & $RegistryReader $script:AtlasMergeCommandPath
     if (-not (Test-AtlasMergeParentKnown -Parent $parent -CommandExists ([bool]$command.Exists)) -or
         -not (Test-AtlasMergeCommandKnown -Command $command)) {
-        throw 'The registry-file RunAs verb is customized or ambiguous; Atlas will not overwrite it.'
+        throw 'The registry-file RunAs verb is customized or ambiguous; Aether will not overwrite it.'
     }
     if (Test-AtlasMergeCanonical -Parent $parent -Command $command) { return }
 
@@ -213,7 +213,7 @@ function Invoke-AtlasAdministratorMergeTransition {
     $freshCommand = & $RegistryReader $script:AtlasMergeCommandPath
     if (-not (Test-AtlasMergeSnapshotEqual -Left $parent -Right $freshParent) -or
         -not (Test-AtlasMergeSnapshotEqual -Left $command -Right $freshCommand)) {
-        throw 'The registry-file RunAs verb changed after validation; Atlas will not overwrite it.'
+        throw 'The registry-file RunAs verb changed after validation; Aether will not overwrite it.'
     }
 
     # Commit the least-privilege executable command first. If interruption occurs,
@@ -232,7 +232,7 @@ function Invoke-AtlasAdministratorMergeTransition {
 
     $parent = & $RegistryReader $script:AtlasMergeParentPath
     if (-not (Test-AtlasMergeParentKnown -Parent $parent -CommandExists $true)) {
-        throw 'The registry-file RunAs parent changed after command publication; Atlas will not overwrite it.'
+        throw 'The registry-file RunAs parent changed after command publication; Aether will not overwrite it.'
     }
     [void](& $RegistryWriter $script:AtlasMergeParentPath '' `
             $script:AtlasMergeAdministratorLabel 'String')

@@ -25,7 +25,7 @@ foreach ($childName in @('AtlasDesktop', 'AtlasModules')) {
 
     $resolvedTarget = (Resolve-Path -LiteralPath $target).ProviderPath.TrimEnd('\')
     if (-not $resolvedTarget.StartsWith($resolvedWindowsPath + '\', [StringComparison]::OrdinalIgnoreCase)) {
-        throw "Refusing to remove unexpected Atlas path '$resolvedTarget'."
+        throw "Refusing to remove unexpected Aether path '$resolvedTarget'."
     }
 
     # These files describe this device before Atlas changed its services. They
@@ -51,7 +51,7 @@ foreach ($childName in @('AtlasDesktop', 'AtlasModules')) {
     if ($childName -eq 'AtlasModules' -and (Test-Path -LiteralPath $logsPath -PathType Container)) {
         $logs = Get-Item -LiteralPath $logsPath -Force
         if ($logs.Attributes -band [IO.FileAttributes]::ReparsePoint) {
-            throw "Refusing to keep Atlas's logs through a reparse point at '$logsPath'."
+            throw "Refusing to keep Aether's logs through a reparse point at '$logsPath'."
         }
         $kept += $logsPath
     }
@@ -66,7 +66,7 @@ foreach ($childName in @('AtlasDesktop', 'AtlasModules')) {
         if ($kept -contains $item.FullName) { continue }
         $resolvedItem = (Resolve-Path -LiteralPath $item.FullName).ProviderPath
         if (-not $resolvedItem.StartsWith($resolvedTarget + '\', [StringComparison]::OrdinalIgnoreCase)) {
-            throw "Refusing to remove unexpected Atlas path '$resolvedItem'."
+            throw "Refusing to remove unexpected Aether path '$resolvedItem'."
         }
         Remove-Item -LiteralPath $resolvedItem -Force -Recurse -ErrorAction Stop
     }
@@ -75,7 +75,7 @@ foreach ($childName in @('AtlasDesktop', 'AtlasModules')) {
         if ($backups.FullName -contains $item.FullName) { continue }
         $resolvedItem = (Resolve-Path -LiteralPath $item.FullName).ProviderPath
         if (-not $resolvedItem.StartsWith($otherPath + '\', [StringComparison]::OrdinalIgnoreCase)) {
-            throw "Refusing to remove unexpected Atlas path '$resolvedItem'."
+            throw "Refusing to remove unexpected Aether path '$resolvedItem'."
         }
         Remove-Item -LiteralPath $resolvedItem -Force -Recurse -ErrorAction Stop
     }

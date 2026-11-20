@@ -23,7 +23,7 @@ Import-Module -Name $coreManifest -Force -ErrorAction Stop
 Assert-AtlasPrivilege -TrustedInstaller
 $context = Get-AtlasContext -Refresh
 if (-not $context.IsInstallStateBacked -or $context.IsOobe) {
-    throw 'Installing-user setup requires a non-OOBE active Atlas install state.'
+    throw 'Installing-user setup requires a non-OOBE active Aether install state.'
 }
 
 $userSid = [string]$context.InteractiveUserSid
