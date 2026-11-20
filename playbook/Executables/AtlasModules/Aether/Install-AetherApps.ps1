@@ -107,7 +107,11 @@ function New-AccesoDirecto {
 if ($apps -contains 'app-claude') {
     Titulo 'Claude'
     if (Install-ConWinget -Id 'Anthropic.Claude') { Ok 'Claude instalado' }
-    else { Fallo 'Claude no se pudo instalar'; $pendientes.Add('Claude: https://claude.ai/download') }
+    else {
+        Fallo 'Claude no se pudo instalar con winget; se abre su página de descarga'
+        Start-Process 'https://claude.ai/download'
+        $pendientes.Add('Claude: termina la instalación desde la página que se abrió')
+    }
 }
 
 if ($apps -contains 'app-chatgpt') {
