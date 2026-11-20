@@ -31,6 +31,18 @@ if ($Modo) {
 # =========================================================================================
 # Bandeja
 # =========================================================================================
+function Show-AetherCentro {
+    # Abre la interfaz con el mismo lanzador que los accesos directos: el Centro nativo
+    # (via su tarea programada, sin UAC) si esta, o la ventana clasica como respaldo.
+    $vbs = Join-Path (Split-Path $script:EsteScript) 'Abrir-Centro.vbs'
+    if (Test-Path -LiteralPath $vbs) {
+        Start-Process -FilePath (Join-Path ([Environment]::SystemDirectory) 'wscript.exe') -ArgumentList @("`"$vbs`"")
+    }
+    else {
+        Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script:EsteScript`"")
+    }
+}
+
 function Start-AetherBandeja {
     $creado = $false
     $mutex = New-Object System.Threading.Mutex($true, 'Local\AetherBandeja', [ref]$creado)
@@ -71,11 +83,11 @@ namespace Aether {
     }
     [void]$menu.Items.Add('-')
     $abrir = $menu.Items.Add('Abrir Centro Aether')
-    $abrir.add_Click({ Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script:EsteScript`"") })
+    $abrir.add_Click({ Show-AetherCentro })
     $salir = $menu.Items.Add('Salir de la bandeja')
     $salir.add_Click({ [System.Windows.Forms.Application]::Exit() })
     $script:IconoBandeja.ContextMenuStrip = $menu
-    $script:IconoBandeja.add_DoubleClick({ Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script:EsteScript`"") })
+    $script:IconoBandeja.add_DoubleClick({ Show-AetherCentro })
 
     # Atajos: Ctrl (2) + Alt (1); T = 0x54, G = 0x47, B = 0x42.
     $script:Atajos = New-Object Aether.Atajos
@@ -345,7 +357,7 @@ if ($Bienvenida) {
                 }
                 Set-AetherAjuste -Nombre 'BienvenidaVista' -Valor 1
                 if ($b.ChkRespaldo.IsChecked) {
-                    Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script:EsteScript`"")
+                    Show-AetherCentro
                 }
                 if ($avisos.Count -gt 0) {
                     [void][System.Windows.MessageBox]::Show(($avisos -join "`n"), 'Aether OS', 'OK', 'Information')

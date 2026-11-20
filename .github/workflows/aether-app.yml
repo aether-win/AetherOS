@@ -22,6 +22,29 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Setup .NET 8 (para el Centro)
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Setup MSBuild (para el Centro)
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2.0.0
+
+      - name: Compilar el Centro Aether (WinUI 3) y meterlo en el paquete
+        shell: pwsh
+        working-directory: centro
+        run: |
+          $ErrorActionPreference = 'Stop'
+          msbuild CentroAether.csproj /t:Restore /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64
+          if ($LASTEXITCODE -ne 0) { throw "restore del Centro falló ($LASTEXITCODE)" }
+          msbuild CentroAether.csproj /t:Publish /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:SelfContained=true /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true /p:PublishDir=publish\
+          if ($LASTEXITCODE -ne 0) { throw "publish del Centro falló ($LASTEXITCODE)" }
+          $destino = '..\playbook\Executables\AtlasModules\Aether\Centro\app'
+          New-Item -ItemType Directory -Path $destino -Force | Out-Null
+          Copy-Item -Path 'publish\*' -Destination $destino -Recurse -Force
+          if (-not (Test-Path (Join-Path $destino 'CentroAether.exe'))) { throw 'No se copió CentroAether.exe al paquete.' }
+          Write-Host "Centro nativo incluido en el paquete ($(@(Get-ChildItem $destino -Recurse -File).Count) archivos)."
+
       - name: Armar el paquete de Aether OS
         shell: pwsh
         run: |
