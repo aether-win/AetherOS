@@ -1,0 +1,325 @@
+﻿<#
+    Aether OS - Funciones del Centro Aether.
+    Las usan la ventana (Centro-Aether.ps1), el proceso de la bandeja (-Bandeja) y el respaldo.
+    Todo corre como el usuario, sin permisos de administrador, salvo lo que se abre con
+    Start-AetherComoAdmin (pide UAC).
+#>
+Set-StrictMode -Version 2.0
+
+$script:AetherCarpeta = Split-Path -Parent $PSScriptRoot
+$script:AetherClave = 'HKCU:\Software\AetherOS\Centro'
+$script:AetherEscritorio = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasDesktop'
+$script:AetherDatos = Join-Path ([Environment]::GetFolderPath('ApplicationData')) 'Aether'
+
+# --- Ajustes guardados (HKCU) --------------------------------------------------------
+function Get-AetherAjuste {
+    param([Parameter(Mandatory = $true)][string]$Nombre, $PorDefecto = $null)
+    try {
+        $valor = Get-ItemPropertyValue -LiteralPath $script:AetherClave -Name $Nombre -ErrorAction Stop
+        return $valor
+    }
+    catch {
+        return $PorDefecto
+    }
+}
+
+function Set-AetherAjuste {
+    param([Parameter(Mandatory = $true)][string]$Nombre, [Parameter(Mandatory = $true)]$Valor)
+    if (-not (Test-Path -LiteralPath $script:AetherClave)) {
+        New-Item -Path $script:AetherClave -Force | Out-Null
+    }
+    $tipo = if ($Valor -is [int] -or $Valor -is [bool]) { 'DWord' } else { 'String' }
+    if ($Valor -is [bool]) { $Valor = [int]$Valor }
+    Set-ItemProperty -LiteralPath $script:AetherClave -Name $Nombre -Value $Valor -Type $tipo
+}
+
+# --- Energía ---------------------------------------------------------------------------
+$script:AetherSubProcesador = '54533251-82be-4824-96c1-47b60b740d00'
+$script:AetherTurbo = 'be337238-0d82-4146-a960-4f3749d470c7'        # PERFBOOSTMODE
+$script:AetherMinNucleos = '0cc5b647-c1df-4637-891a-dec35c318583'   # CPMINCORES (estacionar núcleos)
+$script:AetherEpp = '36687f9e-e3a5-4dbf-b1dc-15eb381c6863'          # PERFEPP (0 = rendimiento)
+$script:AetherSubAhorro = 'de830923-a562-41af-a086-e3a2c6bad2da'
+$script:AetherUmbralAhorro = 'e69653ca-cf7f-4f05-aa73-cb833fa90ad4' # ESBATTTHRESHOLD
+$script:AetherAjustesEnergia = @(
+    @{ Clave = 'Turbo'; Sub = $script:AetherSubProcesador; Ajuste = $script:AetherTurbo }
+    @{ Clave = 'MinNucleos'; Sub = $script:AetherSubProcesador; Ajuste = $script:AetherMinNucleos }
+    @{ Clave = 'Epp'; Sub = $script:AetherSubProcesador; Ajuste = $script:AetherEpp }
+    @{ Clave = 'UmbralAhorro'; Sub = $script:AetherSubAhorro; Ajuste = $script:AetherUmbralAhorro }
+)
+
+if (-not ('Aether.Nativo' -as [type])) {
+    Add-Type -Namespace Aether -Name Nativo -MemberDefinition @'
+[DllImport("powrprof.dll")]
+public static extern uint PowerSetActiveOverlayScheme(Guid overlaySchemeGuid);
+[DllImport("ntdll.dll")]
+public static extern int NtSetTimerResolution(uint desiredResolution, bool setResolution, out uint currentResolution);
+'@
+}
+
+# Modo de energía de Windows (Configuración > Sistema > Energía): mejor rendimiento,
+# equilibrado o mayor eficiencia.
+$script:AetherSuperposicion = @{
+    Rendimiento = [Guid]'ded574b5-45a0-4f42-8737-46345c09c238'
+    Equilibrado = [Guid]'00000000-0000-0000-0000-000000000000'
+    Eficiencia  = [Guid]'961cc777-2547-4f9d-8174-7d86181b8a7a'
+}
+
+function Set-AetherModoEnergiaWindows {
+    param([ValidateSet('Rendimiento', 'Equilibrado', 'Eficiencia')][string]$Modo)
+    try {
+        [void][Aether.Nativo]::PowerSetActiveOverlayScheme($script:AetherSuperposicion[$Modo])
+    }
+    catch {
+        Write-Warning "No se pudo cambiar el modo de energía de Windows: $($_.Exception.Message)"
+    }
+}
+
+function Get-AetherValorEnergia {
+    # Devuelve @(AC, DC). powercfg escribe la salida en el idioma de Windows; los dos
+    # últimos valores "0x..." de la consulta son siempre los índices actuales AC y DC.
+    param([string]$Sub, [string]$Ajuste)
+    $salida = @(& powercfg.exe /query SCHEME_CURRENT $Sub $Ajuste 2>$null)
+    $valores = @($salida | ForEach-Object { [regex]::Matches([string]$_, '0x[0-9a-fA-F]+') } | ForEach-Object { $_.Value })
+    if ($valores.Count -lt 2) { return $null }
+    return @([Convert]::ToInt32($valores[-2], 16), [Convert]::ToInt32($valores[-1], 16))
+}
+
+function Set-AetherValorEnergia {
+    param([string]$Sub, [string]$Ajuste, $Ac = $null, $Dc = $null)
+    if ($null -ne $Ac) { & powercfg.exe /setacvalueindex SCHEME_CURRENT $Sub $Ajuste ([int]$Ac) 2>&1 | Out-Null }
+    if ($null -ne $Dc) { & powercfg.exe /setdcvalueindex SCHEME_CURRENT $Sub $Ajuste ([int]$Dc) 2>&1 | Out-Null }
+}
+
+function Save-AetherEnergiaOriginal {
+    # La primera vez guarda los valores del plan de energía para que Trabajo los ponga de vuelta.
+    if ((Get-AetherAjuste -Nombre 'OriginalGuardado' -PorDefecto 0) -eq 1) { return }
+    foreach ($ajuste in $script:AetherAjustesEnergia) {
+        $valores = Get-AetherValorEnergia -Sub $ajuste.Sub -Ajuste $ajuste.Ajuste
+        if ($null -ne $valores) {
+            Set-AetherAjuste -Nombre "Original$($ajuste.Clave)" -Valor "$($valores[0]),$($valores[1])"
+        }
+    }
+    Set-AetherAjuste -Nombre 'OriginalGuardado' -Valor 1
+}
+
+function Restore-AetherEnergiaOriginal {
+    foreach ($ajuste in $script:AetherAjustesEnergia) {
+        $guardado = [string](Get-AetherAjuste -Nombre "Original$($ajuste.Clave)" -PorDefecto '')
+        if ($guardado -match '^(\d+),(\d+)$') {
+            Set-AetherValorEnergia -Sub $ajuste.Sub -Ajuste $ajuste.Ajuste -Ac $Matches[1] -Dc $Matches[2]
+        }
+    }
+}
+
+function Test-AetherCargador {
+    Add-Type -AssemblyName System.Windows.Forms
+    return [System.Windows.Forms.SystemInformation]::PowerStatus.PowerLineStatus -eq 'Online'
+}
+
+function Get-AetherBateria {
+    # Porcentaje de batería, o $null si la PC no tiene batería.
+    Add-Type -AssemblyName System.Windows.Forms
+    $estado = [System.Windows.Forms.SystemInformation]::PowerStatus
+    if ($estado.BatteryChargeStatus -band [System.Windows.Forms.BatteryChargeStatus]::NoSystemBattery) { return $null }
+    return [int][Math]::Round($estado.BatteryLifePercent * 100)
+}
+
+function Set-AetherNotificaciones {
+    param([bool]$Activas)
+    $ruta = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings'
+    if (-not (Test-Path -LiteralPath $ruta)) { New-Item -Path $ruta -Force | Out-Null }
+    Set-ItemProperty -LiteralPath $ruta -Name 'NOC_GLOBAL_SETTING_TOASTS_ENABLED' -Value ([int]$Activas) -Type DWord
+}
+
+function Set-AetherAppsSegundoPlano {
+    param([bool]$Permitidas)
+    $ruta = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications'
+    if (-not (Test-Path -LiteralPath $ruta)) { New-Item -Path $ruta -Force | Out-Null }
+    Set-ItemProperty -LiteralPath $ruta -Name 'GlobalUserDisabled' -Value ([int](-not $Permitidas)) -Type DWord
+}
+
+# --- Wind-Aether (Windhawk) ------------------------------------------------------------
+function Get-AetherWindhawkCli {
+    foreach ($base in @($env:ProgramFiles, ${env:ProgramFiles(x86)})) {
+        if (-not $base) { continue }
+        $ruta = Join-Path $base 'Windhawk\windhawk-cli.exe'
+        if (Test-Path -LiteralPath $ruta) { return $ruta }
+    }
+    return $null
+}
+
+function Get-AetherPerfilesWind {
+    $ruta = Join-Path $script:AetherCarpeta 'Wind-Aether\Wind-Aether-perfiles.json'
+    if (-not (Test-Path -LiteralPath $ruta)) { return $null }
+    return Get-Content -LiteralPath $ruta -Raw -Encoding UTF8 | ConvertFrom-Json
+}
+
+function Set-AetherModWind {
+    param([string]$Id, [bool]$Activo)
+    $cli = Get-AetherWindhawkCli
+    if (-not $cli) { return $false }
+    $accion = if ($Activo) { 'enable' } else { 'disable' }
+    & $cli --quiet mod $accion $Id 2>&1 | Out-Null
+    return ($LASTEXITCODE -eq 0)
+}
+
+function Set-AetherPerfilWind {
+    # Activa los mods del perfil y desactiva los demás mods de Wind-Aether.
+    param([ValidateSet('aether-glass', 'aether-limpio', 'ninguno')][string]$Perfil, [switch]$Temporal)
+    $perfiles = Get-AetherPerfilesWind
+    if (-not $perfiles -or -not (Get-AetherWindhawkCli)) {
+        return 'Windhawk no está instalado o no tiene su herramienta de línea de comandos (Windhawk 2.0).'
+    }
+    $todos = New-Object System.Collections.Generic.HashSet[string]
+    foreach ($p in $perfiles.perfiles.PSObject.Properties) { foreach ($id in @($p.Value.activar)) { [void]$todos.Add([string]$id) } }
+    $activar = if ($Perfil -eq 'ninguno') { @() } else { @($perfiles.perfiles.$Perfil.activar) }
+    $fallos = 0
+    foreach ($id in $todos) {
+        if (-not (Set-AetherModWind -Id $id -Activo ($activar -contains $id))) { $fallos++ }
+    }
+    if (-not $Temporal) { Set-AetherAjuste -Nombre 'PerfilWind' -Valor $Perfil }
+    if ($fallos -gt 0) { return "Perfil aplicado; $fallos mods no respondieron (quizá no están instalados)." }
+    return 'Perfil aplicado.'
+}
+
+function Set-AetherPausaModsGaming {
+    param([bool]$Pausar)
+    $perfiles = Get-AetherPerfilesWind
+    if (-not $perfiles -or -not (Get-AetherWindhawkCli)) { return }
+    $perfil = [string](Get-AetherAjuste -Nombre 'PerfilWind' -PorDefecto 'ninguno')
+    $activos = if ($perfil -eq 'ninguno') { @() } else { @($perfiles.perfiles.$perfil.activar) }
+    foreach ($id in @($perfiles.pausarEnModoGaming)) {
+        if ($activos -contains $id) { [void](Set-AetherModWind -Id $id -Activo (-not $Pausar)) }
+    }
+}
+
+# --- Modos -------------------------------------------------------------------------------
+function Get-AetherModo {
+    return [string](Get-AetherAjuste -Nombre 'Modo' -PorDefecto 'Trabajo')
+}
+
+function Set-AetherModo {
+    <#
+        Cambia a Trabajo, Gaming o Bateria. Devuelve un objeto con Ok y Mensaje.
+        -Automatico: lo pidió el vigilante de batería (al conectar el cargador se vuelve
+        al modo anterior).
+    #>
+    param(
+        [Parameter(Mandatory = $true)][ValidateSet('Trabajo', 'Gaming', 'Bateria')][string]$Modo,
+        [switch]$Automatico
+    )
+    if ($Modo -eq 'Gaming' -and -not (Test-AetherCargador)) {
+        return [pscustomobject]@{ Ok = $false; Mensaje = 'Conecta el cargador para usar el Modo Gaming.' }
+    }
+    $anterior = Get-AetherModo
+    Save-AetherEnergiaOriginal
+    Restore-AetherEnergiaOriginal
+    if ($anterior -eq 'Gaming' -and $Modo -ne 'Gaming') { Set-AetherPausaModsGaming -Pausar $false }
+    if ($anterior -eq 'Bateria' -and $Modo -ne 'Bateria') {
+        [void](Set-AetherPerfilWind -Perfil ([string](Get-AetherAjuste -Nombre 'PerfilWind' -PorDefecto 'ninguno')) -Temporal)
+    }
+
+    switch ($Modo) {
+        'Trabajo' {
+            Set-AetherModoEnergiaWindows -Modo Equilibrado
+            Set-AetherNotificaciones -Activas $true
+            Set-AetherAppsSegundoPlano -Permitidas $true
+            $mensaje = 'Modo Trabajo activo.'
+        }
+        'Gaming' {
+            $limitar = (Get-AetherAjuste -Nombre 'LimitarTurbo' -PorDefecto 0) -eq 1
+            # Sin estacionar núcleos y con el procesador en rendimiento. Con "limitar turbo"
+            # el procesador no sube su frecuencia extra y la gráfica integrada tiene más energía.
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherMinNucleos -Ac 100
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherEpp -Ac 0
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherTurbo -Ac $(if ($limitar) { 0 } else { 2 })
+            Set-AetherModoEnergiaWindows -Modo Rendimiento
+            Set-AetherNotificaciones -Activas $false
+            Set-AetherAppsSegundoPlano -Permitidas $false
+            Set-AetherPausaModsGaming -Pausar $true
+            $mensaje = 'Modo Gaming activo. ¿El ventilador está conectado?'
+        }
+        'Bateria' {
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherTurbo -Dc 0
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherEpp -Dc 70
+            # Ahorro de batería de Windows encendido ya (umbral 100%).
+            Set-AetherValorEnergia -Sub $script:AetherSubAhorro -Ajuste $script:AetherUmbralAhorro -Dc 100
+            Set-AetherModoEnergiaWindows -Modo Eficiencia
+            Set-AetherAppsSegundoPlano -Permitidas $false
+            [void](Set-AetherPerfilWind -Perfil 'aether-limpio' -Temporal)
+            $mensaje = 'Modo Batería activo.'
+        }
+    }
+    & powercfg.exe /setactive SCHEME_CURRENT 2>&1 | Out-Null
+
+    Set-AetherAjuste -Nombre 'Modo' -Valor $Modo
+    if ($Automatico) {
+        Set-AetherAjuste -Nombre 'ModoAnterior' -Valor $anterior
+        Set-AetherAjuste -Nombre 'ModoAutomatico' -Valor 1
+    }
+    else {
+        Set-AetherAjuste -Nombre 'ModoAutomatico' -Valor 0
+    }
+    return [pscustomobject]@{ Ok = $true; Mensaje = $mensaje }
+}
+
+# --- Utilidades -------------------------------------------------------------------------
+function Start-AetherComoAdmin {
+    # Abre un programa con permisos de administrador (aviso de UAC). Devuelve $false si se canceló.
+    param([Parameter(Mandatory = $true)][string]$Archivo, [string[]]$Argumentos = @(), [switch]$Esperar)
+    try {
+        $parametros = @{ FilePath = $Archivo; Verb = 'RunAs'; ErrorAction = 'Stop' }
+        if ($Argumentos.Count -gt 0) { $parametros['ArgumentList'] = $Argumentos }
+        if ($Esperar) { $parametros['Wait'] = $true }
+        Start-Process @parametros
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
+
+function Get-AetherLanzador {
+    # Ruta de un acceso directo de la carpeta Aether (C:\Windows\AtlasDesktop).
+    param([Parameter(Mandatory = $true)][string]$Relativa)
+    return Join-Path $script:AetherEscritorio $Relativa
+}
+
+function Invoke-AetherLanzador {
+    param([Parameter(Mandatory = $true)][string]$Relativa, [switch]$Silencioso)
+    $ruta = Get-AetherLanzador -Relativa $Relativa
+    if (-not (Test-Path -LiteralPath $ruta)) { return $false }
+    $argumentos = @('/c', "`"$ruta`"")
+    if ($Silencioso) { $argumentos += '/silent' }
+    return Start-AetherComoAdmin -Archivo 'cmd.exe' -Argumentos $argumentos -Esperar
+}
+
+function Clear-AetherTemporales {
+    # Limpieza segura: archivos temporales del usuario y la papelera. Nunca toca Descargas,
+    # Escritorio ni Documentos.
+    $antes = 0
+    $carpeta = [IO.Path]::GetTempPath()
+    $archivos = @(Get-ChildItem -LiteralPath $carpeta -Recurse -Force -File -ErrorAction SilentlyContinue)
+    foreach ($archivo in $archivos) { $antes += $archivo.Length }
+    foreach ($elemento in @(Get-ChildItem -LiteralPath $carpeta -Force -ErrorAction SilentlyContinue)) {
+        Remove-Item -LiteralPath $elemento.FullName -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    $quedan = 0
+    foreach ($archivo in @(Get-ChildItem -LiteralPath $carpeta -Recurse -Force -File -ErrorAction SilentlyContinue)) { $quedan += $archivo.Length }
+    try { Clear-RecycleBin -Force -ErrorAction Stop } catch { Write-Verbose 'La papelera ya estaba vacía.' }
+    return [Math]::Round(($antes - $quedan) / 1MB)
+}
+
+function Get-AetherSaludBateria {
+    try {
+        $diseno = @(Get-CimInstance -Namespace root\wmi -ClassName BatteryStaticData -ErrorAction Stop)[0].DesignedCapacity
+        $actual = @(Get-CimInstance -Namespace root\wmi -ClassName BatteryFullChargedCapacity -ErrorAction Stop)[0].FullChargedCapacity
+        if ($diseno -gt 0) {
+            return [pscustomobject]@{ Diseno = $diseno; Actual = $actual; Salud = [Math]::Round(100 * $actual / $diseno) }
+        }
+    }
+    catch {
+        Write-Verbose "Sin datos de batería: $($_.Exception.Message)"
+    }
+    return $null
+}

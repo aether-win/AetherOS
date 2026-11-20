@@ -234,6 +234,8 @@
                 'create-shortcuts'
                 # Aether: guarda las apps elegidas; se instalan como el usuario al iniciar sesión.
                 'aether-apps'
+                # Aether: app de control (Centro Aether) y su ícono de la bandeja.
+                'aether-centro'
             )
         }
     )

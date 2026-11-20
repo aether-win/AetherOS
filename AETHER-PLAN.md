@@ -196,6 +196,32 @@ cuidado, en una pasada aparte.
       esperan el playbook.conf en inglés de Atlas; arreglarlo es pendiente.
       Pendientes del paso 3: textos fijos de la app sobre opciones de Atlas (navegador, Toolbox, quitar
       Edge…), avisos "versión de prueba (RC)" del modo embebido, páginas ISO/USB.
+- [x] Paso 4 (primera versión, 20-nov-2026): **Centro Aether** hecho en PowerShell + WPF (no hay que
+      compilar; Rust queda para más adelante si hace falta). Archivos en
+      `AtlasModules/Aether/Centro/`: `Aether.Centro.ps1` (funciones), `Centro-Aether.ps1` (ventana; con
+      `-Bandeja` ícono de bandeja; con `-Modo X` cambio directo), `Respaldo-Aether.ps1`, `aether.ico`.
+      Tweak `misc/aether-centro`: accesos "Centro Aether" en Inicio y Escritorio público, bandeja en
+      `HKLM\...\Run\AetherBandeja`, `GlobalTimerResolutionRequests=1`. Prueba `tests/Aether.Centro.Tests.ps1`.
+      * Modos (ajustes en HKCU\Software\AetherOS\Centro; guarda los valores originales del plan la
+        primera vez y Trabajo los repone): Trabajo (equilibrado, notificaciones, segundo plano);
+        Gaming (solo con cargador; sin estacionar núcleos, EPP 0, turbo agresivo o limitado, modo de
+        energía "mejor rendimiento", temporizador 0,5 ms que mantiene la bandeja, no molestar, sin
+        segundo plano, pausa `pausarEnModoGaming` de Wind-Aether, recordatorio del ventilador; si se
+        desconecta el cargador pasa a Trabajo); Batería (ahorro de batería de Windows, sin turbo,
+        EPP 70, eficiencia, Aether Limpio temporal). Automático al 30% (10–50, configurable) con aviso
+        de 10 s y Cancelar; vuelve al modo anterior al conectar el cargador. Atajos Ctrl+Alt+T/G/B y
+        menú de la bandeja.
+      * Red: abrir el reparador, probar con una PC, copiar el reparador al Escritorio, uso compartido.
+      * Actualizar: quitar pausa + abrir Windows Update, volver a pausar (lanzadores con /silent),
+        `winget upgrade --all`, abrir edge://settings/searchEngines para Google.
+      * Limpieza segura (temporales del usuario + papelera), limpieza de Windows (UAC), "¿Qué ocupa
+        espacio?" en segundo plano. Batería: carga, salud (WMI) y reporte de Windows; consejo del 80%
+        en el BIOS HP. Respaldo: carpetas/archivos, destino, versiones, hora diaria (schtasks como el
+        usuario), respaldar ahora, abrir respaldos; aviso en la bandeja si falla. Wind-Aether:
+        perfiles Glass/Limpio/ninguno con `windhawk-cli mod enable|disable`. Salud: revisión rápida y
+        la completa (lanzador).
+      * Pendiente: `experimental-cpu-power` (WinRing0) NO se hizo (inseguro); colores de Wind-Aether
+        por tema; asistente de primer arranque; unidades de red fijas e IPs de confianza de Excel.
 - [x] Revisión (parte 1): sin referencias a archivos borrados; `ToolboxLauncher` quitado de 11
       toggles, del generador `tools/dev/New-ToggleLaunchers.ps1` y de `catalog.json`;
       `atlas-theme-upgrade` usa el tema Aether.
