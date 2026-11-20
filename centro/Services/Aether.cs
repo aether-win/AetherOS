@@ -28,7 +28,7 @@ public static class Aether
         return CorrerPowerShell(script);
     }
 
-    public static Task CambiarModo(string modo) => Ejecutar($"Set-AetherModo -Modo {modo}");
+    public static Task<string> CambiarModo(string modo) => Ejecutar($"Set-AetherModo -Modo {modo}");
 
     public static async Task<string> ModoActual()
     {
