@@ -48,11 +48,13 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          cargo build --release --locked --features embedded-playbook
+          # El runtime de C va dentro del .exe (sin esto pide VCRUNTIME140.dll).
+          $env:CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS = '-C target-feature=+crt-static'
+          cargo build --release --locked --target x86_64-pc-windows-msvc --features embedded-playbook
           if ($LASTEXITCODE -ne 0) { throw "cargo build falló con $LASTEXITCODE" }
           $out = Join-Path $env:RUNNER_TEMP 'aether'
           New-Item -ItemType Directory -Path $out -Force | Out-Null
-          Copy-Item -LiteralPath 'target\release\AtlasManager.exe' -Destination (Join-Path $out 'Aether.exe')
+          Copy-Item -LiteralPath 'target\x86_64-pc-windows-msvc\release\AtlasManager.exe' -Destination (Join-Path $out 'Aether.exe')
           Copy-Item -LiteralPath $env:ATLAS_EMBED_APBX -Destination $out
           Copy-Item -LiteralPath '..\LICENSE' -Destination (Join-Path $out 'LICENSE.txt')
           "AETHER_OUT=$out" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
