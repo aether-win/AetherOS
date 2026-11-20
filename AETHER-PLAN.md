@@ -227,8 +227,15 @@ cuidado, en una pasada aparte.
       * App: sin avisos de "versión de prueba" ni "traducción preliminar" (`shell.rs app_notices`).
       * Instalador: las actualizaciones pendientes son solo un aviso (Verdict::Warn en la app; la
         preparación ya no las instala: `$script:AetherPrepararConActualizaciones = $false`).
-      * Pendiente: `experimental-cpu-power` (WinRing0) NO se hizo (inseguro); colores de Wind-Aether
-        por tema; asistente de primer arranque.
+      * 20-nov (tarde): casilla `experimental-cpu-power` **quitada** (playbook.conf, custom.yml, schema,
+        install state; contadores de `AtlasYamlAction.ps1`: 31 acciones, 29 runs, 20 opciones).
+        Instalación sin verificar Windows Update/Store (`Assert-PreparationCurrent` solo mira reinicio
+        pendiente): quitó el error "Microsoft Store did not answer" y acelera el inicio.
+        Asistente de bienvenida (`Centro-Aether.ps1 -Bienvenida`, se abre desde la bandeja la primera
+        vez: modo, tema, Wind-Aether, carpeta de red Z:, respaldo). Colores de Wind-Aether por tema
+        (`coloresPorTema` con `windhawk-cli mod settings set`; la bandeja los ajusta si cambia el
+        tema; botones Tema claro/oscuro). Consola de los accesos en español (`Atlas.Core/Domain/Ui.ps1`,
+        s/n).
 - [x] Revisión (parte 1): sin referencias a archivos borrados; `ToolboxLauncher` quitado de 11
       toggles, del generador `tools/dev/New-ToggleLaunchers.ps1` y de `catalog.json`;
       `atlas-theme-upgrade` usa el tema Aether.
