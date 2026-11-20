@@ -8,6 +8,7 @@
 [CmdletBinding()]
 param(
     [switch]$Bandeja,
+    [switch]$Bienvenida,
     [ValidateSet('Trabajo', 'Gaming', 'Bateria')][string]$Modo
 )
 
@@ -98,6 +99,9 @@ namespace Aether {
     $reloj.add_Tick({ Invoke-AetherVigilante })
     $reloj.Start()
     Update-AetherBandeja
+    if ((Get-AetherAjuste -Nombre 'BienvenidaVista' -PorDefecto 0) -ne 1) {
+        Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script:EsteScript`"", '-Bienvenida')
+    }
 
     [System.Windows.Forms.Application]::Run()
 
@@ -179,6 +183,11 @@ function Invoke-AetherVigilante {
             }
         }
 
+        $perfilWind = [string](Get-AetherAjuste -Nombre 'PerfilWind' -PorDefecto 'ninguno')
+        if ($perfilWind -ne 'ninguno' -and (Get-AetherTema) -ne [string](Get-AetherAjuste -Nombre 'TemaColores' -PorDefecto '')) {
+            [void](Set-AetherColoresWind)
+        }
+
         if ($script:Vueltas % 12 -eq 0) {
             $faltan = @(Connect-AetherUnidadesRed)
             $textoFaltan = $faltan -join ', '
@@ -250,6 +259,109 @@ if ($Bandeja) {
 }
 
 # =========================================================================================
+# Asistente de bienvenida (primer inicio de sesión)
+# =========================================================================================
+if ($Bienvenida) {
+    Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
+    [xml]$xamlB = @'
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Bienvenido a Aether OS" Width="640" Height="680" WindowStartupLocation="CenterScreen"
+        Background="#0A0F1E" FontFamily="Segoe UI" FontSize="14" ResizeMode="NoResize">
+  <Window.Resources>
+    <Style TargetType="TextBlock"><Setter Property="Foreground" Value="#F3F5F8"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
+    <Style TargetType="RadioButton"><Setter Property="Foreground" Value="#F3F5F8"/><Setter Property="Margin" Value="0,4,18,4"/></Style>
+    <Style TargetType="CheckBox"><Setter Property="Foreground" Value="#F3F5F8"/><Setter Property="Margin" Value="0,4,0,4"/></Style>
+    <Style TargetType="Button">
+      <Setter Property="Background" Value="#2F8CFF"/><Setter Property="Foreground" Value="White"/>
+      <Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="18,9"/><Setter Property="Margin" Value="10,0,0,0"/>
+    </Style>
+    <Style x:Key="Seccion" TargetType="TextBlock"><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#4FC3F7"/><Setter Property="Margin" Value="0,16,0,4"/></Style>
+  </Window.Resources>
+  <DockPanel Margin="28">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+      <Button x:Name="BtnSaltar" Content="Ahora no" Background="#1B2A44"/>
+      <Button x:Name="BtnListo" Content="Listo"/>
+    </StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+      <TextBlock Text="Bienvenido a Aether OS" FontSize="26" FontWeight="SemiBold"/>
+      <TextBlock Foreground="#C7CBD1" Margin="0,6,0,0" Text="Elige cómo quieres empezar. Todo se puede cambiar después en el Centro Aether."/>
+      <TextBlock Style="{StaticResource Seccion}" Text="Modo"/>
+      <WrapPanel>
+        <RadioButton x:Name="RbTrabajo" GroupName="Modo" Content="Trabajo" IsChecked="True"/>
+        <RadioButton x:Name="RbGaming" GroupName="Modo" Content="Gaming (con cargador)"/>
+        <RadioButton x:Name="RbBateria" GroupName="Modo" Content="Batería"/>
+      </WrapPanel>
+      <CheckBox x:Name="ChkAuto" Content="Activar el Modo Batería solo al 30% sin cargador" IsChecked="True"/>
+      <TextBlock Style="{StaticResource Seccion}" Text="Tema"/>
+      <WrapPanel>
+        <RadioButton x:Name="RbOscuro" GroupName="Tema" Content="Oscuro"/>
+        <RadioButton x:Name="RbClaro" GroupName="Tema" Content="Claro"/>
+      </WrapPanel>
+      <TextBlock Style="{StaticResource Seccion}" Text="Wind-Aether (aspecto de Windows)"/>
+      <WrapPanel>
+        <RadioButton x:Name="RbGlass" GroupName="Wind" Content="Aether Glass"/>
+        <RadioButton x:Name="RbLimpio" GroupName="Wind" Content="Aether Limpio"/>
+        <RadioButton x:Name="RbNinguno" GroupName="Wind" Content="Ninguno" IsChecked="True"/>
+      </WrapPanel>
+      <TextBlock x:Name="TxtWindNota" Foreground="#C7CBD1"/>
+      <TextBlock Style="{StaticResource Seccion}" Text="Carpeta de red (opcional)"/>
+      <TextBlock Foreground="#C7CBD1" Text="Por ejemplo \\192.168.1.10\SISTEMA EF RED. Queda fija como unidad Z: y lista para las macros de Excel."/>
+      <TextBox x:Name="TxtRuta" Padding="6" Margin="0,6,0,0"/>
+      <TextBlock Style="{StaticResource Seccion}" Text="Respaldo"/>
+      <CheckBox x:Name="ChkRespaldo" Content="Abrir el Centro Aether en Respaldo al terminar"/>
+      <TextBlock x:Name="TxtResultado" Foreground="#4FC3F7" Margin="0,12,0,0"/>
+    </StackPanel></ScrollViewer>
+  </DockPanel>
+</Window>
+'@
+    $ventanaB = [Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $xamlB))
+    $ventanaB.Icon = [System.Windows.Media.Imaging.BitmapFrame]::Create((New-Object Uri($script:Icono)))
+    $b = @{}
+    foreach ($nombre in 'BtnSaltar', 'BtnListo', 'RbTrabajo', 'RbGaming', 'RbBateria', 'ChkAuto', 'RbOscuro', 'RbClaro', 'RbGlass', 'RbLimpio', 'RbNinguno', 'TxtWindNota', 'TxtRuta', 'ChkRespaldo', 'TxtResultado') {
+        $b[$nombre] = $ventanaB.FindName($nombre)
+    }
+    if ((Get-AetherTema) -eq 'claro') { $b.RbClaro.IsChecked = $true } else { $b.RbOscuro.IsChecked = $true }
+    if (-not (Get-AetherWindhawkCli)) {
+        $b.TxtWindNota.Text = 'Windhawk no está instalado todavía; podrás elegirlo después en el Centro Aether.'
+        $b.RbGlass.IsEnabled = $false
+        $b.RbLimpio.IsEnabled = $false
+    }
+    $b.BtnSaltar.add_Click({ Set-AetherAjuste -Nombre 'BienvenidaVista' -Valor 1; $ventanaB.Close() })
+    $b.BtnListo.add_Click({
+            $ventanaB.Cursor = [System.Windows.Input.Cursors]::Wait
+            $avisos = New-Object System.Collections.Generic.List[string]
+            try {
+                Set-AetherAjuste -Nombre 'BateriaAuto' -Valor ([int][bool]$b.ChkAuto.IsChecked)
+                $modo = if ($b.RbGaming.IsChecked) { 'Gaming' } elseif ($b.RbBateria.IsChecked) { 'Bateria' } else { 'Trabajo' }
+                $resultado = Set-AetherModo -Modo $modo
+                if (-not $resultado.Ok) { $avisos.Add($resultado.Mensaje) }
+                Set-AetherTema -Tema $(if ($b.RbClaro.IsChecked) { 'claro' } else { 'oscuro' })
+                if ($b.RbGlass.IsChecked) { $avisos.Add((Set-AetherPerfilWind -Perfil 'aether-glass')) }
+                elseif ($b.RbLimpio.IsChecked) { $avisos.Add((Set-AetherPerfilWind -Perfil 'aether-limpio')) }
+                $ruta = $b.TxtRuta.Text.Trim()
+                if ($ruta) {
+                    if (-not (Add-AetherUnidadRed -Letra 'Z' -Ruta $ruta)) { $avisos.Add('La carpeta de red quedó guardada; se conectará cuando la otra PC esté encendida.') }
+                }
+                Set-AetherAjuste -Nombre 'BienvenidaVista' -Valor 1
+                if ($b.ChkRespaldo.IsChecked) {
+                    Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script:EsteScript`"")
+                }
+                if ($avisos.Count -gt 0) {
+                    [void][System.Windows.MessageBox]::Show(($avisos -join "`n"), 'Aether OS', 'OK', 'Information')
+                }
+                $ventanaB.Close()
+            }
+            catch {
+                $b.TxtResultado.Text = "Error: $($_.Exception.Message)"
+            }
+            finally { $ventanaB.Cursor = $null }
+        })
+    [void]$ventanaB.ShowDialog()
+    exit 0
+}
+
+# =========================================================================================
 # Ventana del Centro Aether (WPF)
 # =========================================================================================
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
@@ -309,6 +421,13 @@ Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
             <TextBlock Text="sin cargador" VerticalAlignment="Center"/>
           </StackPanel>
           <TextBlock Style="{StaticResource Nota}" Text="Atajos: Ctrl+Alt+T (Trabajo), Ctrl+Alt+G (Gaming), Ctrl+Alt+B (Batería). También desde el ícono de Aether junto al reloj."/>
+          <TextBlock Text="Tema" FontSize="18" FontWeight="SemiBold" Margin="0,16,0,4"/>
+          <WrapPanel>
+            <Button x:Name="BtnTemaOscuro" Content="Tema oscuro"/>
+            <Button x:Name="BtnTemaClaro" Content="Tema claro"/>
+            <Button x:Name="BtnBienvenida" Content="Abrir el asistente de bienvenida"/>
+          </WrapPanel>
+          <TextBlock Style="{StaticResource Nota}" Text="Los colores de Wind-Aether se ajustan solos al tema."/>
         </StackPanel></ScrollViewer>
       </TabItem>
       <TabItem Header="Red">
@@ -466,6 +585,9 @@ foreach ($valor in 10, 15, 20, 25, 30, 35, 40, 45, 50) { [void]$c.CmbUmbral.Item
 $c.CmbUmbral.SelectedItem = [int](Get-AetherAjuste -Nombre 'UmbralBateria' -PorDefecto 30)
 $c.ChkBateriaAuto.IsChecked = (Get-AetherAjuste -Nombre 'BateriaAuto' -PorDefecto 1) -eq 1
 $c.ChkLimitarTurbo.IsChecked = (Get-AetherAjuste -Nombre 'LimitarTurbo' -PorDefecto 0) -eq 1
+$c.BtnTemaOscuro.add_Click({ Invoke-AetherAccion { Set-AetherTema -Tema 'oscuro'; Set-AetherEstado -Texto 'Tema oscuro aplicado.' } })
+$c.BtnTemaClaro.add_Click({ Invoke-AetherAccion { Set-AetherTema -Tema 'claro'; Set-AetherEstado -Texto 'Tema claro aplicado.' } })
+$c.BtnBienvenida.add_Click({ Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script:EsteScript`"", '-Bienvenida') })
 $c.CmbUmbral.add_SelectionChanged({ if ($c.CmbUmbral.SelectedItem) { Set-AetherAjuste -Nombre 'UmbralBateria' -Valor ([int]$c.CmbUmbral.SelectedItem) } })
 $c.ChkBateriaAuto.add_Click({ Set-AetherAjuste -Nombre 'BateriaAuto' -Valor ([int][bool]$c.ChkBateriaAuto.IsChecked) })
 $c.ChkLimitarTurbo.add_Click({ Set-AetherAjuste -Nombre 'LimitarTurbo' -Valor ([int][bool]$c.ChkLimitarTurbo.IsChecked) })

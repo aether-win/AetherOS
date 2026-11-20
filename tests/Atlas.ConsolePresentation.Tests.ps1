@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
     Import-Module (Join-Path $script:AtlasTestModulesRoot 'Atlas.Core\Atlas.Core.psd1') -Force
     Import-Module (Join-Path $script:AtlasTestModulesRoot 'Atlas.Toggles\Atlas.Toggles.psd1') -Force
@@ -45,13 +45,13 @@ Describe 'Console vocabulary' {
         }
 
         $lines | Should -Be @(
-            'Warning: first line'
+            'Aviso: first line'
             '         second line'
             'Error: boom'
-            'Next step: open Store'
-            'To finish: finish in Settings'
+            'Siguiente paso: open Store'
+            'Para terminar: finish in Settings'
             '           and close it'
-            'Partly done: half'
+            'Hecho en parte: half'
         )
     }
 
@@ -79,9 +79,9 @@ Describe 'Console vocabulary' {
         $lines | Should -Be @(
             'Checking Edge...'
             ''
-            'Not applied: Enable Widgets.'
+            'No se aplicó: Enable Widgets.'
             'Error: Edge missing'
-            'Details: C:\logs\atlas-install.log'
+            'Detalles: C:\logs\atlas-install.log'
         )
     }
 }
@@ -95,7 +95,7 @@ Describe 'Run outcome and closing line' {
             Write-AtlasStep -Text 'Applying...'
             Write-AtlasCompletion -Title 'Enable Sleep'
         }
-        $lines | Should -Be @('Applying...', '', 'Done: Enable Sleep.')
+        $lines | Should -Be @('Applying...', '', 'Listo: Enable Sleep.')
     }
 
     It 'separates the closing line with one blank line, not two' {
@@ -103,7 +103,7 @@ Describe 'Run outcome and closing line' {
             Write-AtlasTitle -Text 'Enable Sleep'
             Write-AtlasCompletion -Title 'Enable Sleep'
         }
-        $lines | Should -Be @('Aether OS - Enable Sleep', '------------------------', '', 'Done: Enable Sleep.')
+        $lines | Should -Be @('Aether OS - Enable Sleep', '------------------------', '', 'Listo: Enable Sleep.')
     }
 
     It 'becomes Manual after a manual step so the closing line does not claim success' {
@@ -113,7 +113,7 @@ Describe 'Run outcome and closing line' {
         }
 
         Get-AtlasRunOutcome | Should -BeExactly 'Manual'
-        $lines[-1] | Should -BeExactly 'Not finished yet: complete the step above.'
+        $lines[-1] | Should -BeExactly 'Aún no termina: completa el paso de arriba.'
     }
 
     It 'lets Partial outrank Manual and never downgrades' {
@@ -127,7 +127,7 @@ Describe 'Run outcome and closing line' {
         Get-AtlasRunOutcome | Should -BeExactly 'Partial'
 
         $lines = Get-ConsoleLine { Write-AtlasCompletion -Title 'Install Software' }
-        $lines[-1] | Should -BeExactly 'Partly done: Install Software. Review the warnings above.'
+        $lines[-1] | Should -BeExactly 'Hecho en parte: Install Software. Revisa los avisos de arriba.'
     }
 
     It 'advisory next steps keep the run Applied' {
@@ -157,7 +157,7 @@ Describe 'Prompts' {
         $script:Answers.Enqueue($Answer)
         Read-AtlasYesNo -Question 'Continue?' | Should -Be $Expected
         Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter {
-            $Prompt -ceq 'Continue? [y/N] '
+            $Prompt -ceq 'Continue? [s/N] '
         }
     }
 
@@ -165,7 +165,7 @@ Describe 'Prompts' {
         $script:Answers.Enqueue('')
         Read-AtlasYesNo -Question 'Restart File Explorer now?' -DefaultYes | Should -BeTrue
         Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter {
-            $Prompt -ceq 'Restart File Explorer now? [Y/n] '
+            $Prompt -ceq 'Restart File Explorer now? [S/n] '
         }
     }
 
@@ -174,7 +174,7 @@ Describe 'Prompts' {
         Read-AtlasYesNo -Question 'Continue?' | Should -BeTrue
         Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 3 -Exactly
         Should -Invoke Write-Host -ModuleName Atlas.Core -Times 2 -Exactly -ParameterFilter {
-            $Object -ceq 'Please answer y or n.'
+            $Object -ceq 'Responde s o n.'
         }
     }
 
@@ -192,7 +192,7 @@ Describe 'Prompts' {
         Should -Invoke Write-Host -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Object -ceq '  [2] Enable (current)' }
         Should -Invoke Write-Host -ModuleName Atlas.Core -Times 3 -Exactly -ParameterFilter { $Object -ceq 'Please type a number from 1 to 2.' }
         Should -Invoke Write-Host -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Object -ceq 'That is already the current setting. Choose another option.' }
-        Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 5 -Exactly -ParameterFilter { $Prompt -ceq 'Choose 1-2: ' }
+        Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 5 -Exactly -ParameterFilter { $Prompt -ceq 'Elige 1-2: ' }
     }
 
     It 'takes the declared default on Enter and fails closed without one' {
@@ -256,7 +256,7 @@ Describe 'Log console styles' {
         Should -Invoke Write-AtlasLogFile -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Line -like '*`[INFO`] applied' }
         Should -Invoke Write-AtlasLogFile -ModuleName Atlas.Core -Times 2 -Exactly -ParameterFilter { $Line -like '*already shown' }
         Should -Invoke Write-Host -ModuleName Atlas.Core -Times 0 -Exactly -ParameterFilter { $Object -like '*applied*' }
-        Should -Invoke Write-Host -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Object -ceq 'Warning: careful' }
+        Should -Invoke Write-Host -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Object -ceq 'Aviso: careful' }
         Should -Invoke Write-Host -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Object -ceq 'Error: broken' }
         Should -Invoke Write-Host -ModuleName Atlas.Core -Times 0 -Exactly -ParameterFilter { $Object -like '*already shown*' }
     }
@@ -330,11 +330,11 @@ function Invoke-AtlasDemoManual {
         $lines[0] | Should -BeExactly 'Aether OS - Demo Menu'
         $lines | Should -Contain '  [2] Turn the demo on'
         $lines | Should -Contain 'Applying On...'
-        $lines | Should -Contain 'Done: Turn the demo on.'
-        $lines | Should -Contain 'Restart recommended: restart Windows to finish applying this change.'
+        $lines | Should -Contain 'Listo: Turn the demo on.'
+        $lines | Should -Contain 'Reinicio recomendado: reinicia Windows para terminar de aplicar este cambio.'
         @($lines | Where-Object { $_ -ceq 'Aether OS - Demo Menu' }).Count | Should -Be 1
-        Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Prompt -ceq 'Press Enter to exit. ' }
-        [array]::IndexOf($lines, 'Done: Turn the demo on.') | Should -BeGreaterThan ([array]::IndexOf($lines, 'Applying On...'))
+        Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Prompt -ceq 'Pulsa Enter para salir. ' }
+        [array]::IndexOf($lines, 'Listo: Turn the demo on.') | Should -BeGreaterThan ([array]::IndexOf($lines, 'Applying On...'))
     }
 
     It 'gates a declared warning once and reports a manual outcome instead of Done' {
@@ -346,12 +346,12 @@ function Invoke-AtlasDemoManual {
         }
 
         $lines[0] | Should -BeExactly 'Aether OS - Demo Manual'
-        $lines | Should -Contain 'Warning: Opens Settings and leaves the choice to you.'
-        Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Prompt -like 'Press Enter to continue, or Ctrl+C to cancel.*' }
-        Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Prompt -ceq 'Press Enter to exit. ' }
-        $lines | Should -Contain 'To finish: turn the setting on in Settings'
-        $lines | Should -Contain 'Not finished yet: complete the step above.'
-        $lines | Should -Not -Contain 'Done: Demo Manual.'
+        $lines | Should -Contain 'Aviso: Opens Settings and leaves the choice to you.'
+        Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Prompt -like 'Pulsa Enter para continuar o Ctrl+C para cancelar.*' }
+        Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Prompt -ceq 'Pulsa Enter para salir. ' }
+        $lines | Should -Contain 'Para terminar: turn the setting on in Settings'
+        $lines | Should -Contain 'Aún no termina: completa el paso de arriba.'
+        $lines | Should -Not -Contain 'Listo: Demo Manual.'
     }
 
     It 'prints nothing and asks nothing in silent mode' {

@@ -178,6 +178,7 @@ function Set-AetherPerfilWind {
         if (-not (Set-AetherModWind -Id $id -Activo ($activar -contains $id))) { $fallos++ }
     }
     if (-not $Temporal) { Set-AetherAjuste -Nombre 'PerfilWind' -Valor $Perfil }
+    if ($Perfil -ne 'ninguno') { [void](Set-AetherColoresWind) }
     if ($fallos -gt 0) { return "Perfil aplicado; $fallos mods no respondieron (quizá no están instalados)." }
     return 'Perfil aplicado.'
 }
@@ -421,4 +422,45 @@ function Connect-AetherUnidadesRed {
         if (-not (Connect-AetherUnidadRed -Letra $unidad.Letra -Ruta $unidad.Ruta)) { $sinConectar += "$($unidad.Letra): $($unidad.Ruta)" }
     }
     return $sinConectar
+}
+
+# --- Tema y colores de Wind-Aether --------------------------------------------------------
+function Get-AetherTema {
+    # 'claro' u 'oscuro' según el modo de las apps de Windows.
+    try {
+        $claro = Get-ItemPropertyValue -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' -Name AppsUseLightTheme -ErrorAction Stop
+        if ($claro -eq 1) { return 'claro' }
+    }
+    catch { Write-Verbose 'Sin preferencia de tema; se usa oscuro.' }
+    return 'oscuro'
+}
+
+function Set-AetherColoresWind {
+    # Pone en los mods de Wind-Aether los colores del tema (claro u oscuro).
+    param([ValidateSet('claro', 'oscuro')][string]$Tema = (Get-AetherTema))
+    $perfiles = Get-AetherPerfilesWind
+    $cli = Get-AetherWindhawkCli
+    if (-not $perfiles -or -not $cli -or -not $perfiles.PSObject.Properties['coloresPorTema']) { return 0 }
+    $hechos = 0
+    foreach ($mod in $perfiles.coloresPorTema.PSObject.Properties) {
+        $valores = $mod.Value.$Tema
+        if (-not $valores) { continue }
+        $pares = @($valores.PSObject.Properties | ForEach-Object { '{0}={1}' -f $_.Name, $_.Value })
+        if ($pares.Count -eq 0) { continue }
+        & $cli --quiet mod settings set $mod.Name @pares 2>&1 | Out-Null
+        if ($LASTEXITCODE -eq 0) { $hechos++ }
+    }
+    Set-AetherAjuste -Nombre 'TemaColores' -Valor $Tema
+    return $hechos
+}
+
+function Set-AetherTema {
+    # Cambia Windows a claro u oscuro y ajusta los colores de Wind-Aether.
+    param([Parameter(Mandatory = $true)][ValidateSet('claro', 'oscuro')][string]$Tema)
+    $valor = [int]($Tema -eq 'claro')
+    $ruta = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'
+    if (-not (Test-Path -LiteralPath $ruta)) { New-Item -Path $ruta -Force | Out-Null }
+    Set-ItemProperty -LiteralPath $ruta -Name AppsUseLightTheme -Value $valor -Type DWord
+    Set-ItemProperty -LiteralPath $ruta -Name SystemUsesLightTheme -Value $valor -Type DWord
+    [void](Set-AetherColoresWind -Tema $Tema)
 }

@@ -1,4 +1,4 @@
-# Atlas.Core domain: console presentation.
+﻿# Atlas.Core domain: console presentation.
 #
 # One vocabulary for every interactive Atlas surface: the toggle engine, companion
 # functions, nested helpers and the hand-written entry scripts. Each line carries its
@@ -163,7 +163,7 @@ function Write-AtlasWarning {
         [string[]]$Text
     )
 
-    Write-AtlasUiText -Text $Text -Prefix 'Warning: ' -Color Yellow
+    Write-AtlasUiText -Text $Text -Prefix 'Aviso: ' -Color Yellow
 }
 
 function Write-AtlasSuccess {
@@ -198,7 +198,7 @@ function Write-AtlasPartial {
     )
 
     Set-AtlasRunOutcome -Outcome Partial
-    Write-AtlasUiText -Text $Text -Prefix 'Partly done: ' -Color Yellow
+    Write-AtlasUiText -Text $Text -Prefix 'Hecho en parte: ' -Color Yellow
 }
 
 function Write-AtlasNextStep {
@@ -212,7 +212,7 @@ function Write-AtlasNextStep {
         [string[]]$Text
     )
 
-    Write-AtlasUiText -Text $Text -Prefix 'Next step: ' -Color Cyan
+    Write-AtlasUiText -Text $Text -Prefix 'Siguiente paso: ' -Color Cyan
 }
 
 function Write-AtlasManualStep {
@@ -228,7 +228,7 @@ function Write-AtlasManualStep {
     )
 
     Set-AtlasRunOutcome -Outcome Manual
-    Write-AtlasUiText -Text $Text -Prefix 'To finish: ' -Color Yellow
+    Write-AtlasUiText -Text $Text -Prefix 'Para terminar: ' -Color Yellow
 }
 
 function Write-AtlasRestartNotice {
@@ -240,19 +240,19 @@ function Write-AtlasRestartNotice {
 
     switch ($Kind) {
         'Recommended' {
-            Write-AtlasUiText -Text 'Restart recommended: restart Windows to finish applying this change.' -Color Yellow
+            Write-AtlasUiText -Text 'Reinicio recomendado: reinicia Windows para terminar de aplicar este cambio.' -Color Yellow
         }
         'Required' {
-            Write-AtlasUiText -Text 'Restart required: this change takes effect after Windows restarts.' -Color Yellow
+            Write-AtlasUiText -Text 'Reinicio necesario: este cambio se aplica cuando Windows se reinicie.' -Color Yellow
         }
         'SignOut' {
-            Write-AtlasUiText -Text 'Sign out required: sign out and back in to finish applying this change.' -Color Yellow
+            Write-AtlasUiText -Text 'Cierra sesión: cierra sesión y vuelve a entrar para terminar de aplicar este cambio.' -Color Yellow
         }
         'ExplorerRestarted' {
-            Write-AtlasUiText -Text 'File Explorer was restarted to apply this change.'
+            Write-AtlasUiText -Text 'Se reinició el Explorador de archivos para aplicar este cambio.'
         }
         'ExplorerRestartNeeded' {
-            Write-AtlasUiText -Text 'Restart File Explorer, or sign out and back in, to see this change.' -Color Yellow
+            Write-AtlasUiText -Text 'Reinicia el Explorador de archivos, o cierra sesión y vuelve a entrar, para ver este cambio.' -Color Yellow
         }
     }
 }
@@ -276,10 +276,10 @@ function Write-AtlasNotApplied {
     )
 
     Write-AtlasBlankLine
-    Write-AtlasUiText -Text "Not applied: $Title." -Color Red
+    Write-AtlasUiText -Text "No se aplicó: $Title." -Color Red
     Write-AtlasFailure -Text $Reason
     if ($DetailsPath) {
-        Write-AtlasUiText -Text $DetailsPath -Prefix 'Details: '
+        Write-AtlasUiText -Text $DetailsPath -Prefix 'Detalles: '
     }
 }
 
@@ -323,9 +323,9 @@ function Write-AtlasCompletion {
 
     Write-AtlasBlankLine
     switch (Get-AtlasRunOutcome) {
-        'Applied' { Write-AtlasSuccess -Text "Done: $Title." }
-        'Manual' { Write-AtlasUiText -Text 'Not finished yet: complete the step above.' -Color Yellow }
-        'Partial' { Write-AtlasUiText -Text "Partly done: $Title. Review the warnings above." -Color Yellow }
+        'Applied' { Write-AtlasSuccess -Text "Listo: $Title." }
+        'Manual' { Write-AtlasUiText -Text 'Aún no termina: completa el paso de arriba.' -Color Yellow }
+        'Partial' { Write-AtlasUiText -Text "Hecho en parte: $Title. Revisa los avisos de arriba." -Color Yellow }
     }
 }
 
@@ -343,7 +343,7 @@ function Read-AtlasYesNo {
         [switch]$DefaultYes
     )
 
-    $hint = if ($DefaultYes) { '[Y/n]' } else { '[y/N]' }
+    $hint = if ($DefaultYes) { '[S/n]' } else { '[s/N]' }
     while ($true) {
         $answer = Read-AtlasConsoleLine -Prompt "$Question $hint "
         if ($null -eq $answer) {
@@ -353,13 +353,13 @@ function Read-AtlasYesNo {
         if ($answer.Length -eq 0) {
             return [bool]$DefaultYes
         }
-        if ($answer -match '^(?i:y|yes)$') {
+        if ($answer -match '^(?i:s|si|sí|y|yes)$') {
             return $true
         }
         if ($answer -match '^(?i:n|no)$') {
             return $false
         }
-        Write-Host 'Please answer y or n.' -ForegroundColor Yellow
+        Write-Host 'Responde s o n.' -ForegroundColor Yellow
     }
 }
 
@@ -404,7 +404,7 @@ function Read-AtlasChoice {
     $script:AtlasUiLastLineBlank = $true
 
     while ($true) {
-        $answer = Read-AtlasConsoleLine -Prompt "Choose 1-$($Option.Count): "
+        $answer = Read-AtlasConsoleLine -Prompt "Elige 1-$($Option.Count): "
         if ($null -eq $answer) {
             if ($DefaultIndex -gt 0) {
                 return $DefaultIndex
@@ -435,7 +435,7 @@ function Wait-AtlasContinue {
         The acknowledgement gate after a warning. Ctrl+C ends the run without changes.
     #>
     param(
-        [string]$Message = 'Press Enter to continue, or Ctrl+C to cancel.'
+        [string]$Message = 'Pulsa Enter para continuar o Ctrl+C para cancelar.'
     )
 
     $null = Read-AtlasConsoleLine -Prompt "$Message "
@@ -447,7 +447,7 @@ function Wait-AtlasExit {
         The single exit pause of an interactive run. Only the owning entry point calls it.
     #>
     param(
-        [string]$Message = 'Press Enter to exit.'
+        [string]$Message = 'Pulsa Enter para salir.'
     )
 
     Write-AtlasBlankLine

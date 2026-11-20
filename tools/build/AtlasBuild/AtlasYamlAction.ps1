@@ -189,7 +189,7 @@ function Assert-AtlasConfigurationRunnerBoundary {
     if (@($actions | Where-Object Type -notin @('run', 'writeStatus')).Count) {
         throw 'Configuration contains an unsupported action type.'
     }
-    if ($actions.Count -ne 32) { throw "Configuration must contain 32 actions; found $($actions.Count)." }
+    if ($actions.Count -ne 31) { throw "Configuration must contain 31 actions; found $($actions.Count)." }
     $statuses = @($actions | Where-Object Type -eq writeStatus)
     if ($statuses.Count -ne 2 -or
         [string]$statuses[0].Properties.status -cne 'Preparing AtlasOS installation' -or

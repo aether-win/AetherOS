@@ -18,11 +18,21 @@ Describe 'Centro Aether' {
         $tokens = $null
         $errores = $null
         $ast = [System.Management.Automation.Language.Parser]::ParseFile($ruta, [ref]$tokens, [ref]$errores)
-        $texto = @($ast.FindAll({
+        $ventanas = @($ast.FindAll({
                     param($nodo)
                     $nodo -is [System.Management.Automation.Language.StringConstantExpressionAst] -and
                     $nodo.Value.TrimStart().StartsWith('<Window')
-                }, $true))[0].Value
+                }, $true))
+        $ventanas.Count | Should -Be 2
+        $texto = @($ventanas | Where-Object { $_.Value -match 'Title="Centro Aether"' })[0].Value
+        [xml]$bienvenida = @($ventanas | Where-Object { $_.Value -match 'Title="Bienvenido a Aether OS"' })[0].Value
+        $nombresB = @($bienvenida.SelectNodes('//*[@*[local-name()="Name"]]') | ForEach-Object {
+                $_.GetAttribute('Name', 'http://schemas.microsoft.com/winfx/2006/xaml')
+            })
+        $usadosB = [regex]::Matches((Get-Content -LiteralPath $ruta -Raw), '\$b\.([A-Za-z]+)') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
+        foreach ($nombre in $usadosB) {
+            $nombresB | Should -Contain $nombre -Because "the welcome window uses `$b.$nombre"
+        }
         $texto | Should -Not -BeNullOrEmpty
         [xml]$xaml = $texto
         $nombres = @($xaml.SelectNodes('//*[@*[local-name()="Name"]]') | ForEach-Object {
@@ -37,6 +47,8 @@ Describe 'Centro Aether' {
         Add-Type -AssemblyName PresentationFramework
         $ventana = [Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $xaml))
         $ventana.FindName('BtnGaming') | Should -Not -BeNullOrEmpty
+        $ventanaB = [Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $bienvenida))
+        $ventanaB.FindName('BtnListo') | Should -Not -BeNullOrEmpty
     }
 
     It 'reads the current AC and DC index from the last two values of a powercfg query' {
