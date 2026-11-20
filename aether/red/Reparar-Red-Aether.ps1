@@ -266,7 +266,7 @@ if ($Equipo) {
     $ip = $null
     try {
         $ip = ([System.Net.Dns]::GetHostAddresses($Equipo) | Where-Object AddressFamily -eq 'InterNetwork' | Select-Object -First 1).IPAddressToString
-    } catch { }
+    } catch { $ip = $null }
     if ($ip) { Ok "'$Equipo' se encontró en $ip" }
     else { Fallo "No se pudo traducir '$Equipo' a una IP. Prueba con la IP directa (en esa PC: ipconfig)." }
 

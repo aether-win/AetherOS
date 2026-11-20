@@ -31,7 +31,7 @@ $apps = @()
 try {
     $apps = @((Get-ItemProperty -Path 'HKLM:\SOFTWARE\AtlasOS\SetupOptions' -Name Apps -ErrorAction Stop).Apps)
 }
-catch { }
+catch { $apps = @() }
 $hecho = (Get-ItemProperty -Path $claveAether -Name AppsInstaladas -ErrorAction SilentlyContinue).AppsInstaladas
 if ($hecho -eq 1 -and -not $Forzar) { exit }
 if ($apps.Count -eq 0) {
@@ -63,7 +63,7 @@ for ($i = 0; $i -lt 12 -and -not $winget; $i++) {
     if (-not $winget) {
         if ($i -eq 0) {
             Aviso 'Esperando a que Windows prepare winget (Instalador de aplicaciones)...'
-            try { Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe -ErrorAction Stop } catch { }
+            try { Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe -ErrorAction Stop } catch { Aviso 'No se pudo registrar el Instalador de aplicaciones; se sigue esperando.' }
         }
         Start-Sleep -Seconds 10
     }

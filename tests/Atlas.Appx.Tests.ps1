@@ -660,6 +660,10 @@ Describe 'AppX removal policy' {
         @($definitions | Where-Object IgnoreErrors).Name | Should -Be @(
             'MicrosoftWindows.Client.WebExperience*'
             'Microsoft.WidgetsPlatformRuntime*'
+            'Microsoft.GamingApp*'
+            'Microsoft.XboxGamingOverlay*'
+            'Microsoft.XboxSpeechToTextOverlay*'
+            '7EE7776C.LinkedInforWindows*'
         )
     }
 
