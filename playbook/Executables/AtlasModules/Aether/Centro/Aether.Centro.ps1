@@ -172,6 +172,18 @@ function Set-AetherAppsSegundoPlano {
     Set-ItemProperty -LiteralPath $ruta -Name 'GlobalUserDisabled' -Value ([int](-not $Permitidas)) -Type DWord
 }
 
+function Set-AetherAnimaciones {
+    # Animaciones completas de Windows 11 ($Completas = $true) o reducidas para más
+    # rendimiento ($false). Aether las deja completas siempre, menos en el Modo Gaming.
+    param([bool]$Completas)
+    $v = if ($Completas) { 1 } else { 0 }
+    Set-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop\WindowMetrics' -Name 'MinAnimate' -Value "$v" -Type String -ErrorAction SilentlyContinue
+    $adv = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+    if (-not (Test-Path -LiteralPath $adv)) { New-Item -Path $adv -Force | Out-Null }
+    Set-ItemProperty -LiteralPath $adv -Name 'TaskbarAnimations' -Value $v -Type DWord -ErrorAction SilentlyContinue
+    Set-ItemProperty -LiteralPath 'HKCU:\SOFTWARE\Microsoft\Windows\DWM' -Name 'EnableAeroPeek' -Value $v -Type DWord -ErrorAction SilentlyContinue
+}
+
 # --- Wind-Aether (Windhawk) ------------------------------------------------------------
 function Get-AetherWindhawkCli {
     foreach ($base in @($env:ProgramFiles, ${env:ProgramFiles(x86)})) {
@@ -268,6 +280,7 @@ function Set-AetherModo {
             Set-AetherModoEnergiaWindows -Modo Equilibrado
             Set-AetherNotificaciones -Activas $true
             Set-AetherAppsSegundoPlano -Permitidas $true
+            Set-AetherAnimaciones -Completas $true
             $mensaje = 'Modo Trabajo activo.'
         }
         'Gaming' {
@@ -283,6 +296,7 @@ function Set-AetherModo {
             Set-AetherModoEnergiaWindows -Modo Rendimiento
             Set-AetherNotificaciones -Activas $false
             Set-AetherAppsSegundoPlano -Permitidas $false
+            Set-AetherAnimaciones -Completas $false
             Set-AetherPausaModsGaming -Pausar $true
             $mensaje = 'Modo Gaming activo. ¿El ventilador está conectado?'
         }
@@ -296,6 +310,7 @@ function Set-AetherModo {
             Set-AetherValorEnergia -Sub $script:AetherSubAhorro -Ajuste $script:AetherUmbralAhorro -Dc 100
             Set-AetherModoEnergiaWindows -Modo Eficiencia
             Set-AetherAppsSegundoPlano -Permitidas $false
+            Set-AetherAnimaciones -Completas $true
             [void](Set-AetherPerfilWind -Perfil 'aether-limpio' -Temporal)
             $mensaje = 'Modo Batería activo.'
         }
