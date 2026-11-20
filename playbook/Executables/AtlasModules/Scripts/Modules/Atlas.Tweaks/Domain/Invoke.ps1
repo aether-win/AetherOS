@@ -1,4 +1,4 @@
-# Atlas.Tweaks domain: tweak application.
+﻿# Atlas.Tweaks domain: tweak application.
 #
 # A tweak is a data-only .psd1 (see Scripts\Tweaks\README.md for the schema). Keys are
 # applied in a fixed order. Required work fails immediately; only entries that

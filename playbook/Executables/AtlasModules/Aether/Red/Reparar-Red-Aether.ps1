@@ -286,6 +286,42 @@ if ($Equipo) {
     Aviso 'Prueba omitida'
 }
 
+# --- 10. Wi-Fi a máximo rendimiento (menos cortes) --------------------------------
+# El ahorro de energía del adaptador Wi-Fi provoca microcortes y desconexiones,
+# sobre todo en redes de colegio con portal. Se pone en "Máximo rendimiento".
+Titulo 'Wi-Fi a máximo rendimiento'
+try {
+    $subWifi = '19cbb8fa-5279-450e-9fac-8a3d5fedd0c1'   # SUB_WIFI
+    $ahorroWifi = '12bbebe6-58d6-4636-95bb-3217ef867c1a' # POWERSAVINGMODE (0 = máximo rendimiento)
+    & powercfg.exe /setacvalueindex SCHEME_CURRENT $subWifi $ahorroWifi 0 2>&1 | Out-Null
+    & powercfg.exe /setdcvalueindex SCHEME_CURRENT $subWifi $ahorroWifi 0 2>&1 | Out-Null
+    & powercfg.exe /setactive SCHEME_CURRENT 2>&1 | Out-Null
+    # Y se desactiva el "apagar para ahorrar energía" en cada adaptador inalámbrico.
+    # Se busca la subclave de clase cuyo NetCfgInstanceId coincide con la interfaz,
+    # para no escribir en el adaptador equivocado.
+    $wireless = @(Get-NetAdapter -Physical -ErrorAction SilentlyContinue |
+        Where-Object { $_.PhysicalMediaType -match 'Wireless|802\.11' -or $_.MediaType -eq 'Native 802.11' })
+    if ($wireless.Count -gt 0) {
+        $claseBase = 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}'
+        $guids = @($wireless.InterfaceGuid)
+        foreach ($sub in (Get-ChildItem -LiteralPath $claseBase -ErrorAction SilentlyContinue |
+                Where-Object { $_.PSChildName -match '^\d{4}$' })) {
+            try {
+                $netcfg = (Get-ItemProperty -LiteralPath $sub.PSPath -Name 'NetCfgInstanceId' -ErrorAction SilentlyContinue).NetCfgInstanceId
+                if ($netcfg -and ($guids -contains $netcfg)) {
+                    Set-ItemProperty -LiteralPath $sub.PSPath -Name 'PnPCapabilities' -Value 24 -Type DWord -ErrorAction SilentlyContinue
+                }
+            }
+            catch { Write-Verbose "Adaptador omitido: $($_.Exception.Message)" }
+        }
+    }
+    Arreglado 'Wi-Fi en máximo rendimiento (sin ahorro de energía).'
+    [void]$cambios.Add('Wi-Fi a máximo rendimiento')
+}
+catch {
+    Aviso "No se pudo ajustar el Wi-Fi: $($_.Exception.Message)"
+}
+
 # --- Resumen -----------------------------------------------------------------------
 Titulo 'Resumen'
 if ($cambios.Count -eq 0) {

@@ -238,6 +238,7 @@
                 'aether-apps'
                 'aether-office'
                 'aether-office-macros'
+                'aether-apps-ia'
                 # Aether: app de control (Centro Aether) y su ícono de la bandeja.
                 'aether-centro'
             )

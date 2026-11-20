@@ -8,7 +8,9 @@ $ErrorActionPreference = 'Stop'
 # instalación; si algo inesperado falla, se registra un aviso y se continúa, nunca
 # se aborta la instalación (regla de Aether: nada bloquea el acceso, solo avisa).
 trap {
-    try { Write-AtlasLog -Level Warning -Message ("aether-red: paso omitido por un error no crítico: " + $_.Exception.Message) -ErrorRecord $_ } catch { }
+    if (Get-Command Write-AtlasLog -ErrorAction SilentlyContinue) {
+        Write-AtlasLog -Level Warning -Message ("aether-red: paso omitido por un error no crítico: " + $_.Exception.Message) -ErrorRecord $_
+    }
     continue
 }
 

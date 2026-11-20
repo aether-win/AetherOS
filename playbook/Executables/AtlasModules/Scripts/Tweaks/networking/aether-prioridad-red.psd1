@@ -6,5 +6,8 @@
         @{ Path = 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile'; Name = 'SystemResponsiveness'; Type = 'DWord'; Data = 10 }
         @{ Path = 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\PhoneExperienceHost.exe\PerfOptions'; Name = 'CpuPriorityClass'; Type = 'DWord'; Data = 3 }
         @{ Path = 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\PhoneExperienceHost.exe\PerfOptions'; Name = 'IoPriority'; Type = 'DWord'; Data = 3 }
+        # Sonda activa de conectividad: Windows detecta las redes con portal (Wi-Fi de
+        # colegios que piden abrir el navegador) y abre el inicio de sesión de forma fiable.
+        @{ Path = 'HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet'; Name = 'EnableActiveProbing'; Type = 'DWord'; Data = 1 }
     )
 }
