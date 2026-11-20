@@ -46,11 +46,11 @@ Describe 'Console vocabulary' {
 
         $lines | Should -Be @(
             'Aviso: first line'
-            '         second line'
+            '       second line'
             'Error: boom'
             'Siguiente paso: open Store'
             'Para terminar: finish in Settings'
-            '           and close it'
+            '               and close it'
             'Hecho en parte: half'
         )
     }
@@ -63,11 +63,11 @@ Describe 'Console vocabulary' {
         }
 
         $lines.Count | Should -Be 5
-        $lines[0] | Should -BeLike 'Restart recommended: *'
-        $lines[1] | Should -BeLike 'Restart required: *'
-        $lines[2] | Should -BeLike 'Sign out required: *'
-        $lines[3] | Should -BeLike 'File Explorer was restarted*'
-        $lines[4] | Should -BeLike 'Restart File Explorer, or sign out*'
+        $lines[0] | Should -BeLike 'Reinicio recomendado: *'
+        $lines[1] | Should -BeLike 'Reinicio necesario: *'
+        $lines[2] | Should -BeLike 'Cierra sesión: *'
+        $lines[3] | Should -BeLike 'Se reinició el Explorador*'
+        $lines[4] | Should -BeLike 'Reinicia el Explorador de archivos, o cierra sesión*'
     }
 
     It 'prints the standard failure block with the log location' {

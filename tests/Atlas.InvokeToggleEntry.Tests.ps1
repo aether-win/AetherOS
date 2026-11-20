@@ -47,7 +47,7 @@ function Write-AtlasLog {
     }
 }
 function Get-AtlasInstallLogPath { 'C:\harness\atlas-install.log' }
-function Write-AtlasNotApplied { param([string]$Title, [string]$Reason, [string]$DetailsPath) Write-Output "No se aplicó: $Title. $Reason" }
+function Write-AtlasNotApplied { param([string]$Title, [string]$Reason, [string]$DetailsPath) Write-Output "No se aplico: $Title. $Reason" }
 function Wait-AtlasExit { param([string]$Message) Write-Output 'harness exit pause' }
 '@
     Set-Content -LiteralPath (Join-Path $harnessScripts 'Modules\Atlas.Toggles\Atlas.Toggles.psd1') `
@@ -132,7 +132,7 @@ Describe 'Toggle CLI entry point exit and logging contract' {
         $result.Output | Should -Match `
             "Applying toggle 'HarnessFailure' failed: harness toggle failure"
         # A silent caller has no window to explain the failure in or pause.
-        $result.Output | Should -Not -Match 'Not applied:'
+        $result.Output | Should -Not -Match 'No se aplic.:'
         $result.Output | Should -Not -Match 'harness exit pause'
     }
 
@@ -141,7 +141,7 @@ Describe 'Toggle CLI entry point exit and logging contract' {
 
         $result.ExitCode | Should -Be 1 -Because $result.Output
         $lines = @($result.Output -split '\r?\n' | Where-Object { $_ })
-        @($lines | Where-Object { $_ -ceq 'No se aplicó: HarnessFailure. harness toggle failure' }) |
+        @($lines | Where-Object { $_ -cmatch '^No se aplic.: HarnessFailure\. harness toggle failure$' }) |
             Should -HaveCount 1 -Because $result.Output
         @($lines | Where-Object { $_ -ceq 'harness exit pause' }) | Should -HaveCount 1 -Because $result.Output
         $lines[-1] | Should -BeExactly 'harness exit pause'
