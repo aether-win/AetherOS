@@ -439,6 +439,7 @@ Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
             <Button x:Name="BtnProbarEquipo" Content="Probar con esta PC (nombre o IP)"/>
           </StackPanel>
           <Button x:Name="BtnScriptOtraPC" Content="Guardar el reparador en el Escritorio (para la otra PC)"/>
+          <Button x:Name="BtnRedPrivada" Content="Hacer privada la red conectada (para compartir carpetas)"/>
           <Button x:Name="BtnCompartir" Content="Abrir opciones de uso compartido"/>
           <TextBlock x:Name="TxtRed" Style="{StaticResource Nota}" FontFamily="Consolas"/>
           <TextBlock Text="Unidades de red fijas" FontSize="18" FontWeight="SemiBold" Margin="0,16,0,4"/>
@@ -620,6 +621,14 @@ $c.BtnScriptOtraPC.add_Click({
             Copy-Item -Path (Join-Path $script:AetherCarpeta 'Red\*') -Destination $destino -Force
             Set-AetherEstado -Texto "Listo: copia la carpeta '$destino' a la otra PC y abre Reparar-Red-Aether.cmd."
         }
+    })
+$c.BtnRedPrivada.add_Click({
+        $script = Join-Path $script:AetherCarpeta 'Red\Redes-Privadas.ps1'
+        if (Start-AetherComoAdmin -Archivo 'powershell.exe' -Argumentos @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script`"") -Esperar) {
+            Update-AetherVistaRed
+            Set-AetherEstado -Texto 'Listo: las redes conectadas quedaron como privadas. (Aether lo hace solo con cada red nueva.)'
+        }
+        else { Set-AetherEstado -Texto 'Se canceló el permiso de administrador.' }
     })
 $c.BtnCompartir.add_Click({ Start-Process -FilePath 'control.exe' -ArgumentList '/name Microsoft.NetworkAndSharingCenter /page Advanced' })
 

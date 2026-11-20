@@ -143,4 +143,25 @@ Invoke-AetherRedPaso 'seguridad SMB' {
     }
 }
 
+# 8. Redes nuevas (Wi-Fi o cable) pasan a Privadas al conectarse, para compartir de una vez.
+Invoke-AetherRedPaso 'tarea de redes privadas' {
+    $script = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules\Aether\Red\Redes-Privadas.ps1'
+    if (-not (Test-Path -LiteralPath $script -PathType Leaf)) { throw "Falta '$script'." }
+    $powershell = Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\powershell.exe'
+    $accion = New-ScheduledTaskAction -Execute $powershell `
+        -Argument "-NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$script`""
+    $clase = Get-CimClass -ClassName MSFT_TaskEventTrigger -Namespace 'Root/Microsoft/Windows/TaskScheduler'
+    $alConectar = New-CimInstance -CimClass $clase -ClientOnly
+    $alConectar.Enabled = $true
+    $alConectar.Subscription = '<QueryList><Query Id="0" Path="Microsoft-Windows-NetworkProfile/Operational"><Select Path="Microsoft-Windows-NetworkProfile/Operational">*[System[(EventID=10000)]]</Select></Query></QueryList>'
+    $disparadores = @($alConectar, (New-ScheduledTaskTrigger -AtStartup), (New-ScheduledTaskTrigger -AtLogOn))
+    $principal = New-ScheduledTaskPrincipal -UserId 'S-1-5-18' -LogonType ServiceAccount -RunLevel Highest
+    $ajustes = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
+        -ExecutionTimeLimit (New-TimeSpan -Minutes 5) -MultipleInstances IgnoreNew
+    Register-ScheduledTask -TaskName 'Aether Redes privadas' -TaskPath '\Aether\' -Action $accion `
+        -Trigger $disparadores -Principal $principal -Settings $ajustes `
+        -Description 'Aether OS: cambia a Privada cada red nueva para poder compartir carpetas e impresoras.' -Force | Out-Null
+    Write-AtlasLog -Message 'Red Aether: tarea "Aether Redes privadas" registrada.'
+}
+
 Write-AtlasLog -Message 'Red Aether: red de trabajo aplicada.'
