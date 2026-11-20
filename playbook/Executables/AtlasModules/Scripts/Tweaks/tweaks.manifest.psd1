@@ -29,6 +29,7 @@
                 'disable-fth'
                 # Aether: Game Bar se quita (los mandos siguen funcionando).
                 'disable-game-bar'
+                'aether-apagado-rapido'
                 'disable-sleep-study'
                 'respect-power-modes-search'
                 'system/optimize-ntfs'
@@ -105,7 +106,6 @@
                 'do-not-reduce-sounds'
                 'hide-disabled-disconnected-sounds'
                 'show-all-tasks-control-panel'
-                'visual-effects'
                 'disable-tips'
                 'disable-win11-settings-banner'
                 'disable-dynamic-lighting'
@@ -134,7 +134,6 @@
                 'taskbar/disable-news-and-interests'
                 'taskbar/hide-task-view'
                 'taskbar/disable-copilot'
-                'taskbar/set-to-left'
                 'taskbar/end-task'
                 'explorer/always-more-details-transfer'
                 'explorer/disable-invalid-shortcuts-search'
@@ -266,6 +265,8 @@
         @{ Slug = 'qol/explorer/disable-folders-this-pc'; Reason = 'Intentionally disabled; the original rationale was not recorded.' }
         @{ Slug = 'qol/startup-shutdown/enable-verbose-messages'; Reason = 'Intentionally disabled; the original rationale was not recorded.' }
         @{ Slug = 'qol/startup-shutdown/force-end-shutdown-apps'; Reason = 'Disabled because forcibly ending applications confused users.' }
+        @{ Slug = 'qol/visual-effects'; Reason = 'Aether: el usuario quiere todas las animaciones normales de Windows 11; no se reducen.' }
+        @{ Slug = 'qol/taskbar/set-to-left'; Reason = 'Aether: la barra de tareas se deja centrada como en Windows 11.' }
         @{ Slug = 'networking/shares/restrict-anonymous-access'; Reason = 'Aether: la red de trabajo necesita carpetas compartidas sin contraseña.' }
         @{ Slug = 'networking/shares/restrict-anonymous-enumeration'; Reason = 'Aether: las PCs de la red deben poder ver las carpetas compartidas.' }
         @{ Slug = 'performance/disable-background-apps'; Reason = 'Aether: apps en segundo plano permitidas (los modos Gaming y Batería las limitan).' }

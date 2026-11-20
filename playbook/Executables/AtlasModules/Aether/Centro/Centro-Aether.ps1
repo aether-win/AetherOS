@@ -442,6 +442,8 @@ Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
           <Button x:Name="BtnRedPrivada" Content="Hacer privada la red conectada (para compartir carpetas)"/>
           <Button x:Name="BtnCompartir" Content="Abrir opciones de uso compartido"/>
           <TextBlock x:Name="TxtRed" Style="{StaticResource Nota}" FontFamily="Consolas"/>
+          <!-- Aether: "Unidades de red fijas" oculto por ahora (la IP de la otra PC cambia). -->
+          <StackPanel Visibility="Collapsed">
           <TextBlock Text="Unidades de red fijas" FontSize="18" FontWeight="SemiBold" Margin="0,16,0,4"/>
           <TextBlock Style="{StaticResource Nota}" Text="Usa la IP de la otra PC (por ejemplo \\192.168.1.10\SISTEMA EF RED). Aether la reconecta sola si se cae, la pone en Intranet local y en las ubicaciones de confianza de Excel para que las macros funcionen."/>
           <ListBox x:Name="LstUnidades" Height="90" Background="#0F1628" Foreground="#F3F5F8"/>
@@ -454,6 +456,7 @@ Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
             <Button x:Name="BtnQuitarUnidad" Content="Quitar la elegida"/>
             <Button x:Name="BtnConectarUnidades" Content="Reconectar ahora"/>
           </WrapPanel>
+          </StackPanel>
         </StackPanel></ScrollViewer>
       </TabItem>
       <TabItem Header="Actualizar">

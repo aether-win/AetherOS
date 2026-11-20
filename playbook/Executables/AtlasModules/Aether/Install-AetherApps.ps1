@@ -183,7 +183,23 @@ if ($apps -contains 'app-steam') {
 
 if ($apps -contains 'wind-aether') {
     Titulo 'Wind-Aether (Windhawk)'
-    if (Install-ConWinget -Id 'RamenSoftware.Windhawk') {
+    $windhawkOk = Install-ConWinget -Id 'RamenSoftware.Windhawk'
+    if (-not $windhawkOk) {
+        # Respaldo: en una PC nueva winget a veces no está listo. Se baja el instalador
+        # oficial de Windhawk y se instala en silencio (NSIS /S).
+        Aviso 'winget no instaló Windhawk; probando con el instalador oficial...'
+        try {
+            $setup = Join-Path $env:TEMP 'windhawk_setup.exe'
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Invoke-WebRequest -Uri 'https://ramensoftware.com/downloads/windhawk_setup.exe' -OutFile $setup -UseBasicParsing -ErrorAction Stop
+            $p = Start-Process -FilePath $setup -ArgumentList '/S' -PassThru -Wait
+            Start-Sleep -Seconds 3
+            $windhawkOk = ($p.ExitCode -eq 0) -or (Test-Path -LiteralPath (Join-Path $env:ProgramFiles 'Windhawk\windhawk.exe'))
+            Remove-Item -LiteralPath $setup -Force -ErrorAction SilentlyContinue
+        }
+        catch { Aviso "No se pudo descargar el instalador de Windhawk: $($_.Exception.Message)" }
+    }
+    if ($windhawkOk) {
         Ok 'Windhawk instalado'
         $paquete = Join-Path $carpetaAether 'Wind-Aether\Wind-Aether-mods.json'
         $copia = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Wind-Aether-mods.json'
