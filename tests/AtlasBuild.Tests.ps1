@@ -49,7 +49,7 @@ Describe 'Get-PlaybookVersion' {
     ) {
         $conf = Join-Path $TestDrive "$([guid]::NewGuid().ToString('N')).conf"
         if ($Version) {
-            "<Playbook><Title>Aether</Title><Version>$Version</Version></Playbook>" |
+            "<Playbook><Title>Atlas</Title><Version>$Version</Version></Playbook>" |
                 Set-Content -Path $conf -Encoding UTF8
         }
 
@@ -134,7 +134,7 @@ Describe 'New-StagedPlaybookConf' {
     }
 }
 
-Describe 'Aether configuration build boundary' {
+Describe 'Atlas configuration build boundary' {
     BeforeAll {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).ProviderPath
         $script:BuildBoundarySourceConfiguration = Join-Path $repoRoot 'playbook\Configuration'
@@ -269,7 +269,7 @@ Describe 'Get-AvailableArchiveName' {
 
         New-Item -Path (Join-Path $TestDrive 'Atlas.apbx') -ItemType File | Out-Null
         Get-AvailableArchiveName -BaseName 'Atlas.apbx' -WorkingDirectory $TestDrive -DisplayName 'Atlas' |
-            Should -Be 'Aether (1).apbx'
+            Should -Be 'Atlas (1).apbx'
     }
 
     It 'selects the existing name without deleting it when replacement is allowed' {
@@ -285,7 +285,7 @@ Describe 'Atomic APBX publication' {
         $playbook = Join-Path $TestDrive 'playbook'
         $output = Join-Path $TestDrive 'output'
         New-Item -ItemType Directory -Path $playbook, $output -Force | Out-Null
-        '<Playbook><Title>Aether v0.6.0</Title><Version>0.6.0</Version></Playbook>' |
+        '<Playbook><Title>Atlas v0.6.0</Title><Version>0.6.0</Version></Playbook>' |
             Set-Content -LiteralPath (Join-Path $playbook 'playbook.conf') -Encoding UTF8
         Mock Assert-AtlasConfigurationRunnerBoundary {
             [pscustomobject]@{ Files = 1; Actions = 32; Runs = 30 }
@@ -532,13 +532,13 @@ Describe 'APBX file path contracts' {
         '<Playbook />' | Set-Content -Path (Join-Path $playbook 'playbook.conf') -Encoding UTF8
         'actions: []' | Set-Content -Path (Join-Path $playbook 'Configuration\custom.yml') -Encoding UTF8
         'payload' | Set-Content -Path (Join-Path $playbook 'Executables\Nested\tool.txt') -Encoding UTF8
-        'generated' | Set-Content -Path (Join-Path $playbook 'Aether Test.apbx') -Encoding UTF8
-        'interrupted' | Set-Content -Path (Join-Path $playbook 'Aether Test.apbx.tmp') -Encoding UTF8
+        'generated' | Set-Content -Path (Join-Path $playbook 'Atlas Test.apbx') -Encoding UTF8
+        'interrupted' | Set-Content -Path (Join-Path $playbook 'Atlas Test.apbx.tmp') -Encoding UTF8
         'building' | Set-Content -Path `
-            (Join-Path $playbook 'Aether Test.apbx.0123456789abcdef0123456789abcdef.building.tmp') `
+            (Join-Path $playbook 'Atlas Test.apbx.0123456789abcdef0123456789abcdef.building.tmp') `
             -Encoding UTF8
         'backup' | Set-Content -Path `
-            (Join-Path $playbook 'Aether Test.apbx.0123456789abcdef0123456789abcdef.replaced.bak') `
+            (Join-Path $playbook 'Atlas Test.apbx.0123456789abcdef0123456789abcdef.replaced.bak') `
             -Encoding UTF8
 
         @(Get-AtlasPlaybookPayloadPath -PlaybookPath $playbook) | Should -Be @(
@@ -729,7 +729,7 @@ Describe 'Package version coherence' {
 
         function Get-BugReportOption {
             param([Parameter(Mandatory = $true)][string]$Path)
-            @([regex]::Matches([IO.File]::ReadAllText($Path), '(?m)^\s*- (Aether v\S+ for Windows 11 \S+?)\s*$') |
+            @([regex]::Matches([IO.File]::ReadAllText($Path), '(?m)^\s*- (Atlas v\S+ for Windows 11 \S+?)\s*$') |
                     ForEach-Object { $_.Groups[1].Value })
         }
 
@@ -746,7 +746,7 @@ Describe 'Package version coherence' {
             New-Item -Path (Join-Path $fixture 'playbook\Configuration'), (Join-Path $fixture 'app'), $templates `
                 -ItemType Directory -Force | Out-Null
             $conf = Join-Path $fixture 'playbook\playbook.conf'
-            "<Playbook>`n    <Title>Aether v0.6.0</Title>`n    <Version>0.6.0</Version>`n    $UpgradableFrom`n</Playbook>" |
+            "<Playbook>`n    <Title>Atlas v0.6.0</Title>`n    <Version>0.6.0</Version>`n    $UpgradableFrom`n</Playbook>" |
                 Set-Content -LiteralPath $conf -Encoding UTF8
             "onUpgradeVersions: ['0.6.0']" |
                 Set-Content -LiteralPath (Join-Path $fixture 'playbook\Configuration\custom.yml') -Encoding UTF8
@@ -754,7 +754,7 @@ Describe 'Package version coherence' {
                 "[package]`nname = `"atlas-app`"`nversion = `"$AppVersion`"`n")
             [IO.File]::WriteAllText((Join-Path $fixture 'app\Cargo.lock'), (New-CargoLockFixture -AppVersion $AppVersion))
             [IO.File]::WriteAllText((Join-Path $templates 'bug_report.yml'),
-                "    options:`n    - Aether v0.6.0 for Windows 11 25H2`n    - Aether v0.6.0 for Windows 11 26H2`n")
+                "    options:`n    - Atlas v0.6.0 for Windows 11 25H2`n    - Atlas v0.6.0 for Windows 11 26H2`n")
             $conf
         }
     }
@@ -787,8 +787,8 @@ Describe 'Package version coherence' {
 
         $releases.Count | Should -BeGreaterThan 0
         ($options -join '|') | Should -BeExactly (@($releases | ForEach-Object {
-                    "Aether v$confVersion for Windows 11 $_" }) -join '|') `
-            -Because 'the bug report must offer exactly the Windows releases this Aether version supports'
+                    "Atlas v$confVersion for Windows 11 $_" }) -join '|') `
+            -Because 'the bug report must offer exactly the Windows releases this Atlas version supports'
     }
 
     It 'bumps the committed playbook.conf, custom.yml, app version and bug report template and appends the superseded version' {
@@ -838,7 +838,7 @@ Describe 'Package version coherence' {
 
         # Every option moves to the new version and keeps its Windows release.
         (Get-BugReportOption -Path $template) -join '|' | Should -BeExactly (@($originalOptions |
-                    ForEach-Object { $_ -replace '^Aether v\S+', "Aether v$bumpVersion" }) -join '|')
+                    ForEach-Object { $_ -replace '^Atlas v\S+', "Atlas v$bumpVersion" }) -join '|')
     }
 
     It 'leaves UpgradableFrom as <Expected> for <Case>' -ForEach @(
@@ -855,7 +855,7 @@ Describe 'Package version coherence' {
         Get-CargoPackageVersion -Path (Join-Path $fixture 'app\Cargo.toml') | Should -BeExactly $Version
         Get-CargoLockVersion -Path (Join-Path $fixture 'app\Cargo.lock') -Name 'atlas-app' | Should -BeExactly $Version
         @(Get-BugReportOption -Path (Join-Path $fixture '.github\ISSUE_TEMPLATE\bug_report.yml')) -join '|' |
-            Should -BeExactly "Aether v$Version for Windows 11 25H2|Aether v$Version for Windows 11 26H2"
+            Should -BeExactly "Atlas v$Version for Windows 11 25H2|Atlas v$Version for Windows 11 26H2"
     }
 
     It 'brings drifted app files in line when playbook.conf already has the version' {
@@ -885,7 +885,7 @@ Describe 'Package version coherence' {
     It 'changes nothing when <Case>' -ForEach @(
         @{ Case = 'the version lacks a number'; Version = '0.7'; LockText = $null; TemplateText = $null; Message = "*parameter 'Version'*" }
         @{ Case = 'Cargo.lock has no atlas-app entry'; Version = '0.7.0'; LockText = "version = 4`n"; TemplateText = $null; Message = '*atlas-app entry*' }
-        @{ Case = 'the bug report template has no Aether version option'; Version = '0.7.0'; LockText = $null; TemplateText = "    options:`n    - Other`n"; Message = "*'Aether v<version> for Windows 11' options*" }
+        @{ Case = 'the bug report template has no Atlas version option'; Version = '0.7.0'; LockText = $null; TemplateText = "    options:`n    - Other`n"; Message = "*'Atlas v<version> for Windows 11' options*" }
     ) {
         $conf = New-VersionFixture -Name ($Case -replace '\W', '-') -UpgradableFrom '<UpgradableFrom>0.5.0</UpgradableFrom>'
         $fixture = Split-Path (Split-Path $conf -Parent) -Parent
