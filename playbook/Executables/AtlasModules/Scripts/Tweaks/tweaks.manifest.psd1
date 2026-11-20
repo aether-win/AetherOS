@@ -16,6 +16,7 @@
                 'shares/disable-smb-bandwidth-throttling'
                 # Aether: red de trabajo automática (Reparar-Red-Aether sin preguntas).
                 'aether-red'
+                'aether-prioridad-red'
             )
         }
         @{
@@ -112,6 +113,7 @@
                 'add-sharing-settings-shortcut'
                 # Aether: Edge con Google y limpieza.
                 'aether-edge'
+                'aether-explorer'
                 # atlas-theme sets lock-screen policy; the theme itself is applied by
                 # Initialize-NewUser at first logon (interactive shell COM).
                 'appearance/atlas-theme'
@@ -234,6 +236,8 @@
                 'create-shortcuts'
                 # Aether: guarda las apps elegidas; se instalan como el usuario al iniciar sesión.
                 'aether-apps'
+                'aether-office'
+                'aether-office-macros'
                 # Aether: app de control (Centro Aether) y su ícono de la bandeja.
                 'aether-centro'
             )

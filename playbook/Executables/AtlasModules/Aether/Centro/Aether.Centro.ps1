@@ -38,8 +38,14 @@ $script:AetherSubProcesador = '54533251-82be-4824-96c1-47b60b740d00'
 $script:AetherTurbo = 'be337238-0d82-4146-a960-4f3749d470c7'        # PERFBOOSTMODE
 $script:AetherMinNucleos = '0cc5b647-c1df-4637-891a-dec35c318583'   # CPMINCORES (estacionar núcleos)
 $script:AetherEpp = '36687f9e-e3a5-4dbf-b1dc-15eb381c6863'          # PERFEPP (0 = rendimiento)
+$script:AetherProcMin = '893dee8e-2bef-41e0-89c6-b55d0929964c'      # PROCTHROTTLEMIN (% mínimo CPU)
+$script:AetherProcMax = 'bc5038f7-23e0-4960-96da-33abaf5935ec'      # PROCTHROTTLEMAX (% máximo CPU)
+$script:AetherEnfriamiento = '94d3a615-a899-4ac5-ae2b-e4d8f634367f' # SYSCOOLPOL (1 = activo)
 $script:AetherSubAhorro = 'de830923-a562-41af-a086-e3a2c6bad2da'
 $script:AetherUmbralAhorro = 'e69653ca-cf7f-4f05-aa73-cb833fa90ad4' # ESBATTTHRESHOLD
+# Plantilla "Rendimiento máximo" (Ultimate Performance) de Windows. Aether la desbloquea
+# y la duplica para crear su propio paquete de energía, sin tocar los planes del usuario.
+$script:AetherPlantillaMax = 'e9a42b02-d5df-448d-aa00-03f14749eb61'
 $script:AetherAjustesEnergia = @(
     @{ Clave = 'Turbo'; Sub = $script:AetherSubProcesador; Ajuste = $script:AetherTurbo }
     @{ Clave = 'MinNucleos'; Sub = $script:AetherSubProcesador; Ajuste = $script:AetherMinNucleos }
@@ -109,6 +115,34 @@ function Restore-AetherEnergiaOriginal {
             Set-AetherValorEnergia -Sub $ajuste.Sub -Ajuste $ajuste.Ajuste -Ac $Matches[1] -Dc $Matches[2]
         }
     }
+}
+
+function Initialize-AetherPlanEnergia {
+    <#
+        Crea (una sola vez) el paquete de energía propio de Aether duplicando la plantilla
+        "Rendimiento máximo" de Windows, lo deja activo y guarda su GUID. No modifica los
+        planes de energía que el usuario ya tenga. Idempotente: si el plan ya existe, solo
+        lo reactiva. Devuelve el GUID del plan de Aether, o $null si no se pudo crear.
+    #>
+    $guid = [string](Get-AetherAjuste -Nombre 'PlanEnergiaGuid' -PorDefecto '')
+    $lista = @(& powercfg.exe /list 2>$null)
+    $existe = $guid -and ($lista -match [regex]::Escape($guid))
+    if (-not $existe) {
+        # Desbloquea la plantilla de Rendimiento máximo (si Windows la tiene oculta) y la duplica.
+        $salida = & powercfg.exe -duplicatescheme $script:AetherPlantillaMax 2>$null
+        $nuevo = ([regex]::Match(($salida -join ' '), '[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}')).Value
+        if (-not $nuevo) {
+            # Algunos equipos no traen la plantilla: se duplica el plan activo como respaldo.
+            $salida = & powercfg.exe -duplicatescheme SCHEME_CURRENT 2>$null
+            $nuevo = ([regex]::Match(($salida -join ' '), '[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}')).Value
+        }
+        if (-not $nuevo) { return $null }
+        $guid = $nuevo
+        & powercfg.exe -changename $guid 'Aether' 'Paquete de energía de Aether (Gaming / Trabajo / Batería).' 2>&1 | Out-Null
+        Set-AetherAjuste -Nombre 'PlanEnergiaGuid' -Valor $guid
+    }
+    & powercfg.exe /setactive $guid 2>&1 | Out-Null
+    return $guid
 }
 
 function Test-AetherCargador {
@@ -213,8 +247,9 @@ function Set-AetherModo {
         return [pscustomobject]@{ Ok = $false; Mensaje = 'Conecta el cargador para usar el Modo Gaming.' }
     }
     $anterior = Get-AetherModo
+    # Trabaja siempre sobre el paquete de energía propio de Aether (no toca los del usuario).
+    [void](Initialize-AetherPlanEnergia)
     Save-AetherEnergiaOriginal
-    Restore-AetherEnergiaOriginal
     if ($anterior -eq 'Gaming' -and $Modo -ne 'Gaming') { Set-AetherPausaModsGaming -Pausar $false }
     if ($anterior -eq 'Bateria' -and $Modo -ne 'Bateria') {
         [void](Set-AetherPerfilWind -Perfil ([string](Get-AetherAjuste -Nombre 'PerfilWind' -PorDefecto 'ninguno')) -Temporal)
@@ -222,6 +257,14 @@ function Set-AetherModo {
 
     switch ($Modo) {
         'Trabajo' {
+            # Optimizado pero fluido: la CPU responde (hasta 100%) sin quedarse siempre arriba.
+            # EPP 50 equilibra rendimiento y temperatura; turbo disponible; sin estacionar núcleos.
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherProcMin -Ac 10 -Dc 5
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherProcMax -Ac 100 -Dc 100
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherMinNucleos -Ac 100 -Dc 100
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherEpp -Ac 50 -Dc 60
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherTurbo -Ac 1 -Dc 1
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherEnfriamiento -Ac 1
             Set-AetherModoEnergiaWindows -Modo Equilibrado
             Set-AetherNotificaciones -Activas $true
             Set-AetherAppsSegundoPlano -Permitidas $true
@@ -229,10 +272,13 @@ function Set-AetherModo {
         }
         'Gaming' {
             $limitar = (Get-AetherAjuste -Nombre 'LimitarTurbo' -PorDefecto 0) -eq 1
-            # Sin estacionar núcleos y con el procesador en rendimiento. Con "limitar turbo"
-            # el procesador no sube su frecuencia extra y la gráfica integrada tiene más energía.
+            # Máximo rendimiento: CPU al 100% fijo, sin estacionar núcleos, EPP 0 (todo rendimiento),
+            # enfriamiento activo. Con "limitar turbo" la gráfica integrada recibe más energía.
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherProcMin -Ac 100
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherProcMax -Ac 100
             Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherMinNucleos -Ac 100
             Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherEpp -Ac 0
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherEnfriamiento -Ac 1
             Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherTurbo -Ac $(if ($limitar) { 0 } else { 2 })
             Set-AetherModoEnergiaWindows -Modo Rendimiento
             Set-AetherNotificaciones -Activas $false
@@ -241,8 +287,11 @@ function Set-AetherModo {
             $mensaje = 'Modo Gaming activo. ¿El ventilador está conectado?'
         }
         'Bateria' {
+            # Eficiente: con batería la CPU baja el techo y apaga el turbo; enchufada queda normal.
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherProcMax -Dc 80
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherProcMin -Dc 5
             Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherTurbo -Dc 0
-            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherEpp -Dc 70
+            Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherEpp -Dc 80
             # Ahorro de batería de Windows encendido ya (umbral 100%).
             Set-AetherValorEnergia -Sub $script:AetherSubAhorro -Ajuste $script:AetherUmbralAhorro -Dc 100
             Set-AetherModoEnergiaWindows -Modo Eficiencia

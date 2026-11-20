@@ -396,6 +396,13 @@ function Invoke-AtlasTweakCategory {
     )
 
     foreach ($tweakName in $tweakNames) {
+        # Aether: botón Cancelar. Las categorías tienen decenas de tweaks, así que se
+        # revisa la marca entre cada uno para que el cancelamiento responda rápido y no
+        # solo al terminar la categoría completa.
+        if ([IO.File]::Exists([IO.Path]::Combine($env:ProgramData, 'Aether', 'cancelar-instalacion.flag'))) {
+            throw 'Instalación cancelada por el usuario.'
+        }
+
         $relativePath = ([string]$tweakName -replace '/', '\') + '.psd1'
         $tweakFile = Join-Path -Path $categoryRoot -ChildPath $relativePath
 
