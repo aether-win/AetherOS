@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name            = 'View'
-            Launcher        = '6. Configuración avanzada\Arranque\Ver valores actuales.cmd'
+            Launcher        = '6. Configuracion avanzada\Arranque\Ver valores actuales.cmd'
             Reboot          = 'None'
             MachineAction   = 'Show-AtlasBootValues'
         }

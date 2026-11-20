@@ -8,7 +8,7 @@
     It 'includes the reviewed executable bytes recorded by the accepted build' {
         $paths = @{
             'SetTimerResolution.exe' = 'playbook/Executables/AtlasModules/Tools/SetTimerResolution.exe'
-            'MeasureSleep.exe' = 'playbook/Executables/AtlasDesktop/3. Configuración general/Resolución del temporizador/! MeasureSleep.exe'
+            'MeasureSleep.exe' = 'playbook/Executables/AtlasDesktop/3. Configuracion general/Resolucion del temporizador/! MeasureSleep.exe'
         }
         foreach ($output in $manifest.outputs) {
             (Get-FileHash (Join-Path $repo $paths[$output.name]) -Algorithm SHA256).Hash | Should -Be $output.sha256

@@ -8,7 +8,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Configuración avanzada\Servicios\NVIDIA Display Container\Menú contextual\Agregar Container al menú.cmd'
+            Launcher      = '6. Configuracion avanzada\Servicios\NVIDIA Display Container\Menu contextual\Agregar Container al menu.cmd'
             Reboot        = 'RestartExplorer'
             MachineAction = 'Add-AtlasNVidiaContainerContextMenu'
             ReplayApplicable = 'Test-AtlasNVidiaContainerContextMenuApplicable'
@@ -16,7 +16,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '6. Configuración avanzada\Servicios\NVIDIA Display Container\Menú contextual\Quitar Container del menú (predeterminado).cmd'
+            Launcher      = '6. Configuracion avanzada\Servicios\NVIDIA Display Container\Menu contextual\Quitar Container del menu (predeterminado).cmd'
             Reboot        = 'RestartExplorer'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Classes\DesktopBackground\Shell\NVIDIAContainer'; Operation = 'DeleteKey' }

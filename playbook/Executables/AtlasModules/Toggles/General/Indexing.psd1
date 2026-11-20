@@ -7,21 +7,21 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. Configuración general\Indexado de búsqueda\Desactivar indexado.cmd'
+            Launcher      = '3. Configuracion general\Indexado de busqueda\Desactivar indexado.cmd'
             Reboot        = 'None'
             MachineAction = 'Disable-AtlasSearchIndexing'
         }
         @{
             Name          = 'Minimal'
             StateValue    = 1
-            Launcher      = '3. Configuración general\Indexado de búsqueda\Indexado mínimo.cmd'
+            Launcher      = '3. Configuracion general\Indexado de busqueda\Indexado minimo.cmd'
             Reboot        = 'None'
             MachineAction = 'Set-AtlasMinimalSearchIndexing'
         }
         @{
             Name          = 'Enable'
             StateValue    = 2
-            Launcher      = '3. Configuración general\Indexado de búsqueda\Indexado normal (predeterminado).cmd'
+            Launcher      = '3. Configuracion general\Indexado de busqueda\Indexado normal (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Enable-AtlasSearchIndexing'
             InteractiveState = 'Select-AtlasFullIndexingState'

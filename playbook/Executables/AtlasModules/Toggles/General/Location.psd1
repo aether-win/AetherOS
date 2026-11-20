@@ -7,7 +7,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. Configuración general\Ubicación\Desactivar ubicación (predeterminado).cmd'
+            Launcher      = '3. Configuracion general\Ubicacion\Desactivar ubicacion (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Disable-AtlasLocation'
             Registry      = @(
@@ -19,7 +19,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. Configuración general\Ubicación\Activar ubicación.cmd'
+            Launcher      = '3. Configuracion general\Ubicacion\Activar ubicacion.cmd'
             Reboot        = 'None'
             MachineAction = 'Enable-AtlasLocation'
             UserAction    = 'Show-AtlasLocationSettings'

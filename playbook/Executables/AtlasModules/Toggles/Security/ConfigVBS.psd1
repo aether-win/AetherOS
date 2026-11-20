@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name            = 'Run'
-            Launcher        = '7. Seguridad\Aislamiento del núcleo (VBS)\Configuración actual.cmd'
+            Launcher        = '7. Seguridad\Aislamiento del nucleo (VBS)\Configuracion actual.cmd'
             Reboot          = 'None'
             Action          = 'Show-AtlasVbsConfiguration'
         }

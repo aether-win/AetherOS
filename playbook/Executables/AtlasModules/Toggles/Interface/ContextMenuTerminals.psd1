@@ -7,21 +7,21 @@
         @{
             Name          = 'Remove'
             StateValue    = 0
-            Launcher      = '4. Interfaz\Menús contextuales\Terminales\Quitar terminales del menú (predeterminado).cmd'
+            Launcher      = '4. Interfaz\Menus contextuales\Terminales\Quitar terminales del menu (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Import-AtlasTerminalsContextMenu'
         }
         @{
             Name          = 'Add'
             StateValue    = 1
-            Launcher      = '4. Interfaz\Menús contextuales\Terminales\Agregar terminales.cmd'
+            Launcher      = '4. Interfaz\Menus contextuales\Terminales\Agregar terminales.cmd'
             Reboot        = 'None'
             MachineAction = 'Import-AtlasTerminalsContextMenu'
         }
         @{
             Name          = 'AddNoWindowsTerminal'
             StateValue    = 2
-            Launcher      = '4. Interfaz\Menús contextuales\Terminales\Agregar terminales (sin Windows Terminal).cmd'
+            Launcher      = '4. Interfaz\Menus contextuales\Terminales\Agregar terminales (sin Windows Terminal).cmd'
             Reboot        = 'None'
             MachineAction = 'Import-AtlasTerminalsContextMenu'
         }

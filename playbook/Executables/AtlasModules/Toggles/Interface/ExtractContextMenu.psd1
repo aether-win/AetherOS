@@ -6,7 +6,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '4. Interfaz\Menús contextuales\Extraer\Agregar Extraer.cmd'
+            Launcher   = '4. Interfaz\Menus contextuales\Extraer\Agregar Extraer.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked'; Name = '{b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af}'; Operation = 'Delete' }
@@ -18,7 +18,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interfaz\Menús contextuales\Extraer\Quitar Extraer (predeterminado).cmd'
+            Launcher   = '4. Interfaz\Menus contextuales\Extraer\Quitar Extraer (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked'; Name = '{b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af}'; Type = 'String'; Data = '' }

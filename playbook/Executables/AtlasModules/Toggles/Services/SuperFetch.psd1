@@ -8,14 +8,14 @@
         @{
             Name            = 'Disable'
             StateValue      = 0
-            Launcher        = '6. Configuración avanzada\Servicios\Superfetch\Desactivar SuperFetch.cmd'
+            Launcher        = '6. Configuracion avanzada\Servicios\Superfetch\Desactivar SuperFetch.cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Set-AtlasSuperFetchMachineState'
         }
         @{
             Name            = 'Enable'
             StateValue      = 1
-            Launcher        = '6. Configuración avanzada\Servicios\Superfetch\Activar SuperFetch (predeterminado).cmd'
+            Launcher        = '6. Configuracion avanzada\Servicios\Superfetch\Activar SuperFetch (predeterminado).cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Set-AtlasSuperFetchMachineState'
         }

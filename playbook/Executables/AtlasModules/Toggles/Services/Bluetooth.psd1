@@ -8,7 +8,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '6. Configuración avanzada\Servicios\Bluetooth\Desactivar Bluetooth.cmd'
+            Launcher      = '6. Configuracion avanzada\Servicios\Bluetooth\Desactivar Bluetooth.cmd'
             Reboot        = 'Recommend'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Connectivity\AllowBluetooth'; Name = 'value'; Type = 'DWord'; Data = 0 }
@@ -37,7 +37,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Configuración avanzada\Servicios\Bluetooth\Activar Bluetooth (predeterminado).cmd'
+            Launcher      = '6. Configuracion avanzada\Servicios\Bluetooth\Activar Bluetooth (predeterminado).cmd'
             Reboot        = 'Recommend'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Connectivity\AllowBluetooth'; Name = 'value'; Type = 'DWord'; Data = 2 }

@@ -6,7 +6,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '4. Interfaz\Menús contextuales\Windows 11\Menú contextual clásico (predeterminado).cmd'
+            Launcher   = '4. Interfaz\Menus contextuales\Windows 11\Menu contextual clasico (predeterminado).cmd'
             Reboot     = 'RestartExplorer'
             # The old menu only activates when the InprocServer32 DEFAULT value is an
             # empty string; a bare key ('value not set') leaves the modern menu.
@@ -17,7 +17,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interfaz\Menús contextuales\Windows 11\Menú contextual nuevo.cmd'
+            Launcher   = '4. Interfaz\Menus contextuales\Windows 11\Menu contextual nuevo.cmd'
             Reboot     = 'RestartExplorer'
             Registry   = @(
                 @{ Path = 'HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}'; Operation = 'DeleteKey' }

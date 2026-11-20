@@ -3,7 +3,7 @@
     Description   = 'Windows Automatic Repair at boot (bootstatuspolicy).'
     Elevation     = 'Admin'
     Menu          = $true
-    Launcher      = '6. Configuración avanzada\Arranque\Comportamiento\Reparación automática.cmd'
+    Launcher      = '6. Configuracion avanzada\Arranque\Comportamiento\Reparacion automatica.cmd'
     SilentDefault = 'Enable'
     Script        = 'AutomaticRepair.ps1'
     States        = @(

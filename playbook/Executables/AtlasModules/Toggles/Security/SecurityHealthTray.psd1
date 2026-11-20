@@ -7,14 +7,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '7. Seguridad\Defender\Ícono de seguridad en la bandeja\Quitar ícono de seguridad del inicio (predeterminado).cmd'
+            Launcher      = '7. Seguridad\Defender\Icono de seguridad en la bandeja\Quitar icono de seguridad del inicio (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Set-AtlasSecurityHealthTrayStartup'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '7. Seguridad\Defender\Ícono de seguridad en la bandeja\Agregar ícono de seguridad al inicio.cmd'
+            Launcher      = '7. Seguridad\Defender\Icono de seguridad en la bandeja\Agregar icono de seguridad al inicio.cmd'
             Reboot        = 'None'
             MachineAction = 'Set-AtlasSecurityHealthTrayStartup'
         }

@@ -7,7 +7,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '3. Configuración general\Restaurar sistema\Desactivar restaurar sistema.cmd'
+            Launcher   = '3. Configuracion general\Restaurar sistema\Desactivar restaurar sistema.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\SystemRestore'; Name = 'DisableSR'; Type = 'DWord'; Data = 1 }
@@ -17,7 +17,7 @@
             Name       = 'Enable'
             MachineAction = 'Enable-AtlasWindowsVolumeProtection'
             StateValue = 1
-            Launcher   = '3. Configuración general\Restaurar sistema\Activar restaurar sistema (predeterminado).cmd'
+            Launcher   = '3. Configuracion general\Restaurar sistema\Activar restaurar sistema (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\SystemRestore'; Name = 'DisableSR'; Operation = 'Delete' }

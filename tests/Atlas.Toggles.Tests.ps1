@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
     $script:repoRoot = $script:AtlasTestRepoRoot
     $modulesRoot = $script:AtlasTestModulesRoot
@@ -488,7 +488,7 @@ Describe 'Replay of recorded states' {
         $keyPath = Join-Path $StateRoot 'VerboseMessages'
         New-Item -Path $keyPath -Force | Out-Null
         New-ItemProperty -LiteralPath $keyPath -Name state -Value 1 -PropertyType DWord -Force | Out-Null
-        New-ItemProperty -LiteralPath $keyPath -Name path -Value 'C:\Windows\AtlasDesktop\Desactivar mensajes detallados (predeterminado).cmd' -PropertyType String -Force | Out-Null
+        New-ItemProperty -LiteralPath $keyPath -Name path -Value 'C:\Windows\AtlasDesktop\Disable Verbose Messages (default).cmd' -PropertyType String -Force | Out-Null
 
         Invoke-AtlasToggleReapply -StateRoot $StateRoot -TogglesRoot $script:ShippedTogglesRoot
 
@@ -507,7 +507,7 @@ Describe 'Replay of recorded states' {
         $keyPath = Join-Path $StateRoot 'OldContextMenu'
         New-Item -Path $keyPath -Force | Out-Null
         New-ItemProperty -LiteralPath $keyPath -Name state -Value 0 -PropertyType DWord -Force | Out-Null
-        New-ItemProperty -LiteralPath $keyPath -Name path -Value 'C:\Windows\AtlasDesktop\Menú contextual clásico (predeterminado).cmd' -PropertyType String -Force | Out-Null
+        New-ItemProperty -LiteralPath $keyPath -Name path -Value 'C:\Windows\AtlasDesktop\Old Context Menu (default).cmd' -PropertyType String -Force | Out-Null
 
         Invoke-AtlasToggleReapply -StateRoot $StateRoot -TogglesRoot $script:ShippedTogglesRoot
 
@@ -1652,7 +1652,7 @@ Describe 'Generated launchers' {
         $installedModules = '%__APPDIR__%..\AtlasModules\'
         $cases = @(
             @{ Path = '2. Controladores\Buscar controladores en Windows Update.cmd'; Name = 'UpdateDrivers'; State = 'Run' }
-            @{ Path = '6. Configuración avanzada\Activar o desactivar Windows Update\Activar o desactivar Windows Update.cmd'; Name = 'ToggleWindowsUpdates'; State = '-' }
+            @{ Path = '6. Configuracion avanzada\Activar o desactivar Windows Update\Activar o desactivar Windows Update.cmd'; Name = 'ToggleWindowsUpdates'; State = '-' }
         )
 
         foreach ($case in $cases) {

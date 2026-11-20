@@ -8,14 +8,14 @@
         @{
             Name            = 'Enable'
             StateValue      = 1
-            Launcher        = '9. Solución de problemas\Red\Restablecer red a la de Aether.cmd'
+            Launcher        = '9. Solucion de problemas\Red\Restablecer red a la de Aether.cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Set-AtlasNetworkDefaultState'
         }
         @{
             Name            = 'Disable'
             StateValue      = 0
-            Launcher        = '9. Solución de problemas\Red\Restablecer red a la de Windows.cmd'
+            Launcher        = '9. Solucion de problemas\Red\Restablecer red a la de Windows.cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Set-AtlasNetworkDefaultState'
         }

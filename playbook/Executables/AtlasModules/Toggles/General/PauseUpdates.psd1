@@ -7,7 +7,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '3. Configuración general\Pausar actualizaciones\Pausar Windows Update (predeterminado).cmd'
+            Launcher   = '3. Configuracion general\Pausar actualizaciones\Pausar Windows Update (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\AtlasOS\Services\PauseUpdates'; Name = 'days'; Type = 'DWord'; Data = 356000 }
@@ -28,7 +28,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '3. Configuración general\Pausar actualizaciones\Quitar pausa de Windows Update.cmd'
+            Launcher   = '3. Configuracion general\Pausar actualizaciones\Quitar pausa de Windows Update.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\AtlasOS\Services\PauseUpdates'; Name = 'days'; Type = 'DWord'; Data = 0 }

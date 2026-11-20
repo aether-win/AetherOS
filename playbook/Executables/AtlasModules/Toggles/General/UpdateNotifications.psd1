@@ -6,7 +6,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '3. Configuración general\Avisos de actualización\Desactivar avisos de actualización.cmd'
+            Launcher   = '3. Configuracion general\Avisos de actualizacion\Desactivar avisos de actualizacion.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate'; Name = 'SetAutoRestartNotificationDisable'; Type = 'DWord'; Data = 1 }
@@ -18,7 +18,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '3. Configuración general\Avisos de actualización\Activar avisos de actualización (predeterminado).cmd'
+            Launcher   = '3. Configuracion general\Avisos de actualizacion\Activar avisos de actualizacion (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate'; Name = 'SetAutoRestartNotificationDisable'; Operation = 'Delete' }

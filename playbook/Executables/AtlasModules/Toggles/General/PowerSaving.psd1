@@ -7,14 +7,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. Configuración general\Ahorro de energía\Desactivar ahorro de energía.cmd'
+            Launcher      = '3. Configuracion general\Ahorro de energia\Desactivar ahorro de energia.cmd'
             Reboot        = 'None'
             MachineAction = 'Invoke-AtlasPowerSavingToggle'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. Configuración general\Ahorro de energía\Ahorro de energía normal (predeterminado).cmd'
+            Launcher      = '3. Configuracion general\Ahorro de energia\Ahorro de energia normal (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Invoke-AtlasPowerSavingToggle'
         }

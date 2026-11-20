@@ -8,7 +8,7 @@
     States        = @(
         @{
             Name          = 'Disable'
-            Launcher      = '3. Configuración general\Resolución del temporizador\Desactivar resolución del temporizador (predeterminado).cmd'
+            Launcher      = '3. Configuracion general\Resolucion del temporizador\Desactivar resolucion del temporizador (predeterminado).cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel'; Name = 'GlobalTimerResolutionRequests'; Operation = 'Delete' }
@@ -17,7 +17,7 @@
         }
         @{
             Name          = 'Enable'
-            Launcher      = '3. Configuración general\Resolución del temporizador\Activar resolución del temporizador.cmd'
+            Launcher      = '3. Configuracion general\Resolucion del temporizador\Activar resolucion del temporizador.cmd'
             Reboot        = 'Recommend'
             Registry      = @(
                 @{ Path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel'; Name = 'GlobalTimerResolutionRequests'; Type = 'DWord'; Data = 1 }

@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name             = 'Run'
-            Launcher         = '9. Solución de problemas\Arreglar errores 2502 y 2503.cmd'
+            Launcher         = '9. Solucion de problemas\Arreglar errores 2502 y 2503.cmd'
             Reboot           = 'None'
             MachineAction    = 'Invoke-AtlasWindowsTempPermissionsRepair'
             InteractiveState = 'Show-AtlasWindowsTempRepairNote'

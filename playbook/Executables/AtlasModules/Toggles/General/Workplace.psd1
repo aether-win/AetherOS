@@ -8,14 +8,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. Configuración general\Cuentas de trabajo o escuela\Desactivar cuentas de trabajo o escuela.cmd'
+            Launcher      = '3. Configuracion general\Cuentas de trabajo o escuela\Desactivar cuentas de trabajo o escuela.cmd'
             Reboot        = 'None'
             MachineAction = 'Hide-AtlasWorkplaceSettingsPage'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. Configuración general\Cuentas de trabajo o escuela\Activar cuentas de trabajo o escuela.cmd'
+            Launcher      = '3. Configuracion general\Cuentas de trabajo o escuela\Activar cuentas de trabajo o escuela.cmd'
             Reboot        = 'None'
             MachineAction = 'Show-AtlasWorkplaceSettingsPage'
         }

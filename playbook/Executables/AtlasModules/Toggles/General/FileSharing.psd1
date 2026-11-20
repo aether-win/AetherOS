@@ -7,14 +7,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. Configuración general\Uso compartido\Desactivar uso compartido.cmd'
+            Launcher      = '3. Configuracion general\Uso compartido\Desactivar uso compartido.cmd'
             Reboot        = 'Prompt'
             MachineAction = 'Set-AtlasFileSharingMachineState'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. Configuración general\Uso compartido\Activar uso compartido (predeterminado).cmd'
+            Launcher      = '3. Configuracion general\Uso compartido\Activar uso compartido (predeterminado).cmd'
             Reboot        = 'Prompt'
             MachineAction = 'Set-AtlasFileSharingMachineState'
             UserAction    = 'Add-AtlasFileSharingNetworkNavigationPane'

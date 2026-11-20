@@ -15,7 +15,7 @@
         @{
             Name       = 'Classic'
             StateValue = 1
-            Launcher   = '4. Interfaz\Flecha de accesos directos\Clásica.cmd'
+            Launcher   = '4. Interfaz\Flecha de accesos directos\Clasica.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Icons'; Name = '29'; Type = 'ExpandString'; Data = '%SystemRoot%\AtlasModules\Other\Classic.ico,0' }

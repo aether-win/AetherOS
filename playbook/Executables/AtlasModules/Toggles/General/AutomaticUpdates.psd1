@@ -6,7 +6,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '3. Configuración general\Actualizaciones automáticas\Desactivar actualizaciones automáticas.cmd'
+            Launcher   = '3. Configuracion general\Actualizaciones automaticas\Desactivar actualizaciones automaticas.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU'; Name = 'AUOptions'; Type = 'DWord'; Data = 2 }
@@ -15,7 +15,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '3. Configuración general\Actualizaciones automáticas\Activar actualizaciones automáticas (predeterminado).cmd'
+            Launcher   = '3. Configuracion general\Actualizaciones automaticas\Activar actualizaciones automaticas (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU'; Name = 'AUOptions'; Operation = 'Delete' }

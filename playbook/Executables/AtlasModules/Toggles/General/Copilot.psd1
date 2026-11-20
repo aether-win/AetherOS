@@ -7,7 +7,7 @@
         @{
             Name            = 'Disable'
             StateValue      = 0
-            Launcher        = '3. Configuración general\Funciones de IA\Microsoft Copilot\Desactivar Microsoft Copilot (predeterminado).cmd'
+            Launcher        = '3. Configuracion general\Funciones de IA\Microsoft Copilot\Desactivar Microsoft Copilot (predeterminado).cmd'
             Reboot          = 'RestartExplorer'
             Registry        = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI'; Name = 'RemoveMicrosoftCopilotApp'; Type = 'DWord'; Data = 1 }
@@ -18,7 +18,7 @@
         @{
             Name            = 'Enable'
             StateValue      = 1
-            Launcher        = '3. Configuración general\Funciones de IA\Microsoft Copilot\Activar Microsoft Copilot.cmd'
+            Launcher        = '3. Configuracion general\Funciones de IA\Microsoft Copilot\Activar Microsoft Copilot.cmd'
             Reboot          = 'RestartExplorer'
             # Atlas 0.5.0 recorded Enable before checking for Edge, which it removes by
             # default; such a record is dropped on replay rather than failing the upgrade.

@@ -11,7 +11,7 @@ performance or latency benefit that holds on every machine.
 ## Using the toggle
 
 The toggle needs administrator rights. Its launchers are in
-`3. Configuración general\Ahorro de energía`:
+`3. Configuracion general\Ahorro de energia`:
 
 | Launcher | Toggle state | Effect |
 | --- | --- | --- |
@@ -67,7 +67,7 @@ because Windows lacks support.
 
 Network adapter power properties belong to a separate setting. The
 `atlas-network-settings` install step and
-`9. Solución de problemas\Red\Restablecer red a la de Aether.cmd` set
+`9. Solucion de problemas\Red\Restablecer red a la de Aether.cmd` set
 `AutoDisableGigabit`, `ApCompatMode`, `SipsEnabled`, `ReduceSpeedOnPowerDown` and
 `DMACoalescing` (plain or `*`-prefixed) to `0` on PCI network adapters that expose
 them.

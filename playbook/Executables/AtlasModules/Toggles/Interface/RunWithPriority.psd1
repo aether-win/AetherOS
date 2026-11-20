@@ -7,14 +7,14 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '4. Interfaz\Menús contextuales\Ejecutar con prioridad\Agregar Ejecutar con prioridad al menú.cmd'
+            Launcher      = '4. Interfaz\Menus contextuales\Ejecutar con prioridad\Agregar Ejecutar con prioridad al menu.cmd'
             Reboot        = 'None'
             MachineAction = 'Add-AtlasRunWithPriorityContextMenu'
         }
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interfaz\Menús contextuales\Ejecutar con prioridad\Quitar Ejecutar con prioridad del menú (predeterminado).cmd'
+            Launcher   = '4. Interfaz\Menus contextuales\Ejecutar con prioridad\Quitar Ejecutar con prioridad del menu (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Classes\exefile\Shell\Priority'; Operation = 'DeleteKey' }

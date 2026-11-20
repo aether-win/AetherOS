@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name             = 'Run'
-            Launcher         = '9. Solución de problemas\Componentes de telemetría.cmd'
+            Launcher         = '9. Solucion de problemas\Componentes de telemetria.cmd'
             Reboot           = 'Prompt'
             MachineAction    = 'Invoke-AtlasTelemetryComponentsMenu'
             InteractiveState = 'Select-AtlasTelemetryComponentsState'

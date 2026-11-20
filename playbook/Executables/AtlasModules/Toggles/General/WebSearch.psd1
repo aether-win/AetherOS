@@ -7,7 +7,7 @@
         @{
             Name                  = 'Disable'
             StateValue            = 0
-            Launcher              = '3. Configuración general\Búsqueda web (incluye destacados)\Desactivar búsqueda web (predeterminado).cmd'
+            Launcher              = '3. Configuracion general\Busqueda web (incluye destacados)\Desactivar busqueda web (predeterminado).cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'SearchShellRefresh'
             Registry              = @(
@@ -30,7 +30,7 @@
         @{
             Name                  = 'Enable'
             StateValue            = 1
-            Launcher              = '3. Configuración general\Búsqueda web (incluye destacados)\Activar búsqueda web.cmd'
+            Launcher              = '3. Configuracion general\Busqueda web (incluye destacados)\Activar busqueda web.cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'SearchShellRefresh'
             Registry              = @(

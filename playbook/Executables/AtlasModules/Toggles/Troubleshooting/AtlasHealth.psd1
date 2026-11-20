@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name          = 'Run'
-            Launcher      = '9. Solución de problemas\Revisar la salud de Aether.cmd'
+            Launcher      = '9. Solucion de problemas\Revisar la salud de Aether.cmd'
             Reboot        = 'None'
             MachineAction = 'Show-AtlasHealthReport'
         }

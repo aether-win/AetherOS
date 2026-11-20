@@ -8,14 +8,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '6. Configuración avanzada\Microsoft Store\Desactivar Microsoft Store.cmd'
+            Launcher      = '6. Configuracion avanzada\Microsoft Store\Desactivar Microsoft Store.cmd'
             Reboot        = 'None'
             MachineAction = 'Remove-AtlasMicrosoftStore'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Configuración avanzada\Microsoft Store\Activar Microsoft Store (predeterminado).cmd'
+            Launcher      = '6. Configuracion avanzada\Microsoft Store\Activar Microsoft Store (predeterminado).cmd'
             Reboot        = 'None'
             UserAction    = 'Register-AtlasMicrosoftStore'
         }

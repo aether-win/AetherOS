@@ -7,7 +7,7 @@
     States        = @(
         @{
             Name     = 'Debloat'
-            Launcher = '4. Interfaz\Menús contextuales\Enviar a\Limpiar el menú Enviar a.cmd'
+            Launcher = '4. Interfaz\Menus contextuales\Enviar a\Limpiar el menu Enviar a.cmd'
             Reboot   = 'None'
             Action   = 'Invoke-AtlasSendToContextMenuChooser'
         }

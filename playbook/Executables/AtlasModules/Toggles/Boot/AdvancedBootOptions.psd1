@@ -3,7 +3,7 @@
     Description   = 'Always go to the advanced boot options on each boot.'
     Elevation     = 'Admin'
     Menu          = $true
-    Launcher      = '6. Configuración avanzada\Arranque\Comportamiento\Abrir siempre opciones de arranque avanzadas.cmd'
+    Launcher      = '6. Configuracion avanzada\Arranque\Comportamiento\Abrir siempre opciones de arranque avanzadas.cmd'
     SilentDefault = 'Disable'
     Script        = 'AdvancedBootOptions.ps1'
     States        = @(

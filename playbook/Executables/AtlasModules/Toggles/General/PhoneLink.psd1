@@ -7,7 +7,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. Configuración general\Dispositivos móviles (Vincular teléfono)\Desactivar dispositivos móviles.cmd'
+            Launcher      = '3. Configuracion general\Dispositivos moviles (Vincular telefono)\Desactivar dispositivos moviles.cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'; Name = 'NoConnectedUser'; Type = 'DWord'; Data = 1 }
@@ -31,7 +31,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. Configuración general\Dispositivos móviles (Vincular teléfono)\Activar dispositivos móviles (predeterminado).cmd'
+            Launcher      = '3. Configuracion general\Dispositivos moviles (Vincular telefono)\Activar dispositivos moviles (predeterminado).cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\CrossDeviceResume\Configuration'; Name = 'IsResumeAllowed'; Type = 'DWord'; Data = 1 }

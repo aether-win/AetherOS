@@ -3,7 +3,7 @@
     Description   = 'New (Windows 8+) boot menu versus the legacy Windows 7 boot menu.'
     Elevation     = 'Admin'
     Menu          = $true
-    Launcher      = '6. Configuración avanzada\Arranque\Apariencia\Menú de arranque nuevo.cmd'
+    Launcher      = '6. Configuracion avanzada\Arranque\Apariencia\Menu de arranque nuevo.cmd'
     SilentDefault = 'Disable'
     Script        = 'NewBootMenu.ps1'
     States        = @(

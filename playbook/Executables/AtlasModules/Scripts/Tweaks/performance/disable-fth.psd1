@@ -13,6 +13,6 @@
         # Document listed as only affected in Windows 7, is also in 7+
         # https://docs.microsoft.com/en-us/windows/win32/win7appqual/fault-tolerant-heap
         # Delete folder on ARM64, as FTH doesn't exist
-        @{ Path = '{windir}\AtlasDesktop\7. Seguridad\Mitigaciones\Montón tolerante a errores (FTH)'; Arch = 'ARM64' }
+        @{ Path = '{windir}\AtlasDesktop\7. Seguridad\Mitigaciones\Monton tolerante a errores (FTH)'; Arch = 'ARM64' }
     )
 }

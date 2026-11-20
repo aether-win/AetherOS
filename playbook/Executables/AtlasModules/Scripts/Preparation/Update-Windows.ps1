@@ -1713,7 +1713,7 @@ function Invoke-PreparationStoreFixer {
     $windows = [Environment]::GetFolderPath('Windows')
     $launcher = [IO.Path]::Combine($windows, 'AtlasModules\Scripts\Entry\Invoke-AtlasToggleLauncher.cmd')
     $definition = [IO.Path]::Combine($windows, 'AtlasModules\Toggles\Troubleshooting\FixMSStoreIssues.psd1')
-    $shortcut = [IO.Path]::Combine($windows, 'AtlasDesktop\9. Solución de problemas\Arreglar problemas de la Microsoft Store.cmd')
+    $shortcut = [IO.Path]::Combine($windows, 'AtlasDesktop\9. Solucion de problemas\Arreglar problemas de la Microsoft Store.cmd')
     if (-not ([IO.File]::Exists($launcher) -and [IO.File]::Exists($definition))) {
         Write-PreparationStoreEvidence "StoreFixer: this PC has no Atlas 0.6 Fix MS Store Issues to start it; left out"
         return $false

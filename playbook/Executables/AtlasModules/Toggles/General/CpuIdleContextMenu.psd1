@@ -6,7 +6,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '3. Configuración general\Reposo del procesador\Menú contextual del escritorio\Agregar reposo al menú del escritorio.cmd'
+            Launcher   = '3. Configuracion general\Reposo del procesador\Menu contextual del escritorio\Agregar reposo al menu del escritorio.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle'; Name = 'Icon'; Type = 'String'; Data = 'powercpl.dll' }
@@ -16,17 +16,17 @@
                 @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle'; Name = 'MUIVerb'; Type = 'String'; Data = 'Disable Idle' }
                 @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle'; Name = 'Icon'; Type = 'String'; Data = 'powercpl.dll' }
                 @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle'; Name = 'HasLUAShield'; Type = 'String'; Data = '' }
-                @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle\Command'; Name = ''; Type = 'String'; Data = 'cmd /c ""%windir%\AtlasDesktop\3. Configuración general\Reposo del procesador\Desactivar reposo.cmd""' }
+                @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle\Command'; Name = ''; Type = 'String'; Data = 'cmd /c ""%windir%\AtlasDesktop\3. Configuracion general\Reposo del procesador\Desactivar reposo.cmd""' }
                 @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Disable Idle\Command'; Name = 'Icon'; Type = 'String'; Data = 'powercpl.dll' }
                 @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Enable Idle'; Name = 'MUIVerb'; Type = 'String'; Data = 'Enable Idle' }
                 @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Enable Idle'; Name = 'HasLUAShield'; Type = 'String'; Data = '' }
-                @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Enable Idle\Command'; Name = ''; Type = 'String'; Data = 'cmd /c ""%windir%\AtlasDesktop\3. Configuración general\Reposo del procesador\Activar reposo (predeterminado).cmd""' }
+                @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle\Shell\Enable Idle\Command'; Name = ''; Type = 'String'; Data = 'cmd /c ""%windir%\AtlasDesktop\3. Configuracion general\Reposo del procesador\Activar reposo (predeterminado).cmd""' }
             )
         }
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '3. Configuración general\Reposo del procesador\Menú contextual del escritorio\Quitar reposo del menú del escritorio (predeterminado).cmd'
+            Launcher   = '3. Configuracion general\Reposo del procesador\Menu contextual del escritorio\Quitar reposo del menu del escritorio (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKCR\DesktopBackground\Shell\CpuIdle'; Operation = 'DeleteKey' }

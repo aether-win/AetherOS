@@ -24,7 +24,7 @@ Third-party components retain their separately documented terms.
 - Path: `\AtlasModules\Tools\SetTimerResolution.exe`
     - SHA256 Hash: `67592C7DA1728E2084A5F1E17AA4312E49F3D48DF21ADB0844E66259D4489EBD`
     - Base source: [v1.0.0 commit edf6102](https://github.com/valleyofdoom/TimerResolution/tree/edf6102dbe9cd84fd973f00b0add44d3e9d62801), with the reviewed Atlas input-validation patch.
-- Path: `\AtlasDesktop\3. Configuración general\Resolución del temporizador\! MeasureSleep.exe`
+- Path: `\AtlasDesktop\3. Configuracion general\Resolucion del temporizador\! MeasureSleep.exe`
     - SHA256 Hash: `952C19EA42CC8733BCCC07624E952266054FFB6AB50A80090B60A76C3A71E7E4`
     - Base source: [v1.0.0 commit 79b5c6a](https://github.com/valleyofdoom/TimerResolution/tree/79b5c6a8b2015cd1376b60753cd2c9bd5fe1326f), with reviewed Atlas sample-count, duration-validation and delta-calculation patches.
 - Path: `\AtlasModules\Sources\TimerResolution-source.zip`

@@ -7,14 +7,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '4. Interfaz\Menús contextuales\Tomar posesión\Quitar Tomar posesión del menú (predeterminado).cmd'
+            Launcher      = '4. Interfaz\Menus contextuales\Tomar posesion\Quitar Tomar posesion del menu (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Import-AtlasTakeOwnershipContextMenu'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '4. Interfaz\Menús contextuales\Tomar posesión\Agregar Tomar posesión al menú.cmd'
+            Launcher      = '4. Interfaz\Menus contextuales\Tomar posesion\Agregar Tomar posesion al menu.cmd'
             Reboot        = 'None'
             MachineAction = 'Import-AtlasTakeOwnershipContextMenu'
         }

@@ -8,7 +8,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '6. Configuración avanzada\Servicios\Estación de trabajo (SMB)\Desactivar Estación de trabajo.cmd'
+            Launcher      = '6. Configuracion avanzada\Servicios\Estacion de trabajo (SMB)\Desactivar Estacion de trabajo.cmd'
             Reboot        = 'Recommend'
             Services      = @(
                 @{ Name = 'KSecPkg'; StartupType = 4 }
@@ -24,7 +24,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Configuración avanzada\Servicios\Estación de trabajo (SMB)\Activar Estación de trabajo (predeterminado).cmd'
+            Launcher      = '6. Configuracion avanzada\Servicios\Estacion de trabajo (SMB)\Activar Estacion de trabajo (predeterminado).cmd'
             Reboot        = 'Recommend'
             Services      = @(
                 @{ Name = 'KSecPkg'; StartupType = 0 }

@@ -8,7 +8,7 @@
     States        = @(
         @{
             Name            = 'Run'
-            Launcher        = '9. Solución de problemas\Reparar componentes de Windows.cmd'
+            Launcher        = '9. Solucion de problemas\Reparar componentes de Windows.cmd'
             Reboot          = 'Recommend'
             MachineAction   = 'Repair-AtlasWindowsComponents'
         }

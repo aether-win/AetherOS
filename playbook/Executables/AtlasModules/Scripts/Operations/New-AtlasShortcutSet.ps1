@@ -16,4 +16,4 @@ Copy-Item $defaultShortcut -Destination "$([Environment]::GetFolderPath('CommonS
 
 Write-AtlasStep -Text 'Creating the services restore shortcut...'
 $desktop = "$windir\AtlasDesktop"
-New-AtlasShortcut -Source "$desktop\9. Solución de problemas\Servicios a sus valores por defecto.cmd" -Destination "$desktop\6. Configuración avanzada\Servicios\Servicios a sus valores por defecto.lnk"
+New-AtlasShortcut -Source "$desktop\9. Solucion de problemas\Servicios a sus valores por defecto.cmd" -Destination "$desktop\6. Configuracion avanzada\Servicios\Servicios a sus valores por defecto.lnk"

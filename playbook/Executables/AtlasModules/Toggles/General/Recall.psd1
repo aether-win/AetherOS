@@ -6,7 +6,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '3. Configuración general\Funciones de IA\Recall\Desactivar Recall (predeterminado).cmd'
+            Launcher   = '3. Configuracion general\Funciones de IA\Recall\Desactivar Recall (predeterminado).cmd'
             Reboot     = 'Recommend'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI'; Name = 'DisableAIDataAnalysis'; Type = 'DWord'; Data = 1 }
@@ -18,7 +18,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '3. Configuración general\Funciones de IA\Recall\Activar Recall.cmd'
+            Launcher   = '3. Configuracion general\Funciones de IA\Recall\Activar Recall.cmd'
             Reboot     = 'Recommend'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI'; Name = 'DisableAIDataAnalysis'; Operation = 'Delete' }

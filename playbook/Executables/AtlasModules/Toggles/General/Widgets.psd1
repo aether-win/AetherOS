@@ -7,7 +7,7 @@
         @{
             Name                  = 'Disable'
             StateValue            = 0
-            Launcher              = '3. Configuración general\Widgets (noticias e intereses)\Desactivar widgets (predeterminado).cmd'
+            Launcher              = '3. Configuracion general\Widgets (noticias e intereses)\Desactivar widgets (predeterminado).cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'ExplorerRefresh'
             # Let Windows process the supported device policy through the local GPO.
@@ -22,7 +22,7 @@
         @{
             Name                  = 'Enable'
             StateValue            = 1
-            Launcher              = '3. Configuración general\Widgets (noticias e intereses)\Activar widgets.cmd'
+            Launcher              = '3. Configuracion general\Widgets (noticias e intereses)\Activar widgets.cmd'
             Reboot                = 'RestartExplorer'
             ShellRefreshOperation = 'ExplorerRefresh'
             MachineAction         = 'Enable-AtlasWidgetsMachine'

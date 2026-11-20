@@ -8,7 +8,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. Configuración general\Pantalla completa y Game Bar\Desactivar optimización de pantalla completa y Game Bar.cmd'
+            Launcher      = '3. Configuracion general\Pantalla completa y Game Bar\Desactivar optimizacion de pantalla completa y Game Bar.cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment'; Name = '__COMPAT_LAYER'; Type = 'String'; Data = '~ DISABLEDXMAXIMIZEDWINDOWEDMODE' }
@@ -32,7 +32,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '3. Configuración general\Pantalla completa y Game Bar\Activar optimización de pantalla completa y Game Bar (predeterminado).cmd'
+            Launcher   = '3. Configuracion general\Pantalla completa y Game Bar\Activar optimizacion de pantalla completa y Game Bar (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment'; Name = '__COMPAT_LAYER'; Operation = 'Delete' }

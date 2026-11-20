@@ -6,7 +6,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '4. Interfaz\Paneles clásicos\Panel de batería\Panel de batería moderno (predeterminado).cmd'
+            Launcher   = '4. Interfaz\Paneles clasicos\Panel de bateria\Panel de bateria moderno (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\ImmersiveShell'; Name = 'UseWin32BatteryFlyout'; Type = 'DWord'; Data = 0 }
@@ -15,7 +15,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interfaz\Paneles clásicos\Panel de batería\Panel de batería clásico.cmd'
+            Launcher   = '4. Interfaz\Paneles clasicos\Panel de bateria\Panel de bateria clasico.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\ImmersiveShell'; Name = 'UseWin32BatteryFlyout'; Type = 'DWord'; Data = 1 }

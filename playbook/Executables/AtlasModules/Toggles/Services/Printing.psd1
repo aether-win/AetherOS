@@ -8,7 +8,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '6. Configuración avanzada\Servicios\Impresión\Desactivar impresión.cmd'
+            Launcher      = '6. Configuracion avanzada\Servicios\Impresion\Desactivar impresion.cmd'
             Reboot        = 'Recommend'
             ContextAction = 'Set-AtlasPrintContextMenu'
             MachineAction = 'Set-AtlasPrintingMachineState'
@@ -16,7 +16,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Configuración avanzada\Servicios\Impresión\Activar impresión (predeterminado).cmd'
+            Launcher      = '6. Configuracion avanzada\Servicios\Impresion\Activar impresion (predeterminado).cmd'
             Reboot        = 'Recommend'
             ContextAction = 'Set-AtlasPrintContextMenu'
             MachineAction = 'Set-AtlasPrintingMachineState'

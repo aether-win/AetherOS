@@ -7,7 +7,7 @@
         @{
             Name           = 'Disable'
             StateValue     = 0
-            Launcher       = '3. Configuración general\Sleep Study\Desactivar Sleep Study (predeterminado).cmd'
+            Launcher       = '3. Configuracion general\Sleep Study\Desactivar Sleep Study (predeterminado).cmd'
             Reboot         = 'None'
             ScheduledTasks = @(
                 @{ Path = '\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem'; Operation = 'Disable' }
@@ -17,7 +17,7 @@
         @{
             Name           = 'Enable'
             StateValue     = 1
-            Launcher       = '3. Configuración general\Sleep Study\Activar Sleep Study.cmd'
+            Launcher       = '3. Configuracion general\Sleep Study\Activar Sleep Study.cmd'
             Reboot         = 'None'
             ScheduledTasks = @(
                 @{ Path = '\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem'; Operation = 'Enable' }

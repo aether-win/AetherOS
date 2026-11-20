@@ -6,7 +6,7 @@
     States        = @(
         @{
             Name     = 'Run'
-            Launcher = '9. Solución de problemas\Arreglar error de Visual C++ del Explorador.cmd'
+            Launcher = '9. Solucion de problemas\Arreglar error de Visual C++ del Explorador.cmd'
             Reboot   = 'RestartExplorer'
             # Machine keys only: HKCU entries would be user work, which an elevated caller can't run.
             Registry = @(

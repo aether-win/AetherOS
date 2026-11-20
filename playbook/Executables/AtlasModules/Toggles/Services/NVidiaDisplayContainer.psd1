@@ -8,7 +8,7 @@
         @{
             Name             = 'Disable'
             StateValue       = 0
-            Launcher         = '6. Configuración avanzada\Servicios\NVIDIA Display Container\Desactivar NVIDIA Display Container LS.cmd'
+            Launcher         = '6. Configuracion avanzada\Servicios\NVIDIA Display Container\Desactivar NVIDIA Display Container LS.cmd'
             Reboot           = 'None'
             MachineAction    = 'Set-AtlasNVidiaDisplayContainerState'
             ReplayApplicable = 'Test-AtlasNVidiaDisplayContainerInstalled'
@@ -16,7 +16,7 @@
         @{
             Name             = 'Enable'
             StateValue       = 1
-            Launcher         = '6. Configuración avanzada\Servicios\NVIDIA Display Container\Activar NVIDIA Display Container LS (predeterminado).cmd'
+            Launcher         = '6. Configuracion avanzada\Servicios\NVIDIA Display Container\Activar NVIDIA Display Container LS (predeterminado).cmd'
             Reboot           = 'None'
             MachineAction    = 'Set-AtlasNVidiaDisplayContainerState'
             ReplayApplicable = 'Test-AtlasNVidiaDisplayContainerInstalled'

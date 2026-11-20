@@ -372,7 +372,7 @@ Describe 'Process Explorer upgrade teardown' {
         $script:UpgradeStatePath = 'HKLM:\SOFTWARE\AtlasOS\Services\ProcessExplorer'
         $script:UpgradeUninstallPath = Join-Path `
             ([Environment]::GetFolderPath('Windows')) `
-            'AtlasDesktop\6. Configuración avanzada\Process Explorer\Desinstalar Process Explorer.cmd'
+            'AtlasDesktop\6. Configuracion avanzada\Process Explorer\Desinstalar Process Explorer.cmd'
         $script:FakeUpgradeProcess = [pscustomobject]@{ ExitCode = 0 }
         $script:FakeUpgradeProcess | Add-Member -MemberType ScriptMethod `
             -Name WaitForExit -Value { return $true }

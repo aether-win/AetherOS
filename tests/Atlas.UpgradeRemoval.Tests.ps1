@@ -274,7 +274,7 @@ Describe 'Version-specific file removal' {
     BeforeEach {
         $script:windowsRoot = Join-Path $TestDrive ('VsWinDir-' + [Guid]::NewGuid().ToString('N'))
         $script:startMenuRoot = Join-Path $script:windowsRoot `
-            'AtlasDesktop\4. Interfaz\Menú Inicio'
+            'AtlasDesktop\4. Interfaz\Menu Inicio'
         $env:ATLAS_TEST_WINDIR = $script:windowsRoot
     }
 

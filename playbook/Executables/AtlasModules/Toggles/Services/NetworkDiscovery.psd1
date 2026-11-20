@@ -8,7 +8,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '6. Configuración avanzada\Servicios\Detección de redes\Desactivar detección de redes.cmd'
+            Launcher   = '6. Configuracion avanzada\Servicios\Deteccion de redes\Desactivar deteccion de redes.cmd'
             Reboot     = 'Recommend'
             Services   = @(
                 @{ Name = 'fdPHost'; StartupType = 4 }
@@ -20,7 +20,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '6. Configuración avanzada\Servicios\Detección de redes\Activar detección de redes (predeterminado).cmd'
+            Launcher      = '6. Configuracion avanzada\Servicios\Deteccion de redes\Activar deteccion de redes (predeterminado).cmd'
             Reboot        = 'Recommend'
             MachineAction = 'Enable-AtlasNetworkDiscoveryServices'
         }

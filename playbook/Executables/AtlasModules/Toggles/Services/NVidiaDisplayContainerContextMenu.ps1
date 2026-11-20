@@ -13,7 +13,7 @@ function Add-AtlasNVidiaContainerContextMenu {
 
     # The verb lives under the machine HKCR view. Each submenu entry launches the
     # matching AtlasDesktop launcher, so the command paths depend on the Windows root.
-    $launcherRoot = Join-Path -Path $Toggle.WinDir -ChildPath 'AtlasDesktop\6. Configuración avanzada\Servicios\NVIDIA Display Container'
+    $launcherRoot = Join-Path -Path $Toggle.WinDir -ChildPath 'AtlasDesktop\6. Configuracion avanzada\Servicios\NVIDIA Display Container'
     $root = 'HKLM:\SOFTWARE\Classes\DesktopBackground\Shell\NVIDIAContainer'
     Set-AtlasRegistryValue -Path $root -Name 'Icon' -Type String -Data 'NVIDIA.ico,0'
     Set-AtlasRegistryValue -Path $root -Name 'MUIVerb' -Type String -Data 'NVIDIA Container'

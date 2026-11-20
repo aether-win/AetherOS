@@ -7,7 +7,7 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. Configuración general\Hibernación\Desactivar hibernación.cmd'
+            Launcher      = '3. Configuracion general\Hibernacion\Desactivar hibernacion.cmd'
             Reboot        = 'Prompt'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings'; Name = 'ShowHibernateOption'; Type = 'DWord'; Data = 0 }
@@ -17,7 +17,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. Configuración general\Hibernación\Activar hibernación (predeterminado).cmd'
+            Launcher      = '3. Configuracion general\Hibernacion\Activar hibernacion (predeterminado).cmd'
             Reboot        = 'None'
             Registry      = @(
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings'; Name = 'ShowHibernateOption'; Type = 'DWord'; Data = 1 }

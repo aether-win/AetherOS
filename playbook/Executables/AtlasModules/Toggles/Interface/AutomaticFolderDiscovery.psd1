@@ -6,7 +6,7 @@
         @{
             Name       = 'Disable'
             StateValue = 0
-            Launcher   = '4. Interfaz\Explorador de archivos\Detección automática de carpetas\Desactivar detección automática de carpetas (predeterminado).cmd'
+            Launcher   = '4. Interfaz\Explorador de archivos\Deteccion automatica de carpetas\Desactivar deteccion automatica de carpetas (predeterminado).cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags'; Operation = 'DeleteKey'; SkipVerification = 'Resets cached folder views; the following FolderType entry and Explorer recreate this key.' }
@@ -16,7 +16,7 @@
         @{
             Name       = 'Enable'
             StateValue = 1
-            Launcher   = '4. Interfaz\Explorador de archivos\Detección automática de carpetas\Activar detección automática de carpetas.cmd'
+            Launcher   = '4. Interfaz\Explorador de archivos\Deteccion automatica de carpetas\Activar deteccion automatica de carpetas.cmd'
             Reboot     = 'None'
             Registry   = @(
                 @{ Path = 'HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders'; Operation = 'DeleteKey' }

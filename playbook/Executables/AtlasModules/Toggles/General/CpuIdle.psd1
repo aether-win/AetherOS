@@ -7,7 +7,7 @@
         @{
             Name             = 'Disable'
             StateValue       = 0
-            Launcher         = '3. Configuración general\Reposo del procesador\Desactivar reposo.cmd'
+            Launcher         = '3. Configuracion general\Reposo del procesador\Desactivar reposo.cmd'
             Reboot           = 'None'
             MachineAction    = 'Disable-AtlasCpuIdle'
             ReplayApplicable = 'Test-AtlasCpuIdleDisableSupported'
@@ -15,7 +15,7 @@
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. Configuración general\Reposo del procesador\Activar reposo (predeterminado).cmd'
+            Launcher      = '3. Configuracion general\Reposo del procesador\Activar reposo (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Enable-AtlasCpuIdle'
         }

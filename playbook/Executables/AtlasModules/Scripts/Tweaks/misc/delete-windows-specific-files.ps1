@@ -2,7 +2,7 @@
 # from the AtlasDesktop Start Menu folder on Windows versions that do not use them.
 $ErrorActionPreference = 'Stop'
 
-$target = Join-Path -Path ([Environment]::GetFolderPath('Windows')) -ChildPath 'AtlasDesktop\4. Interfaz\Menú Inicio'
+$target = Join-Path -Path ([Environment]::GetFolderPath('Windows')) -ChildPath 'AtlasDesktop\4. Interfaz\Menu Inicio'
 if (-not (Test-Path -LiteralPath $target -PathType Container)) {
     return
 }

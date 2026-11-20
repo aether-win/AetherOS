@@ -9,5 +9,5 @@ if (-not (Test-Path -LiteralPath $layersKey)) {
 }
 
 Set-ItemProperty -Path $layersKey `
-    -Name "$([Environment]::GetFolderPath('Windows'))\AtlasDesktop\3. Configuración general\Resolución del temporizador\! MeasureSleep.exe" `
+    -Name "$([Environment]::GetFolderPath('Windows'))\AtlasDesktop\3. Configuracion general\Resolucion del temporizador\! MeasureSleep.exe" `
     -Value '~ RUNASADMIN' -Force

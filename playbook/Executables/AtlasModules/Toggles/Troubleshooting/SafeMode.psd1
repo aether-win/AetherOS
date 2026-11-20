@@ -7,25 +7,25 @@
     States        = @(
         @{
             Name          = 'Minimal'
-            Launcher      = '9. Solución de problemas\Modo seguro\Modo seguro.cmd'
+            Launcher      = '9. Solucion de problemas\Modo seguro\Modo seguro.cmd'
             Reboot        = 'Recommend'
             MachineAction = 'Set-AtlasSafeModeBoot'
         }
         @{
             Name          = 'CommandPrompt'
-            Launcher      = '9. Solución de problemas\Modo seguro\Modo seguro con símbolo del sistema.cmd'
+            Launcher      = '9. Solucion de problemas\Modo seguro\Modo seguro con simbolo del sistema.cmd'
             Reboot        = 'Recommend'
             MachineAction = 'Set-AtlasSafeModeBoot'
         }
         @{
             Name          = 'Networking'
-            Launcher      = '9. Solución de problemas\Modo seguro\Modo seguro con red.cmd'
+            Launcher      = '9. Solucion de problemas\Modo seguro\Modo seguro con red.cmd'
             Reboot        = 'Recommend'
             MachineAction = 'Set-AtlasSafeModeBoot'
         }
         @{
             Name          = 'Exit'
-            Launcher      = '9. Solución de problemas\Modo seguro\Salir del modo seguro.cmd'
+            Launcher      = '9. Solucion de problemas\Modo seguro\Salir del modo seguro.cmd'
             Reboot        = 'Recommend'
             MachineAction = 'Set-AtlasSafeModeBoot'
         }

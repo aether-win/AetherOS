@@ -7,14 +7,14 @@
         @{
             Name          = 'Disable'
             StateValue    = 0
-            Launcher      = '3. Configuración general\Suspensión\Desactivar suspensión.cmd'
+            Launcher      = '3. Configuracion general\Suspension\Desactivar suspension.cmd'
             Reboot        = 'None'
             MachineAction = 'Set-AtlasSleepState'
         }
         @{
             Name          = 'Enable'
             StateValue    = 1
-            Launcher      = '3. Configuración general\Suspensión\Activar suspensión (predeterminado).cmd'
+            Launcher      = '3. Configuracion general\Suspension\Activar suspension (predeterminado).cmd'
             Reboot        = 'None'
             MachineAction = 'Set-AtlasSleepState'
         }
