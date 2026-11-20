@@ -198,7 +198,7 @@ function Assert-AtlasConfigurationRunnerBoundary {
         throw 'Configuration must contain only the two reviewed coarse status actions.'
     }
     $runs = @($actions | Where-Object Type -eq run)
-    if ($runs.Count -ne 30) { throw "Configuration must contain 30 runs; found $($runs.Count)." }
+    if ($runs.Count -ne 29) { throw "Configuration must contain 29 runs; found $($runs.Count)." }
     $hostPath = '%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe'
     $prefix = '-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass'
     $statePrefix = $prefix + ' -File ".\AtlasModules\Scripts\Entry\Initialize-AtlasInstallState.ps1"'
