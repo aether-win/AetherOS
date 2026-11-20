@@ -776,11 +776,11 @@ function Invoke-AtlasServiceDefaultsReset {
         $defaultStates = @($definition['States'].Keys | Where-Object {
                 $stateEntry = $definition['States'][$_]
                 $stateEntry.Contains('Launcher') -and
-                    ([string]$stateEntry['Launcher']).IndexOf('(default)', [StringComparison]::OrdinalIgnoreCase) -ge 0
+                    ([string]$stateEntry['Launcher']).IndexOf('(predeterminado)', [StringComparison]::OrdinalIgnoreCase) -ge 0
             })
         $expectedState = [string]$script:AtlasServiceDefaultResetStates[$name]
         if ($defaultStates.Count -ne 1 -or [string]$defaultStates[0] -cne $expectedState) {
-            throw "ResetServices definition '$name' must declare only '$expectedState' as its '(default)' state."
+            throw "ResetServices definition '$name' must declare only '$expectedState' as its '(predeterminado)' state."
         }
 
         # A default for hardware this PC lacks, such as the NVIDIA service without an

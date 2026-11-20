@@ -21,8 +21,8 @@ function Add-AtlasNVidiaContainerContextMenu {
     Set-AtlasRegistryValue -Path $root -Name 'SubCommands' -Type String -Data ''
 
     foreach ($entry in @(
-            @{ Key = 'NVIDIAContainer001'; Label = 'Enable NVIDIA Display Container LS'; Launcher = 'Enable NVIDIA Display Container LS (default).cmd' }
-            @{ Key = 'NVIDIAContainer002'; Label = 'Disable NVIDIA Display Container LS'; Launcher = 'Disable NVIDIA Display Container LS.cmd' }
+            @{ Key = 'NVIDIAContainer001'; Label = 'Activar NVIDIA Display Container LS'; Launcher = 'Activar NVIDIA Display Container LS (predeterminado).cmd' }
+            @{ Key = 'NVIDIAContainer002'; Label = 'Desactivar NVIDIA Display Container LS'; Launcher = 'Desactivar NVIDIA Display Container LS.cmd' }
         )) {
         $entryKey = "$root\shell\$($entry.Key)"
         Set-AtlasRegistryValue -Path $entryKey -Name 'HasLUAShield' -Type String -Data ''

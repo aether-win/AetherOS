@@ -4,7 +4,7 @@ BeforeAll {
     $script:isolatedKey = 'Software\AtlasRewriteTest\DriverPolicy\' + [guid]::NewGuid().ToString('N')
     function Import-IsolatedDriverPolicy([string]$Mode) {
         # Exercise the included .reg pair without changing any host driver policy.
-        $text = [IO.File]::ReadAllText((Join-Path $script:policyFiles "$Mode Drivers from Windows Update.reg"))
+        $text = [IO.File]::ReadAllText((Join-Path $script:policyFiles "$(@{ Disable = 'Desactivar'; Enable = 'Activar' }[$Mode]) controladores desde Windows Update.reg"))
         $text = $text.Replace('HKEY_LOCAL_MACHINE\', ('HKEY_CURRENT_USER\' + $script:isolatedKey + '\'))
         $file = Join-Path $TestDrive "$Mode.reg"
         [IO.File]::WriteAllText($file, $text, [Text.Encoding]::Unicode)

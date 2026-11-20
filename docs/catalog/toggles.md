@@ -17,8 +17,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `6. Advanced Configuration\Microsoft Store\Disable Microsoft Store.cmd` | None | machineAction `Remove-AtlasMicrosoftStore` |
-| Enable | 1 | `6. Advanced Configuration\Microsoft Store\Enable Microsoft Store (default).cmd` | None | userAction `Register-AtlasMicrosoftStore` |
+| Disable | 0 | `6. Configuracion avanzada\Microsoft Store\Desactivar Microsoft Store.cmd` | None | machineAction `Remove-AtlasMicrosoftStore` |
+| Enable | 1 | `6. Configuracion avanzada\Microsoft Store\Activar Microsoft Store (predeterminado).cmd` | None | userAction `Register-AtlasMicrosoftStore` |
 
 ### ProcessExplorer
 
@@ -28,15 +28,15 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `6. Advanced Configuration\Process Explorer\Install Process Explorer.cmd` | None | machineAction `Install-AtlasProcessExplorer`, userAction `Set-AtlasProcessExplorerUserPreference` |
-| Disable | 0 | `6. Advanced Configuration\Process Explorer\Uninstall Process Explorer.cmd` | None | machineAction `Uninstall-AtlasProcessExplorer` |
+| Enable | 1 | `6. Configuracion avanzada\Process Explorer\Instalar Process Explorer.cmd` | None | machineAction `Install-AtlasProcessExplorer`, userAction `Set-AtlasProcessExplorerUserPreference` |
+| Disable | 0 | `6. Configuracion avanzada\Process Explorer\Desinstalar Process Explorer.cmd` | None | machineAction `Uninstall-AtlasProcessExplorer` |
 
 ### ToggleWindowsUpdates (menu)
 
 Windows Update services, scheduled tasks and policies through one menu launcher. Replay resolves the recorded state, so no SilentDefault is needed.
 
 Elevation: TrustedInstaller
-Launcher: `6. Advanced Configuration\Toggle Windows Updates\Toggle Windows Updates.cmd`
+Launcher: `6. Configuracion avanzada\Activar o desactivar Windows Update\Activar o desactivar Windows Update.cmd`
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -50,7 +50,7 @@ Launcher: `6. Advanced Configuration\Toggle Windows Updates\Toggle Windows Updat
 Always go to the advanced boot options on each boot.
 
 Elevation: Admin
-Launcher: `6. Advanced Configuration\Boot Configuration\Behavior\Always Go to Advanced Boot Options.cmd`
+Launcher: `6. Configuracion avanzada\Arranque\Comportamiento\Abrir siempre opciones de arranque avanzadas.cmd`
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -62,7 +62,7 @@ Launcher: `6. Advanced Configuration\Boot Configuration\Behavior\Always Go to Ad
 Windows Automatic Repair at boot (bootstatuspolicy).
 
 Elevation: Admin
-Launcher: `6. Advanced Configuration\Boot Configuration\Behavior\Automatic Repair.cmd`
+Launcher: `6. Configuracion avanzada\Arranque\Comportamiento\Reparacion automatica.cmd`
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -74,7 +74,7 @@ Launcher: `6. Advanced Configuration\Boot Configuration\Behavior\Automatic Repai
 Windows boot logo.
 
 Elevation: Admin
-Launcher: `6. Advanced Configuration\Boot Configuration\Appearance\Boot Logo.cmd`
+Launcher: `6. Configuracion avanzada\Arranque\Apariencia\Logo de arranque.cmd`
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -86,7 +86,7 @@ Launcher: `6. Advanced Configuration\Boot Configuration\Appearance\Boot Logo.cmd
 Highest graphical mode for boot applications.
 
 Elevation: Admin
-Launcher: `6. Advanced Configuration\Boot Configuration\Behavior\Highest Mode.cmd`
+Launcher: `6. Configuracion avanzada\Arranque\Comportamiento\Resolucion mas alta.cmd`
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -98,7 +98,7 @@ Launcher: `6. Advanced Configuration\Boot Configuration\Behavior\Highest Mode.cm
 Editing of kernel parameters on startup.
 
 Elevation: Admin
-Launcher: `6. Advanced Configuration\Boot Configuration\Behavior\Editing Kernel Parameters on Startup.cmd`
+Launcher: `6. Configuracion avanzada\Arranque\Comportamiento\Editar parametros del kernel al arrancar.cmd`
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -110,7 +110,7 @@ Launcher: `6. Advanced Configuration\Boot Configuration\Behavior\Editing Kernel 
 New (Windows 8+) boot menu versus the legacy Windows 7 boot menu.
 
 Elevation: Admin
-Launcher: `6. Advanced Configuration\Boot Configuration\Appearance\New Boot Menu.cmd`
+Launcher: `6. Configuracion avanzada\Arranque\Apariencia\Menu de arranque nuevo.cmd`
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -122,7 +122,7 @@ Launcher: `6. Advanced Configuration\Boot Configuration\Appearance\New Boot Menu
 Boot spinning animation.
 
 Elevation: Admin
-Launcher: `6. Advanced Configuration\Boot Configuration\Appearance\Spinning Animation.cmd`
+Launcher: `6. Configuracion avanzada\Arranque\Apariencia\Animacion de carga.cmd`
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
@@ -137,7 +137,7 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| View |  | `6. Advanced Configuration\Boot Configuration\View Current Values.cmd` | None | machineAction `Show-AtlasBootValues` |
+| View |  | `6. Configuracion avanzada\Arranque\Ver valores actuales.cmd` | None | machineAction `Show-AtlasBootValues` |
 
 ## General
 
@@ -149,8 +149,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Store App Archiving\Disable Store App Archiving (default).cmd` | None | registry 1 |
-| Enable | 1 | `3. General Configuration\Store App Archiving\Enable Store App Archiving.cmd` | None | registry 1 |
+| Disable | 0 | `3. Configuracion general\Archivado de apps de la Store\Desactivar archivado de apps (predeterminado).cmd` | None | registry 1 |
+| Enable | 1 | `3. Configuracion general\Archivado de apps de la Store\Activar archivado de apps.cmd` | None | registry 1 |
 
 ### AutomaticUpdates
 
@@ -160,8 +160,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Automatic Updates\Disable Automatic Updates (default).cmd` | None | registry 1 |
-| Enable | 1 | `3. General Configuration\Automatic Updates\Enable Automatic Updates.cmd` | None | registry 1 |
+| Disable | 0 | `3. Configuracion general\Actualizaciones automaticas\Desactivar actualizaciones automaticas.cmd` | None | registry 1 |
+| Enable | 1 | `3. Configuracion general\Actualizaciones automaticas\Activar actualizaciones automaticas (predeterminado).cmd` | None | registry 1 |
 
 ### BackgroundApps
 
@@ -171,8 +171,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Background Apps\Disable Background Apps (default).cmd` | None | registry 2 |
-| Enable | 1 | `3. General Configuration\Background Apps\Enable Background Apps.cmd` | None | registry 2 |
+| Disable | 0 | `3. Configuracion general\Apps en segundo plano\Desactivar apps en segundo plano.cmd` | None | registry 2 |
+| Enable | 1 | `3. Configuracion general\Apps en segundo plano\Permitir apps en segundo plano (predeterminado).cmd` | None | registry 2 |
 
 ### ClickToDo
 
@@ -182,8 +182,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\AI Features\Click To Do\Disable Click To Do (default).cmd` | None | registry 1 |
-| Enable | 1 | `3. General Configuration\AI Features\Click To Do\Enable Click To Do.cmd` | None | registry 1 |
+| Disable | 0 | `3. Configuracion general\Funciones de IA\Click To Do\Desactivar Click To Do (predeterminado).cmd` | None | registry 1 |
+| Enable | 1 | `3. Configuracion general\Funciones de IA\Click To Do\Activar Click To Do.cmd` | None | registry 1 |
 
 ### Copilot
 
@@ -193,8 +193,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\AI Features\Microsoft Copilot\Disable Microsoft Copilot (default).cmd` | RestartExplorer | registry 2, machineAction `Remove-AtlasCopilotApp` |
-| Enable | 1 | `3. General Configuration\AI Features\Microsoft Copilot\Enable Microsoft Copilot.cmd` | RestartExplorer | machineAction `Enable-AtlasCopilotMachine`, userAction `Enable-AtlasCopilotUser` |
+| Disable | 0 | `3. Configuracion general\Funciones de IA\Microsoft Copilot\Desactivar Microsoft Copilot (predeterminado).cmd` | RestartExplorer | registry 2, machineAction `Remove-AtlasCopilotApp` |
+| Enable | 1 | `3. Configuracion general\Funciones de IA\Microsoft Copilot\Activar Microsoft Copilot.cmd` | RestartExplorer | machineAction `Enable-AtlasCopilotMachine`, userAction `Enable-AtlasCopilotUser` |
 
 ### CpuIdle
 
@@ -204,8 +204,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\CPU Idle\Disable Idle.cmd` | None | machineAction `Disable-AtlasCpuIdle` |
-| Enable | 1 | `3. General Configuration\CPU Idle\Enable Idle (default).cmd` | None | machineAction `Enable-AtlasCpuIdle` |
+| Disable | 0 | `3. Configuracion general\Reposo del procesador\Desactivar reposo.cmd` | None | machineAction `Disable-AtlasCpuIdle` |
+| Enable | 1 | `3. Configuracion general\Reposo del procesador\Activar reposo (predeterminado).cmd` | None | machineAction `Enable-AtlasCpuIdle` |
 
 ### CpuIdleContextMenu
 
@@ -215,8 +215,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `3. General Configuration\CPU Idle\Desktop Context Menu\Add Idle Toggle in Desktop Context Menu.cmd` | None | registry 12 |
-| Disable | 0 | `3. General Configuration\CPU Idle\Desktop Context Menu\Remove Idle Toggle in Desktop Context Menu (default).cmd` | None | registry 1 |
+| Enable | 1 | `3. Configuracion general\Reposo del procesador\Menu contextual del escritorio\Agregar reposo al menu del escritorio.cmd` | None | registry 12 |
+| Disable | 0 | `3. Configuracion general\Reposo del procesador\Menu contextual del escritorio\Quitar reposo del menu del escritorio (predeterminado).cmd` | None | registry 1 |
 
 ### DeliveryOptimisation
 
@@ -226,8 +226,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Delivery Optimization\Disable Delivery Optimization (default).cmd` | None | registry 1 |
-| Enable | 1 | `3. General Configuration\Delivery Optimization\Enable Delivery Optimization.cmd` | None | registry 1 |
+| Disable | 0 | `3. Configuracion general\Optimizacion de distribucion\Desactivar optimizacion de distribucion (predeterminado).cmd` | None | registry 1 |
+| Enable | 1 | `3. Configuracion general\Optimizacion de distribucion\Activar optimizacion de distribucion.cmd` | None | registry 1 |
 
 ### FileSharing
 
@@ -237,8 +237,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\File Sharing\Disable File Sharing (default).cmd` | Prompt | machineAction `Set-AtlasFileSharingMachineState` |
-| Enable | 1 | `3. General Configuration\File Sharing\Enable File Sharing.cmd` | Prompt | machineAction `Set-AtlasFileSharingMachineState`, userAction `Add-AtlasFileSharingNetworkNavigationPane` |
+| Disable | 0 | `3. Configuracion general\Uso compartido\Desactivar uso compartido.cmd` | Prompt | machineAction `Set-AtlasFileSharingMachineState` |
+| Enable | 1 | `3. Configuracion general\Uso compartido\Activar uso compartido (predeterminado).cmd` | Prompt | machineAction `Set-AtlasFileSharingMachineState`, userAction `Add-AtlasFileSharingNetworkNavigationPane` |
 
 ### FSOGameBar
 
@@ -250,8 +250,8 @@ Elevation: TrustedInstaller
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\FSO and Game Bar\Disable FSO and Game Bar Support.cmd` | None | registry 15, machineAction `Remove-AtlasGameBarOverlayPackage` |
-| Enable | 1 | `3. General Configuration\FSO and Game Bar\Enable FSO and Game Bar Support (default).cmd` | None | registry 15, userAction `Install-AtlasGameBarPackage` |
+| Disable | 0 | `3. Configuracion general\Pantalla completa y Game Bar\Desactivar optimizacion de pantalla completa y Game Bar.cmd` | None | registry 15, machineAction `Remove-AtlasGameBarOverlayPackage` |
+| Enable | 1 | `3. Configuracion general\Pantalla completa y Game Bar\Activar optimizacion de pantalla completa y Game Bar (predeterminado).cmd` | None | registry 15, userAction `Install-AtlasGameBarPackage` |
 
 ### GiveAccessToMenu
 
@@ -261,8 +261,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\File Sharing\Give Access To Menu\Disable Give Access To Menu (default).cmd` | None | registry 6 |
-| Enable | 1 | `3. General Configuration\File Sharing\Give Access To Menu\Enable Give Access To Menu.cmd` | None | registry 6 |
+| Disable | 0 | `3. Configuracion general\Uso compartido\Menu Conceder acceso a\Quitar menu Conceder acceso a (predeterminado).cmd` | None | registry 6 |
+| Enable | 1 | `3. Configuracion general\Uso compartido\Menu Conceder acceso a\Mostrar menu Conceder acceso a.cmd` | None | registry 6 |
 
 ### Hibernation
 
@@ -272,8 +272,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Hibernation\Disable Hibernation (default).cmd` | Prompt | registry 1, machineAction `Set-AtlasHibernationPowerState` |
-| Enable | 1 | `3. General Configuration\Hibernation\Enable Hibernation.cmd` | None | registry 1, machineAction `Set-AtlasHibernationPowerState` |
+| Disable | 0 | `3. Configuracion general\Hibernacion\Desactivar hibernacion.cmd` | Prompt | registry 1, machineAction `Set-AtlasHibernationPowerState` |
+| Enable | 1 | `3. Configuracion general\Hibernacion\Activar hibernacion (predeterminado).cmd` | None | registry 1, machineAction `Set-AtlasHibernationPowerState` |
 
 ### Indexing
 
@@ -283,9 +283,9 @@ Elevation: TrustedInstaller
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Search Indexing\Disable Search Indexing.cmd` | None | machineAction `Disable-AtlasSearchIndexing` |
-| Minimal | 1 | `3. General Configuration\Search Indexing\Minimal Search Indexing (default).cmd` | None | machineAction `Set-AtlasMinimalSearchIndexing` |
-| Enable | 2 | `3. General Configuration\Search Indexing\Enable Search Indexing.cmd` | None | machineAction `Enable-AtlasSearchIndexing` |
+| Disable | 0 | `3. Configuracion general\Indexado de busqueda\Desactivar indexado.cmd` | None | machineAction `Disable-AtlasSearchIndexing` |
+| Minimal | 1 | `3. Configuracion general\Indexado de busqueda\Indexado minimo.cmd` | None | machineAction `Set-AtlasMinimalSearchIndexing` |
+| Enable | 2 | `3. Configuracion general\Indexado de busqueda\Indexado normal (predeterminado).cmd` | None | machineAction `Enable-AtlasSearchIndexing` |
 
 ### Location
 
@@ -295,8 +295,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Location\Disable Location (default).cmd` | None | registry 2, machineAction `Disable-AtlasLocation` |
-| Enable | 1 | `3. General Configuration\Location\Enable Location.cmd` | None | registry 2, machineAction `Enable-AtlasLocation`, userAction `Show-AtlasLocationSettings` |
+| Disable | 0 | `3. Configuracion general\Ubicacion\Desactivar ubicacion (predeterminado).cmd` | None | registry 2, machineAction `Disable-AtlasLocation` |
+| Enable | 1 | `3. Configuracion general\Ubicacion\Activar ubicacion.cmd` | None | registry 2, machineAction `Enable-AtlasLocation`, userAction `Show-AtlasLocationSettings` |
 
 ### NetworkNavigationPane
 
@@ -306,8 +306,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\File Sharing\Network Navigation Pane\Disable Network Navigation Pane (default).cmd` | None | registry 1 |
-| Enable | 1 | `3. General Configuration\File Sharing\Network Navigation Pane\Enable Network Navigation Pane.cmd` | None | registry 1 |
+| Disable | 0 | `3. Configuracion general\Uso compartido\Red en el Explorador\Ocultar Red en el Explorador.cmd` | None | registry 1 |
+| Enable | 1 | `3. Configuracion general\Uso compartido\Red en el Explorador\Mostrar Red en el Explorador (predeterminado).cmd` | None | registry 1 |
 
 ### PauseUpdates
 
@@ -319,8 +319,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `3. General Configuration\Pause Updates\Pause Windows Updates.cmd` | None | registry 13 |
-| Disable | 0 | `3. General Configuration\Pause Updates\Unpause Windows Updates.cmd` | None | registry 15 |
+| Enable | 1 | `3. Configuracion general\Pausar actualizaciones\Pausar Windows Update (predeterminado).cmd` | None | registry 13 |
+| Disable | 0 | `3. Configuracion general\Pausar actualizaciones\Quitar pausa de Windows Update.cmd` | None | registry 15 |
 
 ### PhoneLink
 
@@ -330,8 +330,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Mobile Devices (Phone Link)\Disable Mobile Device Settings (default).cmd` | None | registry 7, services 1, machineAction `Disable-AtlasPhoneLinkMachine` |
-| Enable | 1 | `3. General Configuration\Mobile Devices (Phone Link)\Enable Mobile Device Settings.cmd` | None | registry 3, services 1, machineAction `Enable-AtlasPhoneLinkMachine`, userAction `Enable-AtlasPhoneLinkUser` |
+| Disable | 0 | `3. Configuracion general\Dispositivos moviles (Vincular telefono)\Desactivar dispositivos moviles.cmd` | None | registry 7, services 1, machineAction `Disable-AtlasPhoneLinkMachine` |
+| Enable | 1 | `3. Configuracion general\Dispositivos moviles (Vincular telefono)\Activar dispositivos moviles (predeterminado).cmd` | None | registry 3, services 1, machineAction `Enable-AtlasPhoneLinkMachine`, userAction `Enable-AtlasPhoneLinkUser` |
 
 ### PowerSaving
 
@@ -341,8 +341,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Power-saving\Disable Power-saving.cmd` | None | machineAction `Invoke-AtlasPowerSavingToggle` |
-| Enable | 1 | `3. General Configuration\Power-saving\Default Power-saving (default).cmd` | None | machineAction `Invoke-AtlasPowerSavingToggle` |
+| Disable | 0 | `3. Configuracion general\Ahorro de energia\Desactivar ahorro de energia.cmd` | None | machineAction `Invoke-AtlasPowerSavingToggle` |
+| Enable | 1 | `3. Configuracion general\Ahorro de energia\Ahorro de energia normal (predeterminado).cmd` | None | machineAction `Invoke-AtlasPowerSavingToggle` |
 
 ### Recall
 
@@ -352,8 +352,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\AI Features\Recall\Disable Recall Support (default).cmd` | Recommend | registry 2 |
-| Enable | 1 | `3. General Configuration\AI Features\Recall\Enable Recall Support.cmd` | Recommend | registry 2 |
+| Disable | 0 | `3. Configuracion general\Funciones de IA\Recall\Desactivar Recall (predeterminado).cmd` | Recommend | registry 2 |
+| Enable | 1 | `3. Configuracion general\Funciones de IA\Recall\Activar Recall.cmd` | Recommend | registry 2 |
 
 ### Sleep
 
@@ -363,8 +363,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Sleep\Disable Sleep.cmd` | None | machineAction `Set-AtlasSleepState` |
-| Enable | 1 | `3. General Configuration\Sleep\Enable Sleep (default).cmd` | None | machineAction `Set-AtlasSleepState` |
+| Disable | 0 | `3. Configuracion general\Suspension\Desactivar suspension.cmd` | None | machineAction `Set-AtlasSleepState` |
+| Enable | 1 | `3. Configuracion general\Suspension\Activar suspension (predeterminado).cmd` | None | machineAction `Set-AtlasSleepState` |
 
 ### SleepStudy
 
@@ -374,8 +374,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Sleep Study\Disable Sleep Study (default).cmd` | None | tasks 1, machineAction `Set-AtlasSleepStudyEventLogState` |
-| Enable | 1 | `3. General Configuration\Sleep Study\Enable Sleep Study.cmd` | None | tasks 1, machineAction `Set-AtlasSleepStudyEventLogState` |
+| Disable | 0 | `3. Configuracion general\Sleep Study\Desactivar Sleep Study (predeterminado).cmd` | None | tasks 1, machineAction `Set-AtlasSleepStudyEventLogState` |
+| Enable | 1 | `3. Configuracion general\Sleep Study\Activar Sleep Study.cmd` | None | tasks 1, machineAction `Set-AtlasSleepStudyEventLogState` |
 
 ### SystemRestore
 
@@ -385,8 +385,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\System Restore\Disable System Restore.cmd` | None | registry 1 |
-| Enable | 1 | `3. General Configuration\System Restore\Enable System Restore (default).cmd` | None | registry 1, machineAction `Enable-AtlasWindowsVolumeProtection` |
+| Disable | 0 | `3. Configuracion general\Restaurar sistema\Desactivar restaurar sistema.cmd` | None | registry 1 |
+| Enable | 1 | `3. Configuracion general\Restaurar sistema\Activar restaurar sistema (predeterminado).cmd` | None | registry 1, machineAction `Enable-AtlasWindowsVolumeProtection` |
 
 ### TimerResolution (no state record)
 
@@ -398,8 +398,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable |  | `3. General Configuration\Timer Resolution\Disable timer resolution (default).cmd` | None | registry 1, machineAction `Unregister-AtlasTimerResolutionTask` |
-| Enable |  | `3. General Configuration\Timer Resolution\Enable timer resolution.cmd` | Recommend | registry 1, machineAction `Register-AtlasTimerResolutionTask` |
+| Disable |  | `3. Configuracion general\Resolucion del temporizador\Desactivar resolucion del temporizador (predeterminado).cmd` | None | registry 1, machineAction `Unregister-AtlasTimerResolutionTask` |
+| Enable |  | `3. Configuracion general\Resolucion del temporizador\Activar resolucion del temporizador.cmd` | Recommend | registry 1, machineAction `Register-AtlasTimerResolutionTask` |
 
 ### UpdateDrivers (no state record)
 
@@ -409,7 +409,7 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `2. Drivers\Run Update Drivers.cmd` | None | machineAction `Invoke-AtlasDriverUpdate` |
+| Run |  | `2. Controladores\Buscar controladores en Windows Update.cmd` | None | machineAction `Invoke-AtlasDriverUpdate` |
 
 ### UpdateNotifications
 
@@ -419,8 +419,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Update Notifications\Disable Update Notifications.cmd` | None | registry 4 |
-| Enable | 1 | `3. General Configuration\Update Notifications\Enable Update Notifications (default).cmd` | None | registry 4 |
+| Disable | 0 | `3. Configuracion general\Avisos de actualizacion\Desactivar avisos de actualizacion.cmd` | None | registry 4 |
+| Enable | 1 | `3. Configuracion general\Avisos de actualizacion\Activar avisos de actualizacion (predeterminado).cmd` | None | registry 4 |
 
 ### WebSearch
 
@@ -430,8 +430,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Web Search (includes Search Highlights)\Disable Web Search (default).cmd` | RestartExplorer | registry 13, machineAction `Disable-AtlasWebSearchMachine` |
-| Enable | 1 | `3. General Configuration\Web Search (includes Search Highlights)\Enable Web Search.cmd` | RestartExplorer | registry 12, machineAction `Enable-AtlasWebSearchMachine`, userAction `Enable-AtlasWebSearchUser` |
+| Disable | 0 | `3. Configuracion general\Busqueda web (incluye destacados)\Desactivar busqueda web (predeterminado).cmd` | RestartExplorer | registry 13, machineAction `Disable-AtlasWebSearchMachine` |
+| Enable | 1 | `3. Configuracion general\Busqueda web (incluye destacados)\Activar busqueda web.cmd` | RestartExplorer | registry 12, machineAction `Enable-AtlasWebSearchMachine`, userAction `Enable-AtlasWebSearchUser` |
 
 ### Widgets
 
@@ -441,8 +441,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Widgets (News and Interests)\Disable Widgets (default).cmd` | RestartExplorer | registry 3 |
-| Enable | 1 | `3. General Configuration\Widgets (News and Interests)\Enable Widgets.cmd` | RestartExplorer | machineAction `Enable-AtlasWidgetsMachine`, userAction `Install-AtlasWidgetsUser` |
+| Disable | 0 | `3. Configuracion general\Widgets (noticias e intereses)\Desactivar widgets (predeterminado).cmd` | RestartExplorer | registry 3 |
+| Enable | 1 | `3. Configuracion general\Widgets (noticias e intereses)\Activar widgets.cmd` | RestartExplorer | machineAction `Enable-AtlasWidgetsMachine`, userAction `Install-AtlasWidgetsUser` |
 
 ### WindowsSpotlight
 
@@ -452,8 +452,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Windows Spotlight\Disable Windows Spotlight (default).cmd` | None | registry 12 |
-| Enable | 1 | `3. General Configuration\Windows Spotlight\Enable Windows Spotlight.cmd` | None | registry 12 |
+| Disable | 0 | `3. Configuracion general\Windows Spotlight\Desactivar Windows Spotlight (predeterminado).cmd` | None | registry 12 |
+| Enable | 1 | `3. Configuracion general\Windows Spotlight\Activar Windows Spotlight.cmd` | None | registry 12 |
 
 ### Workplace
 
@@ -465,8 +465,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `3. General Configuration\Workplace\Disable Workplace.cmd` | None | machineAction `Hide-AtlasWorkplaceSettingsPage` |
-| Enable | 1 | `3. General Configuration\Workplace\Enable Workplace.cmd` | None | machineAction `Show-AtlasWorkplaceSettingsPage` |
+| Disable | 0 | `3. Configuracion general\Cuentas de trabajo o escuela\Desactivar cuentas de trabajo o escuela.cmd` | None | machineAction `Hide-AtlasWorkplaceSettingsPage` |
+| Enable | 1 | `3. Configuracion general\Cuentas de trabajo o escuela\Activar cuentas de trabajo o escuela.cmd` | None | machineAction `Show-AtlasWorkplaceSettingsPage` |
 
 ## Interface
 
@@ -478,8 +478,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\Visual Effects (Animations)\Atlas Visual Effects (default).cmd` | SignOut | registry 11 |
-| Enable | 1 | `4. Interface Tweaks\Visual Effects (Animations)\Default Windows Visual Effects.cmd` | SignOut | registry 11 |
+| Disable | 0 | `4. Interfaz\Efectos visuales (animaciones)\Efectos visuales de Aether (predeterminado).cmd` | SignOut | registry 11 |
+| Enable | 1 | `4. Interfaz\Efectos visuales (animaciones)\Efectos visuales de Windows.cmd` | SignOut | registry 11 |
 
 ### AppIconThumbnail
 
@@ -489,8 +489,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\File Explorer Customization\App Icons on Thumbnails\Disable App Icons on Thumbnails.cmd` | None | registry 1 |
-| Enable | 1 | `4. Interface Tweaks\File Explorer Customization\App Icons on Thumbnails\Enable App Icons on Thumbnails (default).cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Explorador de archivos\Icono de la app en miniaturas\Desactivar icono de la app en miniaturas.cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Explorador de archivos\Icono de la app en miniaturas\Activar icono de la app en miniaturas (predeterminado).cmd` | None | registry 1 |
 
 ### AutomaticFolderDiscovery
 
@@ -500,8 +500,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\File Explorer Customization\Automatic Folder Discovery\Disable Automatic Folder Discovery (default).cmd` | None | registry 2 |
-| Enable | 1 | `4. Interface Tweaks\File Explorer Customization\Automatic Folder Discovery\Enable Automatic Folder Discovery.cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Explorador de archivos\Deteccion automatica de carpetas\Desactivar deteccion automatica de carpetas (predeterminado).cmd` | None | registry 2 |
+| Enable | 1 | `4. Interfaz\Explorador de archivos\Deteccion automatica de carpetas\Activar deteccion automatica de carpetas.cmd` | None | registry 1 |
 
 ### CompactView
 
@@ -511,8 +511,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\File Explorer Customization\Compact View\Disable Compact View.cmd` | None | registry 1 |
-| Enable | 1 | `4. Interface Tweaks\File Explorer Customization\Compact View\Enable Compact View (default).cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Explorador de archivos\Vista compacta\Desactivar vista compacta.cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Explorador de archivos\Vista compacta\Activar vista compacta (predeterminado).cmd` | None | registry 1 |
 
 ### ContextMenuTerminals
 
@@ -522,9 +522,9 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Remove | 0 | `4. Interface Tweaks\Context Menus\Terminals\Remove Terminals Context Menu (default).cmd` | None | machineAction `Import-AtlasTerminalsContextMenu` |
-| Add | 1 | `4. Interface Tweaks\Context Menus\Terminals\Add Terminals.cmd` | None | machineAction `Import-AtlasTerminalsContextMenu` |
-| AddNoWindowsTerminal | 2 | `4. Interface Tweaks\Context Menus\Terminals\Add Terminals (no Windows Terminal).cmd` | None | machineAction `Import-AtlasTerminalsContextMenu` |
+| Remove | 0 | `4. Interfaz\Menus contextuales\Terminales\Quitar terminales del menu (predeterminado).cmd` | None | machineAction `Import-AtlasTerminalsContextMenu` |
+| Add | 1 | `4. Interfaz\Menus contextuales\Terminales\Agregar terminales.cmd` | None | machineAction `Import-AtlasTerminalsContextMenu` |
+| AddNoWindowsTerminal | 2 | `4. Interfaz\Menus contextuales\Terminales\Agregar terminales (sin Windows Terminal).cmd` | None | machineAction `Import-AtlasTerminalsContextMenu` |
 
 ### EdgeSwipe
 
@@ -534,8 +534,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Edge Swipe\Allow Edge Swipe (default).cmd` | None | registry 1 |
-| Disable | 0 | `4. Interface Tweaks\Edge Swipe\Disallow Edge Swipe.cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Deslizar desde el borde\Permitir deslizar desde el borde (predeterminado).cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Deslizar desde el borde\No permitir deslizar desde el borde.cmd` | None | registry 1 |
 
 ### ExtractContextMenu
 
@@ -545,8 +545,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Context Menus\Extract\Add Extract.cmd` | None | registry 4 |
-| Disable | 0 | `4. Interface Tweaks\Context Menus\Extract\Remove Extract (default).cmd` | None | registry 4 |
+| Enable | 1 | `4. Interfaz\Menus contextuales\Extraer\Agregar Extraer.cmd` | None | registry 4 |
+| Disable | 0 | `4. Interfaz\Menus contextuales\Extraer\Quitar Extraer (predeterminado).cmd` | None | registry 4 |
 
 ### Gallery
 
@@ -556,8 +556,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\File Explorer Customization\Gallery\Disable Gallery (default).cmd` | None | registry 1 |
-| Enable | 1 | `4. Interface Tweaks\File Explorer Customization\Gallery\Enable Gallery.cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Explorador de archivos\Galeria\Ocultar Galeria (predeterminado).cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Explorador de archivos\Galeria\Mostrar Galeria.cmd` | None | registry 1 |
 
 ### Home
 
@@ -567,8 +567,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\File Explorer Customization\Home\Disable Home (default).cmd` | None | registry 3 |
-| Enable | 1 | `4. Interface Tweaks\File Explorer Customization\Home\Enable Home.cmd` | None | registry 3 |
+| Disable | 0 | `4. Interfaz\Explorador de archivos\Inicio\Ocultar Inicio (predeterminado).cmd` | None | registry 3 |
+| Enable | 1 | `4. Interfaz\Explorador de archivos\Inicio\Mostrar Inicio.cmd` | None | registry 3 |
 
 ### KeyboardShortcuts
 
@@ -578,8 +578,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Keyboard Languages\Enable Language Shortcuts.cmd` | Recommend | registry 3 |
-| Disable | 0 | `4. Interface Tweaks\Keyboard Languages\Disable Language Shortcuts.cmd` | Recommend | registry 3 |
+| Enable | 1 | `4. Interfaz\Idiomas del teclado\Activar atajos de idioma.cmd` | Recommend | registry 3 |
+| Disable | 0 | `4. Interfaz\Idiomas del teclado\Desactivar atajos de idioma.cmd` | Recommend | registry 3 |
 
 ### LockScreen
 
@@ -589,8 +589,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Lock Screen\Show Lock Screen (default).cmd` | None | registry 2, machineAction `Assert-AtlasLockScreenPolicyRemoved` |
-| Disable | 0 | `4. Interface Tweaks\Lock Screen\Hide Lock Screen.cmd` | None | registry 2 |
+| Enable | 1 | `4. Interfaz\Pantalla de bloqueo\Mostrar pantalla de bloqueo (predeterminado).cmd` | None | registry 2, machineAction `Assert-AtlasLockScreenPolicyRemoved` |
+| Disable | 0 | `4. Interfaz\Pantalla de bloqueo\Ocultar pantalla de bloqueo.cmd` | None | registry 2 |
 
 ### ModernBatteryFlyout
 
@@ -600,8 +600,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Old Flyouts\Battery Flyout\Modern Battery Flyout (default).cmd` | None | registry 1 |
-| Disable | 0 | `4. Interface Tweaks\Old Flyouts\Battery Flyout\Old Battery Flyout.cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Paneles clasicos\Panel de bateria\Panel de bateria moderno (predeterminado).cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Paneles clasicos\Panel de bateria\Panel de bateria clasico.cmd` | None | registry 1 |
 
 ### ModernDateTime
 
@@ -611,8 +611,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Old Flyouts\Date and Time Flyout\Modern Date and Time Flyout (default).cmd` | None | registry 1 |
-| Disable | 0 | `4. Interface Tweaks\Old Flyouts\Date and Time Flyout\Old Date and Time Flyout.cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Paneles clasicos\Panel de fecha y hora\Panel de fecha y hora moderno (predeterminado).cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Paneles clasicos\Panel de fecha y hora\Panel de fecha y hora clasico.cmd` | None | registry 1 |
 
 ### ModernVolumeFlyout
 
@@ -622,8 +622,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Old Flyouts\Volume Flyout\Modern Volume Flyout (default).cmd` | None | registry 1 |
-| Disable | 0 | `4. Interface Tweaks\Old Flyouts\Volume Flyout\Old Volume Flyout.cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Paneles clasicos\Panel de volumen\Panel de volumen moderno (predeterminado).cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Paneles clasicos\Panel de volumen\Panel de volumen clasico.cmd` | None | registry 1 |
 
 ### OldContextMenu
 
@@ -633,8 +633,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Context Menus\Windows 11\Old Context Menu (default).cmd` | RestartExplorer | registry 1 |
-| Disable | 0 | `4. Interface Tweaks\Context Menus\Windows 11\New Context Menu.cmd` | RestartExplorer | registry 1 |
+| Enable | 1 | `4. Interfaz\Menus contextuales\Windows 11\Menu contextual clasico (predeterminado).cmd` | RestartExplorer | registry 1 |
+| Disable | 0 | `4. Interfaz\Menus contextuales\Windows 11\Menu contextual nuevo.cmd` | RestartExplorer | registry 1 |
 
 ### QuickAccess
 
@@ -644,8 +644,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\File Explorer Customization\Quick Access\Remove Quick Access.cmd` | None | registry 1 |
-| Enable | 1 | `4. Interface Tweaks\File Explorer Customization\Quick Access\Show Quick Access (default).cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Explorador de archivos\Acceso rapido\Quitar Acceso rapido.cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Explorador de archivos\Acceso rapido\Mostrar Acceso rapido (predeterminado).cmd` | None | registry 1 |
 
 ### RecentItems
 
@@ -655,8 +655,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\Unlock Recent Items\Disable Recent Items (default).cmd` | RestartExplorer | registry 9, machineAction `Set-AtlasRecentItemsSettingsPage`, userAction `Show-AtlasRecentItemsMessage` |
-| Enable | 1 | `4. Interface Tweaks\Unlock Recent Items\Unlock Recent Items.cmd` | RestartExplorer | registry 7, machineAction `Set-AtlasRecentItemsSettingsPage`, userAction `Show-AtlasRecentItemsMessage` |
+| Disable | 0 | `4. Interfaz\Elementos recientes\Desactivar elementos recientes (predeterminado).cmd` | RestartExplorer | registry 9, machineAction `Set-AtlasRecentItemsSettingsPage`, userAction `Show-AtlasRecentItemsMessage` |
+| Enable | 1 | `4. Interfaz\Elementos recientes\Activar elementos recientes.cmd` | RestartExplorer | registry 7, machineAction `Set-AtlasRecentItemsSettingsPage`, userAction `Show-AtlasRecentItemsMessage` |
 
 ### RemovableDrivesInSidebar
 
@@ -666,8 +666,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\File Explorer Customization\Removable Drives in Sidebar\Disable Removable Drives in Sidebar (default).cmd` | None | registry 2 |
-| Enable | 1 | `4. Interface Tweaks\File Explorer Customization\Removable Drives in Sidebar\Enable Removable Drives in Sidebar.cmd` | None | registry 2 |
+| Disable | 0 | `4. Interfaz\Explorador de archivos\Unidades extraibles en el panel\Ocultar unidades extraibles en el panel (predeterminado).cmd` | None | registry 2 |
+| Enable | 1 | `4. Interfaz\Explorador de archivos\Unidades extraibles en el panel\Mostrar unidades extraibles en el panel.cmd` | None | registry 2 |
 
 ### RestartExplorer (no state record)
 
@@ -677,7 +677,7 @@ Elevation: None
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `4. Interface Tweaks\Restart Explorer.cmd` | RestartExplorer | action `Show-AtlasRestartExplorerMessage` |
+| Run |  | `4. Interfaz\Reiniciar el Explorador.cmd` | RestartExplorer | action `Show-AtlasRestartExplorerMessage` |
 
 ### RunWithPriority
 
@@ -687,8 +687,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Context Menus\Run With Priority\Add Run With Priority In Context Menu.cmd` | None | machineAction `Add-AtlasRunWithPriorityContextMenu` |
-| Disable | 0 | `4. Interface Tweaks\Context Menus\Run With Priority\Remove Run With Priority In Context Menu (default).cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Menus contextuales\Ejecutar con prioridad\Agregar Ejecutar con prioridad al menu.cmd` | None | machineAction `Add-AtlasRunWithPriorityContextMenu` |
+| Disable | 0 | `4. Interfaz\Menus contextuales\Ejecutar con prioridad\Quitar Ejecutar con prioridad del menu (predeterminado).cmd` | None | registry 1 |
 
 ### SendToContextMenu (no state record)
 
@@ -698,7 +698,7 @@ Elevation: None
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Debloat |  | `4. Interface Tweaks\Context Menus\Send To\Debloat Send To Context Menu.cmd` | None | action `Invoke-AtlasSendToContextMenuChooser` |
+| Debloat |  | `4. Interfaz\Menus contextuales\Enviar a\Limpiar el menu Enviar a.cmd` | None | action `Invoke-AtlasSendToContextMenuChooser` |
 
 ### ShortcutIcon
 
@@ -708,9 +708,9 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Default | 0 | `4. Interface Tweaks\Shortcut Icon\Default Windows (default).cmd` | None | registry 1 |
-| Classic | 1 | `4. Interface Tweaks\Shortcut Icon\Classic.cmd` | None | registry 1 |
-| None | 2 | `4. Interface Tweaks\Shortcut Icon\None (security risk).cmd` | None | registry 1 |
+| Default | 0 | `4. Interfaz\Flecha de accesos directos\La de Windows (predeterminado).cmd` | None | registry 1 |
+| Classic | 1 | `4. Interfaz\Flecha de accesos directos\Clasica.cmd` | None | registry 1 |
+| None | 2 | `4. Interfaz\Flecha de accesos directos\Sin flecha (riesgo de seguridad).cmd` | None | registry 1 |
 
 ### ShortcutText
 
@@ -720,8 +720,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\Shortcut Text\Disable Shortcut Text (default).cmd` | None | registry 1 |
-| Enable | 1 | `4. Interface Tweaks\Shortcut Text\Restore Shortcut Text.cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Texto de accesos directos\Quitar texto - Acceso directo (predeterminado).cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Texto de accesos directos\Restaurar texto - Acceso directo.cmd` | None | registry 1 |
 
 ### SnapLayouts
 
@@ -731,8 +731,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `4. Interface Tweaks\Snap Layouts\Enable Snap Layouts (default).cmd` | None | registry 2 |
-| Disable | 0 | `4. Interface Tweaks\Snap Layouts\Disable Snap Layouts.cmd` | None | registry 2 |
+| Enable | 1 | `4. Interfaz\Disenos de ajuste\Activar disenos de ajuste (predeterminado).cmd` | None | registry 2 |
+| Disable | 0 | `4. Interfaz\Disenos de ajuste\Desactivar disenos de ajuste.cmd` | None | registry 2 |
 
 ### TakeOwnership
 
@@ -742,8 +742,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\Context Menus\Take Ownership\Remove Take Ownership to Context Menu (default).cmd` | None | machineAction `Import-AtlasTakeOwnershipContextMenu` |
-| Enable | 1 | `4. Interface Tweaks\Context Menus\Take Ownership\Add Take Ownership to Context Menu.cmd` | None | machineAction `Import-AtlasTakeOwnershipContextMenu` |
+| Disable | 0 | `4. Interfaz\Menus contextuales\Tomar posesion\Quitar Tomar posesion del menu (predeterminado).cmd` | None | machineAction `Import-AtlasTakeOwnershipContextMenu` |
+| Enable | 1 | `4. Interfaz\Menus contextuales\Tomar posesion\Agregar Tomar posesion al menu.cmd` | None | machineAction `Import-AtlasTakeOwnershipContextMenu` |
 
 ### VerboseMessages
 
@@ -753,8 +753,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `4. Interface Tweaks\Verbose Status Messages\Disable Verbose Messages (default).cmd` | None | registry 1 |
-| Enable | 1 | `4. Interface Tweaks\Verbose Status Messages\Enable Verbose Messages.cmd` | None | registry 1 |
+| Disable | 0 | `4. Interfaz\Mensajes de estado detallados\Desactivar mensajes detallados (predeterminado).cmd` | None | registry 1 |
+| Enable | 1 | `4. Interfaz\Mensajes de estado detallados\Activar mensajes detallados.cmd` | None | registry 1 |
 
 ## Security
 
@@ -766,7 +766,7 @@ Elevation: None
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `7. Security\Core Isolation (VBS)\Current Configuration.cmd` | None | action `Show-AtlasVbsConfiguration` |
+| Run |  | `7. Seguridad\Aislamiento del nucleo (VBS)\Configuracion actual.cmd` | None | action `Show-AtlasVbsConfiguration` |
 
 ### FaultTolerantHeap
 
@@ -776,8 +776,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `7. Security\Mitigations\Fault Tolerant Heap\Disable FTH (default).cmd` | Recommend | registry 1 |
-| Enable | 1 | `7. Security\Mitigations\Fault Tolerant Heap\Enable FTH.cmd` | Recommend | registry 1 |
+| Disable | 0 | `7. Seguridad\Mitigaciones\Monton tolerante a errores (FTH)\Desactivar FTH (predeterminado).cmd` | Recommend | registry 1 |
+| Enable | 1 | `7. Seguridad\Mitigaciones\Monton tolerante a errores (FTH)\Activar FTH.cmd` | Recommend | registry 1 |
 
 ### HideAppBrowserControl
 
@@ -787,8 +787,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `7. Security\Defender\Hide App and Browser Control\Hide App and Browser Control (default).cmd` | None | registry 1 |
-| Enable | 1 | `7. Security\Defender\Hide App and Browser Control\Show App and Browser Control.cmd` | None | registry 1 |
+| Disable | 0 | `7. Seguridad\Defender\Control de aplicaciones y navegador\Ocultar control de aplicaciones y navegador (predeterminado).cmd` | None | registry 1 |
+| Enable | 1 | `7. Seguridad\Defender\Control de aplicaciones y navegador\Mostrar control de aplicaciones y navegador.cmd` | None | registry 1 |
 
 ### Mitigations
 
@@ -798,9 +798,9 @@ Elevation: TrustedInstaller
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `7. Security\Mitigations\Disable All Mitigations.cmd` | Recommend | registry 4, machineAction `Disable-AtlasMitigations` |
-| WindowsDefault | 1 | `7. Security\Mitigations\Set Windows Default Mitigations.cmd` | Recommend | registry 7, machineAction `Set-AtlasMitigationsWindowsDefault` |
-| Enable | 2 | `7. Security\Mitigations\Enable All Mitigations.cmd` | Recommend | machineAction `Enable-AtlasMitigations` |
+| Disable | 0 | `7. Seguridad\Mitigaciones\Desactivar todas las mitigaciones.cmd` | Recommend | registry 4, machineAction `Disable-AtlasMitigations` |
+| WindowsDefault | 1 | `7. Seguridad\Mitigaciones\Mitigaciones de Windows por defecto.cmd` | Recommend | registry 7, machineAction `Set-AtlasMitigationsWindowsDefault` |
+| Enable | 2 | `7. Seguridad\Mitigaciones\Activar todas las mitigaciones.cmd` | Recommend | machineAction `Enable-AtlasMitigations` |
 
 ### SecurityHealthTray
 
@@ -810,8 +810,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `7. Security\Defender\Security Health Tray\Remove Security Tray from Startup (default).cmd` | None | machineAction `Set-AtlasSecurityHealthTrayStartup` |
-| Enable | 1 | `7. Security\Defender\Security Health Tray\Add Security Tray to Startup.cmd` | None | machineAction `Set-AtlasSecurityHealthTrayStartup` |
+| Disable | 0 | `7. Seguridad\Defender\Icono de seguridad en la bandeja\Quitar icono de seguridad del inicio (predeterminado).cmd` | None | machineAction `Set-AtlasSecurityHealthTrayStartup` |
+| Enable | 1 | `7. Seguridad\Defender\Icono de seguridad en la bandeja\Agregar icono de seguridad al inicio.cmd` | None | machineAction `Set-AtlasSecurityHealthTrayStartup` |
 
 ### ToggleDefender (no state record)
 
@@ -821,7 +821,7 @@ Elevation: TrustedInstaller
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `7. Security\Defender\Toggle Defender.cmd` | Prompt | machineAction `Invoke-AtlasDefenderToggle` |
+| Run |  | `7. Seguridad\Defender\Activar o desactivar Defender.cmd` | Prompt | machineAction `Invoke-AtlasDefenderToggle` |
 
 ### VbsState
 
@@ -831,8 +831,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `7. Security\Core Isolation (VBS)\Disable VBS.cmd` | Recommend | machineAction `Set-AtlasVbsState` |
-| Enable | 1 | `7. Security\Core Isolation (VBS)\Enable VBS.cmd` | Recommend | machineAction `Set-AtlasVbsState` |
+| Disable | 0 | `7. Seguridad\Aislamiento del nucleo (VBS)\Desactivar VBS.cmd` | Recommend | machineAction `Set-AtlasVbsState` |
+| Enable | 1 | `7. Seguridad\Aislamiento del nucleo (VBS)\Activar VBS.cmd` | Recommend | machineAction `Set-AtlasVbsState` |
 
 ## Services
 
@@ -846,8 +846,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `6. Advanced Configuration\Services\Bluetooth\Disable Bluetooth.cmd` | Recommend | registry 1, services 16, machineAction `Disable-AtlasBluetoothDevices`, userAction `Remove-AtlasBluetoothSendTo` |
-| Enable | 1 | `6. Advanced Configuration\Services\Bluetooth\Enable Bluetooth (default).cmd` | Recommend | registry 1, services 16, machineAction `Enable-AtlasBluetoothDevices`, userAction `Set-AtlasBluetoothSendTo` |
+| Disable | 0 | `6. Configuracion avanzada\Servicios\Bluetooth\Desactivar Bluetooth.cmd` | Recommend | registry 1, services 16, machineAction `Disable-AtlasBluetoothDevices`, userAction `Remove-AtlasBluetoothSendTo` |
+| Enable | 1 | `6. Configuracion avanzada\Servicios\Bluetooth\Activar Bluetooth (predeterminado).cmd` | Recommend | registry 1, services 16, machineAction `Enable-AtlasBluetoothDevices`, userAction `Set-AtlasBluetoothSendTo` |
 
 ### LanmanWorkstation
 
@@ -859,8 +859,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `6. Advanced Configuration\Services\Lanman Workstation (SMB)\Disable Lanman Workstation.cmd` | Recommend | services 7, machineAction `Disable-AtlasSmbDirectFeature` |
-| Enable | 1 | `6. Advanced Configuration\Services\Lanman Workstation (SMB)\Enable Lanman Workstation (default).cmd` | Recommend | services 7, machineAction `Enable-AtlasSmbDirectFeature` |
+| Disable | 0 | `6. Configuracion avanzada\Servicios\Estacion de trabajo (SMB)\Desactivar Estacion de trabajo.cmd` | Recommend | services 7, machineAction `Disable-AtlasSmbDirectFeature` |
+| Enable | 1 | `6. Configuracion avanzada\Servicios\Estacion de trabajo (SMB)\Activar Estacion de trabajo (predeterminado).cmd` | Recommend | services 7, machineAction `Enable-AtlasSmbDirectFeature` |
 
 ### NetworkDiscovery
 
@@ -872,8 +872,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `6. Advanced Configuration\Services\Network Discovery\Disable Network Discovery Services.cmd` | Recommend | services 4 |
-| Enable | 1 | `6. Advanced Configuration\Services\Network Discovery\Enable Network Discovery Services (default).cmd` | Recommend | machineAction `Enable-AtlasNetworkDiscoveryServices` |
+| Disable | 0 | `6. Configuracion avanzada\Servicios\Deteccion de redes\Desactivar deteccion de redes.cmd` | Recommend | services 4 |
+| Enable | 1 | `6. Configuracion avanzada\Servicios\Deteccion de redes\Activar deteccion de redes (predeterminado).cmd` | Recommend | machineAction `Enable-AtlasNetworkDiscoveryServices` |
 
 ### NVidiaDisplayContainer
 
@@ -885,8 +885,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `6. Advanced Configuration\Services\NVIDIA Display Container\Disable NVIDIA Display Container LS.cmd` | None | machineAction `Set-AtlasNVidiaDisplayContainerState` |
-| Enable | 1 | `6. Advanced Configuration\Services\NVIDIA Display Container\Enable NVIDIA Display Container LS (default).cmd` | None | machineAction `Set-AtlasNVidiaDisplayContainerState` |
+| Disable | 0 | `6. Configuracion avanzada\Servicios\NVIDIA Display Container\Desactivar NVIDIA Display Container LS.cmd` | None | machineAction `Set-AtlasNVidiaDisplayContainerState` |
+| Enable | 1 | `6. Configuracion avanzada\Servicios\NVIDIA Display Container\Activar NVIDIA Display Container LS (predeterminado).cmd` | None | machineAction `Set-AtlasNVidiaDisplayContainerState` |
 
 ### NVidiaDisplayContainerContextMenu
 
@@ -898,8 +898,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `6. Advanced Configuration\Services\NVIDIA Display Container\Context Menu\Add Container Context Menu.cmd` | RestartExplorer | machineAction `Add-AtlasNVidiaContainerContextMenu` |
-| Disable | 0 | `6. Advanced Configuration\Services\NVIDIA Display Container\Context Menu\Remove Container Context Menu (default).cmd` | RestartExplorer | registry 1 |
+| Enable | 1 | `6. Configuracion avanzada\Servicios\NVIDIA Display Container\Menu contextual\Agregar Container al menu.cmd` | RestartExplorer | machineAction `Add-AtlasNVidiaContainerContextMenu` |
+| Disable | 0 | `6. Configuracion avanzada\Servicios\NVIDIA Display Container\Menu contextual\Quitar Container del menu (predeterminado).cmd` | RestartExplorer | registry 1 |
 
 ### Printing
 
@@ -911,8 +911,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `6. Advanced Configuration\Services\Printing\Disable Printing.cmd` | Recommend | machineAction `Set-AtlasPrintingMachineState` |
-| Enable | 1 | `6. Advanced Configuration\Services\Printing\Enable Printing (default).cmd` | Recommend | machineAction `Set-AtlasPrintingMachineState` |
+| Disable | 0 | `6. Configuracion avanzada\Servicios\Impresion\Desactivar impresion.cmd` | Recommend | machineAction `Set-AtlasPrintingMachineState` |
+| Enable | 1 | `6. Configuracion avanzada\Servicios\Impresion\Activar impresion (predeterminado).cmd` | Recommend | machineAction `Set-AtlasPrintingMachineState` |
 
 ### SuperFetch
 
@@ -924,8 +924,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Disable | 0 | `6. Advanced Configuration\Services\Superfetch\Disable SuperFetch.cmd` | Recommend | machineAction `Set-AtlasSuperFetchMachineState` |
-| Enable | 1 | `6. Advanced Configuration\Services\Superfetch\Enable SuperFetch (default).cmd` | Recommend | machineAction `Set-AtlasSuperFetchMachineState` |
+| Disable | 0 | `6. Configuracion avanzada\Servicios\Superfetch\Desactivar SuperFetch.cmd` | Recommend | machineAction `Set-AtlasSuperFetchMachineState` |
+| Enable | 1 | `6. Configuracion avanzada\Servicios\Superfetch\Activar SuperFetch (predeterminado).cmd` | Recommend | machineAction `Set-AtlasSuperFetchMachineState` |
 
 ## Software
 
@@ -937,7 +937,7 @@ Elevation: None
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `1. Software\Install Software.cmd` | None | action `Invoke-AtlasSoftwarePicker` |
+| Run |  | `1. Programas\Instalar programas.cmd` | None | action `Invoke-AtlasSoftwarePicker` |
 
 ### RemovePythonStorePrompt (no state record)
 
@@ -947,7 +947,7 @@ Elevation: None
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `1. Software\Remove Python Store Prompt.cmd` | None | action `Remove-AtlasPythonStoreAlias` |
+| Run |  | `1. Programas\Quitar aviso de Python de la Store.cmd` | None | action `Remove-AtlasPythonStoreAlias` |
 
 ## Troubleshooting
 
@@ -959,7 +959,7 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `9. Troubleshooting\Check Atlas Health.cmd` | None | machineAction `Show-AtlasHealthReport` |
+| Run |  | `9. Solucion de problemas\Revisar la salud de Aether.cmd` | None | machineAction `Show-AtlasHealthReport` |
 
 ### DefaultAtlasNetwork (no state record)
 
@@ -969,8 +969,8 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Enable | 1 | `9. Troubleshooting\Network\Reset Network to Atlas Default.cmd` | Recommend | machineAction `Set-AtlasNetworkDefaultState` |
-| Disable | 0 | `9. Troubleshooting\Network\Reset Network to Windows Default.cmd` | Recommend | machineAction `Set-AtlasNetworkDefaultState` |
+| Enable | 1 | `9. Solucion de problemas\Red\Restablecer red a la de Aether.cmd` | Recommend | machineAction `Set-AtlasNetworkDefaultState` |
+| Disable | 0 | `9. Solucion de problemas\Red\Restablecer red a la de Windows.cmd` | Recommend | machineAction `Set-AtlasNetworkDefaultState` |
 
 ### FixErrors2502and2503 (no state record)
 
@@ -980,7 +980,7 @@ Elevation: TrustedInstaller
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `9. Troubleshooting\Fix Errors 2502 and 2503.cmd` | None | machineAction `Invoke-AtlasWindowsTempPermissionsRepair` |
+| Run |  | `9. Solucion de problemas\Arreglar errores 2502 y 2503.cmd` | None | machineAction `Invoke-AtlasWindowsTempPermissionsRepair` |
 
 ### FixExplorerRuntimeError (no state record)
 
@@ -990,7 +990,7 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `9. Troubleshooting\Fix File Explorer Visual C++ Runtime Error.cmd` | RestartExplorer | registry 3 |
+| Run |  | `9. Solucion de problemas\Arreglar error de Visual C++ del Explorador.cmd` | RestartExplorer | registry 3 |
 
 ### FixMSStoreIssues (no state record)
 
@@ -1000,7 +1000,7 @@ Elevation: TrustedInstaller
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `9. Troubleshooting\Fix MS Store Issues.cmd` | None | machineAction `Invoke-AtlasStoreFixer` |
+| Run |  | `9. Solucion de problemas\Arreglar problemas de la Microsoft Store.cmd` | None | machineAction `Invoke-AtlasStoreFixer` |
 
 ### RepairWindowsComponents (no state record)
 
@@ -1012,7 +1012,7 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `9. Troubleshooting\Repair Windows Components.cmd` | Recommend | machineAction `Repair-AtlasWindowsComponents` |
+| Run |  | `9. Solucion de problemas\Reparar componentes de Windows.cmd` | Recommend | machineAction `Repair-AtlasWindowsComponents` |
 
 ### SafeMode (no state record)
 
@@ -1022,10 +1022,10 @@ Elevation: Admin
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Minimal |  | `9. Troubleshooting\Safe Mode\Safe Mode.cmd` | Recommend | machineAction `Set-AtlasSafeModeBoot` |
-| CommandPrompt |  | `9. Troubleshooting\Safe Mode\Safe Mode with Command Prompt.cmd` | Recommend | machineAction `Set-AtlasSafeModeBoot` |
-| Networking |  | `9. Troubleshooting\Safe Mode\Safe Mode with Networking.cmd` | Recommend | machineAction `Set-AtlasSafeModeBoot` |
-| Exit |  | `9. Troubleshooting\Safe Mode\Exit Safe Mode.cmd` | Recommend | machineAction `Set-AtlasSafeModeBoot` |
+| Minimal |  | `9. Solucion de problemas\Modo seguro\Modo seguro.cmd` | Recommend | machineAction `Set-AtlasSafeModeBoot` |
+| CommandPrompt |  | `9. Solucion de problemas\Modo seguro\Modo seguro con simbolo del sistema.cmd` | Recommend | machineAction `Set-AtlasSafeModeBoot` |
+| Networking |  | `9. Solucion de problemas\Modo seguro\Modo seguro con red.cmd` | Recommend | machineAction `Set-AtlasSafeModeBoot` |
+| Exit |  | `9. Solucion de problemas\Modo seguro\Salir del modo seguro.cmd` | Recommend | machineAction `Set-AtlasSafeModeBoot` |
 
 ### TelemetryComponents (no state record)
 
@@ -1035,4 +1035,4 @@ Elevation: TrustedInstaller
 
 | State | Value | Launcher | Reboot | Work |
 | --- | --- | --- | --- | --- |
-| Run |  | `9. Troubleshooting\Telemetry Components.cmd` | Prompt | machineAction `Invoke-AtlasTelemetryComponentsMenu` |
+| Run |  | `9. Solucion de problemas\Componentes de telemetria.cmd` | Prompt | machineAction `Invoke-AtlasTelemetryComponentsMenu` |

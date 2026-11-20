@@ -3,7 +3,7 @@ USE WITH CAUTION ⚠️⚠️⚠️
 
 ‼️‼️‼️
 ALL USERS ARE ADVISED TO USE THE FILE FOUND AT
-%windir%\AtlasDesktop\3. General Configuration\Pause Updates\Pause Windows Updates.cmd
+%windir%\AtlasDesktop\3. Configuracion general\Pausar actualizaciones\Pausar Windows Update (predeterminado).cmd
 TO PAUSE UPDATES. THIS WILL NOT BREAK OTHER SERVICES
 ‼️‼️‼️
 

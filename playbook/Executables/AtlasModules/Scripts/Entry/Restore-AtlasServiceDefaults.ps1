@@ -2,7 +2,7 @@
 .SYNOPSIS
     Fixed noninteractive implementation for the broker's ResetServices operation.
 .DESCRIPTION
-    Always applies the unique service-toggle state whose launcher is marked '(default)'.
+    Always applies the unique service-toggle state whose launcher is marked '(predeterminado)'.
     WindowsBackup and AtlasBackup then restore typed Start values from one strictly
     validated Atlas-owned snapshot, preserving the established defaults-first order.
     No caller-selected script, executable, registry file, or argument vector is accepted.
