@@ -194,7 +194,7 @@ function Set-AtlasVbsConfiguration {
     Assert-AtlasPrivilege -Administrator
     $conflicts = @(Get-AtlasVbsPolicyConflict -State $State -PolicyPath $PolicyPath)
     if ($conflicts.Count -gt 0) {
-        $message = "Policy under '$PolicyPath' overrides this change ($($conflicts -join ', ')); Atlas leaves VBS as the policy sets it."
+        $message = "Policy under '$PolicyPath' overrides this change ($($conflicts -join ', ')); Aether leaves VBS as the policy sets it."
         if (-not $SkipWhenPolicyConflicts) { throw $message }
         Write-AtlasLog -Level Warning -Message "VBS and memory integrity not configured to $($State.ToLowerInvariant()). $message"
         return

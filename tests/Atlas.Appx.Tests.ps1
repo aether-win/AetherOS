@@ -1132,7 +1132,7 @@ Describe 'Invoke-AtlasAppxRemovalPlan' {
                 "AppX package 'MSTeams_26260.1717.5229.7049_x64__8wekyb3d8bbwe' for 'MSTeams*' is still registered, " +
                 "but not installed for the installing user ($($script:otherSid): Installed; S-1-5-18: Installed; " +
                 "$($deletedSid): Installed; (unknown account): Installed; $($pendingSid): Installed(pending removal); " +
-                "$($script:installingSid): Staged), so Atlas continues."
+                "$($script:installingSid): Staged), so Aether continues."
             )
         }
         Should -Invoke Write-AtlasLog -ModuleName Atlas.Appx -Times 1 -Exactly -ParameterFilter {
@@ -1208,7 +1208,7 @@ Describe 'Invoke-AtlasAppxRemovalPlan' {
             $Level -eq 'Warning' -and $Message -eq (
                 "AppX package 'Installed.App_1.0_x64__abc' for 'Installed.App*' is still registered " +
                 "($($script:installingSid): Installed). During OOBE there's no installing user to check it against, " +
-                'so Atlas continues.'
+                'so Aether continues.'
             )
         }
     }
@@ -1216,11 +1216,11 @@ Describe 'Invoke-AtlasAppxRemovalPlan' {
     It 'warns and continues when the installing user''s registration is <Case>' -TestCases @(
         @{
             Case = 'pending removal'; State = 'Installed(pending removal)'
-            Expected = "but Windows finishes removing it for the installing user when the app closes or the account signs out (S-1-5-21-1000-1000-1000-1001: Installed(pending removal)), so Atlas continues."
+            Expected = "but Windows finishes removing it for the installing user when the app closes or the account signs out (S-1-5-21-1000-1000-1000-1001: Installed(pending removal)), so Aether continues."
         }
         @{
             Case = 'staged and pending removal'; State = 'Staged(pending removal)'
-            Expected = 'but not installed for the installing user (S-1-5-21-1000-1000-1000-1001: Staged(pending removal)), so Atlas continues.'
+            Expected = 'but not installed for the installing user (S-1-5-21-1000-1000-1000-1001: Staged(pending removal)), so Aether continues.'
         }
     ) {
         $definition = [pscustomobject]@{ Name = 'MSTeams*'; Option = $null; IgnoreErrors = $false }
@@ -1298,7 +1298,7 @@ Describe 'Invoke-AtlasAppxRemovalPlan' {
         Should -Invoke Write-AtlasLog -ModuleName Atlas.Appx -Times 1 -Exactly -ParameterFilter {
             $Level -eq 'Warning' -and $Message -eq (
                 "AppX package 'D.App_1.0_neutral_~_abc' for 'D.App*' is still registered, but not installed " +
-                'for the installing user (S-1-5-18: Staged), so Atlas continues.'
+                'for the installing user (S-1-5-18: Staged), so Aether continues.'
             )
         }
     }
@@ -1347,7 +1347,7 @@ Describe 'Invoke-AtlasAppxRemovalPlan' {
 
         Should -Invoke Start-Sleep -ModuleName Atlas.Appx -Times 1 -Exactly
         Should -Invoke Write-AtlasLog -ModuleName Atlas.Appx -Times 1 -Exactly -ParameterFilter {
-            $Level -eq 'Warning' -and $Message -eq 'Installed-package verification failed: The service is busy. Atlas looks again shortly.'
+            $Level -eq 'Warning' -and $Message -eq 'Installed-package verification failed: The service is busy. Aether looks again shortly.'
         }
         Should -Invoke Write-AtlasLog -ModuleName Atlas.Appx -Times 0 -Exactly -ParameterFilter { $Level -eq 'Error' }
     }

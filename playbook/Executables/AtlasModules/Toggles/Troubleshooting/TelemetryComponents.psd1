@@ -1,6 +1,6 @@
 ﻿@{
     Name          = 'TelemetryComponents'
-    Description   = 'Adds or removes the Atlas NoTelemetry CBS package. The menu runs in the administrator window and its choice crosses the silent TrustedInstaller broker as a fixed internal state; records no state.'
+    Description   = 'Adds or removes the Aether NoTelemetry CBS package. The menu runs in the administrator window and its choice crosses the silent TrustedInstaller broker as a fixed internal state; records no state.'
     Elevation     = 'TrustedInstaller'
     NoStateRecord = $true
     Script        = 'TelemetryComponents.ps1'

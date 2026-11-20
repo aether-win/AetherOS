@@ -367,7 +367,7 @@ Describe 'Invoke-AtlasTrustedInstaller' {
     }
 }
 
-Describe 'Atlas privilege identity split' {
+Describe 'Aether privilege identity split' {
     It 'distinguishes LocalSystem from strict TrustedInstaller evidence' {
         Mock Get-AtlasCurrentUserSid { 'S-1-5-18' } -ModuleName Atlas.Core
         Mock Get-AtlasCurrentTokenEvidence {
@@ -435,7 +435,7 @@ Describe 'Import-AtlasModule' {
         Test-Path -LiteralPath Function:\Get-AtlasTrustedWingetPath | Should -BeTrue
     }
 
-    It 'rejects a name outside the Atlas module family and a missing manifest' {
+    It 'rejects a name outside the Aether module family and a missing manifest' {
         { Import-AtlasModule -Name 'Pester' } | Should -Throw
         { Import-AtlasModule -Name 'Atlas.DoesNotExist' } | Should -Throw '*manifest*is missing*'
     }

@@ -21,7 +21,7 @@ BeforeAll {
             -RelativePath 'custom.yml')
 }
 
-Describe 'Atlas option handoff contract' {
+Describe 'Aether option handoff contract' {
     It 'keeps FeaturePage, front-door, state, YAML, and tweak option sets identical' {
         $recordActions = @($script:CustomActions | Where-Object {
                 $_.Type -ceq 'run' -and
@@ -101,7 +101,7 @@ Describe 'Atlas option handoff contract' {
     }
 }
 
-Describe 'Atlas module import contracts' {
+Describe 'Aether module import contracts' {
     BeforeDiscovery {
         $modulesRoot = Join-Path (Resolve-Path (Join-Path $PSScriptRoot '..\playbook')).ProviderPath 'Executables\AtlasModules\Scripts\Modules'
         $script:PayloadManifests = @(Get-ChildItem -LiteralPath $modulesRoot -Filter 'Atlas.*.psd1' -File -Recurse |
@@ -152,7 +152,7 @@ if ($missing.Count -gt 0 -or $unexpected.Count -gt 0) {
         }
     }
 
-    It 'covers every module directory under the Atlas module root with exactly one manifest' {
+    It 'covers every module directory under the Aether module root with exactly one manifest' {
         # Same enumeration as the discovery above: every Atlas.* directory must carry
         # exactly one manifest named after it, so a new module cannot escape the import contract.
         $directories = @(Get-ChildItem -LiteralPath $script:ModulesRoot -Directory |
@@ -174,7 +174,7 @@ if ($missing.Count -gt 0 -or $unexpected.Count -gt 0) {
     }
 }
 
-Describe 'Atlas variable definition contract' {
+Describe 'Aether variable definition contract' {
     # An unassigned variable fails only when the line runs; neither the parse gate nor
     # the linter reports it.
     It 'never reads a variable the script does not define' {

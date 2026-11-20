@@ -3,7 +3,7 @@
     ModuleVersion     = '1.0.0'
     GUID              = '5e8d2b7a-1c94-4a6e-8f3b-9d0c4e7a2b51'
     Author            = 'AtlasOS'
-    Description       = 'Atlas toggle engine: loads data-only toggle definitions, runs their machine and user work in the right context, records user setting state, and replays recorded toggles on upgrades and first sign-in.'
+    Description       = 'Aether toggle engine: loads data-only toggle definitions, runs their machine and user work in the right context, records user setting state, and replays recorded toggles on upgrades and first sign-in.'
     PowerShellVersion = '5.1'
     FunctionsToExport = @(
         # Definitions

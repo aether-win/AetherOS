@@ -91,7 +91,7 @@ function Test-AtlasDefenderCoreServiceRemoved {
     <#
     .SYNOPSIS
         Whether Set-AtlasDefenderCoreService -State Removed has nothing left to do: the
-        service's Start reads 4, Atlas's task turns it off at the next startup, or this
+        service's Start reads 4, Aether's task turns it off at the next startup, or this
         Windows has no such service. Reads only.
     #>
     [CmdletBinding()]

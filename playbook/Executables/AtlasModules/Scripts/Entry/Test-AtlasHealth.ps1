@@ -140,7 +140,7 @@ try {
     $context = Get-AtlasContext -Refresh
     $document = Get-AtlasState -Path $context.StateDocumentPath
     if ($null -eq $document -or [string]::IsNullOrWhiteSpace([string]$document.installedVersion)) {
-        [Console]::Error.WriteLine('Atlas is not installed on this machine, or it was installed before the machine state document existed.')
+        [Console]::Error.WriteLine('Aether is not installed on this machine, or it was installed before the machine state document existed.')
         exit 2
     }
 
@@ -160,6 +160,6 @@ try {
     if ($report.healthy) { exit 0 } else { exit 1 }
 }
 catch {
-    [Console]::Error.WriteLine("[Atlas] $($_.Exception.Message)")
+    [Console]::Error.WriteLine("[Aether] $($_.Exception.Message)")
     exit 2
 }

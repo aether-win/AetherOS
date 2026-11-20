@@ -1,4 +1,4 @@
-Describe 'Atlas install orchestrator' {
+Describe 'Aether install orchestrator' {
     BeforeAll {
         . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
         . (Join-Path $script:AtlasTestScriptsRoot 'Entry\Invoke-AtlasInstall.ps1')
@@ -208,7 +208,7 @@ Export-ModuleMember -Function Start-AtlasPhase,Stop-AtlasPhase
             Mock Get-AtlasRecordedOption {
                 [pscustomobject]@{
                     Options = @('defender-disable')
-                    Changes = @([pscustomobject]@{ Message = "Recorded 'defender-disable' for Microsoft Defender instead of the requested 'defender-enable': Atlas's NoDefender package is installed." })
+                    Changes = @([pscustomobject]@{ Message = "Recorded 'defender-disable' for Microsoft Defender instead of the requested 'defender-enable': Aether's NoDefender package is installed." })
                     NotApplied = @('defender-disable', 'defender-enable')
                     Warnings = @("Couldn't list this PC's apps, so the requested choice is recorded for Remove Snipping Tool.")
                 }
@@ -222,7 +222,7 @@ Export-ModuleMember -Function Start-AtlasPhase,Stop-AtlasPhase
             }
             $script:Messages.ToArray() | Should -Be @(
                 "Warning|Couldn't list this PC's apps, so the requested choice is recorded for Remove Snipping Tool."
-                "Info|Recorded 'defender-disable' for Microsoft Defender instead of the requested 'defender-enable': Atlas's NoDefender package is installed."
+                "Info|Recorded 'defender-disable' for Microsoft Defender instead of the requested 'defender-enable': Aether's NoDefender package is installed."
             )
         }
 

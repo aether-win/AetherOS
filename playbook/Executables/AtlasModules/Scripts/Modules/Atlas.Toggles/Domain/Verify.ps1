@@ -29,11 +29,11 @@ function Test-AtlasPowerPlanDrift {
             throw 'the active power scheme is not a GUID'
         }
         if ($StateName -ceq 'Enable') {
-            if ($active -ieq $atlas) { & $issue $active 'the Atlas plan is active while power saving is recorded as enabled' }
+            if ($active -ieq $atlas) { & $issue $active 'the Aether plan is active while power saving is recorded as enabled' }
             return
         }
         if ($active -ine $atlas) {
-            & $issue $active 'the Atlas plan is not active while power saving is recorded as disabled'
+            & $issue $active 'the Aether plan is not active while power saving is recorded as disabled'
             return
         }
         foreach ($setting in @(

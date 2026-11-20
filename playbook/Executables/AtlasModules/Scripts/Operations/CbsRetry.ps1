@@ -29,7 +29,7 @@ function Get-AtlasCbsRetryInstruction {
     if ($Phase -ceq 'Armed') {
         return "Windows starts in Safe Mode with Command Prompt until the retry is done. At that command prompt, run $launcher to retry the packages, or $launcher /discard to give up the retry."
     }
-    return "Run $launcher /discard as an administrator to give up the retry and use Atlas's Safe Mode tools again."
+    return "Run $launcher /discard as an administrator to give up the retry and use Aether's Safe Mode tools again."
 }
 
 function Get-AtlasCbsRetryPromptPaths {
@@ -62,7 +62,7 @@ function Set-AtlasCbsRetryPrompt {
     }
     # In PROMPT, $_ is a line break and $P$G the usual path prompt; a literal $ is $$.
     $launcher = (Get-AtlasCbsRetryLauncher).Replace('$', '$$')
-    $prompt = 'Atlas: Safe Mode package retry$_Run {0} to retry the packages, or add /discard to give up the retry.$_$_$P$G' -f $launcher
+    $prompt = 'Aether: Safe Mode package retry$_Run {0} to retry the packages, or add /discard to give up the retry.$_$_$P$G' -f $launcher
     Set-ItemProperty -LiteralPath $Paths.EnvironmentKey -Name PROMPT -Type String -Value $prompt -ErrorAction Stop
 }
 
@@ -115,7 +115,7 @@ function Remove-AtlasLegacyCbsRetryList {
     .SYNOPSIS
         Removes the Safe Mode package list Atlas 0.5 left in System32. 0.5 never deleted
         it, so it records a past component failure, not a retry to resume. It's kept
-        only while 0.5's own retry is still set to run, which replacing Atlas's files
+        only while 0.5's own retry is still set to run, which replacing Aether's files
         would break.
     #>
     param([string]$Path = (Get-AtlasLegacyCbsRetryStatePath))
@@ -132,7 +132,7 @@ function Remove-AtlasLegacyCbsRetryList {
     }
     catch { "unreadable: $($_.Exception.Message)" }
     if ([string]::IsNullOrEmpty($packages)) { $packages = 'none' }
-    Write-Output "Removing the Safe Mode package list Atlas 0.5 left at '$Path' (packages: $packages)."
+    Write-Output "Removing the Safe Mode package list Aether 0.5 left at '$Path' (packages: $packages)."
     try { [IO.File]::Delete($Path) }
     catch {
         Write-Warning "The Aether 0.5 Safe Mode package list '$Path' couldn't be removed: $($_.Exception.Message)"
@@ -315,7 +315,7 @@ function Invoke-AtlasCbsRetryDiscard {
 function Clear-AtlasUnarmedCbsRetry {
     <#
     .SYNOPSIS
-        Gives up a retry that isn't armed, before Atlas's files are replaced. Arming and
+        Gives up a retry that isn't armed, before Aether's files are replaced. Arming and
         recovery hold the lock while Pending, so Pending found here is left over: a
         failed Safe Mode retry, or Atlas 0.5's list as an earlier build recorded it.
         Nothing resumes it, and it would block every update.
@@ -391,7 +391,7 @@ function Invoke-AtlasCbsRetryCommand {
         if ($Mode -ceq 'Discard') {
             if (Invoke-AtlasCbsRetryDiscard -StatePath $StatePath) {
                 $done = 'The retry was given up. Windows starts normally from the next restart.'
-                if (Test-AtlasCbsRetryInstallUnfinished) { $done += ' After the restart, open Atlas to try installing again.' }
+                if (Test-AtlasCbsRetryInstallUnfinished) { $done += ' After the restart, open Aether to try installing again.' }
                 Write-AtlasSuccess -Text $done
                 # Safe Mode's command prompt has no Start menu to restart from.
                 if (!(Test-AtlasCbsRetryNormalBoot)) { Request-AtlasCbsRetryRestart }
@@ -426,7 +426,7 @@ function Invoke-AtlasCbsRetryCommand {
     }
 
     $done = 'The packages are installed. Windows starts normally from the next restart.'
-    if (Test-AtlasCbsRetryInstallUnfinished) { $done += ' After the restart, open Atlas to finish installing it.' }
+    if (Test-AtlasCbsRetryInstallUnfinished) { $done += ' After the restart, open Aether to finish installing it.' }
     Write-AtlasSuccess -Text $done
     Request-AtlasCbsRetryRestart
     return 0

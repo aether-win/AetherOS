@@ -367,7 +367,7 @@ Describe 'Root-scoped cleanup helpers' {
         $atlasModules = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules'
         $script:rootTasks = @(
             [pscustomobject]@{
-                TaskName = 'Atlas tool'; TaskPath = '\'
+                TaskName = 'Aether tool'; TaskPath = '\'
                 Actions  = @([pscustomobject]@{ Execute = "$atlasModules\Tools\tool.exe" })
             }
             [pscustomobject]@{
@@ -387,7 +387,7 @@ Describe 'Root-scoped cleanup helpers' {
 
         Should -Invoke Stop-ScheduledTask -ModuleName Atlas.TasksProcs -Times 1 -Exactly
         Should -Invoke Stop-ScheduledTask -ModuleName Atlas.TasksProcs -Times 1 -Exactly -ParameterFilter {
-            $TaskName -ceq 'Atlas tool' -and $TaskPath -ceq '\'
+            $TaskName -ceq 'Aether tool' -and $TaskPath -ceq '\'
         }
     }
 

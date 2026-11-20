@@ -399,8 +399,8 @@ function Start-AtlasInstallState {
                     $article = if ($installMode -cmatch '^[AEIOU]') { 'an' } else { 'a' }
                     $requested = if ($oobeValue) { ' during Windows setup' } else { '' }
                     throw ("An unfinished Aether $($existing.mode) installation of $($existing.targetVersion)$began is waiting to finish, " +
-                        "so $article $installMode installation$requested can't start. Finish it first: in Atlas Manager, choose " +
-                        "Finish installing Atlas $($existing.targetVersion), or run Install-Atlas.ps1 again with the options it started with.")
+                        "so $article $installMode installation$requested can't start. Finish it first: in Aether OS, choose " +
+                        "Finish installing Aether $($existing.targetVersion), or run Install-Atlas.ps1 again with the options it started with.")
                 }
 
                 # AME can classify a retry differently after a partial install has
@@ -902,7 +902,7 @@ function Get-AtlasInstalledVersion {
                 @{ Path = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'; Name = 'RegisteredOrganization' }
             )) {
             $value = Get-ItemProperty -LiteralPath $marker.Path -Name $marker.Name -ErrorAction SilentlyContinue
-            if ($null -ne $value -and [string]$value.($marker.Name) -match '^Atlas Playbook v?(\d+\.\d+\.\d+)$') {
+            if ($null -ne $value -and [string]$value.($marker.Name) -match '^Aether Playbook v?(\d+\.\d+\.\d+)$') {
                 $Matches[1]
             }
         }) | Sort-Object -Unique
@@ -1022,9 +1022,9 @@ function Resolve-AtlasInstallChoices {
         }
     }
     elseif ($Mode -ceq 'Rebase' -and $Requested -ceq 'ChooseAgain') {
-        throw ('Windows reinstalled itself while Aether Manager moved it to a newer version, so this installation first ' +
+        throw ('Windows reinstalled itself while Aether OS moved it to a newer version, so this installation first ' +
             'puts back the choices you had. Run it again without -ChooseAgain; once it has finished, you can reinstall ' +
-            'Atlas and choose again.')
+            'Aether and choose again.')
     }
     return [pscustomobject]@{ Choices = $choices; Summary = (& $describe $choices); Note = $note; ResumedOptions = $resumed }
 }
@@ -1041,7 +1041,7 @@ $script:AtlasChoiceLabels = @{
     edge          = 'Remove Microsoft Edge'
     snippingTool  = 'Remove Snipping Tool'
     coreIsolation = 'Turn off virtualisation-based security (VBS)'
-    toolbox       = 'Install Atlas Toolbox'
+    toolbox       = 'Install Aether Toolbox'
     browser       = 'Browser'
     keyboard      = 'Keyboard languages'
 }
@@ -1090,12 +1090,12 @@ function Get-AtlasObservedOptionReason {
         'defender' {
             $package = [string](Get-AtlasTransitionFactValue $Facts 'DefenderPackage')
             if (& $has 'defender-disable') {
-                if ($package -ceq 'InstallPending') { return "Atlas's NoDefender package goes on at the restart" }
-                return "Atlas's NoDefender package is installed"
+                if ($package -ceq 'InstallPending') { return "Aether's NoDefender package goes on at the restart" }
+                return "Aether's NoDefender package is installed"
             }
-            if ($package -ceq 'UninstallPending') { return "Atlas's NoDefender package comes off at the restart" }
+            if ($package -ceq 'UninstallPending') { return "Aether's NoDefender package comes off at the restart" }
             if ($true -eq (Get-AtlasTransitionFactValue $Facts 'Defender')) { return 'Microsoft Defender is on this PC' }
-            return "Atlas's packages are installed, and none of them removes Microsoft Defender"
+            return "Aether's packages are installed, and none of them removes Microsoft Defender"
         }
         'mitigations' { return & $record 'Mitigations' }
         'autoUpdates' { return & $record 'AutomaticUpdates' }
@@ -1104,12 +1104,12 @@ function Get-AtlasObservedOptionReason {
         'edge' { if (& $has 'uninstall-edge') { return "Microsoft Edge isn't installed" }; return 'Microsoft Edge is installed' }
         'snippingTool' { if (& $has 'remove-snipping-tool') { return 'no account has Snipping Tool' }; return 'Snipping Tool is installed' }
         'coreIsolation' { if (& $has 'disable-core-isolation') { return 'VBS is off' }; return 'VBS is on' }
-        'toolbox' { if (& $has 'install-toolbox') { return 'Atlas Toolbox is installed' }; return "Atlas Toolbox isn't installed" }
+        'toolbox' { if (& $has 'install-toolbox') { return 'Aether Toolbox is installed' }; return "Aether Toolbox isn't installed" }
         'browser' {
             $browser = @($Options | Where-Object { $_ -like 'browser-*' })
             if ($browser.Count -eq 0) { return "the chosen browser isn't installed" }
             if (@(Get-AtlasTransitionFactValue $Facts 'Browsers') -ccontains $browser[0]) { return "$($browser[0]) is installed" }
-            return "Atlas's taskbar pin record names $(Get-AtlasTransitionFactValue $Facts 'Browser')"
+            return "Aether's taskbar pin record names $(Get-AtlasTransitionFactValue $Facts 'Browser')"
         }
         'keyboard' {
             $shortcuts = & $record 'KeyboardShortcuts'
@@ -1418,7 +1418,7 @@ function Repair-AtlasToolboxRecord {
         $power = Get-ItemProperty -LiteralPath $powerKey -Name state -ErrorAction SilentlyContinue
         if ($null -eq $power -or $power.state -ne 0) {
             Set-AtlasToolboxRecordState -StateRoot $StateRoot -Name PowerSaving -State 0
-            "Set the 'PowerSaving' record to 0: the Atlas power plan is active."
+            "Set the 'PowerSaving' record to 0: the Aether power plan is active."
         }
     }
     if (-not (Test-AtlasVersionBefore06 $InstalledVersion)) {
@@ -1440,7 +1440,7 @@ function Repair-AtlasToolboxRecord {
         }
     }
     $record = { param([string]$Name) if ($records.ContainsKey($Name) -and $null -ne $records[$Name].State) { $records[$Name] } }
-    $neverApplied = "only the old Atlas Toolbox wrote it, and its choices never reached this PC"
+    $neverApplied = "only the old Aether Toolbox wrote it, and its choices never reached this PC"
 
     # A launcher's file name says which choice it applied, whatever the Toolbox
     # wrote over its state since. Without one, only the Toolbox wrote the record,
@@ -1484,11 +1484,11 @@ function Repair-AtlasToolboxRecord {
         catch { $observed = $null }
         if ($null -eq $observed) {
             Remove-AtlasToolboxRecord -KeyPath $terminals.KeyPath
-            "Removed the 'ContextMenuTerminals' record (state $($terminals.State)): only the old Atlas Toolbox wrote it, in its own numbering, and the terminal menu this PC has couldn't be read."
+            "Removed the 'ContextMenuTerminals' record (state $($terminals.State)): only the old Aether Toolbox wrote it, in its own numbering, and the terminal menu this PC has couldn't be read."
         }
         elseif ($observed -ne $terminals.State) {
             Set-AtlasToolboxRecordState -StateRoot $StateRoot -Name $terminals.Name -State $observed
-            "Set the 'ContextMenuTerminals' record from $($terminals.State) to $observed, the terminal menu this PC has: the old Atlas Toolbox numbered it differently."
+            "Set the 'ContextMenuTerminals' record from $($terminals.State) to $observed, the terminal menu this PC has: the old Aether Toolbox numbered it differently."
         }
     }
 
@@ -1497,7 +1497,7 @@ function Repair-AtlasToolboxRecord {
     $fileSharing = & $record 'FileSharing'
     if ($null -ne $fileSharing -and $fileSharing.State -eq 0 -and $fileSharing.File -ceq 'Enable File Sharing.cmd') {
         Remove-AtlasToolboxRecord -KeyPath $fileSharing.KeyPath
-        "Removed the 'FileSharing' record (state 0): the old Atlas Toolbox wrote it for Enable File Sharing, and never changed this PC."
+        "Removed the 'FileSharing' record (state 0): the old Aether Toolbox wrote it for Enable File Sharing, and never changed this PC."
     }
 
     # Every Atlas 0.5.0 install recorded Printing 0 when it only took the print verbs
@@ -1515,10 +1515,10 @@ function Repair-AtlasToolboxRecord {
     if ($null -ne $searchIndexing) {
         if ($searchIndexing.State -eq 1 -and (Get-AtlasToolboxServiceStart -ServicesRoot $ServicesRoot -Name 'WSearch') -eq 4) {
             Set-AtlasToolboxRecordState -StateRoot $StateRoot -Name 'Indexing' -State 0
-            "Set the 'Indexing' record to 0: the old Atlas Toolbox turned search indexing off."
+            "Set the 'Indexing' record to 0: the old Aether Toolbox turned search indexing off."
         }
         Remove-Item -LiteralPath $searchIndexing.KeyPath -Recurse -Force -ErrorAction Stop
-        "Removed the old Atlas Toolbox's 'SearchIndexing' record."
+        "Removed the old Aether Toolbox's 'SearchIndexing' record."
     }
 
     # Records the Toolbox kept under a name Atlas 0.6 spells otherwise. Both writers
@@ -1538,11 +1538,11 @@ function Repair-AtlasToolboxRecord {
             }
             if ($null -eq $to -or $to.State -ne $state) {
                 Set-AtlasToolboxRecordState -StateRoot $StateRoot -Name $rule.To -State $state
-                "Set the '$($rule.To)' record to $state from the old Atlas Toolbox's '$($rule.From)'."
+                "Set the '$($rule.To)' record to $state from the old Aether Toolbox's '$($rule.From)'."
             }
         }
         Remove-Item -LiteralPath $from.KeyPath -Recurse -Force -ErrorAction Stop
-        "Removed the old Atlas Toolbox's '$($rule.From)' record."
+        "Removed the old Aether Toolbox's '$($rule.From)' record."
     }
 
     # Registry names ignore case, but Atlas 0.6 matches its definitions' names
@@ -1553,9 +1553,9 @@ function Repair-AtlasToolboxRecord {
         Remove-Item -LiteralPath $recall.KeyPath -Recurse -Force -ErrorAction Stop
         if ($null -ne $recall.State) {
             Set-AtlasToolboxRecordState -StateRoot $StateRoot -Name 'Recall' -State $recall.State
-            "Renamed the old Atlas Toolbox's '$($recall.Name)' record to 'Recall'."
+            "Renamed the old Aether Toolbox's '$($recall.Name)' record to 'Recall'."
         }
-        else { "Removed the old Atlas Toolbox's '$($recall.Name)' record." }
+        else { "Removed the old Aether Toolbox's '$($recall.Name)' record." }
     }
 
     # The Toolbox's CPU Idle menu is its own key, whose commands run powercfg
@@ -1567,15 +1567,15 @@ function Repair-AtlasToolboxRecord {
     $atlasIdle = $null -ne $idle -and $idle.Name -ceq 'CpuIdleContextMenu' -and $null -ne $idle.State
     if ($toolboxMenu) {
         Remove-Item -LiteralPath $idleMenu -Recurse -Force -ErrorAction Stop
-        "Removed the old Atlas Toolbox's CPU Idle desktop menu."
+        "Removed the old Aether Toolbox's CPU Idle desktop menu."
     }
     if ($null -ne $idle -and $idle.Name -cne 'CpuIdleContextMenu') {
         Remove-Item -LiteralPath $idle.KeyPath -Recurse -Force -ErrorAction Stop
-        "Removed the old Atlas Toolbox's '$($idle.Name)' record."
+        "Removed the old Aether Toolbox's '$($idle.Name)' record."
     }
     if ($toolboxMenu -and -not $atlasIdle) {
         Set-AtlasToolboxRecordState -StateRoot $StateRoot -Name 'CpuIdleContextMenu' -State 1
-        "Set the 'CpuIdleContextMenu' record to 1, so the update adds Atlas's CPU Idle menu in its place."
+        "Set the 'CpuIdleContextMenu' record to 1, so the update adds Aether's CPU Idle menu in its place."
     }
 }
 

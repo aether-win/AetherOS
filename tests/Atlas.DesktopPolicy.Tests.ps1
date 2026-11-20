@@ -39,7 +39,7 @@ Describe 'Fixed desktop cleanup task contract' {
     It 'registers a create-only SYSTEM action with no caller-supplied command substitution' {
         $root = Join-Path $TestDrive 'Protected Setup'
         Register-AtlasDesktopCleanup -Sid $script:SetupSid -Root $root
-        $script:Registration.Name | Should -Be ('AtlasOS ISO desktop cleanup ' + $script:SetupSid)
+        $script:Registration.Name | Should -Be ('Aether OS ISO desktop cleanup ' + $script:SetupSid)
         $script:Registration.Flags | Should -Be 2
         $script:Registration.User | Should -Be 'S-1-5-18'
         $script:Registration.Logon | Should -Be 5
@@ -72,13 +72,13 @@ Describe 'Fixed desktop cleanup task contract' {
     It 'requests only the matching task with no runtime parameters' {
         Request-AtlasDesktopCleanup -Sid $script:SetupSid
         $get = @($script:Calls | Where-Object { $_[0] -eq 'GetTask' })
-        $get[0][1] | Should -Be ('AtlasOS ISO desktop cleanup ' + $script:SetupSid)
+        $get[0][1] | Should -Be ('Aether OS ISO desktop cleanup ' + $script:SetupSid)
         $run = @($script:Calls | Where-Object { $_[0] -eq 'Run' })
         $run | Should -HaveCount 1
         $run[0][1] | Should -BeNullOrEmpty
         Unregister-AtlasDesktopCleanup -Sid $script:SetupSid
         $delete = @($script:Calls | Where-Object { $_[0] -eq 'DeleteTask' })
-        $delete[0][1] | Should -Be ('AtlasOS ISO desktop cleanup ' + $script:SetupSid)
+        $delete[0][1] | Should -Be ('Aether OS ISO desktop cleanup ' + $script:SetupSid)
         $delete[0][2] | Should -Be 0
     }
 }

@@ -228,7 +228,7 @@ function Test-PreparationRestart {
 # a move to another release finds its own. Optional previews are not a
 # prerequisite for installing Atlas.
 function Get-PreparationUpdateExclusion($Update) {
-    if ($Update.BrowseOnly) { return 'an optional preview (browse-only), which installing Atlas doesn''t need' }
+    if ($Update.BrowseOnly) { return 'an optional preview (browse-only), which installing Aether doesn''t need' }
     if ($DriverMode -eq 'manual' -and [int]$Update.Type -eq $script:DriverUpdate) { return 'a driver, and drivers are left to the user (Install drivers myself)' }
     if (Test-PreparationUpgradeCategory $Update) { return 'a feature update, which only a move to another Windows release installs, through its own search' }
     return ''
@@ -576,7 +576,7 @@ function Repair-PreparationRecordedDamage {
     if ($health -ne 'Repairable') { return $false }
     $packages = @(Get-AtlasInstalledAtlasPackage)
     if ($packages.Count -gt 0) {
-        Write-PreparationComponentEvidence "repairable, with Atlas packages installed ($($packages -join ', ')); left as it is"
+        Write-PreparationComponentEvidence "repairable, with Aether packages installed ($($packages -join ', ')); left as it is"
         return $false
     }
     return (Invoke-PreparationComponentRepair 'Windows records damage to it')
@@ -624,7 +624,7 @@ function Invoke-PreparationWindows {
         if ($pass -eq 0 -and (Repair-PreparationRecordedDamage) -and (Test-PreparationRestart)) { return 'reboot' }
         Write-PreparationState running windows-search
         $session = New-Object -ComObject Microsoft.Update.Session
-        $session.ClientApplicationID = 'Atlas preparation'
+        $session.ClientApplicationID = 'Aether preparation'
         $updates = New-Object -ComObject Microsoft.Update.UpdateColl
         $interactive = @()
         foreach ($update in @(Select-PreparationNewestUpdate (@(Find-PreparationWindowsUpdate $session) + @(Find-PreparationPrerequisiteUpdate $session)))) {
@@ -1021,7 +1021,7 @@ function Assert-PreparationCurrent {
     if (-not (Test-PreparationNetwork)) { throw 'Connect to unrestricted internet before verifying Windows and Store updates.' }
     Write-PreparationState running windows-search
     $session = New-Object -ComObject Microsoft.Update.Session
-    $session.ClientApplicationID = 'Atlas preparation verification'
+    $session.ClientApplicationID = 'Aether preparation verification'
     if (@(Find-PreparationWindowsUpdate $session).Count -gt 0) { throw 'Windows still offers required updates. Finish preparation in Aether, then retry installation.' }
     Assert-PreparationContinue
     # A Store the user removed has nothing to check; preparation skipped it too.
@@ -1715,7 +1715,7 @@ function Invoke-PreparationStoreFixer {
     $definition = [IO.Path]::Combine($windows, 'AtlasModules\Toggles\Troubleshooting\FixMSStoreIssues.psd1')
     $shortcut = [IO.Path]::Combine($windows, 'AtlasDesktop\9. Solucion de problemas\Arreglar problemas de la Microsoft Store.cmd')
     if (-not ([IO.File]::Exists($launcher) -and [IO.File]::Exists($definition))) {
-        Write-PreparationStoreEvidence "StoreFixer: this PC has no Atlas 0.6 Fix MS Store Issues to start it; left out"
+        Write-PreparationStoreEvidence "StoreFixer: this PC has no Aether 0.6 Fix MS Store Issues to start it; left out"
         return $false
     }
     $cmd = [IO.Path]::Combine([Environment]::GetFolderPath('System'), 'cmd.exe')
@@ -2112,9 +2112,9 @@ function Test-PreparationRebuild($Journal) {
     $present = @(Get-AtlasInstalledAtlasPackage)
     $facts = Get-AtlasTransitionRebuildFact $since
     $rebuild = Resolve-AtlasTransitionRebuild $Journal $facts $present
-    Write-AtlasTransitionEvidence "after the move: Windows.old populated $($facts.WindowsOld), Setup folder $($facts.SetupFolder), Setup log written since the record $($facts.PantherWritten), Atlas files $($facts.AtlasModules), Atlas packages $($present -join ',')"
-    $path = if ($rebuild.rebuilt) { 'Setup rebuilt Windows' } elseif ($rebuild.setup) { 'Setup ran and Atlas''s components are all there' } else { 'switched on in place, Atlas''s components are all there' }
-    if ($rebuild.lost -and -not $rebuild.setup) { $path = 'Atlas components are gone without a sign of Setup' }
+    Write-AtlasTransitionEvidence "after the move: Windows.old populated $($facts.WindowsOld), Setup folder $($facts.SetupFolder), Setup log written since the record $($facts.PantherWritten), Aether files $($facts.AtlasModules), Aether packages $($present -join ',')"
+    $path = if ($rebuild.rebuilt) { 'Setup rebuilt Windows' } elseif ($rebuild.setup) { 'Setup ran and Aether''s components are all there' } else { 'switched on in place, Aether''s components are all there' }
+    if ($rebuild.lost -and -not $rebuild.setup) { $path = 'Aether components are gone without a sign of Setup' }
     $Journal | Add-Member -NotePropertyName rebuild -NotePropertyValue ([pscustomobject][ordered]@{
             rebuilt = [bool]$rebuild.rebuilt; signals = @($rebuild.signals); checkedAt = $rebuild.checkedAt }) -Force
     Write-PreparationJournal $Journal $(if ($rebuild.rebuilt) { 'rebuilt' } else { 'moved' }) "$path; signals: $(@($rebuild.signals) -join ',')"
@@ -2213,7 +2213,7 @@ function Invoke-PreparationTransition {
     Write-AtlasTransitionEvidence "Windows Update policy state: target '$(Get-PreparationPolicyState)'"
     if (-not (Test-PreparationNetwork)) { throw (New-Object System.Net.NetworkInformation.NetworkInformationException) }
     $session = New-Object -ComObject Microsoft.Update.Session
-    $session.ClientApplicationID = 'Atlas preparation'
+    $session.ClientApplicationID = 'Aether preparation'
     for ($attempt = 1; $attempt -le 2; $attempt++) {
         Assert-PreparationContinue
         Write-PreparationState running windows-search

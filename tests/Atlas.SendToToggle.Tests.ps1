@@ -37,7 +37,7 @@ Describe 'Send To companion' {
         Mock Test-AtlasSystem -ModuleName Atlas.Toggles { $false }
     }
 
-    It 'applies the Atlas defaults silently without asking or restarting Explorer' {
+    It 'applies the Aether defaults silently without asking or restarting Explorer' {
         @(Invoke-SendToChooser -Silent $true).Count | Should -Be 0
 
         Should -Invoke Set-AtlasSendToContextMenu -ModuleName Atlas.Toggles -Times 1 -Exactly -ParameterFilter { $DebloatDefaults }

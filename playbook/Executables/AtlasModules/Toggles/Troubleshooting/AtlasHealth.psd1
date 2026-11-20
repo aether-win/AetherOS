@@ -1,6 +1,6 @@
 ﻿@{
     Name          = 'AtlasHealth'
-    Description   = 'Reports what Atlas installed and which recorded toggle states or install tweaks have since drifted. Changes nothing and records no state.'
+    Description   = 'Reports what Aether installed and which recorded toggle states or install tweaks have since drifted. Changes nothing and records no state.'
     Elevation     = 'Admin'
     NoStateRecord = $true
     Script        = 'AtlasHealth.ps1'

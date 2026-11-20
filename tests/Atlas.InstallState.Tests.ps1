@@ -149,13 +149,13 @@ Describe 'Atlas.InstallState lifecycle' {
         {
             Start-AtlasInstallState -StatePath $path -TargetVersion '0.6.0' `
                 -Mode Reapply -CaptureNonce 'other'
-        } | Should -Throw -ExpectedMessage ("An unfinished Atlas Fresh installation of 0.6.0 is waiting to finish, so a Reapply installation can't start. " +
-            'Finish it first: in Atlas Manager, choose Finish installing Atlas 0.6.0, or run Install-Atlas.ps1 again with the options it started with.')
+        } | Should -Throw -ExpectedMessage ("An unfinished Aether Fresh installation of 0.6.0 is waiting to finish, so a Reapply installation can't start. " +
+            'Finish it first: in Aether OS, choose Finish installing Aether 0.6.0, or run Install-Atlas.ps1 again with the options it started with.')
 
         {
             Start-AtlasInstallState -StatePath $path -TargetVersion '0.6.0' `
                 -Mode Fresh -IsOobe $true -CaptureNonce 'other'
-        } | Should -Throw -ExpectedMessage "An unfinished Atlas Fresh installation of 0.6.0 is waiting to finish, so a Fresh installation during Windows setup can't start.*"
+        } | Should -Throw -ExpectedMessage "An unfinished Aether Fresh installation of 0.6.0 is waiting to finish, so a Fresh installation during Windows setup can't start.*"
 
         {
             Start-AtlasInstallState -StatePath $path -TargetVersion '0.6.0' `
@@ -168,7 +168,7 @@ Describe 'Atlas.InstallState lifecycle' {
         Start-AtlasInstallState -StatePath $path -TargetVersion '0.6.0' -Mode Fresh -IsOobe $true | Out-Null
         Commit-AtlasInstallState -StatePath $path | Out-Null
         { Start-AtlasInstallState -StatePath $path -TargetVersion '0.6.0' -Mode Fresh } |
-            Should -Throw -ExpectedMessage "An unfinished Atlas Fresh installation of 0.6.0, begun during Windows setup, is waiting to finish, so a Fresh installation can't start.*"
+            Should -Throw -ExpectedMessage "An unfinished Aether Fresh installation of 0.6.0, begun during Windows setup, is waiting to finish, so a Fresh installation can't start.*"
     }
 
     It 'resumes the original plan when AME reclassifies a recorded failed run' {
@@ -409,8 +409,8 @@ Describe 'Atlas.InstallState update path' {
         It 'refuses to choose again on a Rebase, naming the next step' {
             {
                 Resolve-AtlasInstallChoices -StatePath (New-TestInstallStatePath) -TargetVersion '0.6.0' -Mode Rebase -Requested ChooseAgain
-            } | Should -Throw -ExpectedMessage ('Windows reinstalled itself while Aether Manager moved it to a newer version, so this installation first puts back the choices you had. ' +
-                'Run it again without -ChooseAgain; once it has finished, you can reinstall Atlas and choose again.')
+            } | Should -Throw -ExpectedMessage ('Windows reinstalled itself while Aether OS moved it to a newer version, so this installation first puts back the choices you had. ' +
+                'Run it again without -ChooseAgain; once it has finished, you can reinstall Aether and choose again.')
         }
 
         It 'continues an unfinished install the way it began: <Began> asked <Requested>' -TestCases @(
@@ -661,7 +661,7 @@ Describe 'Atlas.InstallState choices taken from the PC' {
     }
 
     Context 'Compare-AtlasInstallOption' {
-        It 'names each choice whose options differ, by the name Atlas Manager gives it' {
+        It 'names each choice whose options differ, by the name Aether OS gives it' {
             $changes = @(Compare-AtlasInstallOption -Requested @('defender-enable', 'uninstall-edge', 'install-another-browser', 'browser-brave', 'install-eclean') `
                     -Recorded @('defender-disable', 'install-another-browser', 'browser-firefox', 'install-eclean'))
             @($changes.Group) | Should -Be @('defender', 'edge', 'browser')
@@ -694,7 +694,7 @@ Describe 'Atlas.InstallState choices taken from the PC' {
             Should -Invoke Get-AtlasTransitionMachineFact -ModuleName Atlas.InstallState -Times 1 -Exactly -ParameterFilter { $MachineOnly -and -not $UserSid }
             @($kept.Warnings) | Should -HaveCount 0
             @($kept.Changes.Message) | Should -Be @(
-                "Kept 'defender-disable' for Microsoft Defender instead of the requested 'defender-enable': Atlas's NoDefender package is installed. Run again with -ChooseAgain to change it."
+                "Kept 'defender-disable' for Microsoft Defender instead of the requested 'defender-enable': Aether's NoDefender package is installed. Run again with -ChooseAgain to change it."
                 "Kept 'mitigations-default' for Processor protections instead of the requested 'mitigations-disable': the Mitigations toggle records state 2. Run again with -ChooseAgain to change it."
                 "Kept 'auto-updates-default' for Windows Update instead of the requested 'auto-updates-disable': the AutomaticUpdates toggle records state 1. Run again with -ChooseAgain to change it."
                 "Left out the requested 'uninstall-edge' for Remove Microsoft Edge: Microsoft Edge is installed. Run again with -ChooseAgain to change it."
@@ -750,13 +750,13 @@ Describe 'Atlas.InstallState choices taken from the PC' {
             @($recorded.Options) | Should -Contain 'remove-snipping-tool' -Because 'no account has Snipping Tool'
             @($recorded.Options) | Should -Not -Contain 'uninstall-edge'
             ($recorded.Changes | Where-Object Group -eq 'defender').Message |
-                Should -BeExactly "Recorded 'defender-disable' for Microsoft Defender instead of the requested 'defender-enable': Atlas's NoDefender package is installed."
+                Should -BeExactly "Recorded 'defender-disable' for Microsoft Defender instead of the requested 'defender-enable': Aether's NoDefender package is installed."
             @($recorded.Warnings) | Should -HaveCount 0
         }
 
         It 'counts a Defender change Windows makes at the restart: <Package>' -TestCases @(
-            @{ Package = 'InstallPending'; Requested = 'defender-enable'; Recorded = 'defender-disable'; Reason = "Atlas's NoDefender package goes on at the restart" }
-            @{ Package = 'UninstallPending'; Requested = 'defender-disable'; Recorded = 'defender-enable'; Reason = "Atlas's NoDefender package comes off at the restart" }
+            @{ Package = 'InstallPending'; Requested = 'defender-enable'; Recorded = 'defender-disable'; Reason = "Aether's NoDefender package goes on at the restart" }
+            @{ Package = 'UninstallPending'; Requested = 'defender-disable'; Recorded = 'defender-enable'; Reason = "Aether's NoDefender package comes off at the restart" }
         ) {
             param($Package, $Requested, $Recorded, $Reason)
             $script:Facts = New-TestFact @{ DefenderPackage = $Package; Defender = $false; Appx = @('Microsoft.ScreenSketch_8wekyb3d8bbwe') }
@@ -883,7 +883,7 @@ Describe 'Atlas.InstallState Toolbox record migration' {
         Remove-Item -LiteralPath $script:TestRoot -Recurse -Force -ErrorAction SilentlyContinue
     }
 
-    It 'repairs the stale power record before replay on Atlas <Version>, keeping rollback metadata' -TestCases @(
+    It 'repairs the stale power record before replay on Aether <Version>, keeping rollback metadata' -TestCases @(
         @{ Version = '0.5.0' }, @{ Version = '0.6.0' }
     ) {
         param($Version)
@@ -892,7 +892,7 @@ Describe 'Atlas.InstallState Toolbox record migration' {
         New-Item -Path $script:PowerSchemesRoot -Force | Out-Null
         New-ItemProperty -LiteralPath $script:PowerSchemesRoot -Name ActivePowerScheme -Value '11111111-1111-1111-1111-111111111111' | Out-Null
         $migrate = $script:Migrate.Clone(); $migrate.InstalledVersion = $Version
-        @(Repair-AtlasToolboxRecord @migrate) | Should -Contain "Set the 'PowerSaving' record to 0: the Atlas power plan is active."
+        @(Repair-AtlasToolboxRecord @migrate) | Should -Contain "Set the 'PowerSaving' record to 0: the Aether power plan is active."
         (Get-TestRecord PowerSaving).State | Should -Be 0
         (Get-ItemProperty -LiteralPath "$script:StateRoot\PowerSaving").PreviousPowerSchemeGuid | Should -Be '381b4222-f694-41f0-9685-ff5bb260df2e'
         @(Repair-AtlasToolboxRecord @migrate) | Should -HaveCount 0
@@ -914,7 +914,7 @@ Describe 'Atlas.InstallState Toolbox record migration' {
         else { $result.State | Should -Be $expected }
     }
 
-    It 'changes nothing on an update from Atlas <Version>' -TestCases @(
+    It 'changes nothing on an update from Aether <Version>' -TestCases @(
         @{ Version = '0.6.0' }, @{ Version = '0.6.1-rc1' }, @{ Version = '1.0.0' }, @{ Version = '' }
     ) {
         param($Version)
@@ -931,7 +931,7 @@ Describe 'Atlas.InstallState Toolbox record migration' {
         New-TestRecord $Name $State
         $lines = @(Repair-AtlasToolboxRecord @script:Migrate)
         Get-TestRecord $Name | Should -BeNullOrEmpty
-        $lines | Should -Be @("Removed the '$Name' record (state $State): only the old Atlas Toolbox wrote it, and its choices never reached this PC.")
+        $lines | Should -Be @("Removed the '$Name' record (state $State): only the old Aether Toolbox wrote it, and its choices never reached this PC.")
     }
 
     It 'sets <Name> from the launcher that applied it: <Launcher>' -TestCases @(
@@ -992,7 +992,7 @@ Describe 'Atlas.InstallState Toolbox record migration' {
             $key.Dispose()
         }
         Get-TestRecord ContextMenuTerminals | Should -BeNullOrEmpty
-        $lines | Should -Be @("Removed the 'ContextMenuTerminals' record (state 0): only the old Atlas Toolbox wrote it, in its own numbering, and the terminal menu this PC has couldn't be read.")
+        $lines | Should -Be @("Removed the 'ContextMenuTerminals' record (state 0): only the old Aether Toolbox wrote it, in its own numbering, and the terminal menu this PC has couldn't be read.")
     }
 
     It 'leaves a terminal menu record with a launcher path to the legacy choices step' {
@@ -1048,7 +1048,7 @@ Describe 'Atlas.InstallState Toolbox record migration' {
 
         New-TestRecord $From 1
         Repair-AtlasToolboxRecord @script:Migrate | Out-Null
-        (Get-TestRecord $To).State | Should -Be 0 -Because 'with no reading of the PC the Atlas record stays'
+        (Get-TestRecord $To).State | Should -Be 0 -Because 'with no reading of the PC the Aether record stays'
 
         New-TestRecord $From 1
         Mock $Live -ModuleName Atlas.InstallState { 1 }
@@ -1059,13 +1059,13 @@ Describe 'Atlas.InstallState Toolbox record migration' {
 
     It 'gives a Recall record named in other letter case its exact name' {
         New-TestRecord recall 0
-        @(Repair-AtlasToolboxRecord @script:Migrate) | Should -Be @("Renamed the old Atlas Toolbox's 'recall' record to 'Recall'.")
+        @(Repair-AtlasToolboxRecord @script:Migrate) | Should -Be @("Renamed the old Aether Toolbox's 'recall' record to 'Recall'.")
         $record = Get-TestRecord Recall
         $record.Name | Should -BeExactly 'Recall'
         $record.State | Should -Be 0
     }
 
-    It 'replaces the Toolbox''s CPU Idle menu with a record for Atlas''s, and drops its record' {
+    It 'replaces the Toolbox''s CPU Idle menu with a record for Aether''s, and drops its record' {
         $menu = New-Item -Path "$script:ClassesRoot\DesktopBackground\Shell\Idle\Shell\Disable Idle" -Force
         New-ItemProperty -LiteralPath "$script:ClassesRoot\DesktopBackground\Shell\Idle" -Name MUIVerb -Value 'CPU Idle' | Out-Null
         $null = $menu
@@ -1092,7 +1092,7 @@ Describe 'Atlas.InstallState Toolbox record migration' {
     # move read too. Each case is one record, by its key, state and launcher path,
     # on an update from the version given; its result is the record left, or null
     # when none is. Rules that read the PC as well have cases of their own above.
-    It 'leaves each shared record as Atlas Manager reads it: <name>' -ForEach @(
+    It 'leaves each shared record as Aether OS reads it: <name>' -ForEach @(
         (Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures\windows-transition\toolbox-records.json') -Raw | ConvertFrom-Json) |
             ForEach-Object { @{ name = $_.name; version = $_.version; record = $_.key; state = $_.state; path = $_.path; result = $_.result } }
     ) {

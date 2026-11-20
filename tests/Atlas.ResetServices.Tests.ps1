@@ -170,7 +170,7 @@ Describe 'Reset Services public adapter behavior' {
         $output = & $script:publicResetPath -Silent
 
         $output | Should -BeExactly `
-            'Atlas service defaults were restored. A restart is required to apply every change.'
+            'Aether service defaults were restored. A restart is required to apply every change.'
         Should -Invoke -CommandName Invoke-AtlasTrustedInstaller -Times 1 -Exactly `
             -ParameterFilter { $Operation -ceq 'ResetServices' -and $RestoreSource -ceq 'ToggleDefaults' }
     }

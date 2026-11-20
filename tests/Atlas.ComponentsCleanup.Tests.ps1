@@ -298,7 +298,7 @@ Describe 'Components phase deferred and exact-user cleanup behavior' {
         $script:CbsUninstallCalls | Should -Be 0
     }
 
-    It 'sets the core service up for removal on a PC Atlas already removed Defender from, whatever it reads' {
+    It 'sets the core service up for removal on a PC Aether already removed Defender from, whatever it reads' {
         $script:PhaseOptions = @('defender-disable')
         $script:PackageStates['Z-Atlas-NoDefender-Package'] = 'Installed'
         $script:PackageStates['Z-Atlas-NoTelemetry-Package'] = 'Installed'
@@ -344,7 +344,7 @@ Describe 'Components phase deferred and exact-user cleanup behavior' {
         @($script:CoreServiceCalls) | Should -Be @('Removed')
     }
 
-    It 'warns, and still installs NoTelemetry, when Defender is missing and no Atlas package removed it' {
+    It 'warns, and still installs NoTelemetry, when Defender is missing and no Aether package removed it' {
         $script:PhaseOptions = @('defender-enable')
         $script:DefenderPresent = $false
 
@@ -352,7 +352,7 @@ Describe 'Components phase deferred and exact-user cleanup behavior' {
 
         @($script:LogCalls | Where-Object {
                 $_.Level -eq 'Warning' -and
-                $_.Message -ceq "Microsoft Defender isn't on this PC and no Atlas package removed it, so Atlas can't bring it back."
+                $_.Message -ceq "Microsoft Defender isn't on this PC and no Aether package removed it, so Aether can't bring it back."
             }).Count | Should -Be 1
         @($script:Events | Where-Object { $_ -like 'Install:*' }) | Should -Be @('Install:*Z-Atlas-NoTelemetry-Package*')
         $script:CbsUninstallCalls | Should -Be 0

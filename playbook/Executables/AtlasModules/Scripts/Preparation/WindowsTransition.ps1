@@ -292,7 +292,7 @@ function Test-AtlasWindowsTransitionJournalShape($Journal) {
 # which only administrators write. A Windows that rebuilds itself keeps Program
 # Files, but may not keep the registry key that holds the record.
 function Get-AtlasTransitionCopyPath {
-    return [IO.Path]::Combine([Environment]::GetFolderPath('ProgramFiles'), 'Atlas Setup Recovery\WindowsTransition\journal.json')
+    return [IO.Path]::Combine([Environment]::GetFolderPath('ProgramFiles'), 'Aether Setup Recovery\WindowsTransition\journal.json')
 }
 
 function Write-AtlasTransitionCopy([string]$Json) {
@@ -590,7 +590,7 @@ function Test-AtlasWindowsTransitionPreflight([int64]$MinimumFreeBytes = 6GB) {
         # last full check found.
         $finding = Get-AtlasTransitionStoreFinding @(Get-AtlasTransitionCbsLogTail)
         $listed = if ($null -ne $finding) { (@($finding.Items | ForEach-Object { "$($_.Kind) $($_.Path)" }) -join '; ') } else { 'no store check in the servicing log' }
-        $pattern = if (Test-AtlasTransitionKnownStoreDamage $finding @(Get-AtlasInstalledAtlasPackage)) { 'the known Atlas package pattern' } else { 'other' }
+        $pattern = if (Test-AtlasTransitionKnownStoreDamage $finding @(Get-AtlasInstalledAtlasPackage)) { 'the known Aether package pattern' } else { 'other' }
         Write-AtlasTransitionEvidence "component store is repairable ($pattern): $listed; going on"
     }
     elseif ($health -eq 'NonRepairable') {
@@ -622,7 +622,7 @@ function Get-AtlasTransitionStateDocument {
     if (-not [IO.File]::Exists($path)) { return $null }
     try { return [IO.File]::ReadAllText($path) | ConvertFrom-Json -ErrorAction Stop }
     catch {
-        Write-AtlasTransitionEvidence "the Atlas state document could not be read: $($_.Exception.Message)"
+        Write-AtlasTransitionEvidence "the Aether state document could not be read: $($_.Exception.Message)"
         return $null
     }
 }
@@ -632,7 +632,7 @@ function Get-AtlasTransitionLegacyVersion {
             @('SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation', 'Model'),
             @('SOFTWARE\Microsoft\Windows NT\CurrentVersion', 'RegisteredOrganization'))) {
         $value = Get-AtlasTransitionValue $marker[0] $marker[1]
-        if ($value.Present -and [string]$value.Data -match '^Atlas Playbook v?(\d+\.\d+\.\d+)$') { $Matches[1] }
+        if ($value.Present -and [string]$value.Data -match '^Aether Playbook v?(\d+\.\d+\.\d+)$') { $Matches[1] }
     }
 }
 
@@ -819,7 +819,7 @@ function Get-AtlasTransitionMachineFact([string]$UserSid, [switch]$MachineOnly) 
         DefenderPackage = Get-AtlasTransitionDefenderPackageState
         Appx = @(if (-not $MachineOnly) { Get-AtlasTransitionAppxName })
         Toolbox = Test-AtlasTransitionToolboxInstalled (Test-AtlasTransitionKey 'SOFTWARE\AtlasOS\Toolbox') `
-            (Test-AtlasTransitionPath ([IO.Path]::Combine([Environment]::GetFolderPath('ProgramFiles'), 'Atlas Toolbox\AtlasToolbox.exe')))
+            (Test-AtlasTransitionPath ([IO.Path]::Combine([Environment]::GetFolderPath('ProgramFiles'), 'Aether Toolbox\AtlasToolbox.exe')))
         CoreIsolationOff = Test-AtlasTransitionCoreIsolationOff
         Browsers = @(Get-AtlasTransitionBrowser)
         LanguageHotkey = if ($MachineOnly) { $null } else { Get-AtlasTransitionLanguageHotkey -UserSid $UserSid }
@@ -1106,7 +1106,7 @@ function ConvertTo-AtlasTransitionCarry($Facts, [string[]]$AtlasPackages = @()) 
 
 function Get-AtlasTransitionCarry([string[]]$AtlasPackages = @()) {
     $carry = ConvertTo-AtlasTransitionCarry (Get-AtlasTransitionMachineFact) $AtlasPackages
-    Write-AtlasTransitionEvidence "recorded the Atlas install: version $(if ($carry.atlasVersion) { $carry.atlasVersion } else { 'none' }), options ($($carry.optionSource)) $($carry.options -join ','), $(@($carry.toggles).Count) toggle records, $(@($carry.appx).Count) apps, Atlas files $($carry.atlasModules), Edge $($carry.edge), OneDrive $($carry.oneDrive), Defender $($carry.defender)"
+    Write-AtlasTransitionEvidence "recorded the Aether install: version $(if ($carry.atlasVersion) { $carry.atlasVersion } else { 'none' }), options ($($carry.optionSource)) $($carry.options -join ','), $(@($carry.toggles).Count) toggle records, $(@($carry.appx).Count) apps, Aether files $($carry.atlasModules), Edge $($carry.edge), OneDrive $($carry.oneDrive), Defender $($carry.defender)"
     return $carry
 }
 
@@ -1541,9 +1541,9 @@ function Complete-AtlasWindowsTransition([string]$Root = (Get-AtlasWindowsTransi
     if ($Rebased -and $null -ne (Get-AtlasWindowsTransitionRebase $Root)) {
         $journal = Read-AtlasWindowsTransition $Root
         $journal.rebuild.rebuilt = $false
-        Add-AtlasTransitionHistory $journal 'rebase' 'Atlas was put back on the rebuilt Windows'
+        Add-AtlasTransitionHistory $journal 'rebase' 'Aether was put back on the rebuilt Windows'
         Write-AtlasWindowsTransition $journal $Root
-        'Atlas was put back on the rebuilt Windows.'
+        'Aether was put back on the rebuilt Windows.'
     }
     $result = Restore-AtlasWindowsTransition -Outcome Installed -Root $Root
     "Windows Update settings put back: $(@($result.restored) -join ', ')"
@@ -1558,10 +1558,10 @@ function Assert-AtlasWindowsTransitionAllowsAme([int]$WindowsBuild, [string]$Roo
     $open = Test-AtlasWindowsTransitionOpen $Root
     if ($null -eq $open) { return }
     if (-not $open.Readable) {
-        throw "Aether Manager's record of the Windows Update settings it changed can't be read: $($open.Error) Open Aether Manager to continue."
+        throw "Aether OS's record of the Windows Update settings it changed can't be read: $($open.Error) Open Aether OS to continue."
     }
     if ($open.Kind -eq 'transition' -and ($WindowsBuild -ne $open.TargetBuild -or $open.Rebuild -ne 'in-place')) {
-        throw 'Aether Manager is moving this PC to a newer Windows release. Finish the move in Aether Manager, which then installs Atlas.'
+        throw 'Aether OS is moving this PC to a newer Windows release. Finish the move in Aether OS, which then installs Atlas.'
     }
 }
 
@@ -1571,6 +1571,6 @@ function Assert-AtlasWindowsTransitionAllowsAme([int]$WindowsBuild, [string]$Roo
 function Assert-AtlasToggleAllowedDuringTransition([string]$Name, [string]$Root = (Get-AtlasWindowsTransitionRoot)) {
     if (@('ToggleWindowsUpdates', 'PauseUpdates') -notcontains $Name) { return }
     if ($null -ne (Test-AtlasWindowsTransitionOpen $Root)) {
-        throw 'Aether Manager is updating Windows and has turned Windows Update on for now. Finish or stop that update in Aether Manager, then change this setting.'
+        throw 'Aether OS is updating Windows and has turned Windows Update on for now. Finish or stop that update in Aether OS, then change this setting.'
     }
 }

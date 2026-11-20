@@ -294,7 +294,7 @@ function Set-AtlasNetworkDefaults {
     if ($Mode -eq 'Atlas') {
         $result = Invoke-AtlasNetworkAdapterDefault
         Write-AtlasLog -Message (
-            "Applied Atlas network defaults to {0} adapter class key(s); {1} registry value(s) changed." -f
+            "Applied Aether network defaults to {0} adapter class key(s); {1} registry value(s) changed." -f
             $result.AdapterClassKeyCount, $result.ChangedValueCount
         )
         return $result

@@ -192,7 +192,7 @@ Describe 'Install report event log section' {
         $script:Summary | Should -Contain "$script:AppxLog log: only the newest 2 warnings and information over the install were read, back to $([datetime]'2026-01-01 00:10')."
     }
 
-    It 'lists each AppX deployment event that names a package Atlas removes' {
+    It 'lists each AppX deployment event that names a package Aether removes' {
         $script:EventReadLimit = 5000
         New-RemovalModule -Root $script:atlasModules -Name 'MSTeams*', 'Microsoft.MicrosoftEdge_8wekyb3d8bbwe', 'Microsoft.ScreenSketch*' `
             -Option @{ 'Microsoft.ScreenSketch*' = 'remove-snipping-tool' }
@@ -225,7 +225,7 @@ Describe 'Install report event log section' {
 
         $lines = @(& $script:EventCollector)
 
-        $start = [array]::IndexOf($lines, '  Events that name a package Atlas removes (newest 2, up to 10):')
+        $start = [array]::IndexOf($lines, '  Events that name a package Aether removes (newest 2, up to 10):')
         $start | Should -BeGreaterThan 0
         $lines[$start + 1] | Should -Be '    2026-10-28 17:26:00 Information 400: Deployment Remove operation with target volume C: on Package MSTeams_26260.1717.5229.7049_x64__8wekyb3d8bbwe from: (MSTeams.msix) finished successfully.'
         $lines[$start + 2] | Should -BeLike '    2026-10-28 17:25:58 Warning     431: Removal of Microsoft.MicrosoftEdge.Stable_*'
@@ -351,7 +351,7 @@ Describe 'Install report health check section' {
     It 'records a health check that cannot run, with its stderr, instead of failing the section' {
         Set-Content -LiteralPath (Join-Path $script:HealthEntry 'Test-AtlasHealth.ps1') -Value @(
             "Write-Output 'checking'"
-            "[Console]::Error.WriteLine('Atlas is not installed on this machine.')"
+            "[Console]::Error.WriteLine('Aether is not installed on this machine.')"
             'exit 2'
         )
         # As the report runs it.
@@ -360,7 +360,7 @@ Describe 'Install report health check section' {
         $lines = @(& $script:HealthCollector)
 
         $lines | Should -Contain 'checking'
-        $lines | Should -Contain 'Atlas is not installed on this machine.'
+        $lines | Should -Contain 'Aether is not installed on this machine.'
         $lines | Should -Contain 'Health check exit code: 2 (the check could not run)'
         $script:Summary | Should -Contain 'Health check: the check could not run (exit code 2).'
     }
@@ -425,22 +425,22 @@ Describe 'Install report AppX removal leftovers' {
         }
     }
 
-    It 'lists every package Atlas removes that any account has, with each account''s install state' {
+    It 'lists every package Aether removes that any account has, with each account''s install state' {
         $lines = @(& $script:AppsCollector)
 
-        $start = [array]::IndexOf($lines, '-- AppX packages Atlas removes, still registered for any account (2 patterns) --')
+        $start = [array]::IndexOf($lines, '-- AppX packages Aether removes, still registered for any account (2 patterns) --')
         $start | Should -BeGreaterThan 0
         $lines[($start + 1)..($lines.Count - 1)] | Should -Be @(
             'Registered: MSTeams_26260.1717.5229.7049_x64__8wekyb3d8bbwe'
             '  status=Ok; bundle=False; partially staged=False; non-removable=False; signature=Store'
             '  User registration: S-1-5-21-1000-1000-1000-1000 [S-1-5-21-1000-1000-1000-1000]: Installed'
-            'Provisioned: Microsoft.MicrosoftEdge_44.19041.1266.0_neutral__8wekyb3d8bbwe (Atlas only warns when this one stays)'
+            'Provisioned: Microsoft.MicrosoftEdge_44.19041.1266.0_neutral__8wekyb3d8bbwe (Aether only warns when this one stays)'
         )
         Should -Invoke Get-AppxPackage -Times 1 -Exactly -ParameterFilter {
             $AllUsers -and "$PackageTypeFilter" -match 'Bundle' -and "$PackageTypeFilter" -match 'Main'
         }
         # Only what Atlas must remove counts as left behind.
-        $script:Summary | Should -Be @('AppX packages Atlas removes: 1 still registered and 0 still provisioned; section 7 lists each with its accounts.')
+        $script:Summary | Should -Be @('AppX packages Aether removes: 1 still registered and 0 still provisioned; section 7 lists each with its accounts.')
     }
 
     It 'leaves out a family whose option wasn''t chosen' {
@@ -448,7 +448,7 @@ Describe 'Install report AppX removal leftovers' {
 
         $lines = @(& $script:AppsCollector)
 
-        $lines | Should -Contain '-- AppX packages Atlas removes, still registered for any account (1 patterns) --'
+        $lines | Should -Contain '-- AppX packages Aether removes, still registered for any account (1 patterns) --'
         $lines | Should -Contain "Not checked, as their option wasn't chosen in state.json: Microsoft.MicrosoftEdge_8wekyb3d8bbwe (uninstall-edge)"
         @($lines | Where-Object { $_ -like 'Provisioned: *' }) | Should -HaveCount 0
     }
@@ -490,15 +490,15 @@ Describe 'Install report AppX removal leftovers' {
         $lines[$start + 2] | Should -Be 'MSTeams_1.0.0.1_x64__8wekyb3d8bbwe: listed for S-1-5-21-1000-1000-1000-1000 (stale: its files are gone)'
         Should -Invoke Get-AppxAllUserStorePackage -Times 1 -Exactly -ParameterFilter { @($Pattern) -join ',' -eq 'MSTeams*,Microsoft.MicrosoftEdge_8wekyb3d8bbwe' }
         # One summary line, from the fuller of the two lists, without the stale entry.
-        $script:Summary | Should -Be @("AppX packages Atlas removes: 1 still listed, with their files, in the AppX store's registry; section 7 lists the accounts each is listed for.")
+        $script:Summary | Should -Be @("AppX packages Aether removes: 1 still listed, with their files, in the AppX store's registry; section 7 lists the accounts each is listed for.")
     }
 
-    It 'says so when Atlas has no removal list on this machine' {
+    It 'says so when Aether has no removal list on this machine' {
         $script:atlasModules = Join-Path $TestDrive 'Missing'
 
         $lines = @(& $script:AppsCollector)
 
-        $lines[-1] | Should -Be "-- AppX packages Atlas removes: no removal list under '$script:atlasModules' --"
+        $lines[-1] | Should -Be "-- AppX packages Aether removes: no removal list under '$script:atlasModules' --"
         Should -Invoke Get-AppxPackage -Times 0 -Exactly -ParameterFilter { $AllUsers }
     }
 }
@@ -574,7 +574,7 @@ Describe 'Install report AppX store registry' {
     }
 }
 
-Describe 'Install report Atlas servicing packages' {
+Describe 'Install report Aether servicing packages' {
     BeforeEach {
         $script:testHive = [Microsoft.Win32.Registry]::CurrentUser
         $script:testPackages = 'Software\AtlasInstallReportTest\Packages'
@@ -607,7 +607,7 @@ Describe 'Install report Atlas servicing packages' {
         )
     }
 
-    It 'says when no Atlas package is installed' {
+    It 'says when no Aether package is installed' {
         New-Item -Path "HKCU:\$script:testPackages\Package_for_RollupFix~31bf3856ad364e35~amd64~~26100.1.1.1" -Force | Out-Null
 
         Get-AtlasServicingPackageLine -Hive $script:testHive -Packages $script:testPackages | Should -Be 'none installed'

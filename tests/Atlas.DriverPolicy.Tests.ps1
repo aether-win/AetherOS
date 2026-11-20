@@ -76,7 +76,7 @@ Describe 'Applying the drivers choice' {
         $text = "Windows Registry Editor Version 5.00`r`n`r`n[HKEY_LOCAL_MACHINE\SOFTWARE\Applied]`r`n`"First`"=dword:00000001`r`n`r`n" +
             "[HKEY_CURRENT_USER\Software\Odd]`r`n`"Name`"=dword:00000001`r`n"
         [IO.File]::WriteAllText($file, $text, [Text.Encoding]::Unicode)
-        { Import-AtlasRegistryFile $file $script:registryLog $script:preparationRoot } | Should -Throw '*Atlas doesn''t apply*'
+        { Import-AtlasRegistryFile $file $script:registryLog $script:preparationRoot } | Should -Throw '*Aether doesn''t apply*'
         Test-Path -LiteralPath ($script:preparationBase + 'Applied') | Should -BeFalse
     }
 }

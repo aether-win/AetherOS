@@ -169,7 +169,7 @@ Describe 'Resolve-AtlasInstallMode' {
     ) {
         param($Version)
         $script:LegacyVersion = $Version
-        Mock Get-ItemProperty -ModuleName Atlas.InstallState { [pscustomobject]@{ Model = "Atlas Playbook $script:LegacyVersion"; RegisteredOrganization = "Atlas Playbook $script:LegacyVersion" } }
+        Mock Get-ItemProperty -ModuleName Atlas.InstallState { [pscustomobject]@{ Model = "Aether Playbook $script:LegacyVersion"; RegisteredOrganization = "Aether Playbook $script:LegacyVersion" } }
         Resolve-AtlasInstallMode -TargetVersion '0.6.0' -WindowsPath (Join-Path $TestDrive 'Legacy') | Should -Be 'Upgrade'
     }
 
@@ -182,7 +182,7 @@ Describe 'Resolve-AtlasInstallMode' {
         Set-AtlasStateInstall -InstallState $install -Path (Join-Path $windows 'AtlasOS\state.json') | Out-Null
         { Resolve-AtlasInstallMode -TargetVersion '0.6.0' -WindowsPath $windows } | Should -Throw '*not a declared upgrade source*'
     }
-    It 'is Fresh on a machine with no Atlas, Upgrade for another version, Reapply for the same version' {
+    It 'is Fresh on a machine with no Aether, Upgrade for another version, Reapply for the same version' {
         $windows = Join-Path $TestDrive 'Windows'
         New-Item -Path $windows -ItemType Directory -Force | Out-Null
         Resolve-AtlasInstallMode -TargetVersion '0.6.0' -WindowsPath $windows | Should -Be 'Fresh'
@@ -193,15 +193,15 @@ Describe 'Resolve-AtlasInstallMode' {
         Resolve-AtlasInstallMode -TargetVersion '0.5.0' -WindowsPath $windows | Should -Be 'Reapply'
     }
 
-    It 'rejects installed Atlas files without version evidence' {
+    It 'rejects installed Aether files without version evidence' {
         $windows = Join-Path $TestDrive 'LegacyWindows'
         New-Item -Path (Join-Path $windows 'AtlasModules\Scripts') -ItemType Directory -Force | Out-Null
         { Resolve-AtlasInstallMode -TargetVersion '0.6.0' -WindowsPath $windows } | Should -Throw '*version could not be established*'
     }
 
-    It 'is Rebase after Windows rebuilt itself while Aether Manager moved it, with or without the markers' {
+    It 'is Rebase after Windows rebuilt itself while Aether OS moved it, with or without the markers' {
         Mock Get-AtlasWindowsTransitionRebase -ModuleName Atlas.InstallState { [pscustomobject]@{ AtlasVersion = '0.5.0'; Options = @('defender-disable') } }
-        Mock Get-ItemProperty -ModuleName Atlas.InstallState { [pscustomobject]@{ Model = 'Atlas Playbook v0.5.0'; RegisteredOrganization = 'Atlas Playbook v0.5.0' } }
+        Mock Get-ItemProperty -ModuleName Atlas.InstallState { [pscustomobject]@{ Model = 'Aether Playbook v0.5.0'; RegisteredOrganization = 'Aether Playbook v0.5.0' } }
         $windows = Join-Path $TestDrive 'Rebuilt'
         New-Item -Path $windows -ItemType Directory -Force | Out-Null
         Resolve-AtlasInstallMode -TargetVersion '0.6.0' -WindowsPath $windows | Should -Be 'Rebase'
@@ -350,7 +350,7 @@ Describe 'Front door probe before the requirements' {
         Mock Get-AtlasInstalledAtlasPackage { 'Z-Atlas-NoDefender-Package~31bf3856ad364e35~amd64~~5.0.0.0' }
     }
 
-    It 'reads the mode, the way this installation treats the choices and Atlas''s packages' {
+    It 'reads the mode, the way this installation treats the choices and Aether''s packages' {
         $probe = Get-AtlasInstallProbe @script:Probe -ChooseAgain
         $probe.Mode | Should -BeExactly 'Upgrade'
         $probe.Choices | Should -BeExactly 'ChooseAgain'
@@ -423,7 +423,7 @@ Describe 'Install capture' {
         Mock Get-AtlasInstalledVersion { '0.5.0' }
         Mock Repair-AtlasToolboxRecord {
             $script:CaptureCalls.Add("Repair:$InstalledVersion")
-            "Removed the 'Mitigations' record (state 2): only the old Atlas Toolbox wrote it, and its choices never reached this PC."
+            "Removed the 'Mitigations' record (state 2): only the old Aether Toolbox wrote it, and its choices never reached this PC."
         }
         Mock Resolve-AtlasKeptOption {
             $script:CaptureCalls.Add("Kept:$(@($Requested) -join ',')")
@@ -460,7 +460,7 @@ Describe 'Install capture' {
         $options = if ($Recorded -eq 'shown') { $script:Shown } else { $script:Asked }
         $message | Should -BeExactly "Aether install state ready for $Mode of $script:Target with options: $($options -join ', ')."
         if ($Calls -contains 'Repair:0.5.0') {
-            $script:SessionLines | Should -Contain "Removed the 'Mitigations' record (state 2): only the old Atlas Toolbox wrote it, and its choices never reached this PC."
+            $script:SessionLines | Should -Contain "Removed the 'Mitigations' record (state 2): only the old Aether Toolbox wrote it, and its choices never reached this PC."
         }
         if ($Calls -contains 'Kept:<asked>') {
             $script:SessionLines | Should -Contain 'WARNING: A reading failed.'
@@ -478,7 +478,7 @@ Describe 'Install capture' {
     }
 
     It 'continues a run whose steps began as it began, without migrating or reading the PC again: <Case>' -TestCases @(
-        @{ Case = 'an upgrade from Atlas 0.5.0 that keeps the choices'; Mode = 'Upgrade'; Began = 'Keep'; Asked = 'Keep'; Note = $null }
+        @{ Case = 'an upgrade from Aether 0.5.0 that keeps the choices'; Mode = 'Upgrade'; Began = 'Keep'; Asked = 'Keep'; Note = $null }
         @{ Case = 'a reinstall that began choosing again'; Mode = 'Reapply'; Began = 'ChooseAgain'; Asked = 'Keep'
             Note = "Continuing the unfinished installation as it began, choosing again; its choices can't change now." }
     ) {
@@ -516,7 +516,7 @@ Describe 'Install capture' {
 Describe 'AME Wizard''s start of an install' {
     BeforeAll {
         $script:Target = Get-AtlasPlaybookVersion -PlaybookPath $script:PlaybookPath
-        $script:Repaired = "Removed the 'Mitigations' record (state 2): only the old Atlas Toolbox wrote it, and its choices never reached this PC."
+        $script:Repaired = "Removed the 'Mitigations' record (state 2): only the old Aether Toolbox wrote it, and its choices never reached this PC."
     }
     BeforeEach {
         $script:WizardCalls = New-Object 'Collections.Generic.List[string]'
@@ -672,7 +672,7 @@ Describe 'User account policy preflight' {
 }
 
 Describe 'Front door Windows Security readings' {
-    It 'reads every shared case as Atlas Manager does' {
+    It 'reads every shared case as Aether OS does' {
         # Windows PowerShell 5.1 passes a JSON array on as one object.
         $cases = @(Get-Content -LiteralPath $script:SecurityCases -Raw | ConvertFrom-Json | ForEach-Object { $_ })
         $cases.Count | Should -BeGreaterThan 1
@@ -744,7 +744,7 @@ Describe 'Front door Windows Security readings' {
         }
     }
 
-    It 'reads a QWORD that fits in 32 bits as Atlas Manager does, and leaves a larger one unread' {
+    It 'reads a QWORD that fits in 32 bits as Aether OS does, and leaves a larger one unread' {
         $switches = Get-AtlasDefenderSwitch -Registry @{
             'Features'             = @{ TamperProtection = [long]4 }
             'Real-Time Protection' = @{ DisableRealtimeMonitoring = [long]1 }
@@ -912,24 +912,24 @@ Describe 'Front door requirements and staging' {
 
         It 'says truthfully what this installation does with it: <Case>' -TestCases @(
             @{ Case = 'restored on a fresh installation'; Packages = @('NoDefender'); Option = 'defender-enable'; Mode = 'Fresh'; ChooseAgain = $false
-                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Atlas's NoDefender package; this installation takes that package off, so Defender is back after the restart. There is nothing to turn off now" }
+                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Aether's NoDefender package; this installation takes that package off, so Defender is back after the restart. There is nothing to turn off now" }
             @{ Case = 'restored on a Rebase'; Packages = @('NoDefender', 'NoTelemetry'); Option = 'defender-enable'; Mode = 'Rebase'; ChooseAgain = $false
-                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Atlas's NoDefender package; this installation takes that package off*" }
+                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Aether's NoDefender package; this installation takes that package off*" }
             @{ Case = 'restored choosing again'; Packages = @('NoDefender'); Option = 'defender-enable'; Mode = 'Reapply'; ChooseAgain = $true
-                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Atlas's NoDefender package; this installation takes that package off*" }
+                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Aether's NoDefender package; this installation takes that package off*" }
             @{ Case = 'kept removed, keeping the choices'; Packages = @('NoDefender'); Option = 'defender-enable'; Mode = 'Upgrade'; ChooseAgain = $false
-                Passed = $false; Blocking = $false; Detail = "Microsoft Defender was removed by Atlas's NoDefender package, and keeping your choices leaves it removed, so this installation records it as removed. To bring it back, run again with -ChooseAgain, or use Toggle Defender in the Atlas folder afterwards" }
+                Passed = $false; Blocking = $false; Detail = "Microsoft Defender was removed by Aether's NoDefender package, and keeping your choices leaves it removed, so this installation records it as removed. To bring it back, run again with -ChooseAgain, or use Toggle Defender in the Aether folder afterwards" }
             @{ Case = 'removed, as chosen'; Packages = @('NoDefender'); Option = 'defender-disable'; Mode = 'Reapply'; ChooseAgain = $false
-                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Atlas's NoDefender package, so there is nothing to turn off" }
+                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Aether's NoDefender package, so there is nothing to turn off" }
             @{ Case = 'missing, though kept'; Packages = @('NoTelemetry'); Option = 'defender-enable'; Mode = 'Reapply'; ChooseAgain = $true
-                Passed = $false; Blocking = $false; Detail = "Microsoft Defender isn't on this PC, and no Atlas package removed it, so this installation can't bring it back. Install another antivirus app, or repair Windows to get Defender back" }
+                Passed = $false; Blocking = $false; Detail = "Microsoft Defender isn't on this PC, and no Aether package removed it, so this installation can't bring it back. Install another antivirus app, or repair Windows to get Defender back" }
             @{ Case = 'missing on a fresh installation'; Packages = @(); Option = 'defender-enable'; Mode = 'Fresh'; ChooseAgain = $false
-                Passed = $false; Blocking = $false; Detail = "Microsoft Defender isn't on this PC, and no Atlas package removed it*" }
+                Passed = $false; Blocking = $false; Detail = "Microsoft Defender isn't on this PC, and no Aether package removed it*" }
             @{ Case = 'missing, and removal chosen'; Packages = @(); Option = 'defender-disable'; Mode = 'Fresh'; ChooseAgain = $false
                 Passed = $true; Blocking = $true; Detail = "Microsoft Defender isn't on this PC, so there is nothing to turn off" }
             # The mode couldn't be probed, so nothing is said about this installation.
-            @{ Case = 'removed by Atlas, mode unknown'; Packages = @('NoDefender'); Option = 'defender-enable'; Mode = $null; ChooseAgain = $false
-                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Atlas's NoDefender package, so there is nothing to turn off" }
+            @{ Case = 'removed by Aether, mode unknown'; Packages = @('NoDefender'); Option = 'defender-enable'; Mode = $null; ChooseAgain = $false
+                Passed = $true; Blocking = $true; Detail = "Microsoft Defender was removed by Aether's NoDefender package, so there is nothing to turn off" }
             @{ Case = 'missing, mode unknown'; Packages = @(); Option = 'defender-enable'; Mode = $null; ChooseAgain = $true
                 Passed = $true; Blocking = $true; Detail = "Microsoft Defender isn't on this PC, so there is nothing to turn off" }
             # Nor when Atlas's packages couldn't be read.
@@ -948,7 +948,7 @@ Describe 'Front door requirements and staging' {
             $result.Passed | Should -Be $Passed -Because $Case
             $result.Blocking | Should -Be $Blocking -Because $Case
             $result.Detail | Should -BeLike $Detail -Because $Case
-            $result.Detail | Should -Not -BeLike '*earlier Atlas install*'
+            $result.Detail | Should -Not -BeLike '*earlier Aether install*'
             Should -Invoke Get-AtlasDefenderSwitch -Times 0
         }
     }
@@ -1128,9 +1128,9 @@ Describe 'Front door requirements and staging' {
 
 Describe 'Restart notice text' {
     It 'defaults to the English notice and otherwise keeps the caller''s text within shutdown.exe limits' {
-        Get-AtlasRestartComment -Comment $null | Should -Be 'Atlas installation complete.'
-        Get-AtlasRestartComment -Comment '   ' | Should -Be 'Atlas installation complete.'
-        $translated = 'Neustart: Atlas ist f' + [char]0x00FC + 'r Sie fertig ' + [char]0x2713
+        Get-AtlasRestartComment -Comment $null | Should -Be 'Aether installation complete.'
+        Get-AtlasRestartComment -Comment '   ' | Should -Be 'Aether installation complete.'
+        $translated = 'Neustart: Aether ist f' + [char]0x00FC + 'r Sie fertig ' + [char]0x2713
         Get-AtlasRestartComment -Comment "  $translated " | Should -BeExactly $translated
         Get-AtlasRestartComment -Comment "a`tb`r`nc`0d" | Should -Be 'a b  c d'
         (Get-AtlasRestartComment -Comment ('x' * 600)).Length | Should -Be 512

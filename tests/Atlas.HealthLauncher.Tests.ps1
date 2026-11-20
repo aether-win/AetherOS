@@ -9,7 +9,7 @@ BeforeAll {
     $script:HealthEntry = Join-Path $script:HealthScripts 'Entry\Test-AtlasHealth.ps1'
 }
 
-Describe 'Atlas health launcher process' {
+Describe 'Aether health launcher process' {
     BeforeEach {
         Mock -ModuleName Atlas.Toggles Wait-AtlasExit {}
         Mock -ModuleName Atlas.Toggles Write-Host {}

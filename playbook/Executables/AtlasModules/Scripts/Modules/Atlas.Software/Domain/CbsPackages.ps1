@@ -298,8 +298,8 @@ function Get-AtlasComponentCleanupBlocker {
         [AllowEmptyCollection()][string[]]$AtlasPackages = @()
     )
 
-    if ($AtlasPackages.Count -gt 0) { return "the Atlas servicing packages are installed ($($AtlasPackages -join ', '))" }
-    if ($IsUpgrade) { return 'this updates an earlier Atlas install' }
+    if ($AtlasPackages.Count -gt 0) { return "the Aether servicing packages are installed ($($AtlasPackages -join ', '))" }
+    if ($IsUpgrade) { return 'this updates an earlier Aether install' }
     return $null
 }
 

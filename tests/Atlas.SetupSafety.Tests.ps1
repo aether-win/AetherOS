@@ -120,13 +120,13 @@ Describe 'First-logon security before shell registration' {
         Should -Invoke Register-AtlasDesktopCleanup -Times 0 -Exactly
         Should -Invoke Add-Content -Times 1 -Exactly -ParameterFilter { $LiteralPath -eq $script:log -and "$Value" -like '*custom Windows shell*' }
     }
-    It 'queues Atlas without recreating a RunOnce key that already holds commands' {
+    It 'queues Aether without recreating a RunOnce key that already holds commands' {
         $script:config.mode = 'configured'
         # New-Item -Force would recreate the existing key empty and drop the queued commands.
         Mock Test-Path { $true } -ParameterFilter { $LiteralPath -like '*\RunOnce' }
         & $script:QueueSetup
         Should -Invoke New-Item -Times 0 -Exactly
-        Should -Invoke New-ItemProperty -Times 1 -Exactly -ParameterFilter { $Name -eq 'Atlas ISO setup' }
+        Should -Invoke New-ItemProperty -Times 1 -Exactly -ParameterFilter { $Name -eq 'Aether ISO setup' }
     }
     It 'leaves RunOnce alone in before-desktop mode' {
         & $script:QueueSetup
@@ -163,7 +163,7 @@ Describe 'The drivers choice during ISO setup' {
 
     It 'stops setup with its own message when the drivers choice cannot be applied' {
         Set-Content -LiteralPath (Join-Path $TestDrive 'DriverPolicy.reg') -Value 'Windows Registry Editor Version 5.00'
-        Mock Import-AtlasRegistryFile { throw 'DriverPolicy.reg has a line Atlas doesn''t apply: odd' }
+        Mock Import-AtlasRegistryFile { throw 'DriverPolicy.reg has a line Aether doesn''t apply: odd' }
         { & $script:DriverStep } | Should -Throw '*could not apply the ISO driver policy*odd*'
     }
 

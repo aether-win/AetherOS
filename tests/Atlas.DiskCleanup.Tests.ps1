@@ -17,7 +17,7 @@ BeforeAll {
     }
 }
 
-Describe 'Atlas disk cleanup scope' {
+Describe 'Aether disk cleanup scope' {
     It 'rejects a user SID on the machine cleanup path before doing work' {
         { & $script:CleanupPath -Scope Machine -ExpectedUserSid 'S-1-5-18' } |
             Should -Throw '*must not accept a user SID*'

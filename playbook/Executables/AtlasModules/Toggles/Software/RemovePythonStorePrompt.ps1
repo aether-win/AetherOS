@@ -7,7 +7,7 @@ function Remove-AtlasPythonStoreAlias {
         throw 'Disabling the Python Store prompt requires selecting the App Installer aliases in App execution aliases.'
     }
     Write-AtlasNote -Text @(
-        'Windows cannot tell which package owns a python.exe alias, so Atlas opens the'
+        'Windows cannot tell which package owns a python.exe alias, so Aether opens the'
         'Settings page and leaves the choice to you. No Python files are deleted.'
     )
     Write-AtlasBlankLine

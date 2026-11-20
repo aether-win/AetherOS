@@ -69,7 +69,7 @@ Describe 'Set-AtlasDefenderChoice' {
             @($script:Events) | Should -Be @($Install, 'CoreService:Removed')
         }
 
-        It 'brings back a Defender Atlas removed, putting its core service back first: NoTelemetry <Telemetry>' -ForEach @(
+        It 'brings back a Defender Aether removed, putting its core service back first: NoTelemetry <Telemetry>' -ForEach @(
             @{ Telemetry = 'missing'; TelemetryState = $null; Expected = @('CoreService:Restored', 'Uninstall:*Z-Atlas-NoDefender-Package*', 'Install:*Z-Atlas-NoTelemetry-Package*:True') }
             @{ Telemetry = 'installed'; TelemetryState = 'Installed'; Expected = @('CoreService:Restored', 'Uninstall:*Z-Atlas-NoDefender-Package*') }
         ) {
@@ -81,7 +81,7 @@ Describe 'Set-AtlasDefenderChoice' {
             @($script:Events) | Should -Be $Expected
         }
 
-        It 'fails when Atlas''s package can''t be taken off, so the install never reports a Defender it lacks' {
+        It 'fails when Aether''s package can''t be taken off, so the install never reports a Defender it lacks' {
             $script:PackageStates['Z-Atlas-NoDefender-Package'] = 'Installed'
             $script:PackageStates['Z-Atlas-NoTelemetry-Package'] = 'Installed'
             $script:UninstallFailed = @('Z-Atlas-NoDefender-Package~31bf3856ad364e35~amd64~~5.0.0.0')
@@ -91,7 +91,7 @@ Describe 'Set-AtlasDefenderChoice' {
         }
 
         It 'changes nothing when the PC already matches: <Case>' -ForEach @(
-            @{ Case = 'Defender removed by Atlas, Remove chosen'; State = 'Disable'; Defender = 'Installed' }
+            @{ Case = 'Defender removed by Aether, Remove chosen'; State = 'Disable'; Defender = 'Installed' }
             @{ Case = 'removal waiting for the restart, Remove chosen'; State = 'Disable'; Defender = 'InstallPending' }
             @{ Case = 'Defender present, Keep chosen'; State = 'Enable'; Defender = $null }
             @{ Case = 'restore waiting for the restart, Keep chosen'; State = 'Enable'; Defender = 'UninstallPending' }
@@ -118,17 +118,17 @@ Describe 'Set-AtlasDefenderChoice' {
             @($script:Events) | Should -Be @('CoreService:Removed')
         }
 
-        It 'warns, and changes nothing, when Defender is missing and no Atlas package removed it' {
+        It 'warns, and changes nothing, when Defender is missing and no Aether package removed it' {
             $script:DefenderPresent = $false
 
             Set-AtlasDefenderChoice -State Enable | Should -BeFalse
 
             $script:Events | Should -BeNullOrEmpty
             @($script:Logs | Where-Object Level -eq 'Warning' | ForEach-Object Message) |
-                Should -Be @("Microsoft Defender isn't on this PC and no Atlas package removed it, so Atlas can't bring it back.")
+                Should -Be @("Microsoft Defender isn't on this PC and no Aether package removed it, so Aether can't bring it back.")
         }
 
-        It 'fails, and changes nothing, when Keep is chosen while Atlas''s removal still waits for a restart' {
+        It 'fails, and changes nothing, when Keep is chosen while Aether''s removal still waits for a restart' {
             $script:PackageStates['Z-Atlas-NoDefender-Package'] = 'InstallPending'
 
             { Set-AtlasDefenderChoice -State Enable } |
@@ -137,7 +137,7 @@ Describe 'Set-AtlasDefenderChoice' {
             $script:Events | Should -BeNullOrEmpty
         }
 
-        It 'warns, and changes nothing, when Remove is chosen while Atlas''s restore still waits for a restart: -Fresh <Fresh>' -ForEach @(
+        It 'warns, and changes nothing, when Remove is chosen while Aether''s restore still waits for a restart: -Fresh <Fresh>' -ForEach @(
             @{ Fresh = $false }
             @{ Fresh = $true }
         ) {
@@ -149,7 +149,7 @@ Describe 'Set-AtlasDefenderChoice' {
 
             $script:Events | Should -BeNullOrEmpty
             @($script:Logs | Where-Object Level -eq 'Warning' | ForEach-Object Message) |
-                Should -BeLike "Atlas's NoDefender package is still waiting for a restart to come off*Toggle Defender*"
+                Should -BeLike "Aether's NoDefender package is still waiting for a restart to come off*Toggle Defender*"
         }
 
         It 'redoes nothing on a second run once the first has removed Defender' {

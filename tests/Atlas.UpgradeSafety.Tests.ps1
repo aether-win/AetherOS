@@ -20,7 +20,7 @@ BeforeAll {
     }
 }
 
-Describe 'Atlas file replacement plan' {
+Describe 'Aether file replacement plan' {
     It 'maps <Mode> OOBE=<IsOobe> to stop=<Stop> remove=<Remove>' -TestCases @(
         @{ Mode = 'Fresh'; IsOobe = $false; Stop = $false; Remove = $false }
         @{ Mode = 'Fresh'; IsOobe = $true; Stop = $false; Remove = $false }
@@ -51,7 +51,7 @@ Describe 'Atlas file replacement plan' {
     }
 }
 
-Describe 'Atlas file replacement sequencing' {
+Describe 'Aether file replacement sequencing' {
     BeforeEach {
         $script:Events = [Collections.Generic.List[string]]::new()
         $script:AtlasExtractedExecutablesRoot = 'C:\extracted'
@@ -181,7 +181,7 @@ Describe 'Process Explorer choice before the reinstall' {
     }
 }
 
-Describe 'Installed Atlas file verification' {
+Describe 'Installed Aether file verification' {
     BeforeEach {
         $script:ExtractedRoot = Join-Path $TestDrive 'extracted'
         $script:WindowsRoot = Join-Path $TestDrive 'Windows'
@@ -218,7 +218,7 @@ Describe 'Installed Atlas file verification' {
         Remove-Item -LiteralPath (Join-Path $script:WindowsRoot 'AtlasModules\Scripts\Initialize-AtlasPowerShell.ps1')
         { Assert-AtlasPayloadInstalled -ExtractedExecutablesRoot $script:ExtractedRoot `
                 -WindowsPath $script:WindowsRoot } |
-            Should -Throw -ExpectedMessage '*Atlas bootstrap*is missing*'
+            Should -Throw -ExpectedMessage '*Aether bootstrap*is missing*'
     }
 }
 
@@ -253,7 +253,7 @@ Describe 'CBS retry file replacement gate' {
             Should -Throw -ExpectedMessage '*invalid CBS retry state*'
     }
 
-    It 'stops while the Atlas 0.5 retry is still set to run' {
+    It 'stops while the Aether 0.5 retry is still set to run' {
         Mock Remove-AtlasLegacyCbsRetryList { throw 'Restart Windows to let it finish' }
         Mock Read-AtlasCbsRetryState { $null }
         { Assert-AtlasPayloadReplacementAllowed } | Should -Throw -ExpectedMessage '*Restart Windows to let it finish*'
@@ -275,7 +275,7 @@ Describe 'CBS retry file replacement gate with retry state on disk' {
         Mock Invoke-WithAtlasCbsRetryLock { & $Action }
     }
 
-    It 'gives up a retry that was never armed and the Atlas 0.5 list, then allows replacement' {
+    It 'gives up a retry that was never armed and the Aether 0.5 list, then allows replacement' {
         # Atlas 0.5 never deleted its list, and earlier 0.6 builds recorded it as a Pending retry.
         [void](Write-AtlasCbsRetryState -Phase Pending -Packages $script:package)
         Set-Content -LiteralPath $script:legacyPath -Value $script:package

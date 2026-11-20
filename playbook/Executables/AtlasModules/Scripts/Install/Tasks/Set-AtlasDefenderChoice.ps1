@@ -120,7 +120,7 @@ function Set-AtlasDefenderChoice {
         }
         elseif ($defender -ceq 'UninstallPending') {
             Write-AtlasLog -Level Warning -Message `
-                "Atlas's NoDefender package is still waiting for a restart to come off, so Microsoft Defender comes back at the restart and this installation can't remove it. Restart Windows, then use Toggle Defender in the Atlas folder to remove it."
+                "Aether's NoDefender package is still waiting for a restart to come off, so Microsoft Defender comes back at the restart and this installation can't remove it. Restart Windows, then use Toggle Defender in the Aether folder to remove it."
         }
         # CBS doesn't show the core service, so it is read: a run that stopped after the
         # package went on, or an earlier Atlas that never turned it off, left it failing
@@ -152,7 +152,7 @@ function Set-AtlasDefenderChoice {
     }
     elseif ($null -eq $defender -and -not (Test-AtlasDefenderServicePresent)) {
         Write-AtlasLog -Level Warning -Message `
-            "Microsoft Defender isn't on this PC and no Atlas package removed it, so Atlas can't bring it back."
+            "Microsoft Defender isn't on this PC and no Aether package removed it, so Aether can't bring it back."
     }
 
     if ($Fresh -and $telemetryMissing) {

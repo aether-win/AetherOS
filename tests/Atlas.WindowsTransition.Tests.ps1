@@ -372,7 +372,7 @@ Describe 'Windows Update blockers' {
     }
 }
 
-Describe 'The record of what Atlas changes' {
+Describe 'The record of what Aether changes' {
     BeforeEach { Reset-Machine; Set-HeldBackUpdate }
 
     It 'records type and absence, including a string target and a missing release, before changing anything' {
@@ -516,7 +516,7 @@ Describe 'Turning Windows Update on' {
     }
 }
 
-Describe 'What Atlas 0.5.0 gave users' {
+Describe 'What Aether 0.5.0 gave users' {
     BeforeEach {
         Reset-Machine
         $script:Journal = $null
@@ -538,7 +538,7 @@ Describe 'What Atlas 0.5.0 gave users' {
         (Get-Fake 'SOFTWARE\AtlasOS\Services\ToggleWindowsUpdates' state).Data | Should -Be 0
     }
 
-    It 'leaves the recorded "Disable Windows Updates" to the Atlas install''s replay' {
+    It 'leaves the recorded "Disable Windows Updates" to the Aether install''s replay' {
         Set-Atlas050UpdatesOff
         $journal = Save-AtlasWindowsTransitionSnapshot -Kind transition -Source ([pscustomobject]@{ build = 26100 }) `
             -Target ([pscustomobject]@{ release = '26H2'; build = 26300; kb = '5121794' }) -UserSid 'S'
@@ -568,7 +568,7 @@ Describe 'What Atlas 0.5.0 gave users' {
         @($result.restored) | Should -Be @('policy.DeferQualityUpdates', 'policy.DeferQualityUpdatesPeriodInDays')
     }
 
-    It 'leaves the automatic update, notification and driver choices alone: none stops an update Atlas runs' {
+    It 'leaves the automatic update, notification and driver choices alone: none stops an update Aether runs' {
         # "Disable Automatic Updates (default)", "Disable Update Notifications" and
         # "Disable Drivers from Windows Update".
         Set-Fake "$script:Policy\AU" AUOptions DWord 2
@@ -598,7 +598,7 @@ Describe 'What Atlas 0.5.0 gave users' {
     }
 }
 
-Describe 'Atlas 0.5.0 with Windows Update off, paused and delayed' {
+Describe 'Aether 0.5.0 with Windows Update off, paused and delayed' {
     BeforeAll {
         $script:Atlas050 = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures\windows-transition\atlas050-updates-off-paused-delayed.json') -Raw | ConvertFrom-Json
         $script:RealBlocker = (Get-Command Get-AtlasWindowsUpdateBlocker -CommandType Function).ScriptBlock
@@ -806,7 +806,7 @@ Describe 'A component store that reads as repairable' {
     }
 
     It 'goes on and records <Case>' -TestCases @(
-        @{ Case = 'the AppInv files the NoTelemetry package leaves after a store cleanup'; Label = 'the known Atlas package pattern'; Change = { $script:CbsLines = $script:AppInvLog } }
+        @{ Case = 'the AppInv files the NoTelemetry package leaves after a store cleanup'; Label = 'the known Aether package pattern'; Change = { $script:CbsLines = $script:AppInvLog } }
         @{ Case = 'the files a repair leaves instead'; Label = 'other'; Change = {
                 $script:CbsLines = $script:AppInvLog -replace 'n-experience-appinv_31bf3856ad364e35_10\.0\.26100\.1591_none_b8a08e9482a41bbe\\aeinvext\.dll', 'entory-data-sources_31bf3856ad364e35_10.0.26100.1591_none_0\r\devinv.dll' } }
         @{ Case = 'a manifest corruption beside it'; Label = 'other'; Change = { $script:CbsLines = $script:AppInvLog -replace 'CSI Manifest Corruption:\t0', "CSI Manifest Corruption:`t1" } }
@@ -903,7 +903,7 @@ Describe 'Moving Windows' {
         $script:Installer.ForceQuiet | Should -BeTrue
         $script:Installer.AllowSourcePrompts | Should -BeFalse
         (Read-Journal).phase | Should -BeExactly 'installed'
-        Should -Invoke Invoke-PreparationCommitCall -Times 0 -Exactly -Because 'Atlas commits only just before its own restart'
+        Should -Invoke Invoke-PreparationCommitCall -Times 0 -Exactly -Because 'Aether commits only just before its own restart'
         $evidence = Get-Content -LiteralPath $script:AtlasTransitionEvidencePath -Raw
         $evidence | Should -Match "unexpected-offer, not installed: 'Windows 11, version 25H2' KB=5054156"
         $evidence | Should -Match 'lifted policy.DisableWindowsUpdateAccess: DWord 1 -> absent'
@@ -1326,7 +1326,7 @@ Describe 'Optional prerequisites' {
 Describe 'The new version in Windows Update history' {
     BeforeEach { Use-TransitionRun }
 
-    It 'is the update Atlas installed, or one named for the release, never a monthly update sharing its KB' {
+    It 'is the update Aether installed, or one named for the release, never a monthly update sharing its KB' {
         $id = 'ba6eafb7-6fd3-4fb9-8462-3d86b81835b3'
         Test-PreparationFeatureHistoryEntry 'Windows 11, version 26H2' '' '' | Should -BeTrue
         Test-PreparationFeatureHistoryEntry 'Feature update to Windows 11, version 26H2 (KB5121794)' 'other' $id | Should -BeTrue
@@ -1380,7 +1380,7 @@ Describe 'Restarting into the new version' {
         (Read-Journal).commitRetried | Should -BeFalse
     }
 
-    It 'asks for one more restart after a restart without Atlas''s commit, then reports the rollback' {
+    It 'asks for one more restart after a restart without Aether''s commit, then reports the rollback' {
         Set-Fake 'SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters' BootId DWord 8
         Invoke-PreparationTransition | Should -Be 'reboot'
         $script:PreparationRestartReasons | Should -Be @('feature-commit')
@@ -1390,14 +1390,14 @@ Describe 'Restarting into the new version' {
         $detail.errorCode | Should -BeExactly '0x8024200B'
     }
 
-    It 'reports a rollback at once after a restart Atlas committed' {
+    It 'reports a rollback at once after a restart Aether committed' {
         Invoke-PreparationCommit
         Set-Fake 'SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters' BootId DWord 8
         try { Invoke-PreparationTransition } catch { $thrown = $_.Exception }
         $thrown.Data['reason'] | Should -BeExactly 'feature-rolled-back'
     }
 
-    It 'finishes the updates and records that Windows switched on in place when the Atlas components are all there' {
+    It 'finishes the updates and records that Windows switched on in place when the Aether components are all there' {
         $script:Windows.CurrentBuildNumber = '26300'
         Invoke-PreparationTransition | Should -Be 'complete'
         Should -Invoke Invoke-PreparationUpdates -Times 1 -Exactly
@@ -1411,7 +1411,7 @@ Describe 'Restarting into the new version' {
         Get-AtlasWindowsTransitionRebase | Should -BeNullOrEmpty
     }
 
-    It 'stops when the Atlas components are gone with no sign that Setup ran' {
+    It 'stops when the Aether components are gone with no sign that Setup ran' {
         $script:Windows.CurrentBuildNumber = '26300'
         $script:Packages = @()
         try { Invoke-PreparationTransition } catch { $thrown = $_.Exception }
@@ -1420,7 +1420,7 @@ Describe 'Restarting into the new version' {
         (Read-Journal).rebuild.rebuilt | Should -BeFalse
     }
 
-    It 'keeps the in-place move it recorded after the Atlas install removed a package' {
+    It 'keeps the in-place move it recorded after the Aether install removed a package' {
         $script:Windows.CurrentBuildNumber = '26300'
         Invoke-PreparationTransition | Should -Be 'complete'
         # The install's Defender choice uninstalled the package the record lists.
@@ -1433,7 +1433,7 @@ Describe 'Restarting into the new version' {
         (Test-AtlasWindowsTransitionOpen).Rebuild | Should -BeExactly 'in-place'
     }
 
-    It 'takes a Rebase that put Atlas back for neither another Rebase nor lost components' {
+    It 'takes a Rebase that put Aether back for neither another Rebase nor lost components' {
         $script:Windows.CurrentBuildNumber = '26300'
         $journal = Read-Journal
         $journal | Add-Member -NotePropertyName carry -NotePropertyValue (ConvertTo-AtlasTransitionCarry (New-Atlas050Fact) $script:Packages) -Force
@@ -1451,7 +1451,7 @@ Describe 'Restarting into the new version' {
         Get-AtlasWindowsTransitionRebase | Should -BeNullOrEmpty
     }
 
-    It 'records a rebuild by Setup, keeps going, and gives the Atlas install the recorded version and choices' {
+    It 'records a rebuild by Setup, keeps going, and gives the Aether install the recorded version and choices' {
         $script:Windows.CurrentBuildNumber = '26300'
         $journal = Read-Journal
         $journal | Add-Member -NotePropertyName carry -NotePropertyValue (ConvertTo-AtlasTransitionCarry (New-Atlas050Fact) $script:Packages) -Force
@@ -1521,7 +1521,7 @@ Describe 'Putting the settings back' {
         @($result.owned) | Should -Not -Contain 'service.wuauserv'
     }
 
-    It 'leaves a value someone changed after Atlas lifted it' {
+    It 'leaves a value someone changed after Aether lifted it' {
         Set-Fake "$script:Services\wuauserv" Start DWord 2
         $result = Restore-AtlasWindowsTransition -Outcome Abandoned
         (Get-Fake "$script:Services\wuauserv" Start).Data | Should -Be 2
@@ -1591,7 +1591,7 @@ Describe 'Putting the settings back' {
         ((Get-Fake $script:Record LastResult).Data | ConvertFrom-Json).outcome | Should -BeExactly 'Moved'
     }
 
-    It 'refuses while an Atlas install is unfinished' {
+    It 'refuses while an Aether install is unfinished' {
         $saved = $env:WINDIR
         try {
             $env:WINDIR = $TestDrive
@@ -1607,7 +1607,7 @@ Describe 'Putting the settings back' {
         @($script:Writes) | Should -BeNullOrEmpty
     }
 
-    It 'leaves the record of a Windows that rebuilt itself to the install that puts Atlas back' {
+    It 'leaves the record of a Windows that rebuilt itself to the install that puts Aether back' {
         $journal = Read-Journal
         $journal | Add-Member -NotePropertyName carry -NotePropertyValue ([pscustomobject]@{
                 atlasVersion = '0.5.0'; options = @('defender-disable'); optionSource = 'observed'; toggles = @(); browser = $null
@@ -1685,12 +1685,12 @@ Describe 'Install and toggle guards while Windows Update is turned on' {
         Reset-Machine
         [void](Save-AtlasWindowsTransitionSnapshot -Kind transition -Source ([pscustomobject]@{ build = 26100 }) `
                 -Target ([pscustomobject]@{ release = '26H2'; build = 26300; kb = '5121794' }) -UserSid 'S')
-        { Assert-AtlasWindowsTransitionAllowsAme -WindowsBuild 26100 } | Should -Throw '*Finish the move in Atlas Manager*'
+        { Assert-AtlasWindowsTransitionAllowsAme -WindowsBuild 26100 } | Should -Throw '*Finish the move in Aether OS*'
         { Assert-AtlasWindowsTransitionAllowsAme -WindowsBuild 26300 } | Should -Throw '*Finish the move*' -Because 'how Windows moved is not known yet'
         $journal = Read-AtlasWindowsTransition
         $journal | Add-Member -NotePropertyName rebuild -NotePropertyValue ([pscustomobject]@{ rebuilt = $true; signals = @('windows-old'); checkedAt = '2026-10-02T00:00:00Z' }) -Force
         Write-AtlasWindowsTransition $journal
-        { Assert-AtlasWindowsTransitionAllowsAme -WindowsBuild 26300 } | Should -Throw '*Finish the move*' -Because 'only Atlas Manager puts Atlas back with a Rebase'
+        { Assert-AtlasWindowsTransitionAllowsAme -WindowsBuild 26300 } | Should -Throw '*Finish the move*' -Because 'only Aether OS puts Aether back with a Rebase'
         $journal.rebuild.rebuilt = $false
         Write-AtlasWindowsTransition $journal
         Mock Get-AtlasInstalledAtlasPackage { @() }
@@ -1711,8 +1711,8 @@ Describe 'Install and toggle guards while Windows Update is turned on' {
     It 'refuses the Windows Update and pause toggles by hand while the record is open, and only those' {
         { Assert-AtlasToggleAllowedDuringTransition -Name ToggleWindowsUpdates } | Should -Not -Throw
         [void](Save-AtlasWindowsTransitionSnapshot -Kind access -Source ([pscustomobject]@{ build = 26200 }) -Target $null -UserSid 'S')
-        { Assert-AtlasToggleAllowedDuringTransition -Name ToggleWindowsUpdates } | Should -Throw '*Aether Manager is updating Windows*'
-        { Assert-AtlasToggleAllowedDuringTransition -Name PauseUpdates } | Should -Throw '*Aether Manager is updating Windows*'
+        { Assert-AtlasToggleAllowedDuringTransition -Name ToggleWindowsUpdates } | Should -Throw '*Aether OS is updating Windows*'
+        { Assert-AtlasToggleAllowedDuringTransition -Name PauseUpdates } | Should -Throw '*Aether OS is updating Windows*'
         { Assert-AtlasToggleAllowedDuringTransition -Name AutomaticUpdates } | Should -Not -Throw
     }
 }
@@ -1763,10 +1763,10 @@ Describe 'Disk cleanup while a move may need undoing' {
     }
 }
 
-Describe 'What the record keeps of the Atlas install' {
+Describe 'What the record keeps of the Aether install' {
     BeforeEach { Reset-Machine }
 
-    It 'reads an Atlas 0.5.0 install''s choices from what they left, and leaves out what nothing shows' {
+    It 'reads an Aether 0.5.0 install''s choices from what they left, and leaves out what nothing shows' {
         $carry = ConvertTo-AtlasTransitionCarry (New-Atlas050Fact) @('Z-Atlas-NoDefender-Package~31bf3856ad364e35~amd64~~5.0.0.0')
         $carry.atlasVersion | Should -BeExactly '0.5.0'
         $carry.optionSource | Should -BeExactly 'observed'
@@ -1834,7 +1834,7 @@ Describe 'What the record keeps of the Atlas install' {
         @($carry.options) | Should -Be @('defender-enable')
     }
 
-    It 'finds OneDrive another account installed, not only the one running Atlas' {
+    It 'finds OneDrive another account installed, not only the one running Aether' {
         $list = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList'
         Set-Fake "$list\S-1-5-21-1-1001" ProfileImagePath ExpandString 'C:\Users\Alex'
         Set-Fake "$list\S-1-5-21-1-1002" ProfileImagePath ExpandString 'C:\Users\Sam'
@@ -1847,7 +1847,7 @@ Describe 'What the record keeps of the Atlas install' {
         Should -Invoke Test-AtlasTransitionPath -ParameterFilter { $Path -like 'C:\Users\Alex\*' }
     }
 
-    It 'finds LibreWolf, which Atlas 0.5.0 records as an empty browser name, only when it is the one browser installed' {
+    It 'finds LibreWolf, which Aether 0.5.0 records as an empty browser name, only when it is the one browser installed' {
         $facts = New-Atlas050Fact
         $facts.Browser = ''
         $facts.Browsers = @('browser-librewolf')
@@ -1860,7 +1860,7 @@ Describe 'What the record keeps of the Atlas install' {
         @((ConvertTo-AtlasTransitionCarry $facts @()).options | Where-Object { $_ -like '*browser*' }) | Should -BeNullOrEmpty
     }
 
-    It 'reads core isolation from the values Atlas 0.5.0 and Windows leave: <name>' -ForEach @(
+    It 'reads core isolation from the values Aether 0.5.0 and Windows leave: <name>' -ForEach @(
         (Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures\windows-transition\core-isolation.json') -Raw | ConvertFrom-Json) |
             ForEach-Object { @{ name = $_.name; values = $_.values; off = $_.off } }
     ) {
@@ -1887,7 +1887,7 @@ Describe 'What the record keeps of the Atlas install' {
         Test-AtlasTransitionCarry $carry | Should -BeTrue
     }
 
-    It 'keeps the recorded choices the PC doesn''t show, a kept Defender missing without an Atlas package among them' {
+    It 'keeps the recorded choices the PC doesn''t show, a kept Defender missing without an Aether package among them' {
         $facts = [pscustomobject]@{
             State = [pscustomobject]@{ installedVersion = '0.6.0-rc11'; options = @('defender-enable', 'keyboard-single', 'uninstall-edge', 'install-eclean') }
             LegacyVersions = @(); Toggles = @(); Browser = $null; AtlasModules = $true; Edge = $false; OneDrive = $false; Defender = $false
@@ -1896,7 +1896,7 @@ Describe 'What the record keeps of the Atlas install' {
         @((ConvertTo-AtlasTransitionCarry $facts @()).options) | Should -Be @('defender-enable', 'keyboard-single', 'install-eclean', 'uninstall-edge')
     }
 
-    It 'accepts the record of a rebuilt Windows the app reads too, and gives the Atlas install its version and choices' {
+    It 'accepts the record of a rebuilt Windows the app reads too, and gives the Aether install its version and choices' {
         $text = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures\windows-transition\journal-rebuilt.json') -Raw
         Set-Fake $script:Record Journal String $text
         $rebase = Get-AtlasWindowsTransitionRebase
@@ -1931,7 +1931,7 @@ Describe 'What the record keeps of the Atlas install' {
         }
     }
 
-    It 'keeps no version or choices on a PC without Atlas' {
+    It 'keeps no version or choices on a PC without Aether' {
         $facts = New-Atlas050Fact
         $facts.LegacyVersions = @()
         $carry = ConvertTo-AtlasTransitionCarry $facts @()
@@ -2052,7 +2052,7 @@ Describe 'What the PC shows over recorded choices' {
         @($merged | Select-Object -Unique).Count | Should -Be $merged.Count
     }
 
-    It 'names only options the Atlas package declares, and reads every choice group it declares' {
+    It 'names only options the Aether package declares, and reads every choice group it declares' {
         $playbook = [xml][IO.File]::ReadAllText((Join-Path $script:AtlasTestRepoRoot 'playbook\playbook.conf'))
         $declared = @($playbook.Playbook.FeaturePages.SelectNodes('*/Options/*/Name') | ForEach-Object { [string]$_.InnerText })
         # Aether: un Windows que se movió desde Atlas puede traer opciones que Aether ya no
@@ -2105,7 +2105,7 @@ Describe 'What the PC shows over recorded choices' {
     }
 }
 
-Describe 'Where Atlas''s NoDefender package stands' {
+Describe 'Where Aether''s NoDefender package stands' {
     BeforeAll {
         $script:CbsPackages = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages'
         $script:NoDefender = "$script:CbsPackages\Z-Atlas-NoDefender-Package~31bf3856ad364e35~amd64~~5.0.0.0"
@@ -2173,7 +2173,7 @@ Describe 'An account''s keyboard settings' {
         Get-AtlasTransitionKeyboardLayoutCount -UserSid 'S-1-5-21-111-222-333-1002' | Should -Be 0
     }
 
-    It 'reads Alt+Shift stored as the number Atlas 0.5.0 wrote' {
+    It 'reads Alt+Shift stored as the number Aether 0.5.0 wrote' {
         Set-TestHiveValue 'S-1-5-21-111-222-333-1001' 'Keyboard Layout\Toggle' 'Language Hotkey' 3 DWord
         Get-AtlasTransitionLanguageHotkey -UserSid 'S-1-5-21-111-222-333-1001' | Should -BeExactly '3'
     }
@@ -2239,13 +2239,13 @@ Describe 'What the machine facts read' {
         Set-Fake 'SOFTWARE\AtlasOS\Toolbox' Version String '0.1.13'
         (Get-AtlasTransitionMachineFact -MachineOnly).Toolbox | Should -BeFalse
         @(Merge-AtlasObservedOption @() (Get-AtlasTransitionMachineFact -MachineOnly) @()) | Should -Not -Contain 'install-toolbox'
-        Mock Test-AtlasTransitionPath { $Path -ceq [IO.Path]::Combine([Environment]::GetFolderPath('ProgramFiles'), 'Atlas Toolbox\AtlasToolbox.exe') }
+        Mock Test-AtlasTransitionPath { $Path -ceq [IO.Path]::Combine([Environment]::GetFolderPath('ProgramFiles'), 'Aether Toolbox\AtlasToolbox.exe') }
         (Get-AtlasTransitionMachineFact -MachineOnly).Toolbox | Should -BeTrue
         $script:Registry.Remove('SOFTWARE\AtlasOS\Toolbox|Version')
         (Get-AtlasTransitionMachineFact -MachineOnly).Toolbox | Should -BeFalse
     }
 
-    It 'reads only Atlas''s NoDefender package, by its name and a tilde, as the install reads it' {
+    It 'reads only Aether''s NoDefender package, by its name and a tilde, as the install reads it' {
         $packages = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages'
         Set-Fake "$packages\Z-Atlas-NoDefender-PackageExtra~31bf3856ad364e35~amd64~~5.0.0.0" CurrentState DWord 112
         Get-AtlasTransitionDefenderPackageState | Should -BeExactly 'InstallPending'
@@ -2344,12 +2344,12 @@ Describe 'Telling a rebuilt Windows from one switched on in place' {
         $rebuild.setup | Should -BeFalse
     }
 
-    It 'needs Setup''s traces and Atlas''s components gone together' -TestCases @(
-        @{ Case = 'Setup ran, Atlas is all there'; Old = $true; Bt = $true; Log = $false; Modules = $true; Packages = $true; Rebuilt = $false; Lost = $false; Decision = 'in-place' }
+    It 'needs Setup''s traces and Aether''s components gone together' -TestCases @(
+        @{ Case = 'Setup ran, Aether is all there'; Old = $true; Bt = $true; Log = $false; Modules = $true; Packages = $true; Rebuilt = $false; Lost = $false; Decision = 'in-place' }
         @{ Case = 'Windows.old filled but no Setup trace'; Old = $true; Bt = $false; Log = $false; Modules = $false; Packages = $false; Rebuilt = $false; Lost = $true; Decision = 'components-lost' }
-        @{ Case = 'Setup log only, Atlas gone'; Old = $false; Bt = $false; Log = $true; Modules = $false; Packages = $false; Rebuilt = $false; Lost = $true; Decision = 'components-lost' }
+        @{ Case = 'Setup log only, Aether gone'; Old = $false; Bt = $false; Log = $true; Modules = $false; Packages = $false; Rebuilt = $false; Lost = $true; Decision = 'components-lost' }
         @{ Case = 'a rebuild by Setup'; Old = $true; Bt = $false; Log = $true; Modules = $false; Packages = $false; Rebuilt = $true; Lost = $true; Decision = 'rebuilt' }
-        @{ Case = 'a rebuild that kept the Atlas folder'; Old = $true; Bt = $true; Log = $false; Modules = $true; Packages = $false; Rebuilt = $true; Lost = $true; Decision = 'rebuilt' }
+        @{ Case = 'a rebuild that kept the Aether folder'; Old = $true; Bt = $true; Log = $false; Modules = $true; Packages = $false; Rebuilt = $true; Lost = $true; Decision = 'rebuilt' }
     ) {
         param($Case, $Old, $Bt, $Log, $Modules, $Packages, $Rebuilt, $Lost, $Decision)
         $drive = Join-Path $TestDrive 'Drive'
@@ -2381,7 +2381,7 @@ Describe 'Telling a rebuilt Windows from one switched on in place' {
     }
 }
 
-Describe 'Putting Atlas back on a rebuilt Windows' {
+Describe 'Putting Aether back on a rebuilt Windows' {
     BeforeEach {
         Reset-Machine
         $script:Win = Join-Path $TestDrive 'Rebuilt\Windows'
@@ -2436,11 +2436,11 @@ Describe 'Putting Atlas back on a rebuilt Windows' {
         Test-AtlasTransitionCarry $carry | Should -BeFalse
     }
 
-    It 'reads the records it brought back as Atlas 0.6 means them, launcher names and all' {
-        Mock Repair-AtlasToolboxRecord { $script:Writes.Add("repair $InstalledVersion"); "Removed the old Atlas Toolbox's 'SearchIndexing' record." }
+    It 'reads the records it brought back as Aether 0.6 means them, launcher names and all' {
+        Mock Repair-AtlasToolboxRecord { $script:Writes.Add("repair $InstalledVersion"); "Removed the old Aether Toolbox's 'SearchIndexing' record." }
         $carry = ConvertTo-AtlasTransitionCarry (New-Atlas050Fact) @()
         $lines = @(Restore-AtlasRebaseChoice $carry)
-        $lines | Should -Contain "Removed the old Atlas Toolbox's 'SearchIndexing' record."
+        $lines | Should -Contain "Removed the old Aether Toolbox's 'SearchIndexing' record."
         $script:Writes.IndexOf('repair 0.5.0') | Should -BeGreaterThan $script:Writes.IndexOf('set SOFTWARE\AtlasOS\Services\Mitigations|path')
         # Records Windows kept, or some an attempt stopped part way put back, too:
         # the ones it has repaired already stay as they are.

@@ -275,7 +275,7 @@ function Invoke-AtlasInstallPlanCore {
                 # Preserve the install failure already in flight. The next run's
                 # Always load checkpoint will reconcile the fixed Atlas mount again.
                 Write-Warning `
-                    "Failed to unload the Atlas default-user hive during install cleanup: $($_.Exception.Message)" `
+                    "Failed to unload the Aether default-user hive during install cleanup: $($_.Exception.Message)" `
                     -WarningAction Continue
             }
         }

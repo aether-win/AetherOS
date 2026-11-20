@@ -204,7 +204,7 @@ function Invoke-AtlasMachineCleanup {
     Invoke-AtlasDiskCleanup -CleanMgrPath $CleanMgrPath -KeepRecovery:$KeepRecovery
     Invoke-AtlasTempCleanup -Path ([IO.Path]::Combine($WindowsRoot, 'Temp'))
     if ($KeepRecovery) {
-        Write-Output 'Keeping restore points while Atlas Manager has Windows Update settings to put back.'
+        Write-Output 'Keeping restore points while Aether OS has Windows Update settings to put back.'
         return
     }
     Invoke-AtlasSystemShadowCopyCleanup -VssAdminPath $VssAdminPath -SystemDrive $systemDrive

@@ -64,7 +64,7 @@ BeforeAll {
     }
 }
 
-Describe 'Atlas power-saving state' {
+Describe 'Aether power-saving state' {
     BeforeEach {
         $script:activeQueue = New-Object 'Collections.Generic.Queue[string]'
         Mock Get-AtlasActivePowerScheme -ModuleName Atlas.Hardware { $script:activeQueue.Dequeue() }
@@ -76,7 +76,7 @@ Describe 'Atlas power-saving state' {
         Mock Invoke-AtlasPowerCfg -ModuleName Atlas.Hardware { @() }
     }
 
-    It 'creates the Atlas plan from Balanced and applies only the four reviewed AC settings' {
+    It 'creates the Aether plan from Balanced and applies only the four reviewed AC settings' {
         $script:activeQueue.Enqueue($script:custom)
         $script:activeQueue.Enqueue($script:atlas)
 
@@ -101,7 +101,7 @@ Describe 'Atlas power-saving state' {
         }
     }
 
-    It 'recreates an existing Atlas plan without saving Atlas as the rollback target' {
+    It 'recreates an existing Aether plan without saving Aether as the rollback target' {
         Mock Get-AtlasPowerSchemeInventory -ModuleName Atlas.Hardware {
             @($script:balanced, $script:atlas)
         }
@@ -122,7 +122,7 @@ Describe 'Atlas power-saving state' {
         }
     }
 
-    It 'replaces an Atlas plan that Modern Standby leaves out of the list' {
+    It 'replaces an Aether plan that Modern Standby leaves out of the list' {
         # An older Atlas copied Ultimate Performance; Modern Standby lists only
         # Balanced and its copies, yet the plan still holds the GUID.
         Mock Test-AtlasPowerSchemeStored -ModuleName Atlas.Hardware { $SchemeGuid -ceq $script:atlas }
@@ -141,7 +141,7 @@ Describe 'Atlas power-saving state' {
             -ParameterFilter { $SchemeGuid -ceq $script:balanced }
     }
 
-    It 'removes an unlisted Atlas plan when restoring the previous plan' {
+    It 'removes an unlisted Aether plan when restoring the previous plan' {
         Mock Test-AtlasPowerSchemeStored -ModuleName Atlas.Hardware { $SchemeGuid -ceq $script:atlas }
         $script:activeQueue.Enqueue($script:balanced)
 
@@ -152,7 +152,7 @@ Describe 'Atlas power-saving state' {
         }
     }
 
-    It 'restores an installed saved plan and then removes the Atlas plan' {
+    It 'restores an installed saved plan and then removes the Aether plan' {
         Mock Get-AtlasPowerSchemeInventory -ModuleName Atlas.Hardware {
             @($script:balanced, $script:custom, $script:atlas)
         }

@@ -3,7 +3,7 @@
     ModuleVersion     = '1.0.0'
     GUID              = '543dae25-b8af-44b3-8a92-a151695f97f0'
     Author            = 'AtlasOS'
-    Description       = 'Atlas registry engine: token-bound HKCU operations, install-bound protected user policies, fixed default-user targeting and declarative registry entry application.'
+    Description       = 'Aether registry engine: token-bound HKCU operations, install-bound protected user policies, fixed default-user targeting and declarative registry entry application.'
     PowerShellVersion = '5.1'
     FunctionsToExport = @(
         # Path resolution and explicit identity binding

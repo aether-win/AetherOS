@@ -208,7 +208,7 @@ function Invoke-AtlasInstallCapture {
     $null = Start-AtlasInstallState -TargetVersion $targetVersion -Mode $mode -Choices $updatePath.Choices `
         -CaptureNonce ([guid]::NewGuid().ToString('D'))
     Set-AtlasInstallOptions -Options $options | Out-Null
-    return "Atlas install state ready for $mode of $targetVersion with options: $($options -join ', ')."
+    return "Aether install state ready for $mode of $targetVersion with options: $($options -join ', ')."
 }
 
 try {

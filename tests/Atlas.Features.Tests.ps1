@@ -191,7 +191,7 @@ Describe 'A failed DISM run' {
     }
 }
 
-Describe 'Component store cleanup with the Atlas packages' {
+Describe 'Component store cleanup with the Aether packages' {
     BeforeEach {
         Mock Dism\Get-WindowsOptionalFeature { [pscustomobject]@{ State = 'Enabled' } }
         Mock Dism\Get-WindowsCapability { [pscustomobject]@{ Name = 'App.StepsRecorder~~~~0.0.1.0'; State = 'NotPresent' } }
@@ -200,7 +200,7 @@ Describe 'Component store cleanup with the Atlas packages' {
         Mock Update-AtlasCbsRepairSource { 'recreated' }
     }
 
-    It 'never cleans it once an Atlas package is installed, or on an update, and says why' -TestCases @(
+    It 'never cleans it once an Aether package is installed, or on an update, and says why' -TestCases @(
         @{ Case = 'an update'; Upgrade = $true; Packages = @() }
         @{ Case = 'an installed NoTelemetry package'; Upgrade = $false; Packages = @('Z-Atlas-NoTelemetry-Package~31bf3856ad364e35~amd64~~5.0.0.0') }
     ) {
@@ -237,7 +237,7 @@ Describe 'Features work by install mode' {
     }
 }
 
-Describe 'The Atlas packages'' repair source' {
+Describe 'The Aether packages'' repair source' {
     It 'is recreated while the packages are installed' {
         InModuleScope Atlas.Software {
             Mock New-AtlasCbsRepairSource { $true }

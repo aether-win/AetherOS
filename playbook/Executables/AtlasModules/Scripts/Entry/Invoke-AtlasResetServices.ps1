@@ -32,12 +32,12 @@ $coreManifest = Join-Path -Path $scriptsRoot -ChildPath 'Modules\Atlas.Core\Atla
 Import-Module -Name $coreManifest -Force -ErrorAction Stop
 
 $title = 'Set services to defaults'
-$completionText = 'Atlas service defaults were restored. A restart is required to apply every change.'
+$completionText = 'Aether service defaults were restored. A restart is required to apply every change.'
 
 if (-not $Silent) {
     Set-AtlasLogConsoleStyle -Style Interactive
     Write-AtlasTitle -Text $title -Explanation @(
-        'Restores the service configuration exposed in the Atlas folder. It can repair'
+        'Restores the service configuration exposed in the Aether folder. It can repair'
         'features broken by disabled services.'
     )
 
@@ -58,8 +58,8 @@ if (-not $Silent) {
                 -Question 'Also apply a fixed service snapshot after the defaults?' `
                 -Option @(
                     'The Windows service snapshot'
-                    'The Atlas service snapshot'
-                    'No snapshot, only the Atlas defaults'
+                    'The Aether service snapshot'
+                    'No snapshot, only the Aether defaults'
                 ) `
                 -DefaultIndex 3
             $RestoreSource = @('WindowsBackup', 'AtlasBackup', 'ToggleDefaults')[$snapshotChoice - 1]

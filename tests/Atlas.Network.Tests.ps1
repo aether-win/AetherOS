@@ -72,7 +72,7 @@ Describe 'Set-AtlasNetworkDefaults' {
 
     It 'requires administrator privileges before either mode runs' {
         Mock Test-AtlasAdmin -ModuleName Atlas.Network { $false }
-        Mock Invoke-AtlasNetworkAdapterDefault -ModuleName Atlas.Network { throw 'must not apply Atlas defaults' }
+        Mock Invoke-AtlasNetworkAdapterDefault -ModuleName Atlas.Network { throw 'must not apply Aether defaults' }
         Mock Invoke-AtlasWindowsNetworkDefault -ModuleName Atlas.Network { throw 'must not reset Windows networking' }
 
         { Set-AtlasNetworkDefaults -Mode Atlas } |
@@ -99,7 +99,7 @@ Describe 'Set-AtlasNetworkDefaults' {
     }
 }
 
-Describe 'Atlas adapter defaults' {
+Describe 'Aether adapter defaults' {
     BeforeEach {
         Mock Write-AtlasLog -ModuleName Atlas.Network
         Mock Test-AtlasAdmin -ModuleName Atlas.Network { $true }
@@ -197,7 +197,7 @@ Describe 'Atlas adapter defaults' {
         Should -Invoke Write-AtlasNetworkRegistryString -ModuleName Atlas.Network -Times 1 -Exactly
     }
 
-    It 'skips adapters that expose no applicable Atlas settings' {
+    It 'skips adapters that expose no applicable Aether settings' {
         Mock Get-AtlasNetworkAdapter -ModuleName Atlas.Network { @() }
         @(InModuleScope Atlas.Network { Get-AtlasPciNetworkClassKey }) | Should -BeNullOrEmpty
 

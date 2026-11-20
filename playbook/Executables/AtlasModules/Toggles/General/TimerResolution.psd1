@@ -3,7 +3,7 @@
     Description   = 'Global timer resolution: a scheduled task that forces a high timer resolution.'
     Elevation     = 'Admin'
     NoStateRecord = $true
-    Warning       = 'Changes the global timer request policy and an Atlas scheduled task. A forced high timer resolution can increase power use; any latency benefit depends on the workload.'
+    Warning       = 'Changes the global timer request policy and an Aether scheduled task. A forced high timer resolution can increase power use; any latency benefit depends on the workload.'
     Script        = 'TimerResolution.ps1'
     States        = @(
         @{

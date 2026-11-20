@@ -442,7 +442,7 @@ Describe 'Initialize-AtlasToggleStateStore' {
 
 }
 
-Describe 'Atlas toggle production state ACL' {
+Describe 'Aether toggle production state ACL' {
     It 'uses a protected DACL with writes limited to privileged Windows principals' {
         InModuleScope Atlas.Toggles {
             $acl = New-AtlasToggleStateAcl
@@ -633,7 +633,7 @@ Describe 'Replay of recorded states' {
         Should -Invoke Invoke-AtlasToggleNativeCommand -ModuleName Atlas.Toggles -Times 0 -Exactly
     }
 
-    It 'drops a Copilot enable choice that Atlas 0.5.0 recorded on a PC without Edge' {
+    It 'drops a Copilot enable choice that Aether 0.5.0 recorded on a PC without Edge' {
         Mock Test-Path -ModuleName Atlas.Toggles { $false } -ParameterFilter { $LiteralPath -like '*\msedge.exe' }
         Set-AtlasToggleState -Name Copilot -State 1 -StateRoot $StateRoot
         Set-AtlasToggleState -Name SplitToggle -State 1 -StateRoot $StateRoot
@@ -1306,7 +1306,7 @@ Describe 'Invoke-AtlasToggle' {
             Get-Marker 'user' | Should -Be 'UserOnlyToggle:On'
             InModuleScope Atlas.Toggles { Get-AtlasRunOutcome } | Should -BeExactly 'Partial'
             Should -Invoke Write-AtlasPartial -ModuleName Atlas.Toggles -Times 1 -Exactly -ParameterFilter {
-                "$Text" -like "*didn't save this choice*an Atlas update can change it back*"
+                "$Text" -like "*didn't save this choice*an Aether update can change it back*"
             }
             Should -Invoke Write-AtlasLog -ModuleName Atlas.Toggles -Times 1 -Exactly -ParameterFilter {
                 $Level -ceq 'Warning' -and $Message -ceq 'prompt cancelled'
@@ -1715,7 +1715,7 @@ Describe 'Toggle elevation relaunch' {
 
     It 'reports a declined prompt as cancelled and says whether the user work already ran (<Case>)' -ForEach @(
         @{ Case = 'nothing applied yet'; Applied = $false; Expected = "*prompt for 'MyToggle' was cancelled, so nothing was changed." }
-        @{ Case = 'user work applied'; Applied = $true; Expected = "*prompt for 'MyToggle' was cancelled, so the change was made but Atlas didn't record it." }
+        @{ Case = 'user work applied'; Applied = $true; Expected = "*prompt for 'MyToggle' was cancelled, so the change was made but Aether didn't record it." }
     ) {
         Mock Start-AtlasToggleAdminRelaunch -ModuleName Atlas.Toggles { throw [ComponentModel.Win32Exception]::new(1223) }
 
@@ -1788,7 +1788,7 @@ Describe 'Local Group Policy declarations in toggle schemas' {
 }
 
 Describe 'Power-plan verification' {
-    It 'reports Balanced instead of the recorded Atlas plan through the normal health check' {
+    It 'reports Balanced instead of the recorded Aether plan through the normal health check' {
         Mock Get-AtlasPowerPlanValue -ModuleName Atlas.Toggles { '381b4222-f694-41f0-9685-ff5bb260df2e' }
         $root = 'HKCU:\Software\AtlasRewriteTest\PowerPlanHealth'
         try {
@@ -1801,21 +1801,21 @@ Describe 'Power-plan verification' {
         finally { Remove-Item -LiteralPath $root -Recurse -Force -ErrorAction SilentlyContinue }
     }
 
-    It 'reports the active Atlas plan beside a stale Enable record' {
+    It 'reports the active Aether plan beside a stale Enable record' {
         Mock Get-AtlasPowerPlanValue -ModuleName Atlas.Toggles { '11111111-1111-1111-1111-111111111111' }
         $drift = @(& (Get-Module Atlas.Toggles) { Test-AtlasPowerPlanDrift -StateName Enable })
         $drift | Should -HaveCount 1
         $drift[0].Reason | Should -BeLike '*recorded as enabled*'
     }
 
-    It 'accepts the active Atlas plan only when its four AC values match' {
+    It 'accepts the active Aether plan only when its four AC values match' {
         Mock Get-AtlasPowerPlanValue -ModuleName Atlas.Toggles { 0 }
         Mock Get-AtlasPowerPlanValue -ModuleName Atlas.Toggles { '11111111-1111-1111-1111-111111111111' } -ParameterFilter { $Name -eq 'ActivePowerScheme' }
         Mock Get-AtlasPowerPlanValue -ModuleName Atlas.Toggles { 200 } -ParameterFilter { $Path -like '*4d2b0152-7d5c-498b-88e2-34345392a2c5' }
         @(& (Get-Module Atlas.Toggles) { Test-AtlasPowerPlanDrift -StateName Disable }) | Should -HaveCount 0
     }
 
-    It 'reports an incorrect AC value even when the Atlas plan is active' {
+    It 'reports an incorrect AC value even when the Aether plan is active' {
         Mock Get-AtlasPowerPlanValue -ModuleName Atlas.Toggles { 0 }
         Mock Get-AtlasPowerPlanValue -ModuleName Atlas.Toggles { '11111111-1111-1111-1111-111111111111' } -ParameterFilter { $Name -eq 'ActivePowerScheme' }
         $drift = @(& (Get-Module Atlas.Toggles) { Test-AtlasPowerPlanDrift -StateName Disable })

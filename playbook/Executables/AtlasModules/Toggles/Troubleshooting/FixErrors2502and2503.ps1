@@ -8,7 +8,7 @@ function Show-AtlasWindowsTempRepairNote {
     }
     Write-AtlasNote -Text @(
         'Installer errors 2502 and 2503 come from wrong permissions on the Windows TEMP folder.'
-        'They are not caused by Atlas; this resets those permissions.'
+        'They are not caused by Aether; this resets those permissions.'
     )
     return 'Run'
 }

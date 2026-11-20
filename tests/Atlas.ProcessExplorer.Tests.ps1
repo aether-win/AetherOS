@@ -76,7 +76,7 @@ Describe 'Process Explorer registry provider integration' {
 }
 
 Describe 'Process Explorer ownership state' {
-    It 'records only package identity and the pcw value Atlas changed' {
+    It 'records only package identity and the pcw value Aether changed' {
         $state = ConvertTo-AtlasProcessExplorerState -Architecture X64 `
             -InstalledBinarySha256 ('a' * 64) -PcwStart 2 `
             -DisablePcw $true -ExistingState $null
@@ -217,7 +217,7 @@ Describe 'Process Explorer integration ownership' {
         } | Should -Not -Throw
     }
 
-    It 'removes only exact Atlas integrations and restores owned pcw state' {
+    It 'removes only exact Aether integrations and restores owned pcw state' {
         [IO.File]::WriteAllText($Layout.ShortcutPath, 'atlas-link')
         $state = [pscustomobject]@{ PcwChanged = $true; PcwPriorStart = 2 }
         Mock Get-AtlasProcessExplorerDebugger {

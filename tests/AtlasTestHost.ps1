@@ -9,7 +9,7 @@
 #     BeforeAll { . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1') }
 
 if ($PSVersionTable.PSEdition -ne 'Desktop') {
-    throw "Atlas script tests run under Windows PowerShell 5.1; this host is PowerShell $($PSVersionTable.PSVersion) ($($PSVersionTable.PSEdition))."
+    throw "Aether script tests run under Windows PowerShell 5.1; this host is PowerShell $($PSVersionTable.PSVersion) ($($PSVersionTable.PSEdition))."
 }
 
 $script:AtlasTestRepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).ProviderPath

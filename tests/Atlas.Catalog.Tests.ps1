@@ -78,7 +78,7 @@ Describe 'Tweak catalog routes' {
     }
 }
 
-Describe 'Atlas catalog' {
+Describe 'Aether catalog' {
     It 'is generated from the definitions with no drift' {
         $output = & $script:ToolsHost -NoProfile -ExecutionPolicy Bypass -File $script:CatalogTool -Validate 2>&1
         $LASTEXITCODE | Should -Be 0 -Because ($output -join "`n")

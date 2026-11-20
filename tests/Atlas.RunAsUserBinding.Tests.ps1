@@ -67,7 +67,7 @@ BeforeAll {
     }
 }
 
-Describe 'Atlas installing-user process boundary' {
+Describe 'Aether installing-user process boundary' {
     It 'passes the captured SID and session to one exact System32 PowerShell launch' {
         $calls = New-Object Collections.Generic.List[object]
 

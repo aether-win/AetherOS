@@ -44,7 +44,7 @@
 .PARAMETER RestartComment
     The message Windows shows in its restart notice when -Restart is used, so a caller
     in another language can supply its own. Plain text, at most 512 characters; control
-    characters are removed. The default is "Atlas installation complete.".
+    characters are removed. The default is "Aether installation complete.".
 .PARAMETER KeepStaging
     Leaves this run's protected staging copy whole. Otherwise a successful install
     removes the copy, and a run that stops before Capture starts (the preparation check
@@ -98,7 +98,7 @@ function Get-AtlasRestartComment {
     #>
     param([string]$Comment)
     $clean = ([string]$Comment -replace '\p{Cc}', ' ').Trim()
-    if ([string]::IsNullOrWhiteSpace($clean)) { return 'Atlas installation complete.' }
+    if ([string]::IsNullOrWhiteSpace($clean)) { return 'Aether installation complete.' }
     if ($clean.Length -gt 512) { $clean = $clean.Substring(0, 512) }
     return $clean
 }
@@ -261,7 +261,7 @@ function Test-AtlasPreparationCurrent([string]$PayloadRoot, [string]$JobPath) {
         return $true
     }
     catch {
-        [Console]::Error.WriteLine("[Atlas] $($_.Exception.Message)")
+        [Console]::Error.WriteLine("[Aether] $($_.Exception.Message)")
         return $false
     }
 }
@@ -336,7 +336,7 @@ function Test-AtlasInstallRequirement {
         Name     = 'Windows build'
         Passed   = $buildPassed
         Blocking = $true
-        Detail   = "build $WindowsBuild; supported: $($SupportedBuilds -join ', ')$(if (-not $buildPassed -and $WindowsBuild -in @(26100, 26200)) { '. Atlas Manager can move Windows 11, version 24H2 or 25H2 to a supported version first' })"
+        Detail   = "build $WindowsBuild; supported: $($SupportedBuilds -join ', ')$(if (-not $buildPassed -and $WindowsBuild -in @(26100, 26200)) { '. Aether OS can move Windows 11, version 24H2 or 25H2 to a supported version first' })"
     }
     $release = Get-AtlasWindowsReleaseStatus -Version ([version]("10.0.$WindowsBuild.$WindowsRevision")) -BuildLabEx $BuildLabEx
     $results += [pscustomobject]@{
@@ -354,7 +354,7 @@ function Test-AtlasInstallRequirement {
     # The install plan's per-user steps accept only account SIDs (S-1-5-21-...).
     # Work or school (Microsoft Entra ID) accounts have S-1-12-1 SIDs instead.
     if ($null -eq $AccountSid -or -not $AccountSid.IsAccountSid()) {
-        $accountDetail = "Atlas can't be installed from a work or school (Microsoft Entra ID) account. Sign in with a local account or a Microsoft account, then try again."
+        $accountDetail = "Aether can't be installed from a work or school (Microsoft Entra ID) account. Sign in with a local account or a Microsoft account, then try again."
     }
     else {
         try {
@@ -378,7 +378,7 @@ function Test-AtlasInstallRequirement {
     }
     $results += [pscustomobject]@{
         Name = 'No pending reboot'; Passed = -not $pendingReboot; Blocking = $true
-        Detail = 'restart Windows before installing so servicing does not run alongside Atlas'
+        Detail = 'restart Windows before installing so servicing does not run alongside Aether'
     }
     # Deferred file replacements without either restart flag are only noted: an
     # update can queue some (printer drivers, for one) without asking for a
@@ -450,7 +450,7 @@ function Test-AtlasInstallRequirement {
     if ($DeclaredRequirements -contains 'DefenderToggled') {
         $defenderPassed = $false
         $defenderBlocking = $true
-        $defenderDetail = 'turn off the four Windows Security switches shown by Atlas before installation'
+        $defenderDetail = 'turn off the four Windows Security switches shown by Aether before installation'
         try {
             if (Test-AtlasDefenderPresent) {
                 $switches = Get-AtlasDefenderSwitch
@@ -485,20 +485,20 @@ function Test-AtlasInstallRequirement {
                 $restores = $Mode -cin @('Fresh', 'Rebase') -or ($ChooseAgain -and $Mode -cin @('Upgrade', 'Reapply'))
                 $defenderPassed = $true
                 if ($removedByAtlas -and $keep -and $restores) {
-                    $defenderDetail = "Microsoft Defender was removed by Atlas's NoDefender package; this installation takes that package off, so Defender is back after the restart. There is nothing to turn off now"
+                    $defenderDetail = "Microsoft Defender was removed by Aether's NoDefender package; this installation takes that package off, so Defender is back after the restart. There is nothing to turn off now"
                 }
                 elseif ($removedByAtlas -and $keep -and $Mode -cin @('Upgrade', 'Reapply')) {
                     $defenderPassed = $false
                     $defenderBlocking = $false
-                    $defenderDetail = "Microsoft Defender was removed by Atlas's NoDefender package, and keeping your choices leaves it removed, so this installation records it as removed. To bring it back, run again with -ChooseAgain, or use Toggle Defender in the Atlas folder afterwards"
+                    $defenderDetail = "Microsoft Defender was removed by Aether's NoDefender package, and keeping your choices leaves it removed, so this installation records it as removed. To bring it back, run again with -ChooseAgain, or use Toggle Defender in the Aether folder afterwards"
                 }
                 elseif ($removedByAtlas) {
-                    $defenderDetail = "Microsoft Defender was removed by Atlas's NoDefender package, so there is nothing to turn off"
+                    $defenderDetail = "Microsoft Defender was removed by Aether's NoDefender package, so there is nothing to turn off"
                 }
                 elseif ($keep -and $packagesRead -and -not [string]::IsNullOrWhiteSpace($Mode)) {
                     $defenderPassed = $false
                     $defenderBlocking = $false
-                    $defenderDetail = "Microsoft Defender isn't on this PC, and no Atlas package removed it, so this installation can't bring it back. Install another antivirus app, or repair Windows to get Defender back"
+                    $defenderDetail = "Microsoft Defender isn't on this PC, and no Aether package removed it, so this installation can't bring it back. Install another antivirus app, or repair Windows to get Defender back"
                 }
                 else {
                     $defenderDetail = "Microsoft Defender isn't on this PC, so there is nothing to turn off"
@@ -523,27 +523,27 @@ function Test-AtlasWindowsUpdateInProgress {
 
     $open = Test-AtlasWindowsTransitionOpen
     $passed = $true
-    $detail = 'Atlas Manager is not updating Windows'
+    $detail = 'Aether OS is not updating Windows'
     if ($null -ne $open -and -not $open.Readable) {
         $passed = $false
-        $detail = "Atlas Manager's record of the Windows Update settings it changed cannot be read: $($open.Error)"
+        $detail = "Aether OS's record of the Windows Update settings it changed cannot be read: $($open.Error)"
     }
     elseif ($null -ne $open -and $open.Kind -eq 'transition' -and $WindowsBuild -ne $open.TargetBuild) {
         $passed = $false
-        $detail = "Atlas Manager is moving Windows to build $($open.TargetBuild); finish or stop that in Atlas Manager first"
+        $detail = "Aether OS is moving Windows to build $($open.TargetBuild); finish or stop that in Aether OS first"
     }
     # Whether Windows rebuilt itself decides the install mode, so the install
     # waits until Atlas Manager has checked.
     elseif ($null -ne $open -and $open.Kind -eq 'transition' -and $null -eq $open.Rebuild) {
         $passed = $false
-        $detail = 'Atlas Manager has not checked how Windows moved yet; continue updating in Atlas Manager first'
+        $detail = 'Aether OS has not checked how Windows moved yet; continue updating in Aether OS first'
     }
     elseif ($null -ne $open -and $open.Kind -eq 'transition' -and $open.Rebuild -eq 'components-lost') {
         $passed = $false
-        $detail = 'Atlas packages are gone after the Windows update without Windows reinstalling itself; send a report from Atlas Manager'
+        $detail = 'Aether packages are gone after the Windows update without Windows reinstalling itself; send a report from Aether OS'
     }
     elseif ($null -ne $open) {
-        $detail = 'the Windows Update settings Atlas Manager turned on are put back at the end of this install'
+        $detail = 'the Windows Update settings Aether OS turned on are put back at the end of this install'
     }
     return [pscustomobject]@{ Name = 'No Windows update in progress'; Passed = $passed; Blocking = $true; Detail = $detail }
 }
@@ -872,7 +872,7 @@ try {
     $windowsPath = [Environment]::GetFolderPath('Windows')
     $context = Get-AtlasContext -Refresh
 
-    Write-AtlasInstallStep "Atlas $targetVersion from '$extractedRoot'."
+    Write-AtlasInstallStep "Aether $targetVersion from '$extractedRoot'."
     . (Join-Path -Path $scriptsRoot -ChildPath 'Preparation\WindowsTransition.ps1')
 
     $windowsVersion = Get-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -ErrorAction Stop
@@ -919,7 +919,7 @@ try {
     Write-AtlasInstallStep "Install mode: $($updatePath.Summary)."
     if ($updatePath.Note) { Write-AtlasInstallStep $updatePath.Note }
 
-    Write-AtlasInstallStep 'Copying Atlas''s files to a protected folder...'
+    Write-AtlasInstallStep 'Copying Aether''s files to a protected folder...'
     $stagingRoot = New-AtlasProtectedStagingRoot -WindowsPath $windowsPath
     $payloadRoot = Copy-AtlasPayloadToStaging -ExtractedRoot $extractedRoot -StagingRoot $stagingRoot
     Write-AtlasInstallStep 'Verifying Windows and Microsoft Store preparation for the signed-in user...'
@@ -949,7 +949,7 @@ try {
     if (-not $KeepStaging) {
         Remove-Item -LiteralPath $stagingRoot -Recurse -Force -ErrorAction SilentlyContinue
     }
-    Write-AtlasInstallStep 'Atlas installed successfully.'
+    Write-AtlasInstallStep 'Aether installed successfully.'
     if ($Restart) {
         Write-AtlasInstallStep 'Restarting in ten seconds.'
         & (Join-Path -Path $windowsPath -ChildPath 'System32\shutdown.exe') /r /t 10 /c (Get-AtlasRestartComment -Comment $RestartComment)
@@ -960,7 +960,7 @@ try {
     exit 0
 }
 catch {
-    [Console]::Error.WriteLine("[Atlas] $($_.Exception.Message)")
+    [Console]::Error.WriteLine("[Aether] $($_.Exception.Message)")
     # A broker that timed out may leave its TrustedInstaller child in the copy, so
     # once one has started, the next successful install tidies the copy instead.
     if ($null -ne $stagingRoot -and -not $brokerStarted -and -not $KeepStaging) {

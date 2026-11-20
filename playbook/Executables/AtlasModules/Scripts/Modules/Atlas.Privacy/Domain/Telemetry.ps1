@@ -127,10 +127,10 @@ function Read-AtlasTelemetryPackageChoice {
 
     $telemetryDisabled = Get-AtlasTelemetryPackageInstalled
     Write-AtlasNote -Text @(
-        'The Atlas NoTelemetry package removes some Windows telemetry components.'
+        'The Aether NoTelemetry package removes some Windows telemetry components.'
         '  - Removing the package restores those components, which can help with'
         '    troubleshooting. If that fixes a problem, please report it to Atlas.'
-        '  - Atlas keeps policies that disable telemetry even without the package.'
+        '  - Aether keeps policies that disable telemetry even without the package.'
         '    Those policies do not apply on Windows Home.'
         '  - The package is not needed on Education or Enterprise editions.'
     )

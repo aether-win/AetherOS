@@ -698,20 +698,20 @@ function Resolve-AtlasAppxRemovalLeftover {
             elseif ([string]::IsNullOrWhiteSpace($userSid)) {
                 Write-AtlasLog -Level Warning -Message (
                     "AppX package '$fullName' for '$($definition.Name)' is still registered ($accounts). " +
-                    "$($Account.Absence), so Atlas continues."
+                    "$($Account.Absence), so Aether continues."
                 )
             }
             elseif ($userKinds -contains 'PendingRemoval') {
                 Write-AtlasLog -Level Warning -Message (
                     "AppX package '$fullName' for '$($definition.Name)' is still registered, but Windows finishes " +
                     "removing it for $($Account.Description) when the app closes or the account signs out " +
-                    "($accounts), so Atlas continues."
+                    "($accounts), so Aether continues."
                 )
             }
             else {
                 Write-AtlasLog -Level Warning -Message (
                     "AppX package '$fullName' for '$($definition.Name)' is still registered, " +
-                    "but not installed for $($Account.Description) ($accounts), so Atlas continues."
+                    "but not installed for $($Account.Description) ($accounts), so Aether continues."
                 )
             }
         }

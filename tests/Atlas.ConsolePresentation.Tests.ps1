@@ -24,11 +24,11 @@ BeforeAll {
 }
 
 Describe 'Console vocabulary' {
-    It 'prints the Atlas heading with an underline, explanation and blank line' {
+    It 'prints the Aether heading with an underline, explanation and blank line' {
         $lines = Get-ConsoleLine { Write-AtlasTitle -Text 'Enable Sleep' -Explanation 'Restores the Windows sleep timers.' }
 
         $lines | Should -Be @(
-            'AtlasOS - Enable Sleep'
+            'Aether OS - Enable Sleep'
             '----------------------'
             'Restores the Windows sleep timers.'
             ''
@@ -103,7 +103,7 @@ Describe 'Run outcome and closing line' {
             Write-AtlasTitle -Text 'Enable Sleep'
             Write-AtlasCompletion -Title 'Enable Sleep'
         }
-        $lines | Should -Be @('AtlasOS - Enable Sleep', '----------------------', '', 'Done: Enable Sleep.')
+        $lines | Should -Be @('Aether OS - Enable Sleep', '----------------------', '', 'Done: Enable Sleep.')
     }
 
     It 'becomes Manual after a manual step so the closing line does not claim success' {
@@ -327,12 +327,12 @@ function Invoke-AtlasDemoManual {
             Invoke-AtlasToggle -Name 'DemoMenu' -TogglesRoot $script:TogglesRoot -LauncherPath 'C:\Atlas\Demo Menu.cmd'
         }
 
-        $lines[0] | Should -BeExactly 'AtlasOS - Demo Menu'
+        $lines[0] | Should -BeExactly 'Aether OS - Demo Menu'
         $lines | Should -Contain '  [2] Turn the demo on'
         $lines | Should -Contain 'Applying On...'
         $lines | Should -Contain 'Done: Turn the demo on.'
         $lines | Should -Contain 'Restart recommended: restart Windows to finish applying this change.'
-        @($lines | Where-Object { $_ -ceq 'AtlasOS - Demo Menu' }).Count | Should -Be 1
+        @($lines | Where-Object { $_ -ceq 'Aether OS - Demo Menu' }).Count | Should -Be 1
         Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Prompt -ceq 'Press Enter to exit. ' }
         [array]::IndexOf($lines, 'Done: Turn the demo on.') | Should -BeGreaterThan ([array]::IndexOf($lines, 'Applying On...'))
     }
@@ -345,7 +345,7 @@ function Invoke-AtlasDemoManual {
             Invoke-AtlasToggle -Name 'DemoManual' -State 'Run' -TogglesRoot $script:TogglesRoot -LauncherPath 'C:\Atlas\Demo Manual.cmd'
         }
 
-        $lines[0] | Should -BeExactly 'AtlasOS - Demo Manual'
+        $lines[0] | Should -BeExactly 'Aether OS - Demo Manual'
         $lines | Should -Contain 'Warning: Opens Settings and leaves the choice to you.'
         Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Prompt -like 'Press Enter to continue, or Ctrl+C to cancel.*' }
         Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 1 -Exactly -ParameterFilter { $Prompt -ceq 'Press Enter to exit. ' }
@@ -359,7 +359,7 @@ function Invoke-AtlasDemoManual {
             Invoke-AtlasToggle -Name 'DemoManual' -State 'Run' -Silent -TogglesRoot $script:TogglesRoot
         }
 
-        @($lines | Where-Object { $_ -like 'AtlasOS - *' -or $_ -like 'Done:*' -or $_ -like 'Press Enter*' }).Count | Should -Be 0
+        @($lines | Where-Object { $_ -like 'Aether OS - *' -or $_ -like 'Done:*' -or $_ -like 'Press Enter*' }).Count | Should -Be 0
         Should -Invoke Read-AtlasConsoleLine -ModuleName Atlas.Core -Times 0 -Exactly
     }
 }

@@ -248,13 +248,13 @@ Describe 'Get-AtlasChoiceToggleTarget' {
             Expected = @('KeyboardShortcuts=Disable')
         }
         @{
-            Case = 'a cleared box or a default answer undoes Atlas''s own Disable'
+            Case = 'a cleared box or a default answer undoes Aether''s own Disable'
             Options = @('mitigations-default', 'auto-updates-default', 'keyboard-single')
             Records = @{ PowerSaving = 0; Hibernation = 0; Mitigations = 0; AutomaticUpdates = 0; VbsState = 0 }; CoreIsolationOff = $true
             Expected = @('PowerSaving=Enable', 'Hibernation=Enable', 'Mitigations=WindowsDefault', 'AutomaticUpdates=Enable', 'VbsState=Enable', 'KeyboardShortcuts=Disable')
         }
         @{
-            Case = 'a default answer over Atlas''s Enable records already matches'
+            Case = 'a default answer over Aether''s Enable records already matches'
             Options = @('mitigations-default', 'auto-updates-default', 'keyboard-selector')
             Records = @{ PowerSaving = 1; Hibernation = 1; Mitigations = 1; AutomaticUpdates = 1; VbsState = 1; KeyboardShortcuts = 0 }; CoreIsolationOff = $false
             Expected = @('PowerSaving=Enable*', 'Hibernation=Enable*', 'Mitigations=WindowsDefault*', 'AutomaticUpdates=Enable*', 'VbsState=Enable*', 'KeyboardShortcuts=Disable*')
@@ -276,7 +276,7 @@ Describe 'Get-AtlasChoiceToggleTarget' {
             Expected = @('PowerSaving=Disable*', 'Hibernation=Disable*', 'Mitigations=Disable*', 'AutomaticUpdates=Disable*', 'KeyboardShortcuts=Enable*')
         }
         @{
-            Case = 'records Atlas never writes give nothing'
+            Case = 'records Aether never writes give nothing'
             Options = @('mitigations-default', 'auto-updates-default')
             Records = @{ PowerSaving = 5; Hibernation = 2; Mitigations = 7; AutomaticUpdates = 3; Sleep = 0 }; CoreIsolationOff = $false
             Expected = @()
@@ -489,12 +489,12 @@ Describe 'Choices phase' {
 
         $script:Imports.Count | Should -BeGreaterThan 0
         foreach ($import in $script:Imports) {
-            $import | Should -Exist -Because 'the phase must find its modules where Atlas installs them'
+            $import | Should -Exist -Because 'the phase must find its modules where Aether installs them'
         }
         @($script:FactReads) | Should -Be @($script:UserSid)
     }
 
-    It 'applies auto-updates-disable and mitigations-disable chosen again instead of the Enable records Atlas replayed (e9d7a85f)' {
+    It 'applies auto-updates-disable and mitigations-disable chosen again instead of the Enable records Aether replayed (e9d7a85f)' {
         # Defender removed by Atlas's package, Edge gone, VBS off, and the records the
         # replay kept applying while the options said otherwise.
         Reset-ChoicesPc -Options @(
@@ -643,7 +643,7 @@ Describe 'Choices phase' {
         Get-MachineEvent | Should -Be @('CoreService:Restored', 'Uninstall:*Z-Atlas-NoDefender-Package*')
     }
 
-    It 'stops at once when Atlas''s package can''t be installed, as a first installation does' {
+    It 'stops at once when Aether''s package can''t be installed, as a first installation does' {
         Reset-ChoicesPc -Options @('defender-disable', 'mitigations-disable', 'uninstall-edge', 'remove-snipping-tool')
         $script:Pc.Edge = $true
         $script:Pc.Appx = @($script:Pc.Appx + $script:SnippingFamily)
@@ -675,14 +675,14 @@ Describe 'Choices phase' {
         @(Get-ChoicesInfo | Where-Object { $_ -like "*'defender-disable' already matches*" }) | Should -BeNullOrEmpty
     }
 
-    It 'warns, and claims no match, when Defender is missing and no Atlas package removed it' {
+    It 'warns, and claims no match, when Defender is missing and no Aether package removed it' {
         Reset-ChoicesPc -Options @('defender-enable')
         $script:Pc.Defender = $false
 
         Invoke-ChoicesPhaseUnderTest
 
         Get-MachineEvent | Should -BeNullOrEmpty
-        Get-ChoicesWarning | Should -Be @("Microsoft Defender isn't on this PC and no Atlas package removed it, so Atlas can't bring it back.")
+        Get-ChoicesWarning | Should -Be @("Microsoft Defender isn't on this PC and no Aether package removed it, so Aether can't bring it back.")
         @(Get-ChoicesInfo | Where-Object { $_ -like "*'defender-enable'*" }) | Should -BeNullOrEmpty
     }
 

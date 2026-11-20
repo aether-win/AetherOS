@@ -207,7 +207,7 @@ function Invoke-AtlasToggleElevatedChild {
         if ($_.Exception.NativeErrorCode -eq 1223) {
             if ($UserWorkApplied) {
                 $cancelled = [InvalidOperationException]::new(
-                    "The administrator permission prompt for '$Name' was cancelled, so the change was made but Atlas didn't record it."
+                    "The administrator permission prompt for '$Name' was cancelled, so the change was made but Aether didn't record it."
                 )
                 $cancelled.Data['Atlas.Toggle.ElevationCancelledAfterUserWork'] = $true
                 throw $cancelled

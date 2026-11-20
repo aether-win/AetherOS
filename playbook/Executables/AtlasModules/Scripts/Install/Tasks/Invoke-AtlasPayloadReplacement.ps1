@@ -223,7 +223,7 @@ if ([bool]$plan.RemoveInstalledPayload) {
         $installedScripts = [IO.Path]::Combine($script:AtlasWindowsPath, 'AtlasModules', 'Scripts')
         . ([IO.Path]::Combine($installedScripts, 'Preparation', 'WindowsTransition.ps1'))
         Import-Module -Name ([IO.Path]::Combine($installedScripts, 'Modules', 'Atlas.Software', 'Atlas.Software.psd1')) -ErrorAction Stop
-        Write-Output "Atlas packages' repair source: $(Update-AtlasCbsRepairSource -AtlasPackages @(Get-AtlasInstalledAtlasPackage))."
+        Write-Output "Aether packages' repair source: $(Update-AtlasCbsRepairSource -AtlasPackages @(Get-AtlasInstalledAtlasPackage))."
     }
     catch {
         Write-Warning "The Aether packages' repair source was not checked after replacing Aether's files: $($_.Exception.Message)"

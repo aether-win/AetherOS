@@ -517,7 +517,7 @@ Describe 'Set-AtlasDefenderCoreService' {
         @($script:registeredTasks).Count | Should -Be 0
     }
 
-    It 'leaves a start type that Atlas didn''t turn off: <Case>' -ForEach @(
+    It 'leaves a start type that Aether didn''t turn off: <Case>' -ForEach @(
         @{ Case = 'manual start'; Value = 3 }
         @{ Case = 'automatic start'; Value = 2 }
     ) {
@@ -584,7 +584,7 @@ Describe 'Test-AtlasDefenderCoreServiceRemoved' {
 }
 
 Describe 'Windows Defender package installer boundary' {
-    It 'resolves the installer only beneath the Atlas modules root' {
+    It 'resolves the installer only beneath the Aether modules root' {
         $script:defenderModulesRoot = Join-Path $TestDrive 'AtlasModules'
         $entryRoot = New-Item -ItemType Directory -Path (Join-Path $script:defenderModulesRoot 'Scripts\Entry') -Force
         $expectedScript = Join-Path $entryRoot.FullName 'Install-AtlasPackage.ps1'

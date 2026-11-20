@@ -1,6 +1,6 @@
 ﻿@{
     Name          = 'SendToContextMenu'
-    Description   = 'Hides or shows entries of the Explorer Send To context menu for the current user. Interactive by default; /silent applies the Atlas defaults. Runs in the user''s own session and records no state.'
+    Description   = 'Hides or shows entries of the Explorer Send To context menu for the current user. Interactive by default; /silent applies the Aether defaults. Runs in the user''s own session and records no state.'
     Elevation     = 'None'
     NoStateRecord = $true
     Script        = 'SendToContextMenu.ps1'

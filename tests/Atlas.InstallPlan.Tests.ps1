@@ -3,7 +3,7 @@ BeforeAll {
     . (Join-Path $script:AtlasTestScriptsRoot 'Install\Install-Plan.ps1')
 }
 
-Describe 'Atlas install plan' {
+Describe 'Aether install plan' {
     It 'returns the exact ordered <Mode> OOBE=<IsOobe> plan' -TestCases @(
         @{
             Mode = 'Fresh'; IsOobe = $false; Expected = @(

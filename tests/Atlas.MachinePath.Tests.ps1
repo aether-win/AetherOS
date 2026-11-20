@@ -43,7 +43,7 @@ Describe 'Machine PATH entries' {
         )
     }
 
-    It 'appends the Atlas entries and leaves every existing entry unexpanded' {
+    It 'appends the Aether entries and leaves every existing entry unexpanded' {
         $existing = '%SystemRoot%\system32;%SystemRoot%;C:\Windows;C:\WINDOWS;%JAVA_HOME%\bin'
         Set-TestPathValue -Value $existing -Kind ExpandString
 

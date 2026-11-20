@@ -143,7 +143,7 @@ Describe 'Previous-install file removal' {
         $windowsRoot = New-UpgradeWindowsFixture -Name 'WinDirLogsJunction'
         $elsewhere = Join-Path $TestDrive 'LogsElsewhere'
         $null = New-Item -Path $elsewhere -ItemType Directory -Force
-        [IO.File]::WriteAllText((Join-Path $elsewhere 'keep.txt'), 'not Atlas''s')
+        [IO.File]::WriteAllText((Join-Path $elsewhere 'keep.txt'), 'not Aether''s')
         try {
             New-Item -Path (Join-Path $windowsRoot 'AtlasModules\Logs') -ItemType Junction -Value $elsewhere -ErrorAction Stop | Out-Null
         }
@@ -159,7 +159,7 @@ Describe 'Previous-install file removal' {
         Test-Path -LiteralPath (Join-Path $elsewhere 'keep.txt') | Should -BeTrue
     }
 
-    It 'removes both Atlas folders and leaves every sibling intact' {
+    It 'removes both Aether folders and leaves every sibling intact' {
         $windowsRoot = New-UpgradeWindowsFixture -Name 'WinDirFull'
 
         $result = Invoke-PreviousInstallRemoval -WindowsRoot $windowsRoot
@@ -183,7 +183,7 @@ Describe 'Previous-install file removal' {
         Test-Path -LiteralPath (Join-Path $windowsRoot 'UnrelatedComponent') | Should -BeTrue
     }
 
-    It 'fails explicitly when an Atlas file cannot be deleted' {
+    It 'fails explicitly when an Aether file cannot be deleted' {
         $windowsRoot = New-UpgradeWindowsFixture -Name 'WinDirLocked'
         $lockedPath = Join-Path $windowsRoot 'AtlasModules\Scripts\locked.dat'
         [IO.File]::WriteAllText($lockedPath, 'locked')
@@ -214,7 +214,7 @@ Describe 'Previous-install file removal' {
     }
 }
 
-Describe 'Atlas file copy' {
+Describe 'Aether file copy' {
     BeforeAll {
         # Copy-AtlasPayload.ps1 finds the staged files four levels above itself and
         # the trust bootstrap two levels above, so the harness mirrors that layout.
@@ -230,7 +230,7 @@ Describe 'Atlas file copy' {
         [IO.File]::WriteAllText((Join-Path $script:Staged 'Themes\atlas.theme'), 'theme')
     }
 
-    It 'copies Atlas''s new files without copying the staged logs over the machine''s' {
+    It 'copies Aether''s new files without copying the staged logs over the machine''s' {
         $windowsRoot = Join-Path $TestDrive 'CopyWindows'
         $null = New-Item -Path (Join-Path $windowsRoot 'AtlasModules\Logs') -ItemType Directory -Force
         [IO.File]::WriteAllText((Join-Path $windowsRoot 'AtlasModules\Logs\install-run.log'), 'the machine''s own')

@@ -169,7 +169,7 @@ Describe 'First-logon search preferences' {
         Remove-Variable windir, sid -Scope Global -ErrorAction SilentlyContinue
     }
 
-    It 'keeps a recorded Enable Web Search choice instead of the Atlas default' {
+    It 'keeps a recorded Enable Web Search choice instead of the Aether default' {
         $script:webSearchState = Get-WebSearchUserState -State 'Enable'
         Mock Get-ItemProperty { [pscustomobject]@{ state = 1 } } -ParameterFilter {
             $Path -eq 'HKLM:\SOFTWARE\AtlasOS\Services\WebSearch' -and $Name -eq 'state'
@@ -189,7 +189,7 @@ Describe 'First-logon search preferences' {
         }
     }
 
-    It 'applies the Atlas default when the recorded Web Search choice is <Recorded>' -ForEach @(
+    It 'applies the Aether default when the recorded Web Search choice is <Recorded>' -ForEach @(
         @{ Recorded = 'Disable'; Record = [pscustomobject]@{ state = 0 } }
         @{ Recorded = 'a string'; Record = [pscustomobject]@{ state = '1' } }
     ) {
@@ -545,7 +545,7 @@ Describe 'Installing-user desktop command and Explorer refresh' {
 }
 
 Describe 'Installing-user shell completion flow' {
-    It 'imports the module of every Atlas command it calls, and stops if one is missing' {
+    It 'imports the module of every Aether command it calls, and stops if one is missing' {
         $owners = @{}
         foreach ($module in Get-ChildItem -LiteralPath $script:AtlasTestModulesRoot -Directory) {
             $manifest = Import-PowerShellDataFile -LiteralPath (Join-Path $module.FullName "$($module.Name).psd1")

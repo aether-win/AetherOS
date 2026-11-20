@@ -136,7 +136,7 @@ Describe 'Explicit enable state scope' {
         Should -Not -Invoke Set-AtlasSettingsPageVisibility
         Should -Not -Invoke Start-Process
     }
-    It 'unlocks only the two Atlas Find My Device restrictions after acceptance' {
+    It 'unlocks only the two Aether Find My Device restrictions after acceptance' {
         Mock Read-AtlasYesNo { $true }
         Enable-AtlasLocation -Toggle ([pscustomobject]@{ Silent = $false })
         Should -Invoke Set-AtlasLocationMachineState -Times 1 -Exactly -ParameterFilter { $State -ceq 'Enable' }

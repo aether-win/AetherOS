@@ -18,5 +18,5 @@ try {
     }
 }
 catch {
-    Write-AtlasLog -Level Warning -Message "Windows Update settings were not put back: $($_.Exception.Message) Aether Manager offers to put them back from Home."
+    Write-AtlasLog -Level Warning -Message "Windows Update settings were not put back: $($_.Exception.Message) Aether OS offers to put them back from Home."
 }

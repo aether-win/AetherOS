@@ -471,7 +471,7 @@ Describe 'Values Windows itself refuses' {
         }
     }
 
-    It 'marks a refused value write so callers can tell it apart from an Atlas defect' {
+    It 'marks a refused value write so callers can tell it apart from an Aether defect' {
         $record = InModuleScope Atlas.Registry {
             New-AtlasRegistryValueRefusedRecord -ProviderPath 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Policies\X' `
                 -Name 'Protected' -Cause (New-Object System.UnauthorizedAccessException('kernel said no'))

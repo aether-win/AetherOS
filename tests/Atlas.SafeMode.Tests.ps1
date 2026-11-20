@@ -9,7 +9,7 @@ BeforeAll {
     . $script:CbsRetryPath -LibraryOnly
 }
 
-Describe 'Atlas Safe Mode configuration reader' {
+Describe 'Aether Safe Mode configuration reader' {
     It 'binds BCDEdit to System32 and rejects a nonzero native exit code' {
         (Get-AtlasSafeModePaths).BcdEdit | Should -BeExactly `
             (Join-Path ([Environment]::GetFolderPath('Windows')) 'System32\bcdedit.exe')
@@ -36,7 +36,7 @@ Describe 'Atlas Safe Mode configuration reader' {
     }
 }
 
-Describe 'Atlas Safe Mode configuration' {
+Describe 'Aether Safe Mode configuration' {
     BeforeEach {
         $script:boot = [pscustomobject]@{
             SafeBoot = $null; AlternateShellPresent = $false; AlternateShell = $false
@@ -153,7 +153,7 @@ Describe 'Atlas Safe Mode configuration' {
     }
 }
 
-Describe 'Atlas CBS retry lifecycle' {
+Describe 'Aether CBS retry lifecycle' {
     BeforeEach {
         $script:statePath = Join-Path $TestDrive 'Recovery\CbsRetry.json'
         $script:package = Join-Path $TestDrive 'package.cab'
@@ -270,7 +270,7 @@ Describe 'Atlas CBS retry lifecycle' {
             Test-Path -LiteralPath $script:legacyPath | Should -BeFalse
         }
 
-        It 'keeps the list while the Atlas 0.5 retry is still set to run' {
+        It 'keeps the list while the Aether 0.5 retry is still set to run' {
             Mock Get-AtlasLegacyCbsRetryShell {
                 $packageScript = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules\Scripts\packageInstall.ps1'
                 "explorer.exe,cmd /c RunAsTI powershell -NoP -EP Unrestricted -File `"$packageScript`" -SafeMode"
@@ -374,7 +374,7 @@ Describe 'Atlas CBS retry lifecycle' {
     }
 
     Context 'The CBS retry instruction' {
-        It 'names a launcher the Atlas package includes, for both recovering and giving up' {
+        It 'names a launcher the Aether package includes, for both recovering and giving up' {
             $launcher = Join-Path $script:AtlasTestScriptsRoot 'Entry\Invoke-AtlasCbsRetry.cmd'
             Test-Path -LiteralPath $launcher -PathType Leaf | Should -BeTrue
             $installed = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules\Scripts\Entry\Invoke-AtlasCbsRetry.cmd'
@@ -410,7 +410,7 @@ Describe 'The CBS retry Safe Mode prompt' {
         Test-Path -LiteralPath $script:prompt.SavedPrompt | Should -BeFalse
     }
 
-    It "saves the original prompt once, so arming again doesn't save Atlas's own" {
+    It "saves the original prompt once, so arming again doesn't save Aether's own" {
         Set-ItemProperty -LiteralPath $script:prompt.EnvironmentKey -Name PROMPT -Value '$T $P$G'
         Set-AtlasCbsRetryPrompt -Paths $script:prompt
         Set-AtlasCbsRetryPrompt -Paths $script:prompt
@@ -418,7 +418,7 @@ Describe 'The CBS retry Safe Mode prompt' {
         (Get-Prompt).Value | Should -BeExactly '$T $P$G'
     }
 
-    It "removes Atlas's prompt when the saved one is unreadable" {
+    It "removes Aether's prompt when the saved one is unreadable" {
         Set-ItemProperty -LiteralPath $script:prompt.EnvironmentKey -Name PROMPT -Value '$T $P$G'
         Set-AtlasCbsRetryPrompt -Paths $script:prompt
         Set-Content -LiteralPath $script:prompt.SavedPrompt -Value 'not json'

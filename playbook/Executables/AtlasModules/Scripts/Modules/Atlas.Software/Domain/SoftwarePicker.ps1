@@ -226,7 +226,7 @@ function Show-AtlasSoftwarePicker {
     $secondColumnCount = $items.Count - $firstColumnCount
 
     $form = New-Object System.Windows.Forms.Form
-    $form.Text = 'Install Software | Atlas'
+    $form.Text = 'Install Software | Aether'
     $form.ShowIcon = $false
     $form.MaximizeBox = $false
     $form.MinimizeBox = $false

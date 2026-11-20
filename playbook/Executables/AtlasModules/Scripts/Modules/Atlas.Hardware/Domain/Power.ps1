@@ -1,4 +1,4 @@
-# Atlas.Hardware domain: the Atlas power scheme.
+﻿# Atlas.Hardware domain: the Atlas power scheme.
 #
 # 'Atlas' duplicates the Windows Balanced scheme under a fixed GUID, applies four
 # AC settings and activates it, remembering the previously active scheme in
@@ -352,7 +352,7 @@ function Set-AtlasPowerSavingState {
 
         if (-not $Silent) {
             Write-AtlasStep -Text $(if ($Mode -ceq 'Atlas') {
-                    'Applying the Atlas AC power policy...'
+                    'Applying the Aether AC power policy...'
                 }
                 else {
                     'Restoring the previous power plan...'

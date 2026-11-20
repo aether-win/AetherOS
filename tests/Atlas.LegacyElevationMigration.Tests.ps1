@@ -215,7 +215,7 @@ Describe 'Released legacy elevation migration' {
         $harness.State.Writes.Count | Should -Be 0
     }
 
-    It 'removes the records old Toolbox builds kept where Atlas never reads them, and keeps every other key' {
+    It 'removes the records old Toolbox builds kept where Aether never reads them, and keeps every other key' {
         $harness = Get-TestLegacyHarness
         $dword = { param($Value) Get-TestLegacyValue DWord $Value }
         $text = { param($Value) Get-TestLegacyValue String $Value }

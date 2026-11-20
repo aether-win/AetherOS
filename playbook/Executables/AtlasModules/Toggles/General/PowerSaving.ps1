@@ -4,11 +4,11 @@ function Invoke-AtlasPowerSavingToggle {
     switch -CaseSensitive ([string]$Toggle.State) {
         'Disable' {
             $mode = 'Atlas'
-            $message = 'The Atlas AC power policy is active.'
+            $message = 'The Aether AC power policy is active.'
         }
         'Enable' {
             $mode = 'Default'
-            $message = 'The previous power plan, or Balanced when none was saved, is active and the Atlas plan was removed.'
+            $message = 'The previous power plan, or Balanced when none was saved, is active and the Aether plan was removed.'
         }
         default { throw "PowerSaving: unsupported state '$($Toggle.State)'." }
     }

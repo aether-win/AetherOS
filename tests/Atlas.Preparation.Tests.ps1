@@ -1100,12 +1100,12 @@ Describe 'A damaged component store' {
         Should -Invoke Invoke-PreparationRestoreHealth -Times 0 -Exactly
         [string](Get-Content (Join-Path $JobPath 'updates.log') -Raw -ErrorAction SilentlyContinue) | Should -Match $Logged
     }
-    It 'leaves a repairable store alone on a PC with Atlas packages, which keep it reading so' {
+    It 'leaves a repairable store alone on a PC with Aether packages, which keep it reading so' {
         $script:ComponentHealth = 'Repairable'
         Mock Get-AtlasInstalledAtlasPackage { 'Z-Atlas-NoTelemetry-Package~31bf3856ad364e35~amd64~~5.0.0.0' }
         Invoke-PreparationWindows | Should -Be 'complete'
         Should -Invoke Invoke-PreparationRestoreHealth -Times 0 -Exactly
-        Get-Content (Join-Path $JobPath 'updates.log') -Raw | Should -Match 'repairable, with Atlas packages installed \(Z-Atlas-NoTelemetry-Package[^)]*\); left as it is'
+        Get-Content (Join-Path $JobPath 'updates.log') -Raw | Should -Match 'repairable, with Aether packages installed \(Z-Atlas-NoTelemetry-Package[^)]*\); left as it is'
     }
     It 'stops before any search when Windows records damage it can''t repair' {
         $script:ComponentHealth = 'NonRepairable'
@@ -1474,7 +1474,7 @@ Describe 'Windows preparation prerequisites' {
         } finally { $DriverMode = $previousMode }
         @($found.Title) | Should -Be @('2026-10 Cumulative Update for Windows 11 (KB5124010)')
         $log = Get-Content (Join-Path $JobPath 'updates.log') -Raw
-        $log | Should -Match "Left '2026-10 Cumulative Update Preview for Windows 11 \(KB5124011\)': an optional preview \(browse-only\), which installing Atlas doesn't need\."
+        $log | Should -Match "Left '2026-10 Cumulative Update Preview for Windows 11 \(KB5124011\)': an optional preview \(browse-only\), which installing Aether doesn't need\."
         $log | Should -Match "Left 'Windows 11, version 26H2': a feature update, which only a move to another Windows release installs, through its own search\."
         $log | Should -Match "Left 'Intel Corporation - Display - 32\.0\.101\.6881': a driver, and drivers are left to the user \(Install drivers myself\)\."
         $log | Should -Not -Match 'Left ''2026-10 Cumulative Update for Windows 11'

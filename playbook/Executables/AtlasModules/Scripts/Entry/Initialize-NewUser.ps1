@@ -324,7 +324,7 @@ if ($null -ne $tokenBlock) {
     }
     else {
         Write-Warning ('Aether skipped user setup for this account: the built-in Administrator account has a full administrator token, and setup needs a standard user token. ' +
-            "Use another account to get Atlas's user settings.")
+            "Use another account to get Aether's user settings.")
     }
     return
 }

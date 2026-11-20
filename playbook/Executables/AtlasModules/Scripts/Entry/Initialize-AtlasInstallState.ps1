@@ -99,7 +99,7 @@ function Find-AtlasInstallUserMarker {
 
     if ($markers.Count -eq 0 -and $entraHives.Count -gt 0) {
         throw ("The install was started from a work or school (Microsoft Entra ID) account ($($entraHives -join ', ')). " +
-            "Atlas can't be installed from such an account; sign in with a local account or a Microsoft account, then try again.")
+            "Aether can't be installed from such an account; sign in with a local account or a Microsoft account, then try again.")
     }
     if ($markers.Count -ne 1) {
         throw "Expected one current-user install marker for nonce '$Nonce'; found $($markers.Count)."
@@ -133,7 +133,7 @@ function Start-AtlasWizardInstallState {
     if (-not $held -and [string]$state.mode -cin @('Upgrade', 'Reapply')) {
         @(Repair-AtlasToolboxRecord -InstalledVersion (Get-AtlasInstalledVersion))
     }
-    "Atlas install state ready for $($state.mode) (OOBE=$($state.isOobe))."
+    "Aether install state ready for $($state.mode) (OOBE=$($state.isOobe))."
 }
 
 switch ($Operation) {
@@ -200,11 +200,11 @@ switch ($Operation) {
             }
             catch {
                 Write-Warning -WarningAction Continue -Message (
-                    'Atlas install state was committed, but its current-user ' +
+                    'Aether install state was committed, but its current-user ' +
                     "marker could not be removed: $($_.Exception.Message)"
                 )
             }
         }
-        Write-Output 'Atlas install state committed.'
+        Write-Output 'Aether install state committed.'
     }
 }

@@ -70,7 +70,7 @@ Describe 'ASCII identifier parameter binding' {
     }
 }
 
-Describe 'Atlas data under other cultures' {
+Describe 'Aether data under other cultures' {
     It 'loads definitions and persists toggle records under <Culture>' -TestCases $script:Cultures {
         param($Culture)
         Use-Culture $Culture {

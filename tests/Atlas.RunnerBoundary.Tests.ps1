@@ -52,7 +52,7 @@ Describe 'Compact AME runner boundary' {
     }
 }
 
-Describe 'Restricted Atlas YAML action parsing' {
+Describe 'Restricted Aether YAML action parsing' {
     It 'rejects current-user execution for every other script' {
         $configuration = Join-Path $TestDrive 'publisher-rejected'
         New-Item -ItemType Directory -Path $configuration -Force | Out-Null

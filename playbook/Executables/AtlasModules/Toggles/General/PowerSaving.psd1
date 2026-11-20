@@ -1,6 +1,6 @@
 ﻿@{
     Name        = 'PowerSaving'
-    Description = 'Power-saving. Disable applies the documented Atlas AC power policy; Enable restores the prior power plan, or Balanced when none was saved. Both states use the same helper.'
+    Description = 'Power-saving. Disable applies the documented Aether AC power policy; Enable restores the prior power plan, or Balanced when none was saved. Both states use the same helper.'
     Elevation   = 'Admin'
     Script      = 'PowerSaving.ps1'
     States      = @(

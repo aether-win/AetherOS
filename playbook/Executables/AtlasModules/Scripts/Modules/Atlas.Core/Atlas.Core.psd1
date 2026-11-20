@@ -3,7 +3,7 @@
     ModuleVersion     = '1.0.0'
     GUID              = '0b7c9f3e-8a41-4f7e-b6a2-3d5c1e9f2a84'
     Author            = 'AtlasOS'
-    Description       = 'Core Atlas framework: install context, option flags, logging, privilege checks and shared UI helpers.'
+    Description       = 'Core Aether framework: install context, option flags, logging, privilege checks and shared UI helpers.'
     PowerShellVersion = '5.1'
     FunctionsToExport = @(
         # Context

@@ -118,7 +118,7 @@ Describe 'Run with priority' {
 
     It 'accepts an existing local executable and rejects invalid targets' {
         $target = Join-Path $TestDrive `
-            ('Atlas priority {0} tool.exe' -f [char]0x03A9)
+            ('Aether priority {0} tool.exe' -f [char]0x03A9)
         Copy-Item -LiteralPath (Join-Path ([Environment]::SystemDirectory) 'where.exe') `
             -Destination $target
 
@@ -277,7 +277,7 @@ Describe 'Run with priority launch' {
         Copy-Item -LiteralPath (Join-Path ([Environment]::SystemDirectory) 'where.exe') -Destination $target
 
         { Invoke-AtlasPriorityLaunch -Priority High -TargetPath $target -Elevated } |
-            Should -Throw '*only through the installed Atlas handler*'
+            Should -Throw '*only through the installed Aether handler*'
         Should -Invoke Start-AtlasPriorityProcess -Times 0
     }
 

@@ -812,7 +812,7 @@ function InstallWebView {
 $currentUserSid = [Security.Principal.WindowsIdentity]::GetCurrent().User.Value
 if ($currentUserSid -eq 'S-1-5-18') {
     if (-not $MachineContext) {
-        Write-Status 'This script cannot run as TrustedInstaller or SYSTEM outside the fixed Atlas machine-removal contract. Run it from a regular administrator account.' -Level Critical -Exit
+        Write-Status 'This script cannot run as TrustedInstaller or SYSTEM outside the fixed Aether machine-removal contract. Run it from a regular administrator account.' -Level Critical -Exit
     }
 }
 else {

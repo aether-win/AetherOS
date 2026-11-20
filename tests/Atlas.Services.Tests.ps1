@@ -131,7 +131,7 @@ Describe 'Stop-AtlasService' {
     }
 }
 
-Describe 'Atlas service backup' {
+Describe 'Aether service backup' {
     BeforeEach {
         Mock Write-AtlasLog -ModuleName Atlas.Services
         $script:backupPath = Join-Path -Path $TestDrive -ChildPath 'Other\services.reg'

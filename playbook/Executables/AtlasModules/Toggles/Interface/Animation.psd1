@@ -1,6 +1,6 @@
 @{
     Name        = 'Animation'
-    Description = 'Visual effects and animations. Disable applies the Atlas minimal set; Enable restores the Windows defaults. Both states offer to sign out after the choice is recorded, so the changes apply.'
+    Description = 'Visual effects and animations. Disable applies the Aether minimal set; Enable restores the Windows defaults. Both states offer to sign out after the choice is recorded, so the changes apply.'
     Elevation   = 'Admin'
     States      = @(
         @{

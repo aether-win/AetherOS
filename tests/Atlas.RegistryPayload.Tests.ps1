@@ -134,7 +134,7 @@ Describe 'Registry file format' {
 }
 
 Describe 'Terminal .reg files' {
-    It 'removes stale Atlas terminal trees before recreating only user and Administrator entries' -TestCases @(
+    It 'removes stale Aether terminal trees before recreating only user and Administrator entries' -TestCases @(
         @{ RelativePath = 'AtlasModules\Scripts\Registry\Terminals\enabled.reg'; WindowsTerminalAdmin = 4 }
         @{ RelativePath = 'AtlasModules\Scripts\Registry\Terminals\minimal.reg'; WindowsTerminalAdmin = 0 }
     ) {
@@ -165,7 +165,7 @@ Describe 'Terminal .reg files' {
             Should -Be $WindowsTerminalAdmin
     }
 
-    It 'removes every Atlas terminal tree and recreates none when disabled' {
+    It 'removes every Aether terminal tree and recreates none when disabled' {
         $file = Get-Item -LiteralPath (Join-Path -Path $script:executablesRoot `
                 -ChildPath 'AtlasModules\Scripts\Registry\Terminals\disabled.reg')
         $text = Read-AtlasRegistryPayload -File $file

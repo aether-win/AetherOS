@@ -61,7 +61,7 @@ AfterAll {
     Remove-Item Env:\ATLAS_PRIVILEGE_TEST_EVENTS -ErrorAction SilentlyContinue
 }
 
-Describe 'Atlas process privilege decisions' {
+Describe 'Aether process privilege decisions' {
     It 'reads enabled and deny-only groups without duplicating the token' {
         $nativeType = [Atlas.Native.TrustedInstallerProcess]
         $openToken = $nativeType.GetMethod('OpenProcessToken', [Reflection.BindingFlags]'Static,NonPublic')
@@ -123,7 +123,7 @@ Describe 'Atlas process privilege decisions' {
     }
 }
 
-Describe 'Atlas toggle privilege routing' {
+Describe 'Aether toggle privilege routing' {
     BeforeEach {
         Remove-Item -LiteralPath $script:EventPath -Force -ErrorAction SilentlyContinue
 

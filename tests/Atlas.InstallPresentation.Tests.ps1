@@ -60,7 +60,7 @@ Describe 'Deferred cleanup preserves other startup registrations' {
         Mock New-Item {}
         Mock New-ItemProperty {}
     }
-    It 'does not recreate an existing startup key containing Atlas and other apps' {
+    It 'does not recreate an existing startup key containing Aether and other apps' {
         Mock Test-Path { $true }
         Register-AtlasOneDrivePostBootCleanup -UserSid 'S-1-5-21-1000-2000-3000-1001' -BootUtcTicks 638925000000000000L
         Should -Invoke New-Item -Times 0 -Exactly

@@ -42,9 +42,9 @@ Describe 'What the Safe Mode retry command says is left to do' {
         $script:shown | Should -Be @($Done)
     }
 
-    It 'sends the user back to Atlas for the install that armed the retry (<Mode>)' -ForEach @(
-        @{ Mode = 'Recover'; Next = '* After the restart, open Atlas to finish installing it.' }
-        @{ Mode = 'Discard'; Next = '* After the restart, open Atlas to try installing again.' }
+    It 'sends the user back to Aether for the install that armed the retry (<Mode>)' -ForEach @(
+        @{ Mode = 'Recover'; Next = '* After the restart, open Aether to finish installing it.' }
+        @{ Mode = 'Discard'; Next = '* After the restart, open Aether to try installing again.' }
     ) {
         Mock Test-AtlasCbsRetryInstallUnfinished { $true }
         Invoke-AtlasCbsRetryCommand -Mode $Mode -StatePath $script:statePath | Should -Be 0

@@ -35,7 +35,7 @@ if ($loadedAtlasCore.Count -ne 1 -or
 }
 
 $script:MicrosoftUpdateServiceId = '7971f918-a847-4430-9279-4a52d1efe18d'
-$script:WuaClientApplicationId = 'AtlasOS Driver Updater'
+$script:WuaClientApplicationId = 'Aether OS Driver Updater'
 
 # The console belongs to the launcher that started this script; it prints through the
 # shared vocabulary and leaves the exit pause to that launcher.

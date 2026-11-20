@@ -58,4 +58,4 @@ finally {
     $marker.Dispose()
 }
 
-Write-Output "Published Atlas install user $userSid in session $sessionId."
+Write-Output "Published Aether install user $userSid in session $sessionId."
