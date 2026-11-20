@@ -306,3 +306,5 @@ To Do y Outlook nuevo; solo se borra OneDrive.
 ## 5. Limitación del entorno
 Aquí no hay PowerShell ni Windows: no se puede compilar el .apbx, la app ni correr las pruebas
 Pester. Para probar: GitHub Actions (los workflows de Atlas ya existen) o la VM del usuario.
+
+- [x] Instalación más rápida: se omiten la limpieza de componentes DISM (AETHER_LIMPIAR_COMPONENTES=1 la activa) y NGEN (AETHER_NGEN=1). Botón "Cancelar instalación" en la pantalla Instalando: se detiene entre pasos.
