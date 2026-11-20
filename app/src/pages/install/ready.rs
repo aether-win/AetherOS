@@ -117,12 +117,8 @@ impl InstallPage {
         }
         cards.push(drivers);
         cards.extend(windows);
-        cards.push(self.preparation_card(
-            help == Some(ReadyHelp::Preparation),
-            preparation_focus,
-            action_focus,
-            cx,
-        ));
+        // Aether: sin la tarjeta "Actualizar Windows y las apps de la Store".
+        let _ = (preparation_focus, action_focus);
         cards
     }
 

@@ -43,7 +43,8 @@ impl CheckId {
 
     /// Whether a failure stops the install, or only warns.
     pub fn blocking(self) -> bool {
-        !matches!(self, CheckId::Activation)
+        // Aether: activación, actualizaciones pendientes y otros antivirus solo avisan.
+        !matches!(self, CheckId::Activation | CheckId::PendingUpdates | CheckId::ThirdPartyAntivirus)
     }
 
     /// A Settings page that helps resolve the failure, if there is one. The
@@ -267,12 +268,8 @@ pub fn run(id: CheckId, ctx: &CheckContext) -> CheckResult {
             PowerSource::Battery => (Verdict::Fail, D::PowerBattery),
             PowerSource::Unknown => (Verdict::Unknown, D::PowerUnknown),
         },
-        CheckId::Activation => match windows_activation() {
-            Ok(Some(true)) => (Verdict::Pass, D::ActivationOk),
-            Ok(Some(false)) => (Verdict::Warn, D::ActivationMissing),
-            Ok(None) => (Verdict::Unknown, D::ActivationNoLicence),
-            Err(error) => (Verdict::Unknown, D::ActivationUnknown { error: format!("{error:#}") }),
-        },
+        // Aether: la activación de Windows no se revisa (no hace falta para instalar).
+        CheckId::Activation => (Verdict::Pass, D::ActivationOk),
     };
     // Checks run when asked, not on a timer, so the log keeps every result that held
     // the install back.

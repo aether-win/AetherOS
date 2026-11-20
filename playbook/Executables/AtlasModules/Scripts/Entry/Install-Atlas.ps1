@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Installs Atlas from an extracted Atlas package without AME Wizard.
 .DESCRIPTION
@@ -443,7 +443,8 @@ function Test-AtlasInstallRequirement {
     }
     $results += [pscustomobject]@{
         Name = 'No third-party antivirus'; Passed = $antivirusChecked -and $thirdPartyAv.Count -eq 0
-        Blocking = $DeclaredRequirements -contains 'NoAntivirus'
+        # Aether: otro antivirus solo se avisa; no bloquea la instalación.
+        Blocking = $false
         Detail = $antivirusDetail
     }
 

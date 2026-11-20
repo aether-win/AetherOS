@@ -837,7 +837,8 @@ Describe 'Front door requirements and staging' {
         foreach ($name in @('Plugged in', 'No third-party antivirus')) {
             $result = $results | Where-Object Name -eq $name
             $result.Passed | Should -BeFalse
-            $result.Blocking | Should -BeTrue
+            # Aether: el antivirus de terceros solo avisa.
+            $result.Blocking | Should -Be ($name -ne 'No third-party antivirus')
             $result.Detail | Should -Match 'could not be checked'
         }
     }

@@ -326,7 +326,9 @@ impl State {
         self
     }
     pub fn ready(&self) -> bool {
-        matches!(self, Self::Ready)
+        // Aether: no hace falta actualizar Windows ni la Store antes de instalar; solo
+        // espera si una preparación está corriendo.
+        !self.busy()
     }
 }
 
