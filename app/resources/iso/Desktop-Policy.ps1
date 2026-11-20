@@ -12,7 +12,7 @@ function Get-AtlasDesktopShell([string]$Root) {
 
 function Get-AtlasDesktopTaskName([string]$Sid) {
     $validated = New-Object Security.Principal.SecurityIdentifier($Sid)
-    return 'AtlasOS ISO desktop cleanup ' + $validated.Value
+    return 'Aether OS ISO desktop cleanup ' + $validated.Value
 }
 
 function Get-AtlasTaskService {
@@ -26,7 +26,7 @@ function Register-AtlasDesktopCleanup([string]$Sid, [string]$Root) {
     $serviceAccount = 5 # TASK_LOGON_SERVICE_ACCOUNT
     $service = Get-AtlasTaskService
     $task = $service.NewTask(0)
-    $task.RegistrationInfo.Description = 'Removes the Atlas ISO setup shell for its setup account.'
+    $task.RegistrationInfo.Description = 'Removes the Aether ISO setup shell for its setup account.'
     $task.Principal.UserId = 'S-1-5-18'
     $task.Principal.LogonType = $serviceAccount
     $task.Settings.AllowDemandStart = $true

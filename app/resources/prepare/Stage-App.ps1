@@ -172,7 +172,7 @@ if (-not $FunctionsOnly) {
     $request = [Console]::In.ReadToEnd() | ConvertFrom-Json
     $programFiles = [Environment]::GetFolderPath('ProgramFiles')
     if ([string]::IsNullOrWhiteSpace($programFiles)) { throw 'Windows did not provide the Program Files directory.' }
-    $root = Join-Path $programFiles 'Atlas Setup Recovery'
+    $root = Join-Path $programFiles 'Aether Setup Recovery'
     $path = switch -CaseSensitive ([string]$request.operation) {
         'preparation' {
             New-AtlasPreparationJob -Root $root -Scope ([string]$request.scope) -Job ([string]$request.job) -Worker ([string]$request.worker) -Policy ([byte[]]$request.policy) -Library ([string]$request.library) -Registry ([string]$request.registry)
@@ -188,7 +188,7 @@ if (-not $FunctionsOnly) {
             # Still refused: this user's processes could retarget the link
             # under the elevated read. The exit code lets the app say why.
             if (Test-AtlasLinkedPath ([string]$request.source)) {
-                [Console]::Error.WriteLine('Atlas Manager was started from a linked folder. Linked recovery paths are not supported.')
+                [Console]::Error.WriteLine('Aether OS was started from a linked folder. Linked recovery paths are not supported.')
                 exit $AtlasSourceLinkedExitCode
             }
             Copy-AtlasRecoveryExecutable -Source ([string]$request.source) -Root $root

@@ -307,7 +307,7 @@ function Get-AtlasUsbMediaInfo {
         $info = Get-WindowsImage -ImagePath $images[0] -Index $edition.ImageIndex
         # The package's supported builds decide, as for ISO creation; an empty list supports nothing.
         if ([int]$info.Architecture -notin @(9,12) -or $SupportedBuilds -notcontains ([version]$info.Version).Build -or $info.InstallationType -ne 'Client') {
-            Fail 'iso-unsupported' "Unsupported Windows image $($info.Version), architecture $($info.Architecture). Use Windows 11 x64 or ARM64 installation media for a build this Atlas package supports."
+            Fail 'iso-unsupported' "Unsupported Windows image $($info.Version), architecture $($info.Architecture). Use Windows 11 x64 or ARM64 installation media for a build this Aether package supports."
         }
         if ($null -ne $architecture -and $architecture -ne [int]$info.Architecture) { Fail 'iso-unsupported' 'Mixed x64 and ARM64 installation images are not supported.' }
         $architecture = [int]$info.Architecture
@@ -460,7 +460,7 @@ try {
     if ($Operation -ne 'List') {
         $mutex = [Threading.Mutex]::new($false,'Global\AtlasOS.UsbWriter')
         try { $ownsMutex = $mutex.WaitOne(0) } catch [Threading.AbandonedMutexException] { $ownsMutex = $true }
-        if (-not $ownsMutex) { throw 'Another Atlas USB operation is running. Wait for it to finish.' }
+        if (-not $ownsMutex) { throw 'Another Aether USB operation is running. Wait for it to finish.' }
     }
     Invoke-AtlasUsbWorker
 } catch {

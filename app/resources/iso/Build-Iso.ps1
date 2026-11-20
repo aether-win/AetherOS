@@ -141,7 +141,7 @@ function Export-AtlasMediaEditions([string]$SourceImage, [string]$DestinationIma
 try {
     $mutex = New-Object Threading.Mutex($false, 'Global\AtlasOS.ISO.Build')
     try { $ownsMutex = $mutex.WaitOne(0) } catch [Threading.AbandonedMutexException] { $ownsMutex = $true }
-    if (-not $ownsMutex) { throw 'Another Atlas ISO operation is running. Wait for it to finish.' }
+    if (-not $ownsMutex) { throw 'Another Aether ISO operation is running. Wait for it to finish.' }
     $principal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
     if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Administrator access is required.' }
     Write-Stage inspect
@@ -187,7 +187,7 @@ try {
     if ($request.updateNetworkDrivers -and -not $request.copyNetworkDrivers) { throw 'Network driver updates require network driver copying.' }
     [xml]$packageManifest = Get-Content -LiteralPath (Join-Path $request.package 'playbook.conf') -Raw
     $packageVersion = [version]([string]$packageManifest.Playbook.Version -replace '-.*$', '')
-    if ($packageVersion -lt [version]'0.6.0') { throw 'ISO creation requires Atlas 0.6.0 or newer.' }
+    if ($packageVersion -lt [version]'0.6.0') { throw 'ISO creation requires Aether 0.6.0 or newer.' }
     Assert-PlainTree $request.package
     if ($request.mode -ne 'interactive') {
         $cap = Get-Content -LiteralPath (Join-Path $request.package 'Executables\AtlasModules\Scripts\Install\iso-setup.json') -Raw | ConvertFrom-Json

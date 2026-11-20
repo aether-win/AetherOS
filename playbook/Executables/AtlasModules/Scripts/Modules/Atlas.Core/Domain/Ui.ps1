@@ -9,7 +9,7 @@
 # clear error instead of waiting forever; callers still gate prompts on their own
 # silent flag so replay and installation never reach one.
 
-$script:AtlasUiBrand = 'AtlasOS'
+$script:AtlasUiBrand = 'Aether OS'
 $script:AtlasRunOutcome = 'Applied'
 # Whether the last line this vocabulary printed was blank, so the closing lines can
 # separate themselves from the text above without stacking blank lines.

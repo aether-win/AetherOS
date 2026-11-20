@@ -31,7 +31,7 @@ function Restore-AtlasDesktop {
             Start-Sleep -Milliseconds 200
             $ownedShell = & $readOwned
         } while ($ownedShell -and [DateTime]::UtcNow -lt $deadline)
-        if ($ownedShell) { throw 'Atlas desktop policy cleanup did not finish. Retry Desktop.ps1 -RestoreDesktop.' }
+        if ($ownedShell) { throw 'Aether desktop policy cleanup did not finish. Retry Desktop.ps1 -RestoreDesktop.' }
     }
     catch { Write-AtlasDesktopRecoveryLog $_ }
     finally { Start-AtlasWindowsShell }
@@ -77,11 +77,11 @@ try {
     # for that rather than show the desktop.
     if ($bootstrap) { Start-Sleep -Seconds 60; throw 'Account preparation did not sign out.' }
     $sid = [Security.Principal.WindowsIdentity]::GetCurrent().User.Value
-    if ([IO.File]::ReadAllText($marker).Trim() -ne $sid) { throw 'This account does not own Atlas setup.' }
+    if ([IO.File]::ReadAllText($marker).Trim() -ne $sid) { throw 'This account does not own Aether setup.' }
     New-Item -Path $state -Force | Out-Null
     Remove-ItemProperty -LiteralPath $state -Name RestartRequested -ErrorAction SilentlyContinue
     $app = Join-Path $root 'AtlasManager.exe'
-    if (-not (Test-Path -LiteralPath $app)) { throw 'The Atlas setup app is missing.' }
+    if (-not (Test-Path -LiteralPath $app)) { throw 'The Aether setup app is missing.' }
     # Windows Update and Store preparation need this user's elevated token.
     # Declining UAC returns to the desktop.
     $child = Start-Process -FilePath $app -ArgumentList '--before-desktop' -Verb RunAs -PassThru
@@ -106,7 +106,7 @@ try {
             Start-Sleep -Seconds 60
         }
     }
-    if ($child.ExitCode -ne 0) { throw "Atlas exited with code $($child.ExitCode)." }
+    if ($child.ExitCode -ne 0) { throw "Aether exited with code $($child.ExitCode)." }
 }
 catch {
     # A broken app, declined elevation or bootstrap failure must leave a usable PC.

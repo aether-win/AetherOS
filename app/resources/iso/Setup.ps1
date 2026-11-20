@@ -31,12 +31,12 @@ if ($RestoreDesktopPolicy) {
 }
 if (-not $FirstLogon) {
     if ($identity.User.Value -ne 'S-1-5-18' -or (Get-ItemPropertyValue -LiteralPath 'HKLM:\SYSTEM\Setup' -Name SystemSetupInProgress) -ne 1) {
-        throw 'Atlas media setup can run only as SYSTEM during Windows Setup.'
+        throw 'Aether media setup can run only as SYSTEM during Windows Setup.'
     }
     # Protect the fixed SYSTEM task action and configuration before any user
     # session exists. No reparse point may redirect this owned deployment tree.
     foreach ($item in @((Get-Item -LiteralPath $root -Force)) + @(Get-ChildItem -LiteralPath $root -Force -Recurse)) {
-        if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Unexpected link in Atlas setup files.' }
+        if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Unexpected link in Aether setup files.' }
     }
     $acl = New-Object Security.AccessControl.DirectorySecurity
     $acl.SetAccessRuleProtection($true, $false)
@@ -62,7 +62,7 @@ if (-not $FirstLogon) {
         # abort Windows installation. Keep its files and diagnostics for recovery.
         if (-not $installed) { 'Network drivers need attention. Driver packages remain in Windows\AtlasISO\NetworkDrivers.' | Add-Content -LiteralPath $log -Encoding UTF8 }
     }
-    'Atlas media staged. Updates will run in the destination user session.' | Add-Content -LiteralPath $log -Encoding UTF8
+    'Aether media staged. Updates will run in the destination user session.' | Add-Content -LiteralPath $log -Encoding UTF8
     exit 0
 }
 $principal = New-Object Security.Principal.WindowsPrincipal($identity)
@@ -89,7 +89,7 @@ if ($config.mode -eq 'before-desktop') {
     try {
         if ($policy.GetValue('Shell')) {
             # Windows keeps no output from first-logon commands, so setup.log is the only record.
-            'This account already has a custom Windows shell, so Atlas left it in place and did not register its setup shell.' | Add-Content -LiteralPath $log -Encoding UTF8
+            'This account already has a custom Windows shell, so Aether left it in place and did not register its setup shell.' | Add-Content -LiteralPath $log -Encoding UTF8
             throw 'A custom Windows shell is already configured.'
         }
     } finally { $policy.Dispose() }
@@ -108,7 +108,7 @@ $command = '"' + (Join-Path $root 'AtlasManager.exe') + '" --setup --playbook "'
 if ($config.mode -ne 'before-desktop') {
     # Keep any commands already queued for this account's next sign-in.
     if (-not (Test-Path -LiteralPath $runOnce)) { New-Item -Path $runOnce -Force | Out-Null }
-    New-ItemProperty -LiteralPath $runOnce -Name 'Atlas ISO setup' -Value $command -PropertyType String -Force | Out-Null
+    New-ItemProperty -LiteralPath $runOnce -Name 'Aether ISO setup' -Value $command -PropertyType String -Force | Out-Null
     [IO.File]::WriteAllText((Join-Path $root 'account-ready'), $identity.User.Value)
 }
 'Account prepared. Windows will request a new password at sign-in.' | Add-Content -LiteralPath $log -Encoding UTF8

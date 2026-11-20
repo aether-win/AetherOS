@@ -70,7 +70,7 @@ function Export-AtlasNetworkUpdates([string]$Destination, [string]$CancelFile, [
     Assert-AtlasNetworkDownloadConnection
     Assert-AtlasNetworkContinue $CancelFile
     $session = New-Object -ComObject Microsoft.Update.Session
-    $session.ClientApplicationID = 'Atlas ISO network drivers'
+    $session.ClientApplicationID = 'Aether ISO network drivers'
     $searcher = $session.CreateUpdateSearcher()
     $searcher.Online = $true
     # Query the public Windows Update service (ServerSelection 2) without changing
