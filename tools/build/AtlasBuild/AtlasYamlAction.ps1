@@ -291,7 +291,7 @@ function Assert-AtlasConfigurationRunnerBoundary {
         throw "custom.yml:$($action.Line) targets an unsupported PowerShell operation."
     }
     if ($publisherCount -ne 1 -or $commitCount -ne 1 -or $installCount -ne 1 -or
-        $beginKeys.Count -ne 6 -or $options.Count -ne 21 -or $reapplyVersions.Count -ne 1) {
+        $beginKeys.Count -ne 6 -or $options.Count -ne 20 -or $reapplyVersions.Count -ne 1) {
         throw 'Configuration runner operation counts differ from the compact Atlas contract.'
     }
     return [pscustomobject]@{ Files = 1; Actions = $actions.Count; Runs = $runs.Count }
