@@ -172,8 +172,39 @@ cuidado, en una pasada aparte.
 - [x] Revisión (parte 1): sin referencias a archivos borrados; `ToolboxLauncher` quitado de 11
       toggles, del generador `tools/dev/New-ToggleLaunchers.ps1` y de `catalog.json`;
       `atlas-theme-upgrade` usa el tema Aether.
-- [ ] NOTA paso 2 (red): `Initialize-NewUser.ps1` ejecuta "Disable Network Navigation Pane
-      (default).cmd" por usuario → cambiar a Enable. FileSharing por defecto → Enable.
+- [x] Paso 2 (ajustes de los scripts), primera versión (20-nov-2026):
+      * Red: FileSharing → Enable e Indexing → Enable en `Invoke-ServicesPhase.ps1`; tweak nuevo
+        `networking/aether-red` (versión sin preguntas de Reparar-Red-Aether: drivers/servicios SMB,
+        impresión, proveedor de red, enlaces + LLDP, NetBIOS, redes Privadas, firewall, firma SMB e
+        invitado); desactivados `restrict-anonymous-access`, `restrict-anonymous-enumeration`,
+        `disable-network-navigation-pane`, quitar "Imprimir" (2) y `disable-pnp` (laptops/LLDP);
+        `Initialize-NewUser` usa "Enable Network Navigation Pane.cmd". Script interactivo en el
+        payload: `AtlasModules/Aether/Red/` (para el botón "Diagnosticar y reparar" del paso 4).
+      * Actualizaciones: `disable-auto-updates-option` ahora aplica el toggle PauseUpdates (año 3000).
+        Pendiente menor: "Elegir de nuevo" (Choices) todavía mapea la opción al toggle AutomaticUpdates.
+      * Defender + SmartScreen: tweak `security/aether-disable-smartscreen` (Option defender-disable):
+        Explorador, apps de la Store y Edge. Con defender-enable no se toca.
+      * Edge: tweak `qol/aether-edge`: `initial_preferences` con Google (solo perfiles NUEVOS) +
+        directivas de limpieza (primer arranque, Startup Boost, segundo plano, compras,
+        recomendaciones, pestañas en suspensión). La "tarea que repone Google" NO se hizo: Edge
+        protege el buscador de un perfil existente con firma (Secure Preferences) y lo revierte;
+        en su lugar la app (paso 4) tendrá un botón que abre edge://settings/searchEngines.
+      * Apps: tweak `misc/aether-apps` guarda las casillas en `HKLM\SOFTWARE\AtlasOS\SetupOptions\Apps`;
+        `Initialize-NewUser` registra en RunOnce `AtlasModules/Aether/Install-AetherApps.ps1`, que corre
+        como el usuario (con UAC, nunca SYSTEM) al primer inicio tras el reinicio: Claude (winget),
+        ChatGPT y PC Manager (Store; si falla abre la página oficial), Python 3.13.16 (python.org,
+        si falla winget; PATH, py, pip, rutas largas, sin alias), KeyVault (exe del usuario en
+        `Aether/KeyVault/`, copia a Program Files + accesos en Escritorio e Inicio), Steam (winget),
+        Wind-Aether (winget Windhawk + `windhawk-cli data import --yes`; si no hay CLI deja el json en
+        Documentos), drivers AMD (no hay en winget: abre la página de AMD). Marca
+        `HKLM\SOFTWARE\AtlasOS\Aether\AppsInstaladas=1`. Registro en `%ProgramData%\Aether\apps.log`.
+      * Valores: desactivados disable-background-apps, disable-spell-checking,
+        disable-store-auto-updates, remove-previous-versions, disable-low-disk-warning; activado
+        disable-game-bar; Vincular teléfono se queda (sin Remove-AtlasPhoneLinkAppx ni toggle
+        PhoneLink Disable); se quitan GamingApp, XboxGamingOverlay, SpeechToTextOverlay y LinkedIn.
+        Hibernación ya estaba activa (set-power-settings).
+      * Sin hacer todavía: `experimental-cpu-power` (va con los modos, paso 4); apps de Windows que
+        conserva el usuario (Paint, Cámara, etc.: falta su respuesta).
 
 ## 4. Compilación y pruebas
 GitHub Actions en el repo: `test.yml` (Pester), `lint.yml` (PSScriptAnalyzer), `yaml.yml`, `build.yml`

@@ -6,7 +6,7 @@ BeforeAll {
 }
 
 Describe 'Applied toggle defaults' {
-    It 'applies and records the three privacy defaults through the toggle engine' {
+    It 'applies and records the two privacy defaults through the toggle engine' {
         Mock -ModuleName Atlas.Tweaks Invoke-AtlasToggleMachineState {}
         Mock -ModuleName Atlas.Tweaks Write-AtlasLog {}
         $context = [pscustomobject]@{ IsUpgrade = $false; IsOobe = $false; IsArm64 = $false; WindowsBuild = 26200 }
@@ -16,8 +16,8 @@ Describe 'Applied toggle defaults' {
         $path = Join-Path $root 'privacy\apply-privacy-toggle-defaults.psd1'
         @(Test-AtlasTweakSchema -Path $path).Count | Should -Be 0
         Invoke-AtlasTweak -Path $path -Context $context
-        Should -Invoke -ModuleName Atlas.Tweaks Invoke-AtlasToggleMachineState -Times 3 -Exactly
-        foreach ($toggleName in 'PhoneLink', 'RecentItems', 'WebSearch') {
+        Should -Invoke -ModuleName Atlas.Tweaks Invoke-AtlasToggleMachineState -Times 2 -Exactly
+        foreach ($toggleName in 'RecentItems', 'WebSearch') {
             Should -Invoke -ModuleName Atlas.Tweaks Invoke-AtlasToggleMachineState -Times 1 -Exactly -ParameterFilter {
                 $Name -ceq $toggleName -and $State -ceq 'Disable'
             }

@@ -1,4 +1,4 @@
-# AppxSupport phase. Runs as TrustedInstaller, in this order: snapshot, stop the
+﻿# AppxSupport phase. Runs as TrustedInstaller, in this order: snapshot, stop the
 # installing user's package processes, remove installed and provisioned packages,
 # clean up Phone Link, write deprovision markers, then clear the user's caches.
 # Required package failures are collected so cleanup still runs before the phase
@@ -52,14 +52,7 @@ catch {
     $requiredFailures.Add($_.Exception.Message)
 }
 
-# Phone Link is removed on its own and best effort: removing it with the other
-# packages broke Cross Device Experience Host installation.
-try {
-    Remove-AtlasPhoneLinkAppx
-}
-catch {
-    Write-AtlasLog -Level Warning -Message "Removing Phone Link failed: $($_.Exception.Message)"
-}
+# Aether: Phone Link (Vincular teléfono) se queda instalado.
 
 # Prevent removed provisioned applications from being restored by a feature update.
 # https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update

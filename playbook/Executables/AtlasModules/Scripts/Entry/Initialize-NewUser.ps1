@@ -1,4 +1,4 @@
-# User setup state belongs to the current user's HKCU hive. The old shared HKLM
+﻿# User setup state belongs to the current user's HKCU hive. The old shared HKLM
 # marker is untrusted and is cleaned up by the add-newUser-script tweak.
 [CmdletBinding()]
 param(
@@ -479,7 +479,24 @@ if ($setupMarker -lt 1) {
             Write-Warning "Failed to block Store search recommendations: $($_.Exception.Message)"
         }
 
-        Invoke-AtlasDesktopCommand '3. General Configuration\File Sharing\Network Navigation Pane\Disable Network Navigation Pane (default).cmd'
+        # Aether: las apps elegidas se instalan como este usuario en el próximo inicio de
+        # sesión (después del reinicio del instalador), una sola vez por PC.
+        try {
+            $aetherApps = @((Get-ItemProperty -Path 'HKLM:\SOFTWARE\AtlasOS\SetupOptions' -Name Apps -ErrorAction SilentlyContinue).Apps)
+            $aetherAppsDone = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\AtlasOS\Aether' -Name AppsInstaladas -ErrorAction SilentlyContinue).AppsInstaladas
+            $aetherAppsScript = Join-Path $atlasModules 'Aether\Install-AetherApps.ps1'
+            if ($aetherApps.Count -gt 0 -and $aetherAppsDone -ne 1 -and (Test-Path -LiteralPath $aetherAppsScript -PathType Leaf)) {
+                $runOnce = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce'
+                if (-not (Test-Path -LiteralPath $runOnce)) { $null = New-Item -Path $runOnce -Force }
+                Set-ItemProperty -Path $runOnce -Name 'AetherApps' -Type String -Force `
+                    -Value "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$aetherAppsScript`""
+            }
+        }
+        catch {
+            Write-Warning "No se pudo programar la instalación de las apps de Aether: $($_.Exception.Message)"
+        }
+
+        Invoke-AtlasDesktopCommand '3. General Configuration\File Sharing\Network Navigation Pane\Enable Network Navigation Pane.cmd'
         Invoke-AtlasDesktopCommand '4. Interface Tweaks\File Explorer Customization\Automatic Folder Discovery\Disable Automatic Folder Discovery (default).cmd'
         Invoke-AtlasDesktopCommand '4. Interface Tweaks\Visual Effects (Animations)\Atlas Visual Effects (default).cmd'
     }

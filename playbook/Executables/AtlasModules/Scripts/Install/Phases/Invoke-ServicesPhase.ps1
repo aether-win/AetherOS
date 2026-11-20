@@ -1,7 +1,7 @@
 # Services phase.
 # Backs up the default Windows services, then applies the feature defaults that users
-# can later change from AtlasDesktop: File Sharing off, Location off and Indexing
-# minimal. Each default is the machine part of the corresponding toggle, applied and
+# can later change from AtlasDesktop. Aether: File Sharing on (work network), Location
+# off and Indexing normal. Each default is the machine part of the corresponding toggle, applied and
 # recorded through the toggle engine so the install and the launcher share one
 # implementation and upgrade replay sees the same record a user's choice would leave.
 # The committed install plan admits this phase for Fresh and Rebase installs; it runs
@@ -24,9 +24,9 @@ Export-AtlasServicesBackup -FilePath $backupPath
 
 $rebase = (Get-AtlasContext).IsRebase
 foreach ($default in @(
-        @{ Name = 'FileSharing'; State = 'Disable' }
+        @{ Name = 'FileSharing'; State = 'Enable' }
         @{ Name = 'Location'; State = 'Disable' }
-        @{ Name = 'Indexing'; State = 'Minimal' }
+        @{ Name = 'Indexing'; State = 'Enable' }
     )) {
     if ($rebase -and $null -ne (Get-AtlasToggleState -Name $default.Name)) {
         Write-AtlasLog -Message "Kept the recorded '$($default.Name)' choice; the Defaults phase replays it."

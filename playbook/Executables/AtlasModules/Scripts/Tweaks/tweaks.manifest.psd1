@@ -1,4 +1,4 @@
-@{
+﻿@{
     # Category order and per-tweak run order for the Tweaks install phase.
     # - Categories run in the order the one-shot install plan dispatches them.
     # - ParentModes records the modes allowed by that plan route. Category steps are
@@ -13,9 +13,9 @@
             ParentModes = @('Fresh', 'Upgrade')
             Tweaks      = @(
                 'atlas-network-settings'
-                'shares/restrict-anonymous-access'
-                'shares/restrict-anonymous-enumeration'
                 'shares/disable-smb-bandwidth-throttling'
+                # Aether: red de trabajo automática (Reparar-Red-Aether sin preguntas).
+                'aether-red'
             )
         }
         @{
@@ -25,8 +25,9 @@
                 'config-mmcss'
                 'disable-auto-folder-discovery'
                 'config-automatic-maintenance'
-                'disable-background-apps'
                 'disable-fth'
+                # Aether: Game Bar se quita (los mandos siguen funcionando).
+                'disable-game-bar'
                 'disable-sleep-study'
                 'respect-power-modes-search'
                 'system/optimize-ntfs'
@@ -93,8 +94,6 @@
                 'disable-mouse-accel'
                 'set-keyboard-switching'
                 'disable-settings-tips'
-                'disable-spell-checking'
-                'disable-store-auto-updates'
                 # disable-store-search-recommendations moved into Initialize-NewUser: the deny-ACL
                 # on store.db must be applied per user profile, not in the SYSTEM install context.
                 'disable-touch-keyboard-features'
@@ -111,6 +110,8 @@
                 'disable-dynamic-lighting'
                 'disable-auto-app-archival'
                 'add-sharing-settings-shortcut'
+                # Aether: Edge con Google y limpieza.
+                'aether-edge'
                 # atlas-theme sets lock-screen policy; the theme itself is applied by
                 # Initialize-NewUser at first logon (interactive shell COM).
                 'appearance/atlas-theme'
@@ -136,7 +137,6 @@
                 'explorer/always-more-details-transfer'
                 'explorer/disable-invalid-shortcuts-search'
                 'explorer/disable-check-boxes'
-                'explorer/disable-network-navigation-pane'
                 'explorer/full-context-on-more-than-15-items'
                 'explorer/hide-frequently-used-items'
                 'explorer/import-power-plan'
@@ -144,7 +144,6 @@
                 'explorer/no-internet-open-with'
                 'explorer/open-to-this-pc'
                 'explorer/removable-drives-only-this-pc'
-                'explorer/remove-previous-versions'
                 'explorer/remove-shortcut-text'
                 'explorer/show-files'
                 'explorer/classic-search'
@@ -166,12 +165,9 @@
                 'explorer/remove-context-menus/paint-3D'
                 'explorer/remove-context-menus/share'
                 'explorer/remove-context-menus/troubleshooting-compat'
-                'explorer/remove-context-menus/printing'
-                'explorer/remove-context-menus/printing-windows-11'
                 'security/disable-uac-secure-desktop'
                 'shell/alt-tab-open-windows'
                 'shell/disable-aero-shake'
-                'shell/disable-low-disk-warning'
                 'shell/disable-menu-delay'
                 'shell/disable-network-location-wizard'
                 'shell/set-unpinned-notification-items'
@@ -196,6 +192,8 @@
                 'block-anonymous-enum-sam'
                 'disable-automatic-restart-signon'
                 'disable-remote-assistance'
+                # Aether: SmartScreen sigue a la casilla de Defender.
+                'aether-disable-smartscreen'
             )
         }
         @{
@@ -216,7 +214,6 @@
                 'set-file-associations'
                 'disable-core-isolation'
                 'disable-mitigations'
-                'disable-pnp'
                 'set-profile-pictures'
                 'backup-services'
                 'update-client-cbs'
@@ -235,6 +232,8 @@
                 'register-user-upgrade'
                 'config-oem-information'
                 'create-shortcuts'
+                # Aether: guarda las apps elegidas; se instalan como el usuario al iniciar sesión.
+                'aether-apps'
             )
         }
     )
@@ -257,10 +256,19 @@
         # LLMNR handles single-label \\PCNAME lookups where router DNS has no record;
         # mDNS's .local names do not replace that behavior.
         @{ Slug = 'networking/disable-llmnr'; Reason = 'Preserves single-label home-LAN name resolution where router DNS does not register clients.' }
-        # Users who want Game Bar removed can use the FSOGameBar toggle.
-        @{ Slug = 'performance/disable-game-bar'; Reason = 'Game Bar capture and overlays remain supported, including Xbox app dependencies.' }
         @{ Slug = 'qol/explorer/disable-folders-this-pc'; Reason = 'Intentionally disabled; the original rationale was not recorded.' }
         @{ Slug = 'qol/startup-shutdown/enable-verbose-messages'; Reason = 'Intentionally disabled; the original rationale was not recorded.' }
         @{ Slug = 'qol/startup-shutdown/force-end-shutdown-apps'; Reason = 'Disabled because forcibly ending applications confused users.' }
+        @{ Slug = 'networking/shares/restrict-anonymous-access'; Reason = 'Aether: la red de trabajo necesita carpetas compartidas sin contraseña.' }
+        @{ Slug = 'networking/shares/restrict-anonymous-enumeration'; Reason = 'Aether: las PCs de la red deben poder ver las carpetas compartidas.' }
+        @{ Slug = 'performance/disable-background-apps'; Reason = 'Aether: apps en segundo plano permitidas (los modos Gaming y Batería las limitan).' }
+        @{ Slug = 'qol/disable-spell-checking'; Reason = 'Aether: corrector ortográfico activo.' }
+        @{ Slug = 'qol/disable-store-auto-updates'; Reason = 'Aether: las apps de la Store se actualizan solas.' }
+        @{ Slug = 'qol/explorer/disable-network-navigation-pane'; Reason = 'Aether: ''Red'' se muestra en el Explorador.' }
+        @{ Slug = 'qol/explorer/remove-previous-versions'; Reason = 'Aether: ''Versiones anteriores'' se queda.' }
+        @{ Slug = 'qol/explorer/remove-context-menus/printing'; Reason = 'Aether: ''Imprimir'' se queda en el menú.' }
+        @{ Slug = 'qol/explorer/remove-context-menus/printing-windows-11'; Reason = 'Aether: ''Imprimir'' se queda en el menú.' }
+        @{ Slug = 'qol/shell/disable-low-disk-warning'; Reason = 'Aether: aviso de poco espacio activo.' }
+        @{ Slug = 'scripts/disable-pnp'; Reason = 'Aether: en laptops no se desactivan dispositivos y LLDP queda activo.' }
     )
 }

@@ -306,12 +306,12 @@ Describe 'Services phase feature defaults' {
         $script:toggleDefinitions = @{
             FileSharing = @{ Name = 'FileSharing'; States = @{ Disable = @{ StateValue = 0 }; Enable = @{ StateValue = 1 } } }
             Location    = @{ Name = 'Location'; States = @{ Disable = @{ StateValue = 0 }; Enable = @{ StateValue = 1 } } }
-            Indexing    = @{ Name = 'Indexing'; States = @{ Disable = @{ StateValue = 0 }; Minimal = @{ StateValue = 1 }; Full = @{ StateValue = 2 } } }
+            Indexing    = @{ Name = 'Indexing'; States = @{ Disable = @{ StateValue = 0 }; Minimal = @{ StateValue = 1 }; Enable = @{ StateValue = 2 } } }
         }
     }
 
     It 'asserts TrustedInstaller, then backs up services before applying the three defaults in order' {
-        $recorded = @{ FileSharing = 0; Location = 0; Indexing = 1 }
+        $recorded = @{ FileSharing = 1; Location = 0; Indexing = 2 }
 
         Invoke-AtlasServicesPhaseForTest -Path $script:servicesPhasePath `
             -Calls $script:servicesCalls -RecordedStates $recorded `
@@ -326,7 +326,7 @@ Describe 'Services phase feature defaults' {
         $machineWork = @($script:servicesCalls | Where-Object { $_ -like 'Backup:*' -or $_ -like 'Toggle:*' })
         $machineWork[0] | Should -BeLike 'Backup:*\AtlasModules\Other\winServices.reg'
         @($machineWork | Select-Object -Skip 1) | Should -Be @(
-            'Toggle:FileSharing=Disable', 'Toggle:Location=Disable', 'Toggle:Indexing=Minimal'
+            'Toggle:FileSharing=Enable', 'Toggle:Location=Disable', 'Toggle:Indexing=Enable'
         )
     }
 
@@ -342,8 +342,8 @@ Describe 'Services phase feature defaults' {
     }
 
     It 'fails when a default does not record its expected state and stops before later defaults' -TestCases @(
-        @{ Recorded = @{ FileSharing = 0; Location = 1; Indexing = 1 }; Failing = 'Location'; State = 'Disable' }
-        @{ Recorded = @{ FileSharing = 0; Location = 0 }; Failing = 'Indexing'; State = 'Minimal' }
+        @{ Recorded = @{ FileSharing = 1; Location = 1; Indexing = 2 }; Failing = 'Location'; State = 'Disable' }
+        @{ Recorded = @{ FileSharing = 1; Location = 0 }; Failing = 'Indexing'; State = 'Enable' }
     ) {
         {
             Invoke-AtlasServicesPhaseForTest -Path $script:servicesPhasePath `
@@ -360,13 +360,13 @@ Describe 'Services phase feature defaults' {
 
         Invoke-AtlasServicesPhaseForTest -Path $script:servicesPhasePath `
             -Calls $script:servicesCalls -RecordedStates $recorded `
-            -AppliedStates @{ Location = 0; Indexing = 1 } `
+            -AppliedStates @{ Location = 0; Indexing = 2 } `
             -Definitions $script:toggleDefinitions -IsRebase
 
         $machineWork = @($script:servicesCalls | Where-Object { $_ -like 'Backup:*' -or $_ -like 'Toggle:*' })
         $machineWork[0] | Should -BeLike 'Backup:*\AtlasModules\Other\winServices.reg'
         @($machineWork | Select-Object -Skip 1) | Should -Be @(
-            'Toggle:Location=Disable', 'Toggle:Indexing=Minimal'
+            'Toggle:Location=Disable', 'Toggle:Indexing=Enable'
         )
         $recorded.FileSharing | Should -Be 1
         @($script:servicesCalls | Where-Object { $_ -like "Log:Kept the recorded 'FileSharing' choice*" }).Count |
