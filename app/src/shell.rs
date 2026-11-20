@@ -707,6 +707,7 @@ impl Shell {
     /// with the two ways out of it until the user dismisses it for this
     /// language or picks English. They stay above every page, at most
     /// `max_height` tall.
+    #[allow(unreachable_code, unused_variables)]
     fn app_notices(
         &self,
         page: Page,
@@ -714,6 +715,8 @@ impl Shell {
         settings_reachable: bool,
         max_height: Pixels,
     ) -> Option<Div> {
+        // Aether: sin los avisos de "versión de prueba" ni de "traducción preliminar".
+        return None;
         let rc = crate::services::embedded::rc_id().map(|rc_id| {
             InfoBar::new(Severity::Informational, "", t!("rc-banner", release = rc_id)).id("rc-banner")
         });

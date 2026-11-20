@@ -239,7 +239,7 @@ ready-banner-no-package-title = Descargue Aether para continuar
 ready-banner-no-package-message = Descargue Aether en Archivos de instalación o, si ya tiene un paquete de Aether (.apbx), elija Abrir un archivo de paquete.
 # Versión de prueba: no se pudo extraer el paquete de Atlas incluido.
 ready-banner-no-package-bundled-title = Prepare el paquete de Aether incluido para continuar
-ready-banner-no-package-bundled-message = El paquete de Aether incluido en esta versión de prueba aún no está listo. Revise la tarjeta Archivos de instalación.
+ready-banner-no-package-bundled-message = El paquete de Aether incluido en el instalador aún no está listo. Revise la tarjeta Archivos de instalación.
 ready-banner-updates-title = Actualice Windows y las aplicaciones de la Store para continuar
 ready-banner-updates-message = Elija Buscar e instalar actualizaciones. Cuando terminen las actualizaciones, Aether volverá a comprobar su PC.
 # While Windows and Store apps update. "Update Windows and Store apps" is prepare-title, the
@@ -556,7 +556,7 @@ install-elevate-title = Aether necesita permiso para instalar
 install-no-package-title = Elija primero los archivos de instalación
 install-no-package-message = Vuelva a Preparación para descargar Aether o abrir un paquete de Aether (.apbx) guardado.
 # Variante de install-no-package-message para la versión de prueba.
-install-no-package-bundled-message = Vuelva a Preparación para preparar el paquete de Aether incluido en esta versión de prueba.
+install-no-package-bundled-message = Vuelva a Preparación para preparar el paquete de Aether incluido en el instalador.
 # Paso 4 cuando el paso 1 no se ha completado en esta sesión (comprobaciones o actualizaciones de Windows); go-to-ready es el botón.
 install-not-ready-title = Termine primero el paso Preparación
 install-not-ready-message = Aether necesita terminar de comprobar su PC y de actualizar Windows antes de poder instalar.
@@ -709,7 +709,7 @@ iso-beta-description = Pruebe la ISO en una máquina virtual antes de usarla en 
 iso-admin-description = Aether necesita permisos de administrador para leer su ISO de Windows y crear la nueva. Elija Reabrir como administrador y, después, elija Sí cuando Windows pregunte.
 iso-files-description = Aether crea una copia de una ISO de Windows 11 con Aether incluido, para reinstalar Windows. Elija una ISO de Windows 11 descargada de Microsoft, descargue el paquete de Aether más reciente o elija uno que ya tenga (.apbx) y, después, elija dónde guardar la nueva ISO.
 # Versión de prueba: sin selector de paquete.
-iso-files-description-bundled = Aether crea una copia de una ISO de Windows 11 con el paquete de Aether incluido en esta versión de prueba. Elija una ISO de Windows 11 descargada de Microsoft y, después, elija dónde guardar la nueva ISO.
+iso-files-description-bundled = Aether crea una copia de una ISO de Windows 11 con el paquete de Aether incluido en el instalador. Elija una ISO de Windows 11 descargada de Microsoft y, después, elija dónde guardar la nueva ISO.
 iso-source = ISO de Windows
 iso-source-download = Descargar Windows 11 de Microsoft
 # $minimum es la primera versión de Atlas que se puede usar (texto, como 0.6.0).
@@ -735,7 +735,7 @@ iso-failed-package-unsupported = Este paquete de Aether no se puede usar para cr
 # Versión de prueba: el paquete de Atlas incluido no se puede cambiar, así que la única salida es el modo tras iniciar sesión.
 iso-package-unsupported-bundled-title = Las preferencias de Aether no se pueden guardar en esta ISO
 # "Elegir las preferencias de Atlas tras iniciar sesión" es iso-mode-interactive.
-iso-package-unsupported-bundled = El paquete de Aether incluido en esta versión de prueba no admite la configuración desde la ISO. Elija en su lugar la opción Elegir las preferencias de Aether tras iniciar sesión.
+iso-package-unsupported-bundled = El paquete de Aether incluido en el instalador no admite la configuración desde la ISO. Elija en su lugar la opción Elegir las preferencias de Aether tras iniciar sesión.
 iso-atlas-options = Preferencias de Aether
 iso-review = Revisar ISO
 iso-review-description = Crear la ISO no instala nada en este equipo ni modifica su ISO original. Después, Aether puede copiar la nueva ISO en una unidad USB para que pueda reinstalar Windows desde ella.
@@ -946,7 +946,7 @@ install-source-unsupported-any = Aether { $source } no se puede actualizar direc
 # "Abrir un archivo de paquete" es package-open-file. $folder es una ruta de carpeta (texto).
 install-source-resume = Una instalación de Aether { $target } no terminó y solo el paquete de Aether { $target } puede terminarla. Elija Abrir un archivo de paquete y seleccione ese paquete de Aether (.apbx). Si Aether lo descargó, está en { $folder }.
 # Versión de prueba: solo se puede instalar el paquete de Atlas incluido.
-install-source-resume-bundled = Una instalación de Aether { $target } no terminó. Esta versión de prueba solo puede instalar su paquete de Aether incluido, así que termine esa instalación con el paquete de Aether { $target } en una versión oficial de Aether OS.
+install-source-resume-bundled = Una instalación de Aether { $target } no terminó. Este instalador solo puede instalar su paquete de Aether incluido, así que termine esa instalación con el paquete de Aether { $target } con el instalador de esa versión.
 install-source-unknown = Aether no pudo confirmar qué hay ya instalado en su PC, así que por ahora no instalará nada. Elija Enviar un informe para que el equipo de Aether pueda ayudarle.
 # $problem es uno de los mensajes install-source-*; $error es un mensaje de error sin procesar (texto).
 install-source-details = { $problem } Detalles: { $error }
@@ -982,13 +982,13 @@ diagnostics-failed = Compruebe que su PC tenga espacio libre en disco y vuelva a
 ## Tester builds (embedded-playbook feature)
 
 # One line of chrome under the title bar on a release-candidate build.
-rc-banner = Versión de prueba de Aether { $release }. Esta aplicación solo instala el paquete de Aether incluido.
-home-status-bundled = Versión de prueba { $release }
-package-bundled = Aether { $version }, incluido en esta versión de prueba, está listo para instalar.
-rc-about-release = Versión de prueba
+rc-banner = Aether { $release }.
+home-status-bundled = Aether { $release }
+package-bundled = Aether { $version }, incluido en el instalador, está listo para instalar.
+rc-about-release = Versión
 rc-about-commit = Commit de origen
 rc-about-package = Paquete de Aether incluido (SHA-256)
-iso-package-bundled = El paquete de Aether incluido en esta versión de prueba
+iso-package-bundled = El paquete de Aether incluido en el instalador
 prepare-percent = { $percent } % de esta etapa
 prepare-count = Actualizaciones completadas: { $completed } de { $total }
 prepare-bytes = Descargados { $downloaded } de aproximadamente { $total } MB

@@ -323,3 +323,102 @@ function Get-AetherSaludBateria {
     }
     return $null
 }
+
+# --- Unidades de red fijas y confianza para Excel ---------------------------------------
+$script:AetherUnidadesArchivo = Join-Path $script:AetherDatos 'unidades.json'
+
+function Get-AetherUnidades {
+    if (-not (Test-Path -LiteralPath $script:AetherUnidadesArchivo)) { return @() }
+    try { return @(Get-Content -LiteralPath $script:AetherUnidadesArchivo -Raw -Encoding UTF8 | ConvertFrom-Json) }
+    catch { return @() }
+}
+
+function Save-AetherUnidades {
+    param([object[]]$Unidades)
+    New-Item -ItemType Directory -Path $script:AetherDatos -Force | Out-Null
+    ConvertTo-Json -InputObject @($Unidades) | Set-Content -LiteralPath $script:AetherUnidadesArchivo -Encoding UTF8
+}
+
+function Get-AetherEquipoDeRuta {
+    # \\192.168.1.10\Carpeta -> 192.168.1.10
+    param([string]$Ruta)
+    if ($Ruta -match '^\\\\([^\\]+)\\') { return $Matches[1] }
+    return $null
+}
+
+function Add-AetherSitioConfianza {
+    # La PC de la red queda en "Intranet local" (sin avisos al abrir archivos) y su carpeta
+    # en las ubicaciones de confianza de Excel (las macros funcionan sin bloquearse).
+    param([Parameter(Mandatory = $true)][string]$Ruta, [string]$Letra)
+    $equipo = Get-AetherEquipoDeRuta -Ruta $Ruta
+    if ($equipo) {
+        if ($equipo -match '^\d{1,3}(\.\d{1,3}){3}$') {
+            $base = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\Ranges'
+            $clave = Join-Path $base ("Aether-" + ($equipo -replace '\.', '-'))
+            New-Item -Path $clave -Force | Out-Null
+            Set-ItemProperty -LiteralPath $clave -Name ':Range' -Value $equipo -Type String
+            Set-ItemProperty -LiteralPath $clave -Name 'file' -Value 1 -Type DWord
+        }
+        else {
+            $clave = Join-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\Domains' $equipo
+            New-Item -Path $clave -Force | Out-Null
+            Set-ItemProperty -LiteralPath $clave -Name 'file' -Value 1 -Type DWord
+        }
+    }
+    $confianza = 'HKCU:\Software\Microsoft\Office\16.0\Excel\Security\Trusted Locations'
+    New-Item -Path $confianza -Force | Out-Null
+    Set-ItemProperty -LiteralPath $confianza -Name 'AllowNetworkLocations' -Value 1 -Type DWord
+    $rutas = @($Ruta.TrimEnd('\') + '\')
+    if ($Letra) { $rutas += "$($Letra.TrimEnd(':')):\" }
+    foreach ($ruta in $rutas) {
+        $existe = @(Get-ChildItem -LiteralPath $confianza -ErrorAction SilentlyContinue | Where-Object {
+                (Get-ItemProperty -LiteralPath $_.PSPath -Name Path -ErrorAction SilentlyContinue).Path -eq $ruta
+            })
+        if ($existe.Count -gt 0) { continue }
+        $n = 1
+        while (Test-Path -LiteralPath (Join-Path $confianza "AetherLocation$n")) { $n++ }
+        $clave = Join-Path $confianza "AetherLocation$n"
+        New-Item -Path $clave -Force | Out-Null
+        Set-ItemProperty -LiteralPath $clave -Name 'Path' -Value $ruta -Type String
+        Set-ItemProperty -LiteralPath $clave -Name 'AllowSubfolders' -Value 1 -Type DWord
+        Set-ItemProperty -LiteralPath $clave -Name 'Description' -Value 'Aether OS - carpeta de red' -Type String
+    }
+}
+
+function Connect-AetherUnidadRed {
+    # Conecta (o reconecta) una unidad. Devuelve $true si quedó disponible.
+    param([Parameter(Mandatory = $true)][string]$Letra, [Parameter(Mandatory = $true)][string]$Ruta)
+    $letra = "$($Letra.TrimEnd(':').ToUpperInvariant()):"
+    if (Test-Path -LiteralPath "$letra\") { return $true }
+    & net.exe use $letra /delete /y 2>&1 | Out-Null
+    & net.exe use $letra $Ruta /persistent:yes 2>&1 | Out-Null
+    return (Test-Path -LiteralPath "$letra\")
+}
+
+function Add-AetherUnidadRed {
+    param([Parameter(Mandatory = $true)][string]$Letra, [Parameter(Mandatory = $true)][string]$Ruta)
+    $Ruta = $Ruta.Trim().TrimEnd('\')
+    if ($Ruta -notmatch '^\\\\[^\\]+\\[^\\]+') { throw 'La ruta debe ser como \\192.168.1.10\Carpeta (IP de la otra PC y carpeta compartida).' }
+    $letra = $Letra.TrimEnd(':').ToUpperInvariant()
+    $unidades = @(Get-AetherUnidades | Where-Object { $_.Letra -ne $letra })
+    $unidades += [pscustomobject]@{ Letra = $letra; Ruta = $Ruta }
+    Save-AetherUnidades -Unidades $unidades
+    Add-AetherSitioConfianza -Ruta $Ruta -Letra $letra
+    return (Connect-AetherUnidadRed -Letra $letra -Ruta $Ruta)
+}
+
+function Remove-AetherUnidadRed {
+    param([Parameter(Mandatory = $true)][string]$Letra)
+    $letra = $Letra.TrimEnd(':').ToUpperInvariant()
+    Save-AetherUnidades -Unidades @(Get-AetherUnidades | Where-Object { $_.Letra -ne $letra })
+    & net.exe use "$($letra):" /delete /y 2>&1 | Out-Null
+}
+
+function Connect-AetherUnidadesRed {
+    # Reconecta las unidades que se cayeron. Devuelve las que siguen sin conectar.
+    $sinConectar = @()
+    foreach ($unidad in @(Get-AetherUnidades)) {
+        if (-not (Connect-AetherUnidadRed -Letra $unidad.Letra -Ruta $unidad.Ruta)) { $sinConectar += "$($unidad.Letra): $($unidad.Ruta)" }
+    }
+    return $sinConectar
+}

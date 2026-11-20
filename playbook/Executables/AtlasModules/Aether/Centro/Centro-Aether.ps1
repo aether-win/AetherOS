@@ -92,6 +92,7 @@ namespace Aether {
     $script:AvisoCancelado = $false
     $script:UltimoErrorRespaldo = [string](Get-AetherAjuste -Nombre 'RespaldoError' -PorDefecto '')
     $script:Vueltas = 0
+    $script:UnidadesAvisadas = ''
     $reloj = New-Object System.Windows.Forms.Timer
     $reloj.Interval = 5000
     $reloj.add_Tick({ Invoke-AetherVigilante })
@@ -176,6 +177,15 @@ function Invoke-AetherVigilante {
                     $script:AvisoCancelado = $true
                 }
             }
+        }
+
+        if ($script:Vueltas % 12 -eq 0) {
+            $faltan = @(Connect-AetherUnidadesRed)
+            $textoFaltan = $faltan -join ', '
+            if ($faltan.Count -gt 0 -and $textoFaltan -ne $script:UnidadesAvisadas) {
+                Show-AetherGlobo -Texto "No se pudo conectar: $textoFaltan. Aether seguirá intentando." -Tipo 'Warning'
+            }
+            $script:UnidadesAvisadas = $textoFaltan
         }
 
         $fallaRespaldo = [string](Get-AetherAjuste -Nombre 'RespaldoError' -PorDefecto '')
@@ -312,6 +322,18 @@ Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
           <Button x:Name="BtnScriptOtraPC" Content="Guardar el reparador en el Escritorio (para la otra PC)"/>
           <Button x:Name="BtnCompartir" Content="Abrir opciones de uso compartido"/>
           <TextBlock x:Name="TxtRed" Style="{StaticResource Nota}" FontFamily="Consolas"/>
+          <TextBlock Text="Unidades de red fijas" FontSize="18" FontWeight="SemiBold" Margin="0,16,0,4"/>
+          <TextBlock Style="{StaticResource Nota}" Text="Usa la IP de la otra PC (por ejemplo \\192.168.1.10\SISTEMA EF RED). Aether la reconecta sola si se cae, la pone en Intranet local y en las ubicaciones de confianza de Excel para que las macros funcionen."/>
+          <ListBox x:Name="LstUnidades" Height="90" Background="#0F1628" Foreground="#F3F5F8"/>
+          <StackPanel Orientation="Horizontal">
+            <ComboBox x:Name="CmbLetra" Width="60" Margin="0,6,10,6"/>
+            <TextBox x:Name="TxtRutaRed" Width="330" Padding="6" Margin="0,6,10,6"/>
+            <Button x:Name="BtnAgregarUnidad" Content="Agregar"/>
+          </StackPanel>
+          <WrapPanel>
+            <Button x:Name="BtnQuitarUnidad" Content="Quitar la elegida"/>
+            <Button x:Name="BtnConectarUnidades" Content="Reconectar ahora"/>
+          </WrapPanel>
         </StackPanel></ScrollViewer>
       </TabItem>
       <TabItem Header="Actualizar">
@@ -478,6 +500,38 @@ $c.BtnScriptOtraPC.add_Click({
         }
     })
 $c.BtnCompartir.add_Click({ Start-Process -FilePath 'control.exe' -ArgumentList '/name Microsoft.NetworkAndSharingCenter /page Advanced' })
+
+function Update-AetherVistaUnidades {
+    $c.LstUnidades.Items.Clear()
+    foreach ($unidad in @(Get-AetherUnidades)) {
+        $estado = if (Test-Path -LiteralPath "$($unidad.Letra):\") { 'conectada' } else { 'sin conexión' }
+        [void]$c.LstUnidades.Items.Add("$($unidad.Letra):  $($unidad.Ruta)  ($estado)")
+    }
+}
+foreach ($letra in [char[]](90..68)) { [void]$c.CmbLetra.Items.Add([string]$letra) }
+$c.CmbLetra.SelectedIndex = 0
+$c.BtnAgregarUnidad.add_Click({
+        Invoke-AetherAccion {
+            $ok = Add-AetherUnidadRed -Letra ([string]$c.CmbLetra.SelectedItem) -Ruta $c.TxtRutaRed.Text
+            Set-AetherEstado -Texto $(if ($ok) { 'Unidad conectada y lista para Excel.' } else { 'Unidad guardada, pero no se pudo conectar ahora (¿la otra PC está encendida?). Aether reintentará solo.' })
+            Update-AetherVistaUnidades
+        }
+    })
+$c.BtnQuitarUnidad.add_Click({
+        Invoke-AetherAccion {
+            if ($null -eq $c.LstUnidades.SelectedItem) { Set-AetherEstado -Texto 'Elige una unidad de la lista.'; return }
+            Remove-AetherUnidadRed -Letra ([string]$c.LstUnidades.SelectedItem).Substring(0, 1)
+            Update-AetherVistaUnidades
+            Set-AetherEstado -Texto 'Unidad quitada.'
+        }
+    })
+$c.BtnConectarUnidades.add_Click({
+        Invoke-AetherAccion {
+            $faltan = @(Connect-AetherUnidadesRed)
+            Set-AetherEstado -Texto $(if ($faltan.Count -eq 0) { 'Todas las unidades están conectadas.' } else { "Sin conexión: $($faltan -join ', ')" })
+            Update-AetherVistaUnidades
+        }
+    })
 
 # --- Actualizaciones ---------------------------------------------------------------------
 $script:LanzadorQuitarPausa = '3. Configuracion general\Pausar actualizaciones\Quitar pausa de Windows Update.cmd'
@@ -708,6 +762,7 @@ $c.BtnRevisarSalud.add_Click({
 # --- Inicio -------------------------------------------------------------------------------
 Update-AetherVistaModo
 Update-AetherVistaRed
+Update-AetherVistaUnidades
 Update-AetherVistaPausa
 Update-AetherVistaBateria
 Read-AetherConfigRespaldo

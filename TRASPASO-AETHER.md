@@ -128,6 +128,12 @@ El usuario tiene poco límite de uso esta semana. Prioridad: **una primera versi
 - La conexión con la PC del usuario (app de escritorio de Claude) solo permite **leer y escribir
   archivos** en carpetas conectadas; sus comandos corren en una VM Linux, **no** en Windows.
 - Al editar un archivo, conservar su codificación y saltos de línea (muchos son CRLF).
+- **Al usuario no le gustan las ❌ ni los ❗ en GitHub Actions**: cuando una ejecución falle y ya esté
+  corregida, borrarla (`gh api -X DELETE repos/aether-win/AetherOS/actions/runs/<id>`).
+- El instalador se compila con `.github/workflows/aether-app.yml` (manual) → artefacto `Aether-OS-<sha>`.
+- Pruebas reales: el usuario usa una **laptop aparte** recién instalada (no su laptop de trabajo).
+- No cambiar nombres internos "Atlas" que comparten la app Rust y los scripts (p. ej. la carpeta
+  `Atlas Setup Recovery`): romperlo causó el error "recovery staging".
 
 ### B.6 Mapa de archivos propios de Aether
 | Ruta | Qué es |

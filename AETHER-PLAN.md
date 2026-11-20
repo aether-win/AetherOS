@@ -220,8 +220,15 @@ cuidado, en una pasada aparte.
         usuario), respaldar ahora, abrir respaldos; aviso en la bandeja si falla. Wind-Aether:
         perfiles Glass/Limpio/ninguno con `windhawk-cli mod enable|disable`. Salud: revisión rápida y
         la completa (lanzador).
+      * Unidades de red fijas (20-nov): pestaña Red del Centro: letra + \\IP\carpeta, `net use /persistent:yes`,
+        guardadas en %APPDATA%\Aether\unidades.json; la IP/nombre va a Intranet local (ZoneMap) y la
+        ruta y la letra a las ubicaciones de confianza de Excel 16.0 (AllowNetworkLocations=1); la
+        bandeja reconecta cada minuto y avisa una vez si no puede.
+      * App: sin avisos de "versión de prueba" ni "traducción preliminar" (`shell.rs app_notices`).
+      * Instalador: las actualizaciones pendientes son solo un aviso (Verdict::Warn en la app; la
+        preparación ya no las instala: `$script:AetherPrepararConActualizaciones = $false`).
       * Pendiente: `experimental-cpu-power` (WinRing0) NO se hizo (inseguro); colores de Wind-Aether
-        por tema; asistente de primer arranque; unidades de red fijas e IPs de confianza de Excel.
+        por tema; asistente de primer arranque.
 - [x] Revisión (parte 1): sin referencias a archivos borrados; `ToolboxLauncher` quitado de 11
       toggles, del generador `tools/dev/New-ToggleLaunchers.ps1` y de `catalog.json`;
       `atlas-theme-upgrade` usa el tema Aether.
