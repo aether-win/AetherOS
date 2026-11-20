@@ -392,3 +392,14 @@ sin UAC por acción), y la interfaz nativa **llama a la lógica PowerShell ya pr
 - `centro/global.json` fija .NET 8 (el runner trae .NET 11 preview, que falla distinto).
 - Publicar: `msbuild /t:Publish /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:SelfContained=true
   /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true /p:PublishDir=publish\`.
+
+### Avance Centro nativo (continuación) — integrado al instalador
+- Páginas hechas: Modos, Red, Actualizar (un interruptor), Wind-Aether (casillas por mod).
+  Faltan: Limpieza, Batería, Respaldo, Salud, inicio, asistente de bienvenida, tema.
+- **Integración lista**: `aether-app.yml` compila el Centro (MSBuild) y lo copia al payload
+  (`AtlasModules\Aether\Centro\app\CentroAether.exe`) antes de armar el apbx. El instalador
+  completo compila en verde con el Centro adentro (artefacto ~150 MB).
+- Lanzado sin UAC: `aether-centro.ps1` registra la tarea `\Aether\Centro` (privilegios altos)
+  y los accesos directos la disparan con un `.vbs` (sin consola). La bandeja (automatización en
+  segundo plano) sigue oculta; su "Abrir" usa el mismo lanzador (Show-AetherCentro). Respaldo a
+  la ventana WPF si el exe nativo no está.
