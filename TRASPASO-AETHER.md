@@ -103,7 +103,7 @@ El usuario tiene poco límite de uso esta semana. Prioridad: **una primera versi
      poco espacio activo, "Versiones anteriores" se queda, no desactivar dispositivos en laptops,
      indexado normal, Vincular teléfono activo, "Imprimir" en el menú, quitar Xbox/Game Bar
      pero **no** los drivers de mandos, quitar OneDrive/LinkedIn/Solitario.
-2. Traducir al español la carpeta de accesos directos (AtlasDesktop).
+2. ~~Traducir al español la carpeta de accesos directos (AtlasDesktop).~~ HECHO (sin acentos: ver plan).
 3. Paso 3: asistente de la app (Rust) con las casillas nuevas.
 4. Paso 4: app de control (modos, respaldo, red, limpieza, batería, Wind-Aether).
 

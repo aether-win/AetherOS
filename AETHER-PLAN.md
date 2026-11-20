@@ -165,10 +165,17 @@ cuidado, en una pasada aparte.
       * PENDIENTE de implementar (paso 2/3): las opciones `app-*`, `wind-aether`,
         `experimental-cpu-power` todavía no hacen nada; fondo claro propio (hoy ambos temas usan
         el mismo fondo oscuro).
-- [ ] (Siguiente) Traducir al español la carpeta de accesos directos (AtlasDesktop: 93 carpetas, 209
-      launchers), sus rutas en las definiciones de toggles (`Launcher`), `catalog.json`,
-      `Initialize-NewUser.ps1` (rutas fijas) y los textos de consola. Hacerlo con un mapa
-      inglés→español aplicado de forma consistente.
+- [x] Carpeta de accesos directos (AtlasDesktop) en español (20-nov-2026): 9 carpetas principales
+      ("1. Programas" … "9. Solucion de problemas"), 93 carpetas y 209 archivos renombrados, rutas
+      `Launcher` de los toggles, `Initialize-NewUser`, scripts, pruebas y catálogo. **Sin acentos ni ñ**:
+      el validador de rutas de launchers y el paquete .apbx solo aceptan ASCII (con acentos el
+      paquete guardaba "Mont�n"). Marca "(predeterminado)" en lugar de "(default)" (el motor la usa en
+      `Atlas.Toggles/Domain/Engine.ps1` para el reinicio de servicios) y ya refleja los valores de
+      Aether (uso compartido, Red en el Explorador, indexado normal, hibernación, apps en segundo
+      plano, Vincular teléfono). Mapa usado: componente por componente (inglés → español).
+      Se dejaron en inglés a propósito las rutas viejas de Atlas que usa el código de
+      compatibilidad (WindowsTransition, Legacy*, fixtures, `legacy_choices.rs`) y los textos de la
+      app Rust (se rehace en el paso 3). Pendiente: textos de consola de los scripts (en inglés).
 - [x] Revisión (parte 1): sin referencias a archivos borrados; `ToolboxLauncher` quitado de 11
       toggles, del generador `tools/dev/New-ToggleLaunchers.ps1` y de `catalog.json`;
       `atlas-theme-upgrade` usa el tema Aether.
@@ -214,7 +221,7 @@ GitHub Actions en el repo: `test.yml` (Pester), `lint.yml` (PSScriptAnalyzer), `
 `integration.yml` necesita un runner propio con Hyper-V (no se usa). Ver resultados con
 `gh run list --repo aether-win/AetherOS`.
 
-### Estado de CI — TODO EN VERDE ✅ (commit 303b0f6, paso 2)
+### Estado de CI — TODO EN VERDE ✅ (commit ab8849a, accesos directos en español)
 Build Playbook ✅ · Lint PowerShell ✅ · Lint YAML ✅ · Test (Pester PS7 + Windows PowerShell 5.1) ✅.
 Hecho en la limpieza: contrato de opciones igualado (playbook.conf = state = schema = custom.yml);
 sin tweak del atajo de captura; set-power-settings sin opciones viejas; Components y Choices
