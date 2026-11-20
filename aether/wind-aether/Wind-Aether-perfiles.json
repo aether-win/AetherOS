@@ -1,0 +1,154 @@
+{
+  "formato": "wind-aether-perfiles-v1",
+  "descripcion": "Perfiles visuales de Wind-Aether. La app de Aether los aplica con la CLI de Windhawk 2.0 (mod enable/disable y mod settings).",
+  "paleta": {
+    "acento": "#2F8CFF",
+    "acentoClaro": "#4FC3F7",
+    "oscuro": {
+      "superficie": "#E61B1D23",
+      "texto": "#FFFFFFFF",
+      "textoSecundario": "#FFC7CBD1",
+      "borde": "#40FFFFFF"
+    },
+    "claro": {
+      "superficie": "#E6F3F5F8",
+      "texto": "#FF1B1D23",
+      "textoSecundario": "#FF5A606A",
+      "borde": "#26000000"
+    }
+  },
+  "nuncaActivarJuntos": [
+    {
+      "mods": [
+        "taskbar-auto-hide-speed",
+        "taskbar-autohide-instant-show"
+      ],
+      "motivo": "Los dos aceleran la animación de auto-ocultar modificando las mismas funciones de tiempo (Sleep/GetTickCount). Juntos la animación se acelera dos veces o se ve a saltos. Se usa solo Instant Show."
+    },
+    {
+      "mods": [
+        "local@down-aero-espanol-simple-v13",
+        "local@search-aero-es-lupa-nativa-sin-cuadro-fork"
+      ],
+      "motivo": "Los dos modifican la ventana de búsqueda (SearchHost.exe). Pueden convivir, pero si la búsqueda se ve rara, el primero en revisar es este par.",
+      "nivel": "verificar"
+    }
+  ],
+  "sinUsoEnEstaPC": {
+    "taskbar-primary-on-secondary-monitor": "Solo sirve con dos o más pantallas.",
+    "local@dharius-iobit-unlocker-full-translucent-v4": "Solo sirve si IObit Unlocker está instalado.",
+    "translucent-flyouts-controller": "Solo controla el programa TranslucentFlyouts, que ya no se mantiene. Aether no lo instala: los menús translúcidos ya los hace 'Ventanas translúcidas' (FlyoutsEffects) junto con Dark menus."
+  },
+  "perfiles": {
+    "aether-glass": {
+      "nombre": "Aether Glass",
+      "descripcion": "Barra tipo dock, vidrio en ventanas y menús, notificaciones LiquidGlass y la barra que se oculta al maximizar.",
+      "activar": [
+        "windows-11-taskbar-styler",
+        "taskbar-dock-animation",
+        "taskbar-autohide-instant-show",
+        "local@taskbar-auto-hide-when-maximized-fork",
+        "local@aether-margen-escritorio",
+        "taskbar-notification-icon-spacing",
+        "taskbar-clock-customization",
+        "taskbar-volume-control",
+        "taskbar-volume-control-per-app",
+        "windows-11-notification-center-styler",
+        "windows-11-settings-styler",
+        "windows-11-file-explorer-styler",
+        "local@translucent-windows-fork-fork",
+        "invisible-borders",
+        "shell-flyout-positions",
+        "local@dark-menus-fork",
+        "fix-darkmode-listviews",
+        "fix-explorer-white-flash",
+        "control-panel-color-fix",
+        "modernize-folder-picker-dialog",
+        "themed-regedit-listview",
+        "explorer-details-better-file-sizes",
+        "explorer-context-menu-classic",
+        "context-menu-preloader",
+        "local@open-in-admin-terminal-fork",
+        "center-new-windows",
+        "clipboard-history-upgrade",
+        "local@search-aero-es-lupa-nativa-sin-cuadro-fork",
+        "local@down-aero-espanol-simple-v13",
+        "local@win11-power-buttons-fork",
+        "local@dharius-media-island-w11-fork",
+        "local@monitor-bateria-bluetooth-es",
+        "local@desktop-live-overlay-gpu-dharius-fork-fork"
+      ]
+    },
+    "aether-limpio": {
+      "nombre": "Aether Limpio",
+      "descripcion": "Windows 11 normal, sin efectos pesados: solo correcciones de modo oscuro y mejoras útiles.",
+      "activar": [
+        "taskbar-clock-customization",
+        "taskbar-volume-control",
+        "taskbar-volume-control-per-app",
+        "fix-darkmode-listviews",
+        "fix-explorer-white-flash",
+        "control-panel-color-fix",
+        "modernize-folder-picker-dialog",
+        "themed-regedit-listview",
+        "local@dark-menus-fork",
+        "explorer-details-better-file-sizes",
+        "explorer-context-menu-classic",
+        "context-menu-preloader",
+        "local@open-in-admin-terminal-fork",
+        "center-new-windows",
+        "clipboard-history-upgrade",
+        "local@monitor-bateria-bluetooth-es"
+      ]
+    }
+  },
+  "pausarEnModoGaming": [
+    "local@translucent-windows-fork-fork",
+    "taskbar-dock-animation",
+    "local@dharius-media-island-w11-fork"
+  ],
+  "coloresPorTema": {
+    "local@search-aero-es-lupa-nativa-sin-cuadro-fork": {
+      "oscuro": {
+        "tintColor": "#FF1B1D23",
+        "borderColor": "#40FFFFFF",
+        "searchTextColor": "#FFFFFFFF",
+        "searchPlaceholderColor": "#FFC7CBD1"
+      },
+      "claro": {
+        "tintColor": "#FFF3F5F8",
+        "borderColor": "#26000000",
+        "searchTextColor": "#FF1B1D23",
+        "searchPlaceholderColor": "#FF5A606A"
+      }
+    },
+    "local@dharius-media-island-w11-fork": {
+      "oscuro": {
+        "Appearance.PillBgColor": "#1B1D23",
+        "Appearance.TextPrimaryColor": "#FFFFFF",
+        "Appearance.TextSecondaryColor": "#C7CBD1",
+        "Appearance.AccentColorMode": "system"
+      },
+      "claro": {
+        "Appearance.PillBgColor": "#F3F5F8",
+        "Appearance.TextPrimaryColor": "#1B1D23",
+        "Appearance.TextSecondaryColor": "#5A606A",
+        "Appearance.AccentColorMode": "system"
+      }
+    },
+    "local@translucent-windows-fork-fork": {
+      "oscuro": {
+        "BackgroundEffects.AccentBlurBehind": "3A232323"
+      },
+      "claro": {
+        "BackgroundEffects.AccentBlurBehind": "3AF3F5F8"
+      }
+    }
+  },
+  "notas": [
+    "El acento de Windows se pone en el azul de Aether (#2F8CFF); los mods con acento 'system' lo siguen solos.",
+    "Ventanas translúcidas (v1.8.2-es-aether) excluye por completo Office, AMD Adrenalin, Steam, Rockstar/GTA V, PCSX2, Bandicam, OBS, Windows Terminal, VS Code, Claude, ChatGPT, PC Manager y Windhawk: en esos programas el mod ni siquiera se carga.",
+    "Con Wind-Aether activo, Aether no aplica el 'menú contextual antiguo' de Atlas: lo hace el mod explorer-context-menu-classic.",
+    "El overlay de escritorio usa texto blanco sobre tu fondo; si eliges un fondo claro, cambia su color de texto."
+  ]
+}

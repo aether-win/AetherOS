@@ -3,8 +3,8 @@
 > Si la sesión se corta: este archivo es la fuente de verdad. Leer "Progreso" y seguir
 > desde la primera casilla sin marcar. Repositorio: **github.com/aether-win/AetherOS** (privado),
 > clon de trabajo en `/home/claude/aetheros` (rama `main`). Commits con las líneas Co-Authored-By/Claude-Session.
-> Recursos de Wind-Aether en `/home/claude/aether-assets`. Script de red probado en
-> `/home/claude/aether-red`.
+> Recursos de Wind-Aether en `aether/wind-aether/`. Script de red probado en `aether/red/`.
+> Para seguir en otra cuenta de Claude: ver `TRASPASO-AETHER.md`.
 
 Base: Atlas 0.6.0 (GPLv3). Aether sigue siendo GPLv3, con aviso de que deriva de Atlas.
 Usuario: laptop HP 15-fc0, Ryzen 7 7730U (Vega 8 integrada), 16 GB DDR4-3200 doble canal,
@@ -39,7 +39,7 @@ Windows 11 Pro 26H2 (26300), pantalla 1920x1080. Idioma: todo en español.
   "Red" en el Explorador, LLDP, impresión (servicio + menú Imprimir + impresoras en red).
 - Quitar los tweaks de Atlas `restrict-anonymous-access`, `restrict-anonymous-enumeration`,
   `disable-network-navigation-pane`, y el toggle FileSharing debe quedar en Enable.
-- Script de reparación de red (`/home/claude/aether-red/Reparar-Red-Aether.ps1`, PROBADO y
+- Script de reparación de red (`aether/red/Reparar-Red-Aether.ps1`, PROBADO y
   funcionó): se aplica al instalar, lo vigila la Revisión de salud y existe el botón
   "Diagnosticar y reparar" + script compañero para la otra PC.
 - Unidades de red fijas por IP con reconexión; IPs de PCs de la red en Intranet local y
@@ -76,9 +76,9 @@ Windows 11 Pro 26H2 (26300), pantalla 1920x1080. Idioma: todo en español.
 
 ### Wind-Aether (sección de la app)
 - Windhawk 2.0 oficial por debajo; Aether lo maneja con su CLI (`data import`, `mod enable`, ...).
-- Paquete: `/home/claude/aether-assets/Wind-Aether-mods.json` (37 mods, todos desactivados,
+- Paquete: `aether/wind-aether/Wind-Aether-mods.json` (37 mods, todos desactivados,
   incluye `local@aether-margen-escritorio` y Ventanas translúcidas 1.8.2-es-aether).
-- Perfiles: `/home/claude/aether-assets/Wind-Aether-perfiles.json` (Aether Glass / Aether
+- Perfiles: `aether/wind-aether/Wind-Aether-perfiles.json` (Aether Glass / Aether
   Limpio, pausa en Gaming, colores claro/oscuro, choques conocidos).
 - Windhawk no se inyecta en juegos + exclusión de `steamapps\common\*`.
 - Mod pendiente (experimental): "Bandeja con nombres" — NO pedido; descartado por ahora.
