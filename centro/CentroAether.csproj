@@ -7,7 +7,7 @@
     <RootNamespace>CentroAether</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x64</Platforms>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <PlatformTarget>x64</PlatformTarget>
     <UseWinUI>true</UseWinUI>
     <WindowsPackageType>None</WindowsPackageType>

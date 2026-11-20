@@ -24,22 +24,20 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Show .NET SDK (pinned by centro/global.json)
-        working-directory: centro
-        run: dotnet --version
+      - name: Setup MSBuild (trae las tareas de empaquetado PRI de WinUI 3)
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2.0.0
 
       - name: Restore
         working-directory: centro
-        run: dotnet restore CentroAether.csproj -r win-x64
+        run: msbuild CentroAether.csproj /t:Restore /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64
 
       - name: Publish (unpackaged, self-contained)
         working-directory: centro
         run: >
-          dotnet publish CentroAether.csproj
-          -c Release -r win-x64 --self-contained true
-          -p:WindowsPackageType=None
-          -p:WindowsAppSDKSelfContained=true
-          -o publish
+          msbuild CentroAether.csproj /t:Publish
+          /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64
+          /p:SelfContained=true /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true
+          /p:PublishDir=publish\
 
       - name: Upload Centro
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
