@@ -8,7 +8,7 @@ $script:AtlasTweakTopLevelKeys = @(
 $script:AtlasKnownOptions = @(
     'app-amd-drivers', 'app-chatgpt', 'app-claude', 'app-keyvault', 'app-pcmanager',
     'app-python', 'app-steam', 'auto-updates-default', 'auto-updates-disable',
-    'defender-disable', 'defender-enable', 'disable-core-isolation', 'experimental-cpu-power',
+    'defender-disable', 'defender-enable', 'disable-core-isolation',
     'keyboard-selector', 'keyboard-shortcuts', 'keyboard-single', 'mitigations-default',
     'mitigations-disable', 'theme-dark', 'theme-light', 'wind-aether'
 )

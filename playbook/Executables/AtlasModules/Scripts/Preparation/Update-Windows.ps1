@@ -1021,6 +1021,12 @@ function Assert-PreparationCurrent {
     Assert-PreparationContinue
     Assert-PreparationUser
     if (Test-PreparationRestart) { throw "Restart Windows and run preparation again before installing Aether (pending: $($script:PreparationRestartReasons -join ', '))." }
+    # Aether: no se revisan Windows Update ni la Store antes de instalar (era lento y la Store
+    # a veces no responde). Solo un reinicio pendiente detiene la instalación.
+    if (-not $script:AetherPrepararConActualizaciones) {
+        Write-PreparationLog 'Aether: se omite la revisión de Windows Update y de la Store.'
+        return
+    }
     if (-not (Test-PreparationNetwork)) { throw 'Connect to unrestricted internet before verifying Windows and Store updates.' }
     Write-PreparationState running windows-search
     $session = New-Object -ComObject Microsoft.Update.Session

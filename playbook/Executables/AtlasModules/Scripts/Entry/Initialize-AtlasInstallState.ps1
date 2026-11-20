@@ -22,7 +22,6 @@ param(
         'defender-disable',
         'defender-enable',
         'disable-core-isolation',
-        'experimental-cpu-power',
         'keyboard-selector',
         'keyboard-shortcuts',
         'keyboard-single',
