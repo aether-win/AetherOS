@@ -353,11 +353,11 @@ detail-updates-none = No hay actualizaciones de Windows pendientes de instalar.
 # $titles enumera hasta dos nombres de actualización (texto); $count es el total.
 detail-updates-pending =
     { $count ->
-        [1] Esta actualización está pendiente: { $titles }. Aether la instalará en Actualizar Windows y las apps de la Store.
-        [2] Estas actualizaciones están pendientes: { $titles }. Aether las instalará en Actualizar Windows y las apps de la Store.
-       *[other] Hay { $count } actualizaciones pendientes, entre ellas { $titles }. Aether las instalará en Actualizar Windows y las apps de la Store.
+        [1] Esta actualización está pendiente: { $titles }. Es solo un aviso: puede instalar Aether igual y actualizar después desde el Centro Aether.
+        [2] Estas actualizaciones están pendientes: { $titles }. Es solo un aviso: puede instalar Aether igual y actualizar después desde el Centro Aether.
+       *[other] Hay { $count } actualizaciones pendientes, entre ellas { $titles }. Es solo un aviso: puede instalar Aether igual y actualizar después desde el Centro Aether.
     }
-detail-updates-unknown = No se pudieron buscar actualizaciones de Windows. Abra Windows Update y, si no hay actualizaciones pendientes, confírmelo abajo. ({ $error })
+detail-updates-unknown = No se pudieron buscar actualizaciones de Windows. Es solo un aviso: puede instalar Aether igual. ({ $error })
 detail-reboot-none = Windows no necesita reiniciarse ahora.
 detail-reboot-pending = Windows necesita reiniciarse para completar cambios anteriores. Cuando elija Buscar e instalar actualizaciones, Aether le pedirá que reinicie primero.
 # $reasons: los marcadores de reinicio pendiente que dejó Windows, a partir de los nombres prepare-reason-*.

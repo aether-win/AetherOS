@@ -230,10 +230,11 @@ pub fn run(id: CheckId, ctx: &CheckContext) -> CheckResult {
                 )
             }
         }
+        // Aether: las actualizaciones pendientes solo avisan; nunca bloquean la instalación.
         CheckId::PendingUpdates => match pending_updates() {
             Ok(titles) if titles.is_empty() => (Verdict::Pass, D::UpdatesNone),
-            Ok(titles) => (Verdict::Fail, D::UpdatesPending { titles }),
-            Err(error) => (Verdict::Unknown, D::UpdatesUnknown { error: format!("{error:#}") }),
+            Ok(titles) => (Verdict::Warn, D::UpdatesPending { titles }),
+            Err(error) => (Verdict::Warn, D::UpdatesUnknown { error: format!("{error:#}") }),
         },
         CheckId::PendingReboot => match reboot_markers() {
             Ok(markers) => reboot_verdict(markers),
