@@ -24,10 +24,11 @@ try {
     $fuente = if ($tieneMsa) { $originales } else { $aether }
     if (Test-Path -LiteralPath $fuente) {
         Get-ChildItem -LiteralPath $fuente -File -ErrorAction SilentlyContinue | ForEach-Object {
-            try { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $destino $_.Name) -Force -ErrorAction Stop } catch { }
+            try { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $destino $_.Name) -Force -ErrorAction Stop } catch { Write-Verbose $_.Exception.Message }
         }
     }
 }
 catch {
     # Cosmético: nunca debe molestar al usuario.
+    Write-Verbose $_.Exception.Message
 }

@@ -116,7 +116,8 @@ function Set-SearchTaskbarMode {
         $entries = @(@{ Path = $settingsPath; Name = 'IsDynamicSearchBoxEnabled'; Type = 'DWord'; Data = 1; AllowOsProtected = $true })
     }
     else {
-        $mode = 1
+        # Aether: barra de búsqueda completa (caja, modo 2) también sin búsqueda web.
+        $mode = 2
         $entries = foreach ($name in @('IsAADCloudSearchEnabled', 'IsDeviceSearchHistoryEnabled', 'IsDynamicSearchBoxEnabled', 'IsMSACloudSearchEnabled')) {
             @{ Path = $settingsPath; Name = $name; Type = 'DWord'; Data = 0; AllowOsProtected = $true }
         }
