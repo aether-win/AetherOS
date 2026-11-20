@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CentroAether.Pages.ActualizarPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="32,24,32,24">
+        <StackPanel Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE895;" FontSize="28" />
+                <StackPanel>
+                    <TextBlock Text="Actualizaciones" Style="{StaticResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Controla Windows Update y actualiza tus programas."
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+
+            <Border Background="{ThemeResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="18">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Mantener Windows Update en pausa" FontWeight="SemiBold" FontSize="15" />
+                        <TextBlock Text="Aether deja Windows sin actualizarse solo. Apaga esto para actualizar."
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <ToggleSwitch x:Name="SwPausa" Grid.Column="1" VerticalAlignment="Center"
+                                  OnContent="En pausa" OffContent="Activo" Toggled="SwPausa_Toggled" />
+                </Grid>
+            </Border>
+
+            <Border Background="{ThemeResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="18">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Actualizar mis programas" FontWeight="SemiBold" FontSize="15" />
+                        <TextBlock Text="Busca una version mas nueva de los programas instalados (Chrome, apps, etc.) y los actualiza."
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <Button x:Name="BtnApps" Grid.Column="1" VerticalAlignment="Center"
+                            Content="Actualizar" Click="BtnApps_Click" />
+                </Grid>
+            </Border>
+
+            <InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

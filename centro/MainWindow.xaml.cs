@@ -38,6 +38,9 @@ public sealed partial class MainWindow : Window
         Type pagina = tag switch
         {
             "modos" => typeof(ModosPage),
+            "red" => typeof(RedPage),
+            "actualizar" => typeof(ActualizarPage),
+            "wind" => typeof(WindPage),
             _ => typeof(PlaceholderPage),
         };
 

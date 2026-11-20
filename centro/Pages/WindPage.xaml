@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CentroAether.Pages.WindPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:services="using:CentroAether.Services">
+
+    <Grid Padding="32,24,32,16" RowSpacing="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12">
+            <FontIcon Glyph="&#xE790;" FontSize="28" />
+            <StackPanel>
+                <TextBlock Text="Wind-Aether" Style="{StaticResource TitleTextBlockStyle}" />
+                <TextBlock Text="Activa o desactiva cada mod visual. Empiezan todos apagados."
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+        </StackPanel>
+
+        <InfoBar x:Name="AvisoWindhawk" Grid.Row="1" IsOpen="False" IsClosable="False"
+                 Severity="Warning"
+                 Message="Windhawk todavia no esta instalado. Wind-Aether usa Windhawk para aplicar los mods.">
+            <InfoBar.ActionButton>
+                <Button Content="Instalar Windhawk" Click="InstalarWindhawk_Click" />
+            </InfoBar.ActionButton>
+        </InfoBar>
+
+        <Border Grid.Row="2" Background="{ThemeResource LayerFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1" CornerRadius="8">
+            <ListView x:Name="ListaMods" SelectionMode="None" Padding="6">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="services:ModWind">
+                        <Grid Padding="8,6" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{x:Bind Nombre}" VerticalAlignment="Center"
+                                       TextWrapping="Wrap" />
+                            <ToggleSwitch Grid.Column="1" IsOn="{x:Bind Activo, Mode=TwoWay}"
+                                          MinWidth="0" Toggled="Mod_Toggled" Tag="{x:Bind Id}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
+
+        <InfoBar x:Name="Estado" Grid.Row="3" IsOpen="False" IsClosable="True" Severity="Informational" />
+    </Grid>
+</Page>

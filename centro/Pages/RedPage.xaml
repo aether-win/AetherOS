@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CentroAether.Pages.RedPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="32,24,32,24">
+        <StackPanel Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE839;" FontSize="28" />
+                <StackPanel>
+                    <TextBlock Text="Red y carpetas compartidas" Style="{StaticResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Diagnostica, repara y administra la red de este equipo."
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+
+            <Button x:Name="BtnReparar" HorizontalAlignment="Stretch" Height="52"
+                    Style="{StaticResource AccentButtonStyle}" Click="Reparar_Click">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <FontIcon Glyph="&#xE90F;" /><TextBlock Text="Diagnosticar y reparar la red" />
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="BtnPrivada" HorizontalAlignment="Stretch" Height="48" Click="Privada_Click">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <FontIcon Glyph="&#xE72E;" /><TextBlock Text="Hacer privada la red conectada (para compartir carpetas)" />
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="BtnCompartir" HorizontalAlignment="Stretch" Height="48" Click="Compartir_Click">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <FontIcon Glyph="&#xE713;" /><TextBlock Text="Abrir opciones de uso compartido" />
+                </StackPanel>
+            </Button>
+
+            <Border Background="{ThemeResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="16">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <FontIcon Glyph="&#xE946;" VerticalAlignment="Center" />
+                    <TextBlock x:Name="TxtEquipo" VerticalAlignment="Center" Text="Este equipo: ..." />
+                </StackPanel>
+            </Border>
+
+            <InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
