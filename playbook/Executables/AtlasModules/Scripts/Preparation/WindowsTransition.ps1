@@ -292,7 +292,7 @@ function Test-AtlasWindowsTransitionJournalShape($Journal) {
 # which only administrators write. A Windows that rebuilds itself keeps Program
 # Files, but may not keep the registry key that holds the record.
 function Get-AtlasTransitionCopyPath {
-    return [IO.Path]::Combine([Environment]::GetFolderPath('ProgramFiles'), 'Aether Setup Recovery\WindowsTransition\journal.json')
+    return [IO.Path]::Combine([Environment]::GetFolderPath('ProgramFiles'), 'Atlas Setup Recovery\WindowsTransition\journal.json')
 }
 
 function Write-AtlasTransitionCopy([string]$Json) {

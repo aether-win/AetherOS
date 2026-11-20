@@ -27,6 +27,9 @@ param([Parameter(Mandatory)][string]$JobPath, [switch]$FunctionsOnly, [switch]$V
     # skips them and the long in-run wait.
     [switch]$OfferOnly,
     [switch]$RestoreWindowsUpdate)
+
+# Aether: en $true vuelve al comportamiento de Atlas (instalar todas las actualizaciones antes).
+$script:AetherPrepararConActualizaciones = $false
 # This elevated worker must never autoload a module from an inherited user path.
 $env:PSModulePath = [IO.Path]::Combine($PSHOME, 'Modules')
 Set-StrictMode -Version 3.0
@@ -1022,7 +1025,10 @@ function Assert-PreparationCurrent {
     Write-PreparationState running windows-search
     $session = New-Object -ComObject Microsoft.Update.Session
     $session.ClientApplicationID = 'Aether preparation verification'
-    if (@(Find-PreparationWindowsUpdate $session).Count -gt 0) { throw 'Windows still offers required updates. Finish preparation in Aether, then retry installation.' }
+    if (@(Find-PreparationWindowsUpdate $session).Count -gt 0) {
+        if ($script:AetherPrepararConActualizaciones) { throw 'Windows still offers required updates. Finish preparation in Aether, then retry installation.' }
+        Write-PreparationLog 'Aviso: Windows todavía ofrece actualizaciones; Aether sigue sin instalarlas.'
+    }
     Assert-PreparationContinue
     # A Store the user removed has nothing to check; preparation skipped it too.
     if (Test-PreparationStoreRemoved) { $pending = @() }
@@ -1037,9 +1043,15 @@ function Assert-PreparationCurrent {
         $found = @(Wait-PreparationStoreSearch ($manager.SearchForAllUpdatesAsync('', 'Atlas', $options)))
         $pending = @(@($found) + @($manager.AppInstallItems) | Where-Object { [string]$_.GetCurrentStatus().InstallState -ne 'Completed' })
     }
-    if ($pending.Count -gt 0) { throw 'Microsoft Store apps still need updates. Finish the queued updates in Aether or Microsoft Store, then retry installation.' }
+    if ($pending.Count -gt 0) {
+        if ($script:AetherPrepararConActualizaciones) { throw 'Microsoft Store apps still need updates. Finish the queued updates in Aether or Microsoft Store, then retry installation.' }
+        Write-PreparationLog 'Aviso: hay apps de la Store con actualizaciones pendientes; Aether sigue sin instalarlas.'
+    }
     Assert-PreparationContinue
-    if (@(Find-PreparationWindowsUpdate $session).Count -gt 0) { throw 'Windows offered additional updates during verification. Finish preparation, then retry.' }
+    if (@(Find-PreparationWindowsUpdate $session).Count -gt 0) {
+        if ($script:AetherPrepararConActualizaciones) { throw 'Windows offered additional updates during verification. Finish preparation, then retry.' }
+        Write-PreparationLog 'Aviso: Windows ofreció más actualizaciones durante la verificación.'
+    }
     if (Test-PreparationRestart) { throw "Restart Windows before installing Aether (pending: $($script:PreparationRestartReasons -join ', '))." }
     if (-not (Test-PreparationNetwork)) { throw 'The internet connection changed during preparation verification.' }
 }
@@ -1725,6 +1737,14 @@ function Invoke-PreparationStoreFixer {
 }
 
 function Invoke-PreparationUpdates {
+    # Aether: la preparación ya no instala las actualizaciones pendientes de Windows ni de
+    # la Store (Aether pausa Windows Update y las actualizaciones se hacen después desde el
+    # Centro Aether). Las pendientes solo se avisan; no bloquean la instalación.
+    if (-not $script:AetherPrepararConActualizaciones) {
+        Write-PreparationLog 'Aether: se omiten las actualizaciones de Windows y de la Store en la preparación.'
+        Write-PreparationState running verify
+        return 'ready'
+    }
     try {
         # The last value only: stray pipeline output must not become the status.
         if ((Invoke-PreparationWindows | Select-Object -Last 1) -eq 'reboot') { return 'reboot' }

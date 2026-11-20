@@ -24,6 +24,8 @@ BeforeAll {
     . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
     $script:Library = Join-Path $script:AtlasTestScriptsRoot 'Preparation\WindowsTransition.ps1'
     . (Join-Path $script:AtlasTestScriptsRoot 'Preparation\Update-Windows.ps1') -JobPath $TestDrive -FunctionsOnly
+    # Las pruebas cubren el comportamiento de Atlas (instalar actualizaciones antes).
+    $script:AetherPrepararConActualizaciones = $true
 
     $script:Policy = 'SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate'
     $script:Ux = 'SOFTWARE\Microsoft\WindowsUpdate\UX\Settings'

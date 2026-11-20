@@ -172,7 +172,7 @@ if (-not $FunctionsOnly) {
     $request = [Console]::In.ReadToEnd() | ConvertFrom-Json
     $programFiles = [Environment]::GetFolderPath('ProgramFiles')
     if ([string]::IsNullOrWhiteSpace($programFiles)) { throw 'Windows did not provide the Program Files directory.' }
-    $root = Join-Path $programFiles 'Aether Setup Recovery'
+    $root = Join-Path $programFiles 'Atlas Setup Recovery'
     $path = switch -CaseSensitive ([string]$request.operation) {
         'preparation' {
             New-AtlasPreparationJob -Root $root -Scope ([string]$request.scope) -Job ([string]$request.job) -Worker ([string]$request.worker) -Policy ([byte[]]$request.policy) -Library ([string]$request.library) -Registry ([string]$request.registry)

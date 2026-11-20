@@ -1,6 +1,8 @@
 BeforeAll {
     . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
     . (Join-Path $PSScriptRoot '..\playbook\Executables\AtlasModules\Scripts\Preparation\Update-Windows.ps1') -JobPath $TestDrive -FunctionsOnly
+    # Las pruebas cubren el comportamiento de Atlas (instalar actualizaciones antes).
+    $script:AetherPrepararConActualizaciones = $true
     # No test reads this PC's component store or starts DISM.
     $script:ComponentHealth = 'Healthy'
     function Get-AtlasTransitionImageHealth { if ($script:ComponentHealth -eq 'Throws') { throw 'DISM is unavailable' }; $script:ComponentHealth }
