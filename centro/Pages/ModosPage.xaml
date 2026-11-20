@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CentroAether.Pages.ModosPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="32,24,32,24">
+        <StackPanel Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE7FC;" FontSize="28" />
+                <StackPanel>
+                    <TextBlock Text="Modos" Style="{StaticResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Configura el comportamiento del sistema segun tu uso."
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+
+            <Border Background="{ThemeResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="18">
+                <StackPanel Orientation="Horizontal" Spacing="14">
+                    <FontIcon Glyph="&#xE7F4;" FontSize="24" />
+                    <StackPanel>
+                        <TextBlock x:Name="TxtModoActual" Text="Modo actual: ..."
+                                   FontWeight="SemiBold" FontSize="16" />
+                        <TextBlock x:Name="TxtModoDesc" Text=""
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="BtnTrabajo" Grid.Column="0" HorizontalAlignment="Stretch"
+                        Height="56" Click="Trabajo_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE7F8;" /><TextBlock Text="Modo Trabajo" />
+                    </StackPanel>
+                </Button>
+                <Button x:Name="BtnGaming" Grid.Column="1" HorizontalAlignment="Stretch"
+                        Height="56" Style="{StaticResource AccentButtonStyle}" Click="Gaming_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE7FC;" /><TextBlock Text="Modo Gaming" />
+                    </StackPanel>
+                </Button>
+                <Button x:Name="BtnBateria" Grid.Column="2" HorizontalAlignment="Stretch"
+                        Height="56" Click="Bateria_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE83E;" /><TextBlock Text="Modo Bateria" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       Text="Trabajo: todo activo y con todas las animaciones de Windows 11. Gaming (solo con cargador): maximo rendimiento y animaciones reducidas. Bateria: eficiente, se activa solo al nivel que elijas." />
+
+            <InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="CentroAether.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid>
+        <muxc:NavigationView
+            x:Name="Nav"
+            PaneDisplayMode="Left"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            OpenPaneLength="220"
+            SelectionChanged="Nav_SelectionChanged"
+            Loaded="Nav_Loaded">
+
+            <muxc:NavigationView.MenuItems>
+                <muxc:NavigationViewItem Content="Aether" Tag="inicio">
+                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE80F;" /></muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem Content="Modos" Tag="modos">
+                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE7FC;" /></muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem Content="Red" Tag="red">
+                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE839;" /></muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem Content="Actualizar" Tag="actualizar">
+                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE895;" /></muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem Content="Limpieza" Tag="limpieza">
+                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE75C;" /></muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem Content="Batería" Tag="bateria">
+                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE83E;" /></muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem Content="Respaldo" Tag="respaldo">
+                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE8C8;" /></muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem Content="Wind-Aether" Tag="wind">
+                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE790;" /></muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem Content="Salud" Tag="salud">
+                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE95E;" /></muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+            </muxc:NavigationView.MenuItems>
+
+            <Frame x:Name="ContentFrame" Padding="0" />
+        </muxc:NavigationView>
+    </Grid>
+</Window>

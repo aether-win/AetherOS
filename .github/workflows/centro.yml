@@ -1,0 +1,43 @@
+name: Centro Aether (WinUI 3)
+
+# Compila el nuevo Centro Aether nativo (WinUI 3 / Windows App SDK) como .exe directo,
+# sin empaquetar (unpackaged) y self-contained. Deja el resultado como artefacto.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'centro/**'
+      - '.github/workflows/centro.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore centro/CentroAether.csproj -r win-x64
+
+      - name: Publish (unpackaged, self-contained)
+        run: >
+          dotnet publish centro/CentroAether.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:WindowsPackageType=None
+          -p:WindowsAppSDKSelfContained=true
+          -o publish
+
+      - name: Upload Centro
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: Centro-Aether-${{ github.sha }}
+          path: publish
+          if-no-files-found: error
