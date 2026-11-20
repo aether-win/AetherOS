@@ -308,3 +308,57 @@ Aquí no hay PowerShell ni Windows: no se puede compilar el .apbx, la app ni cor
 Pester. Para probar: GitHub Actions (los workflows de Atlas ya existen) o la VM del usuario.
 
 - [x] Instalación más rápida: se omiten la limpieza de componentes DISM (AETHER_LIMPIAR_COMPONENTES=1 la activa) y NGEN (AETHER_NGEN=1). Botón "Cancelar instalación" en la pantalla Instalando: se detiene entre pasos.
+
+## 6. Sesión del 2026-11-20 (madrugada) — arreglo del error de instalación + lote de mejoras
+
+### Error que detenía la instalación (RESUELTO)
+Log del usuario: `No se puede enlazar el argumento al parámetro 'Path' porque es nulo` en
+`Invoke-AtlasTweak`. Causa real: el companion `qol/aether-edge.ps1` pasaba
+`${env:ProgramFiles(x86)}` (vacío bajo TrustedInstaller) directo a `Join-Path` con
+`ErrorActionPreference=Stop`, y eso tumbaba TODA la instalación por un ajuste cosmético (buscador
+de Edge). Arreglo: filtra raíces nulas antes de `Join-Path` y va en `try/catch`. Además se añadió
+una red de seguridad `trap` a `aether-red.ps1`, `aether-centro.ps1` y `aether-apps.ps1` para que
+ningún companion de Aether pueda abortar la instalación (regla: nada bloquea, solo avisa). También
+se endureció `Install-AetherApps.ps1` (Windhawk cli) contra rutas nulas.
+
+### Hecho en esta sesión
+- [x] Aether SIEMPRE como administrador: manifiesto `requireAdministrator` (app/vendor gpui).
+- [x] Cancelación más rápida y sólida: la marca `C:\ProgramData\Aether\cancelar-instalacion.flag`
+      se revisa también entre cada tweak de una categoría (no solo entre pasos grandes).
+- [x] Energía: `Initialize-AetherPlanEnergia` crea un paquete de energía propio de Aether
+      (duplica "Rendimiento máximo"/Ultimate, sin tocar los planes del usuario) y lo deja activo.
+      Gaming = máximo rendimiento (CPU 100% min/max, EPP 0, enfriamiento activo); Trabajo =
+      optimizado pero fluido (CPU hasta 100% bajo demanda, EPP 50, turbo disponible); Batería =
+      eficiente (con DC baja el techo de CPU y apaga turbo).
+- [x] Prioridad alta a Office (tweak `misc/aether-office`, IFEO PerfOptions, CpuPriorityClass=3).
+- [x] Prioridad total a la red + Enlace móvil (tweak `networking/aether-prioridad-red`:
+      NetworkThrottlingIndex off, SystemResponsiveness=10, PhoneExperienceHost prioridad alta,
+      EnableActiveProbing=1 para portales cautivos).
+- [x] Office sin bloqueo de macros ni avisos de otra PC (tweak `misc/aether-office-macros`,
+      HKCU Policies Office 16.0: VBAWarnings=1, blockcontentexecutionfrominternet=0, Vista protegida off).
+- [x] Explorador más completo (tweak `qol/aether-explorer`: menú clásico completo, ruta en el
+      título, panel expandido, procesos separados).
+- [x] Wi-Fi a máximo rendimiento y portal cautivo estable: en `Reparar-Red-Aether.ps1` (powercfg
+      SUB_WIFI=0 + PnPCapabilities=24 en los adaptadores inalámbricos).
+- [x] Wind-Aether: el mod `local@translucent-windows-fork-fork` ahora excluye Word/Excel/PowerPoint/
+      Outlook/OneNote/Access (el texto de Word ya no se vuelve invisible). Los 37 mods ya estaban
+      todos desactivados por defecto; se pueden activar y editar desde la app y desde Windhawk.
+- [x] Claude y ChatGPT con mejor prioridad (tweak `misc/aether-apps-ia`, CpuPriorityClass=6 AboveNormal).
+
+### Pendiente / parcial (para la próxima)
+- Botón en el Centro "Desbloquear archivo de otra PC" (Unblock-File) para complementar el tweak de
+  macros en archivos ya descargados. El tweak ya evita el bloqueo de ahí en adelante.
+- Subir volumen sin distorsión: no hay un ajuste de registro fiable (la "Ecualización de volumen" es
+  por dispositivo y depende del driver). La vía sólida es instalar Equalizer APO; no se añadió para
+  no meter software que el usuario no pidió. Pendiente de confirmar con él.
+- Mejorar la cámara "notablemente": es sobre todo hardware/driver; los ajustes de software (p. ej.
+  desactivar Frame Server) rompen apps que usan la cámara a la vez. No se tocó por seguridad.
+- "Montar actualizaciones encima" a futuro: la instalación ya es idempotente (se puede reinstalar
+  encima); documentar un flujo de actualización formal cuando se agreguen más cosas.
+
+### NO se hará (y por qué)
+- Saltarse/burlar firewall, DPI, filtrado DNS/contenido, proxy o puntos de acceso empresariales
+  (Fortinet FortiGate, Cisco Meraki, Ubiquiti UniFi, SonicWall) de redes de colegio/empresa: eso es
+  evadir los controles de seguridad de redes que no son del usuario. No se construye. Sí se mejoró lo
+  legítimo y adyacente: estabilidad del Wi-Fi, detección fiable de portales cautivos, y Wi-Fi a
+  máximo rendimiento. Para su propia privacidad puede usar un DNS propio (Cloudflare/Google) o una VPN.
