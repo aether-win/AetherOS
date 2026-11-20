@@ -362,3 +362,33 @@ se endureció `Install-AetherApps.ps1` (Windhawk cli) contra rutas nulas.
   evadir los controles de seguridad de redes que no son del usuario. No se construye. Sí se mejoró lo
   legítimo y adyacente: estabilidad del Wi-Fi, detección fiable de portales cautivos, y Wi-Fi a
   máximo rendimiento. Para su propia privacidad puede usar un DNS propio (Cloudflare/Google) o una VPN.
+
+## 7. Centro nativo en WinUI 3 (en construcción) — sesión 2026-11-20 (tarde)
+
+El usuario pidió rehacer el Centro en **WinUI 3 / Windows App SDK** (los mockups) porque la
+versión en PowerShell se ve mal, abre lento, deja una ventana de PowerShell, pide permisos y
+cambia de modo lento. Arquitectura elegida: app WinUI 3 **unpackaged + self-contained** (.exe
+directo, sin instalar runtime aparte), **requireAdministrator** en el manifiesto (siempre admin,
+sin UAC por acción), y la interfaz nativa **llama a la lógica PowerShell ya probada**
+(Aether.Centro.ps1) por debajo — así no se reescribe toda la lógica y se reutiliza lo que funciona.
+
+- Carpeta: `centro/` (CentroAether.csproj, app.manifest, App, MainWindow con NavigationView +
+  Mica, Pages/ModosPage, Pages/PlaceholderPage, Services/Aether.cs = puente a PowerShell).
+- Workflow `centro.yml`: compila con **MSBuild de Visual Studio** (el `dotnet` CLI no trae las
+  tareas de PRI de WinUI 3) y deja `CentroAether.exe` como artefacto. **Compila en verde.**
+- Hecho: armazón con look Windows 11, página **Modos** funcional (llama a Set-AetherModo con
+  animación de "cargando modo"). Resto de secciones como marcador.
+
+### Pendiente del Centro nativo (tareas #13 y #14)
+- Páginas: Red, Actualizar (un solo interruptor de Windows Update, no 2 botones), Limpieza,
+  Batería, Respaldo, Wind-Aether (**casillas por mod** + botón agregar), Salud, inicio,
+  asistente de bienvenida, tema claro/oscuro.
+- Integrar `CentroAether.exe` en el payload del instalador y lanzarlo al iniciar sesión con una
+  tarea programada (privilegios altos, sin UAC); reemplazar el lanzador del Centro WPF.
+
+### Notas de build WinUI 3 (para no repetir errores)
+- Usar **MSBuild** (`microsoft/setup-msbuild`), no `dotnet publish`: el SDK .NET por sí solo no
+  tiene `Microsoft.Build.Packaging.Pri.Tasks.dll` (MrtCore.PriGen) → error MSB4062.
+- `centro/global.json` fija .NET 8 (el runner trae .NET 11 preview, que falla distinto).
+- Publicar: `msbuild /t:Publish /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:SelfContained=true
+  /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true /p:PublishDir=publish\`.
