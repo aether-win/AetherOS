@@ -1,4 +1,4 @@
-# Environment phase.
+﻿# Environment phase.
 # Configures PowerShell before the rest of the install runs:
 #   - NGEN the loaded .NET assemblies (speeds up PowerShell startup ~10x)
 #   - Set Windows PowerShell to RemoteSigned on fresh installs
@@ -22,7 +22,9 @@ else {
 }
 
 # Precompile the loaded .NET assemblies with NGEN, which speeds up PowerShell startup.
-try {
+# Aether: tarda unos 5 minutos y Windows lo hace solo en su mantenimiento, así que se omite
+# (AETHER_NGEN=1 lo vuelve a activar).
+if ($env:AETHER_NGEN -eq '1') { try {
     $env:path = "$([Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory());" + $env:path
     [AppDomain]::CurrentDomain.GetAssemblies().Location | Where-Object { $_ } | ForEach-Object {
         Write-Host "NGENing: $(Split-Path $_ -Leaf)" -ForegroundColor Yellow
@@ -31,6 +33,7 @@ try {
 }
 catch {
     Write-AtlasLog -Level Warning -Message "NGEN optimization failed: $($_.Exception.Message)"
-}
+} }
+else { Write-AtlasLog -Message 'Aether: se omite NGEN para que la instalación sea rápida.' }
 
 [Environment]::SetEnvironmentVariable('POWERSHELL_TELEMETRY_OPTOUT', '1', 'Machine')

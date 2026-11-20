@@ -29,6 +29,20 @@ const LOG_IDS: LogIds = LogIds {
     open: "installing-open",
 };
 
+/// Aether: el usuario pidió cancelar la instalación (se detiene entre pasos).
+static CANCELAR_PEDIDO: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// Deja la marca que el instalador revisa entre pasos para detenerse.
+fn pedir_cancelacion() {
+    use std::sync::atomic::Ordering;
+    let carpeta = std::path::PathBuf::from(std::env::var("ProgramData").unwrap_or_else(|_| r"C:\ProgramData".to_owned()))
+        .join("Aether");
+    let _ = std::fs::create_dir_all(&carpeta);
+    if std::fs::write(carpeta.join("cancelar-instalacion.flag"), b"1").is_ok() {
+        CANCELAR_PEDIDO.store(true, Ordering::Relaxed);
+    }
+}
+
 /// The most progress shown, in percent, while the installer runs. The plan can
 /// finish before the installer exits, and 100% waits for its result.
 const RUNNING_PERCENT_CAP: f32 = 99.;
@@ -199,6 +213,9 @@ impl Render for InstallingPage {
                     .child(a11y_text("installing-line", line.clone())),
             );
 
+        if !matches!(run, RunState::Running) {
+            CANCELAR_PEDIDO.store(false, std::sync::atomic::Ordering::Relaxed);
+        }
         match run {
             RunState::Preparing => {
                 column = column.child(div().pt(px(8.)).child(ProgressRing::new().size(28.)));
@@ -244,6 +261,22 @@ impl Render for InstallingPage {
                             .child(a11y_text("installing-restart-auto", t!("installing-restart-auto"))),
                     )
                 });
+                // Aether: botón para cancelar; se detiene al terminar el paso actual.
+                let cancelando = CANCELAR_PEDIDO.load(std::sync::atomic::Ordering::Relaxed);
+                progress_group = progress_group.child(div().w_full().flex().justify_end().child(if cancelando {
+                    div()
+                        .type_caption()
+                        .text_color(theme.text_secondary)
+                        .child(a11y_text(
+                            "installing-cancelling",
+                            "Cancelando: Aether se detendrá al terminar el paso que está haciendo.".to_owned(),
+                        ))
+                        .into_any_element()
+                } else {
+                    Button::new("installing-cancel", "Cancelar instalación".to_owned())
+                        .on_click(|_, _, _| pedir_cancelacion())
+                        .into_any_element()
+                }));
                 column = column.child(progress_group);
             }
             RunState::Finished(_) if succeeded => {

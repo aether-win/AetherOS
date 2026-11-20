@@ -1,4 +1,4 @@
-# Features phase.
+﻿# Features phase.
 # Windows optional-feature work via DISM: enable DirectPlay, remove the Steps Recorder
 # capability (fresh installs only), clean the component store while that is safe (a
 # failure there only warns), and keep the Atlas packages' repair source. Runs as
@@ -119,7 +119,10 @@ $atlasPackages = @(Get-AtlasInstalledAtlasPackage)
 # Atlas packages. It must never run after them: see Get-AtlasComponentCleanupBlocker.
 # The cleanup only frees space, and Windows can refuse it on PCs whose servicing has
 # been changed, so a failure is a warning and the install carries on.
-$cleanupBlocker = Get-AtlasComponentCleanupBlocker -IsUpgrade ([bool]$context.IsUpgrade) -AtlasPackages $atlasPackages
+# Aether: la limpieza del almacén de componentes tarda de 20 a 40 minutos y solo libera
+# espacio, así que se omite (AETHER_LIMPIAR_COMPONENTES=1 la vuelve a activar).
+$cleanupBlocker = if ($env:AETHER_LIMPIAR_COMPONENTES -ne '1') { 'Aether la omite para que la instalación sea rápida' }
+else { Get-AtlasComponentCleanupBlocker -IsUpgrade ([bool]$context.IsUpgrade) -AtlasPackages $atlasPackages }
 if ($cleanupBlocker) {
     Write-AtlasLog -Message "Skipped cleaning the component store: $cleanupBlocker."
 }

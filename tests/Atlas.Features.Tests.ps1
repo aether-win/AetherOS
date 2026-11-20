@@ -1,4 +1,6 @@
 BeforeAll {
+    # Las pruebas cubren la limpieza de Atlas, que Aether omite por defecto.
+    $env:AETHER_LIMPIAR_COMPONENTES = '1'
     . (Join-Path $PSScriptRoot 'AtlasTestHost.ps1')
     $script:featuresPhase = Join-Path $script:AtlasTestScriptsRoot 'Install\Phases\Invoke-FeaturesPhase.ps1'
     $tokens = $null

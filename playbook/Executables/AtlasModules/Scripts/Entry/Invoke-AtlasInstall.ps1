@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Runs the committed Atlas install plan in one TrustedInstaller process.
 .DESCRIPTION
@@ -417,8 +417,16 @@ try {
         'Flags'
     )
 
+    # Aether: botón "Cancelar instalación" de la app. Se revisa entre pasos para no
+    # cortar nunca un paso a la mitad.
+    $aetherCancelar = [IO.Path]::Combine($env:ProgramData, 'Aether', 'cancelar-instalacion.flag')
+    if ([IO.File]::Exists($aetherCancelar)) { [IO.File]::Delete($aetherCancelar) }
     $stepInvoker = {
         param($Name, $Mode, $Action)
+        if ([IO.File]::Exists($aetherCancelar)) {
+            [IO.File]::Delete($aetherCancelar)
+            throw 'Instalación cancelada por el usuario. Aether se detuvo entre dos pasos; elige Reintentar para continuar desde ahí.'
+        }
         # The running announcement lives inside the action so a skipped step logs
         # only its skip decision.
         $announcedAction = New-AtlasInstallAnnouncedAction -Name $Name -Action $Action
