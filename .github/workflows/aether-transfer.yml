@@ -29,13 +29,13 @@ jobs:
 
       - name: Restore
         working-directory: aether-transfer
-        run: msbuild AetherTransfer.csproj /t:Restore /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64
+        run: msbuild AetherTransfer.csproj /t:Restore /p:Configuration=Debug /p:Platform=x64 /p:RuntimeIdentifier=win-x64
 
-      - name: Publish (unpackaged, self-contained completo)
+      - name: Publish (DEBUG temporal para obtener numero de linea del XAML)
         working-directory: aether-transfer
         run: >
           msbuild AetherTransfer.csproj /t:Publish
-          /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64
+          /p:Configuration=Debug /p:Platform=x64 /p:RuntimeIdentifier=win-x64
           /p:SelfContained=true /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true
           /p:PublishDir=publish\
 
