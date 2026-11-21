@@ -65,9 +65,18 @@ public sealed partial class PerfilesPage : Page
 
         var textos = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
         textos.Children.Add(new TextBlock { Text = p.App, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        string detalle = $"Modo {p.Modo}";
+        if (!string.IsNullOrEmpty(p.Proceso))
+        {
+            detalle += $" · {p.Proceso}";
+        }
+        if (!string.IsNullOrEmpty(p.MandoVirtual))
+        {
+            detalle += p.MandoVirtual == "DualShock4" ? " · Mando: DualShock 4" : " · Mando: Xbox 360";
+        }
         textos.Children.Add(new TextBlock
         {
-            Text = string.IsNullOrEmpty(p.Proceso) ? $"Modo {p.Modo}" : $"Modo {p.Modo} · {p.Proceso}",
+            Text = detalle,
             FontSize = 13,
             Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
         });
@@ -116,10 +125,18 @@ public sealed partial class PerfilesPage : Page
             return;
         }
 
-        _perfiles.Add(new PerfilApp { App = app, Proceso = TxtProceso.Text.Trim(), Modo = modo });
+        string mando = CmbMando.SelectedIndex switch
+        {
+            1 => "Xbox360",
+            2 => "DualShock4",
+            _ => "",
+        };
+
+        _perfiles.Add(new PerfilApp { App = app, Proceso = TxtProceso.Text.Trim(), Modo = modo, MandoVirtual = mando });
         bool ok = PerfilesServicio.Guardar(_perfiles);
         TxtApp.Text = "";
         TxtProceso.Text = "";
+        CmbMando.SelectedIndex = 0;
         Pintar();
 
         Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Error;

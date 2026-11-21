@@ -35,22 +35,25 @@
                 <StackPanel Spacing="12">
                     <TextBlock Text="Nuevo perfil" Style="{StaticResource BodyStrongTextBlockStyle}" />
                     <TextBox x:Name="TxtApp" PlaceholderText="Nombre de la app o juego" />
+                    <TextBox x:Name="TxtProceso" PlaceholderText="Proceso para autodetección (ej. cs2.exe)" />
                     <Grid ColumnSpacing="12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="TxtProceso" Grid.Column="0"
-                                 PlaceholderText="Proceso para autodetección (ej. cs2.exe)" />
-                        <ComboBox x:Name="CmbModo" Grid.Column="1" MinWidth="130" SelectedIndex="0">
+                        <ComboBox x:Name="CmbModo" Grid.Column="0" Header="Modo" HorizontalAlignment="Stretch" SelectedIndex="0">
                             <ComboBoxItem Content="Gaming" />
                             <ComboBoxItem Content="Trabajo" />
                             <ComboBoxItem Content="Bateria" />
                         </ComboBox>
-                        <Button x:Name="BtnAgregar" Grid.Column="2" Content="Agregar"
-                                Style="{StaticResource AccentButtonStyle}" Click="Agregar_Click" />
+                        <ComboBox x:Name="CmbMando" Grid.Column="1" Header="Mando virtual" HorizontalAlignment="Stretch" SelectedIndex="0">
+                            <ComboBoxItem Content="Ninguno" />
+                            <ComboBoxItem Content="Xbox 360" />
+                            <ComboBoxItem Content="DualShock 4" />
+                        </ComboBox>
                     </Grid>
+                    <Button x:Name="BtnAgregar" Content="Agregar" HorizontalAlignment="Right"
+                            Style="{StaticResource AccentButtonStyle}" Click="Agregar_Click" />
                 </StackPanel>
             </Border>
 

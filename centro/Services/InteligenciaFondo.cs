@@ -16,6 +16,7 @@ public static class InteligenciaFondo
 {
     private static DispatcherTimer? _timer;
     private static string? _perfilActivo;
+    private static bool _mandoAuto;
 
     public static void Iniciar()
     {
@@ -79,12 +80,30 @@ public static class InteligenciaFondo
                     _ = Aether.CambiarModo(p.Modo);
                     // El overlay del modo correspondiente (Gaming, Trabajo o Batería).
                     VentanaOverlayModo.Mostrar(p.Modo, p.App);
+
+                    // Mando virtual del perfil: crear el dispositivo solo si hace falta.
+                    if (!string.IsNullOrEmpty(p.MandoVirtual) && !MotorControlador.Activo)
+                    {
+                        MotorControlador.Objetivo = p.MandoVirtual == "DualShock4"
+                            ? TipoVirtual.DualShock4
+                            : TipoVirtual.Xbox360;
+                        if (MotorControlador.ConflictoActivo() is null && MotorControlador.Iniciar())
+                        {
+                            _mandoAuto = true;
+                        }
+                    }
                 }
                 return;   // un perfil activo a la vez
             }
         }
 
-        _perfilActivo = null;   // ninguno corriendo; no revertimos el modo
+        // Ningún juego con perfil corriendo: liberar el mando virtual si lo iniciamos nosotros.
+        if (_mandoAuto && MotorControlador.Activo)
+        {
+            MotorControlador.Detener();
+            _mandoAuto = false;
+        }
+        _perfilActivo = null;   // no revertimos el modo
     }
 
     private static HashSet<string> ProcesosEnEjecucion()

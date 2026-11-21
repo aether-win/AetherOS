@@ -11,6 +11,7 @@ public sealed class PerfilApp
     public string App { get; set; } = "";
     public string Proceso { get; set; } = "";   // nombre del .exe para la detección automática
     public string Modo { get; set; } = "Gaming";
+    public string MandoVirtual { get; set; } = "";   // "", "Xbox360" o "DualShock4"
 }
 
 /// <summary>
