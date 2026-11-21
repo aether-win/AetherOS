@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using CentroAether.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Windows.Gaming.Input;
 
 namespace CentroAether.Pages;
 
@@ -16,10 +19,12 @@ public sealed partial class ControllerPage : Page
 {
     private bool _ocupado;
     private bool _cargando;
+    private readonly DispatcherTimer _diag = new() { Interval = TimeSpan.FromMilliseconds(60) };
 
     public ControllerPage()
     {
         this.InitializeComponent();
+        _diag.Tick += (_, _) => DiagTick();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -27,6 +32,63 @@ public sealed partial class ControllerPage : Page
         base.OnNavigatedTo(e);
         Buscar();
         RefrescarMotor();
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        base.OnNavigatedFrom(e);
+        _diag.Stop();
+    }
+
+    private void Diag_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (TglDiag.IsOn)
+        {
+            CajaDiag.Visibility = Visibility.Visible;
+            _diag.Start();
+        }
+        else
+        {
+            _diag.Stop();
+            CajaDiag.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void DiagTick()
+    {
+        try
+        {
+            RawGameController? rc = RawGameController.RawGameControllers
+                .FirstOrDefault(c => c.HardwareVendorId == 0x054C)
+                ?? RawGameController.RawGameControllers.FirstOrDefault();
+
+            if (rc is null)
+            {
+                TxtDiag.Text = "No hay ningún mando conectado.";
+                return;
+            }
+
+            var botones = new bool[rc.ButtonCount];
+            var switches = new GameControllerSwitchPosition[rc.SwitchCount];
+            var ejes = new double[rc.AxisCount];
+            rc.GetCurrentReading(botones, switches, ejes);
+
+            var pulsados = Enumerable.Range(0, botones.Length).Where(i => botones[i]).ToList();
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"Mando: {rc.DisplayName}");
+            sb.AppendLine($"Botones pulsados (índice): {(pulsados.Count > 0 ? string.Join(", ", pulsados) : "—")}");
+            sb.AppendLine($"Cruceta: {(switches.Length > 0 ? switches[0].ToString() : "—")}");
+            for (int i = 0; i < ejes.Length; i++)
+            {
+                sb.Append($"Eje{i}:{ejes[i]:0.00}  ");
+            }
+            TxtDiag.Text = sb.ToString();
+        }
+        catch
+        {
+            TxtDiag.Text = "No se pudo leer el mando.";
+        }
     }
 
     private void RefrescarMotor()

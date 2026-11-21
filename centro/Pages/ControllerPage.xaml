@@ -34,6 +34,29 @@
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextAlignment="Center" />
             </StackPanel>
 
+            <!-- Diagnóstico en vivo -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="18">
+                <StackPanel Spacing="10">
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="Probar mando en vivo" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                            <TextBlock Text="Pulsa botones y mueve los sticks para ver sus índices y valores (sirve para afinar el mapeo)."
+                                       FontSize="12" TextWrapping="Wrap"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        </StackPanel>
+                        <ToggleSwitch x:Name="TglDiag" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                      Toggled="Diag_Toggled" />
+                    </Grid>
+                    <Border x:Name="CajaDiag" Visibility="Collapsed"
+                            Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="12">
+                        <TextBlock x:Name="TxtDiag" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap"
+                                   Text="Esperando lectura…" />
+                    </Border>
+                </StackPanel>
+            </Border>
+
             <!-- Emulación Xbox 360 (motor nativo) -->
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
