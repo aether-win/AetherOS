@@ -98,9 +98,18 @@ function Enable-AtlasDirectPlay {
         Write-AtlasLog -Message 'DirectPlay is already enabled; skipping change.'
         return
     }
-    Invoke-AtlasDism -Description 'Enabling DirectPlay' -Arguments @(
-        '/Online', '/Enable-Feature', '/FeatureName:DirectPlay', '/NoRestart', '/All'
-    )
+    try {
+        # Aether: /LimitAccess usa SOLO el paquete local y no sale a Windows Update, que es
+        # lo que hacía que "Enabling DirectPlay" se quedara varios minutos. Si el paquete no
+        # está en el equipo, se omite con un aviso para no demorar la instalación (DirectPlay
+        # solo lo necesitan juegos viejos; se puede activar después desde Características de Windows).
+        Invoke-AtlasDism -Description 'Enabling DirectPlay' -Arguments @(
+            '/Online', '/Enable-Feature', '/FeatureName:DirectPlay', '/NoRestart', '/All', '/LimitAccess'
+        )
+    }
+    catch {
+        Write-AtlasLog -Level Warning -Message "Aether: DirectPlay se omitió para no demorar la instalación ($($_.Exception.Message))."
+    }
 }
 
 Enable-AtlasDirectPlay
