@@ -655,11 +655,10 @@ impl AppModel {
             self.forget_pending_reminder(cx);
             let restart = self.session.as_ref().is_some_and(|s| s.request.restart);
             if restart && !self.attempt.recovered {
-                if self.restart_declined() {
-                    self.attempt.restart_cancelled = true;
-                } else {
-                    self.begin_restart_countdown(cx);
-                }
+                // Aether: sin cuenta regresiva automática. Aether queda instalado y el
+                // usuario reinicia manualmente ("Reiniciar ahora") cuando sus programas
+                // terminen de instalarse, para no cortar esa instalación a la mitad.
+                self.attempt.restart_cancelled = true;
             }
         } else {
             disarm_completion();

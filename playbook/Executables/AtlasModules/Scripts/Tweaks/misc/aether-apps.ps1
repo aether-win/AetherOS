@@ -13,7 +13,7 @@ trap {
 }
 
 $opciones = @('app-claude', 'app-chatgpt', 'app-python', 'app-keyvault', 'app-pcmanager',
-    'app-steam', 'app-amd-drivers', 'wind-aether')
+    'app-steam', 'wind-aether')
 $elegidas = @($opciones | Where-Object { Test-AtlasOption -Name $_ })
 
 $setupOptions = 'HKLM:\SOFTWARE\AtlasOS\SetupOptions'

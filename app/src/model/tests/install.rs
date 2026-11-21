@@ -84,11 +84,12 @@ fn closing_is_guarded_by_what_it_would_interrupt() {
         assert_eq!(read(&cx, &model, AppModel::close_guard), CloseGuard::Install);
         assert!(!model.update(&mut cx, |m, cx| m.abandon_preparing(cx)), "too late to call it off");
 
-        // The countdown is this window's alone; once stopped, closing is free.
+        // Aether: the install owes a restart but runs no automatic countdown —
+        // the user restarts by hand once their apps finish. So closing is free and
+        // Windows was never asked to restart on a timer.
         std::fs::write(&gate, "").unwrap();
-        wait_for(&cx, &model, "the countdown", |m| m.restart_countdown().is_some()).await;
-        assert_eq!(read(&cx, &model, AppModel::close_guard), CloseGuard::Restart);
-        act(&mut cx, &model, |m, cx| m.cancel_restart(cx));
+        wait_for(&cx, &model, "the install to finish", |m| m.flow.run != RunState::Running).await;
+        assert!(read(&cx, &model, |m| m.restart_countdown().is_none()), "no automatic countdown");
         assert_eq!(read(&cx, &model, AppModel::close_guard), CloseGuard::None);
         assert_eq!(*machine.scheduled.lock().unwrap(), 0);
     });

@@ -27,6 +27,48 @@ function Ok($texto) { Write-Host "  [OK]     $texto" -ForegroundColor Green }
 function Aviso($texto) { Write-Host "  [AVISO]  $texto" -ForegroundColor Magenta }
 function Fallo($texto) { Write-Host "  [ERROR]  $texto" -ForegroundColor Red }
 
+# --- Animación "está trabajando" (para que no parezca trabado) -----------------
+# Un hilo aparte dibuja una línea en movimiento mientras una instalación (que no
+# muestra nada) corre. Todo va en try/catch: si algo falla, la instalación sigue igual.
+$script:SpinnerSync = $null
+$script:SpinnerPS = $null
+$script:SpinnerHandle = $null
+function Start-AetherSpinner {
+    param([string]$Texto = 'Trabajando')
+    try {
+        $sync = [hashtable]::Synchronized(@{ Activo = $true; Texto = $Texto })
+        $ps = [PowerShell]::Create()
+        [void]$ps.AddScript({
+            param($sync)
+            $frames = @('[>         ]', '[=>        ]', '[==>       ]', '[===>      ]', '[====>     ]',
+                '[=====>    ]', '[======>   ]', '[=======>  ]', '[========> ]', '[=========>]')
+            $i = 0
+            while ($sync.Activo) {
+                try { [Console]::Write(("`r  {0} {1}   " -f $sync.Texto, $frames[$i % $frames.Count])) } catch { $null = $_ }
+                Start-Sleep -Milliseconds 150
+                $i++
+            }
+            try { [Console]::Write("`r" + (' ' * 70) + "`r") } catch { $null = $_ }
+        }).AddArgument($sync)
+        $script:SpinnerSync = $sync
+        $script:SpinnerPS = $ps
+        $script:SpinnerHandle = $ps.BeginInvoke()
+    }
+    catch { $script:SpinnerSync = $null }
+}
+function Stop-AetherSpinner {
+    try {
+        if ($script:SpinnerSync) { $script:SpinnerSync.Activo = $false }
+        Start-Sleep -Milliseconds 200
+        if ($script:SpinnerPS) {
+            try { $script:SpinnerPS.EndInvoke($script:SpinnerHandle) } catch { $null = $_ }
+            $script:SpinnerPS.Dispose()
+        }
+    }
+    catch { $null = $_ }
+    finally { $script:SpinnerSync = $null; $script:SpinnerPS = $null; $script:SpinnerHandle = $null }
+}
+
 $apps = @()
 try {
     $apps = @((Get-ItemProperty -Path 'HKLM:\SOFTWARE\AtlasOS\SetupOptions' -Name Apps -ErrorAction Stop).Apps)
@@ -75,7 +117,11 @@ function Install-ConWinget {
     if (-not $winget) { return $false }
     $argumentos = @('install', '--id', $Id, '--exact', '--source', $Fuente,
         '--accept-package-agreements', '--accept-source-agreements', '--disable-interactivity') + $Extra
-    & $winget @argumentos
+    # Salida de winget al log (no a la consola) para que solo se vea la animación.
+    $logWinget = Join-Path $env:ProgramData 'Aether\winget.log'
+    Start-AetherSpinner -Texto 'Instalando'
+    try { & $winget @argumentos *>> $logWinget }
+    finally { Stop-AetherSpinner }
     # 0 = instalado; -1978335189 = ya estaba instalado y al día.
     return ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq -1978335189)
 }
@@ -225,12 +271,8 @@ if ($apps -contains 'wind-aether') {
     else { Fallo 'Windhawk no se pudo instalar'; $pendientes.Add('Wind-Aether: https://windhawk.net') }
 }
 
-if ($apps -contains 'app-amd-drivers') {
-    Titulo 'Drivers AMD'
-    Aviso 'AMD no publica sus drivers en winget. Se abre su página: elige "AMD Ryzen 7 7730U" o usa el detector automático.'
-    Start-Process 'https://www.amd.com/es/support/download/drivers.html'
-    $pendientes.Add('Drivers AMD: descarga Adrenalin desde la página que se abrió')
-}
+# Aether: los drivers de AMD se quitaron (no es algo estándar: no todas las PCs son AMD,
+# y abrir una página de descarga no encaja en una instalación automática).
 
 # --- Resumen -------------------------------------------------------------------------
 Titulo 'Resumen'

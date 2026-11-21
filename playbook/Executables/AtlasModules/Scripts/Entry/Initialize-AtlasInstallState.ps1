@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('Begin', 'RecordOption', 'Commit')]
@@ -10,7 +10,6 @@ param(
     [switch]$Oobe,
 
     [ValidateSet(
-        'app-amd-drivers',
         'app-chatgpt',
         'app-claude',
         'app-keyvault',

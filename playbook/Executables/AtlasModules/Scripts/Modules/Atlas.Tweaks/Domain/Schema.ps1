@@ -1,4 +1,4 @@
-# Atlas.Tweaks domain: tweak schema validation (used by CI and locally before builds).
+﻿# Atlas.Tweaks domain: tweak schema validation (used by CI and locally before builds).
 
 $script:AtlasTweakTopLevelKeys = @(
     'Name', 'Description', 'Option', 'Arch', 'OnUpgrade', 'OnRebase', 'Oobe', 'RunAs', 'MinBuild', 'MaxBuild',
@@ -6,7 +6,7 @@ $script:AtlasTweakTopLevelKeys = @(
 )
 
 $script:AtlasKnownOptions = @(
-    'app-amd-drivers', 'app-chatgpt', 'app-claude', 'app-keyvault', 'app-pcmanager',
+    'app-chatgpt', 'app-claude', 'app-keyvault', 'app-pcmanager',
     'app-python', 'app-steam', 'auto-updates-default', 'auto-updates-disable',
     'defender-disable', 'defender-enable', 'disable-core-isolation',
     'keyboard-selector', 'keyboard-shortcuts', 'keyboard-single', 'mitigations-default',
