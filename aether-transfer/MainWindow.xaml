@@ -95,7 +95,7 @@
                 <Button Style="{StaticResource Herramienta}">
                     <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE898;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Transferencias" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
                 </Button>
-                <Button Style="{StaticResource Herramienta}">
+                <Button Style="{StaticResource Herramienta}" Click="Sincronizar_Click">
                     <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE895;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Sincronizar" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
                 </Button>
                 <Button Style="{StaticResource Herramienta}">

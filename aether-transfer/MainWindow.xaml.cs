@@ -239,6 +239,31 @@ public sealed partial class MainWindow : Window
         }
     }
 
+    private async void Sincronizar_Click(object sender, RoutedEventArgs e)
+    {
+        if (_servidor is null || !_servidor.Conectado)
+        {
+            Log("Conéctate primero para sincronizar.");
+            return;
+        }
+        var dlg = new DialogoSync(_local.ToList(), _remoto.ToList()) { XamlRoot = Raiz.XamlRoot };
+        if (await dlg.ShowAsync() == ContentDialogResult.Primary)
+        {
+            foreach (AccionSync a in dlg.Acciones)
+            {
+                _gestor.Encolar(new TransferItem
+                {
+                    Nombre = a.Nombre,
+                    RutaLocal = Path.Combine(_rutaLocal, a.Nombre),
+                    RutaRemota = UnirPosix(_rutaRemota, a.Nombre),
+                    Subida = a.Subida,
+                    Tamano = a.Tamano,
+                });
+            }
+            Log($"Sincronización: {dlg.Acciones.Count} archivo(s) en cola.");
+        }
+    }
+
     private async Task ConectarCon(ConexionInfo info)
     {
         if (string.IsNullOrWhiteSpace(info.Host))
