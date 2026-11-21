@@ -42,10 +42,7 @@ public static class RegistroModulos
 
         // ── Trabajo ──────────────────────────────────────────────────────────
         new("oficina", "Oficina", "Protección de Office y modo trabajo",
-            "Trabajo", "", null,
-            "Macros de Office seguras por defecto",
-            "Sin transparencias en Word, Excel y PowerPoint",
-            "Modo enfocado para concentrarse"),
+            "Trabajo", "", typeof(OficinaPage)),
 
         // ── Software ─────────────────────────────────────────────────────────
         new("software", "Software", "Catálogo de aplicaciones (winget)",
