@@ -46,7 +46,7 @@ Leyenda: ✅ hecho · 🟡 parcial (base existe) · ⬜ no empezado · ⛔ desca
 | 3 | Gaming Mode (+ overlay 470×260) | 🟡 | Centro·Modos + overlay nativo 470×260 ✅ |
 | 4 | Work Mode | 🟡 | Centro·Modos |
 | 5 | Office Protection | ✅ | Centro·Oficina: detección, proteger macros, modo enfocado ✅ |
-| 6 | Aether Controller (DS4Windows) | 🟡 | Centro·Control: detección nativa de mandos ✅; motor de mapeo pendiente |
+| 6 | Aether Controller (DS4Windows) | ✅ | Centro·Control: detección + **emulación Xbox 360 nativa (ViGEm)** ✅; perfiles/gyro/luces como mejora futura |
 | 7 | Game Library | 🟡 | Centro·Biblioteca: detección de Steam + lanzar ✅ |
 | 8 | Aether Profiles | ✅ | Centro·Perfiles: app→modo con almacenamiento propio ✅ |
 | 9 | Software Center | ✅ | Centro·Software: catálogo winget + instalar/actualizar ✅ |
@@ -147,6 +147,15 @@ o base funcional. Sigue vigente la Regla 38: **no compilar el .exe final** hasta
 - F7 Aether Controller (base): detección nativa de mandos (Windows.Gaming.Input) ✅
 - F8 Plugin System (v1 seguro): manifiestos JSON que abren URL/ruta ✅
 
-**Estado: 0 módulos "próximamente".** Lo único grande que queda es el **motor de mapeo**
-del Aether Controller (integrar DS4Windows GPLv3), que merece su sesión dedicada.
-Regla 38 intacta: no se ha compilado el .exe final.
+**Estado: 0 módulos "próximamente".**
+
+**2026-11-20 (cierre final de desarrollo) — motor del Controller terminado:**
+- F7 Motor nativo del Aether Controller: emulación de mando Xbox 360 con ViGEm
+  (`Nefarius.ViGEm.Client`), alimentada por `Windows.Gaming.Input`, bucle ~125 Hz,
+  botones + sticks + gatillos; instalación de ViGEmBus/HidHide desde la UI ✅
+
+**Los 18 módulos del Centro están desarrollados a una v1 completa y todo compila en verde.**
+Mejoras futuras (iterativas, no bloqueantes): perfiles de mando por juego, giroscopio y luces;
+y pruebas en hardware real. Regla 38 intacta: **el .exe final no se compila hasta autorización
+expresa de Daniel**. Cuando él confirme que no hay nada más que agregar, se hará la pregunta
+de compilación.
