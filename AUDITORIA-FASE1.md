@@ -45,8 +45,8 @@ Leyenda: ✅ hecho · 🟡 parcial (base existe) · ⬜ no empezado · ⛔ desca
 | 2 | System Performance Engine | 🟡 | `Aether.Centro.ps1` (planes de energía) + Centro·Modos |
 | 3 | Gaming Mode (+ overlay 470×260) | 🟡 | Centro·Modos + overlay nativo 470×260 ✅ |
 | 4 | Work Mode | 🟡 | Centro·Modos |
-| 5 | Office Protection | 🟡 | tweaks `aether-office*`, Wind-Aether excluye apps Office |
-| 6 | Aether Controller (DS4Windows) | ⬜ | fuente disponible (GPLv3 OK) |
+| 5 | Office Protection | ✅ | Centro·Oficina: detección, proteger macros, modo enfocado ✅ |
+| 6 | Aether Controller (DS4Windows) | 🟡 | Centro·Control: detección nativa de mandos ✅; motor de mapeo pendiente |
 | 7 | Game Library | 🟡 | Centro·Biblioteca: detección de Steam + lanzar ✅ |
 | 8 | Aether Profiles | ✅ | Centro·Perfiles: app→modo con almacenamiento propio ✅ |
 | 9 | Software Center | ✅ | Centro·Software: catálogo winget + instalar/actualizar ✅ |
@@ -56,7 +56,7 @@ Leyenda: ✅ hecho · 🟡 parcial (base existe) · ⬜ no empezado · ⛔ desca
 | 13 | Camera Engine | ⛔ | Daniel pidió **no** agregar cámara |
 | 14 | Live Monitor | ✅ | Centro·Monitor: CPU/RAM/uptime/procesos + modo activo ✅ |
 | 15 | Smart Boost | 🟡 | Centro·Limpieza |
-| 16 | Plugin System | ⬜ | — |
+| 16 | Plugin System | ✅ | Centro·Plugins: manifiestos JSON que abren URL/ruta (v1) ✅ |
 | 17 | Update Engine | 🟡 | Centro·Actualizar (pausa Windows Update) |
 | 18 | Smart Restore | 🟡 | Centro·Respaldo |
 | 19 | Background Intelligence | ✅ | Centro: vigila procesos y aplica perfiles (opt-in) ✅ |
@@ -140,3 +140,13 @@ a la pregunta: *"¿Deseas compilar Aether OS en un ejecutable .exe?"*
 Pendiente de mayor valor: **Aether Controller** (DS4Windows, GPLv3 — merece sesión propia),
 **Oficina** (Office Protection) y **Plugin System**. Lo demás de la visión ya tiene módulo real
 o base funcional. Sigue vigente la Regla 38: **no compilar el .exe final** hasta autorización expresa.
+
+**2026-11-20 (cierre de la tanda autónoma) — los 18 módulos del Centro son páginas reales:**
+- F3 Overlay por modo (Gaming azul, Trabajo morado, Batería verde) — no solo Gaming ✅
+- F5 Oficina (protección de Office: detectar, proteger macros, modo enfocado) ✅
+- F7 Aether Controller (base): detección nativa de mandos (Windows.Gaming.Input) ✅
+- F8 Plugin System (v1 seguro): manifiestos JSON que abren URL/ruta ✅
+
+**Estado: 0 módulos "próximamente".** Lo único grande que queda es el **motor de mapeo**
+del Aether Controller (integrar DS4Windows GPLv3), que merece su sesión dedicada.
+Regla 38 intacta: no se ha compilado el .exe final.
