@@ -46,9 +46,10 @@ public sealed partial class ControllerPage : Page
         }
         else
         {
+            string sony = MotorControlador.HaySony() ? " Detecté un mando Sony (PS4/PS5)." : "";
             TxtMotor.Text = MotorControlador.Activo
-                ? "Activa: tu mando se refleja como un Xbox 360 virtual."
-                : "Lista para activar. Convierte tu mando en un Xbox 360 virtual.";
+                ? "Activa: tu mando se refleja como un Xbox 360 virtual." + sony
+                : "Lista para activar. Convierte tu mando en un Xbox 360 virtual." + sony;
         }
     }
 

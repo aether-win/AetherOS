@@ -56,7 +56,7 @@
 
                     <TextBlock FontSize="12" TextWrapping="Wrap"
                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                               Text="Funciona con mandos que Windows reconoce como gamepad. Instala HidHide para ocultar el mando original y evitar la entrada doble. Basado en la tecnología de DS4Windows (GPLv3)." />
+                               Text="Soporta mandos Xbox y, de forma experimental, DualShock 4 / DualSense (PS4/PS5). Instala HidHide para ocultar el mando original y evitar la entrada doble. Basado en la tecnología de DS4Windows (GPLv3)." />
                 </StackPanel>
             </Border>
 
