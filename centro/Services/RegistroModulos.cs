@@ -31,12 +31,8 @@ public static class RegistroModulos
         // ── Juegos ───────────────────────────────────────────────────────────
         new("biblioteca", "Biblioteca", "Tus juegos de Steam detectados",
             "Juegos", "", typeof(BibliotecaPage)),
-        new("control", "Control", "Aether Controller: soporte de mandos",
-            "Juegos", "", null,
-            "DualShock 4, DualSense, Switch Pro",
-            "Emulación de mando Xbox 360",
-            "Perfiles por juego",
-            "Basado en DS4Windows (GPLv3, acreditado)"),
+        new("control", "Control", "Aether Controller: mandos conectados",
+            "Juegos", "", typeof(ControllerPage)),
         new("perfiles", "Perfiles", "Modo por aplicación o juego",
             "Juegos", "", typeof(PerfilesPage)),
 
