@@ -30,8 +30,8 @@ public sealed class ServidorFtp : IServidorRemoto
         cliente.Config.DataConnectionType = FtpDataConnectionType.AutoPassive;
         if (cfg.LimiteVelocidadKBps > 0)
         {
-            cliente.Config.DownloadRateLimit = cfg.LimiteVelocidadKBps;
-            cliente.Config.UploadRateLimit = cfg.LimiteVelocidadKBps;
+            cliente.Config.DownloadRateLimit = (uint)cfg.LimiteVelocidadKBps;
+            cliente.Config.UploadRateLimit = (uint)cfg.LimiteVelocidadKBps;
         }
 
         await cliente.Connect(ct);
