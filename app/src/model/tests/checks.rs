@@ -61,41 +61,30 @@ fn package() -> PlaybookSource {
     }
 }
 
-/// Before Get ready's updates have run, waiting updates and a wanted restart
-/// are its next task, not a blocker: no red bar, no "fix the items". Once
-/// the updates have run they block again, and the final checks before the
-/// install count them either way.
+/// Aether: pending Windows updates and a wanted restart only warn. They never
+/// block the install nor the final launch decision — the user can always continue.
 #[test]
-fn updates_wait_for_the_update_step_before_they_block() {
+fn updates_and_pending_restart_never_block() {
     run_model_test(|mut cx| async move {
         let (_temp, _, env) = fixture("checks-pending-updates");
         let model = new_model(&mut cx, env);
         wait_for(&cx, &model, "startup recovery", |m| !m.recovering).await;
         act(&mut cx, &model, |m, _| {
             m.playbook = Some(package());
-            m.preparation = State::Idle;
-            m.checks = checks_with(vec![pending_updates(), pending_restart()]);
-            for (_, result) in &m.checks {
-                let result = result.as_ref().unwrap();
-                let waiting = matches!(result.id, CheckId::PendingUpdates | CheckId::PendingReboot);
-                assert_eq!(m.handled_by_preparation(result), waiting, "{:?}", result.id);
-            }
-            assert!(!m.checks_blocking());
-            assert_eq!(m.ready_status(), Some(ReadyStatus::Updates), "Check and install updates is next");
-            assert_eq!(m.ready_help(), None, "nothing went wrong");
-            assert!(!m.ready_to_continue(), "Continue still waits for the updates");
-            assert!(!m.step_satisfied(Step::Ready));
-
-            // Updated, and Windows still reports them: now they're the user's to fix.
             m.preparation = State::Ready;
-            assert!(!m.handled_by_preparation(&pending_updates()));
-            assert!(m.checks_blocking());
-            assert_eq!(m.ready_status(), Some(ReadyStatus::Blocked));
-            assert_eq!(m.ready_help(), Some(ReadyHelp::Checks));
+            m.checks = checks_with(vec![pending_updates(), pending_restart()]);
+            assert!(!m.checks_blocking(), "updates and a pending restart never block");
+            assert_ne!(m.ready_status(), Some(ReadyStatus::Blocked), "not a blocker");
         });
-        // The last decision before launch never sets them aside.
-        let decision = preflight_decision(&[pending_updates()], &BTreeSet::new(), &all_off(), None, true);
-        assert!(matches!(decision, Err(Preflight::Changed { ref checks, .. }) if checks.len() == 1));
+        // The last decision before launch lets them through too.
+        let decision = preflight_decision(
+            &[pending_updates(), pending_restart()],
+            &BTreeSet::new(),
+            &all_off(),
+            None,
+            true,
+        );
+        assert!(matches!(decision, Ok(())), "warnings don't stop the launch");
     });
 }
 

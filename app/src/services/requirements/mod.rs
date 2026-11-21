@@ -43,8 +43,15 @@ impl CheckId {
 
     /// Whether a failure stops the install, or only warns.
     pub fn blocking(self) -> bool {
-        // Aether: activación, actualizaciones pendientes y otros antivirus solo avisan.
-        !matches!(self, CheckId::Activation | CheckId::PendingUpdates | CheckId::ThirdPartyAntivirus)
+        // Aether: activación, actualizaciones pendientes, reinicio pendiente y otros
+        // antivirus solo avisan; nunca bloquean el acceso a instalar.
+        !matches!(
+            self,
+            CheckId::Activation
+                | CheckId::PendingUpdates
+                | CheckId::PendingReboot
+                | CheckId::ThirdPartyAntivirus
+        )
     }
 
     /// A Settings page that helps resolve the failure, if there is one. The
@@ -288,7 +295,8 @@ pub fn run(id: CheckId, ctx: &CheckContext) -> CheckResult {
 fn reboot_verdict(markers: providers::RebootMarkers) -> (Verdict, CheckDetail) {
     if !markers.blocking.is_empty() {
         (
-            Verdict::Fail,
+            // Aether: solo un aviso; el reinicio pendiente no bloquea la instalación.
+            Verdict::Warn,
             CheckDetail::RebootPending {
                 reasons: markers.blocking.iter().map(|r| (*r).to_owned()).collect(),
             },
@@ -319,7 +327,7 @@ mod tests {
         assert_eq!(detail, CheckDetail::RebootFileRenames { files: files.clone() });
         let (verdict, _) =
             reboot_verdict(providers::RebootMarkers { blocking: vec!["servicing"], file_renames: files });
-        assert_eq!(verdict, Verdict::Fail, "a restart flag still needs a restart");
+        assert_eq!(verdict, Verdict::Warn, "Aether: un reinicio pendiente solo avisa, no bloquea");
         assert_eq!(
             reboot_verdict(providers::RebootMarkers { blocking: vec![], file_renames: vec![] }),
             (Verdict::Pass, CheckDetail::RebootNone)
