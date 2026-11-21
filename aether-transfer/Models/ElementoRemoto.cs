@@ -10,8 +10,13 @@ public sealed class ElementoRemoto
     public long Tamano { get; init; }
     public DateTime Modificado { get; init; }
 
+    /// <summary>Ruta completa (local o remota) para navegar o transferir.</summary>
+    public string Ruta { get; init; } = "";
+
     public string TamanoTexto => EsCarpeta ? "" : FormatearTamano(Tamano);
     public string Tipo => EsCarpeta ? "Carpeta" : ExtensionTipo(Nombre);
+    public string Glyph => EsCarpeta ? "" : "";
+    public string FechaTexto => Modificado == default ? "" : Modificado.ToString("dd/MM/yyyy HH:mm");
 
     private static string FormatearTamano(long bytes)
     {
