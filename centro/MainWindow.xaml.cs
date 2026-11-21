@@ -1,5 +1,7 @@
 using System;
+using CentroAether.Models;
 using CentroAether.Pages;
+using CentroAether.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -13,16 +15,54 @@ public sealed partial class MainWindow : Window
         this.InitializeComponent();
         this.Title = "Centro Aether";
         this.ExtendsContentIntoTitleBar = false;
-        if (this.AppWindow?.Presenter is Microsoft.UI.Windowing.OverlappedPresenter p)
+        if (this.AppWindow?.Presenter is Microsoft.UI.Windowing.OverlappedPresenter)
         {
-            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1120, 760));
+            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1160, 780));
+        }
+
+        ConstruirMenu();
+    }
+
+    /// <summary>
+    /// Construye el menú lateral a partir del registro central de módulos,
+    /// insertando un encabezado cada vez que cambia la categoría.
+    /// </summary>
+    private void ConstruirMenu()
+    {
+        string? categoriaActual = null;
+
+        foreach (Modulo m in RegistroModulos.Todos)
+        {
+            if (!string.IsNullOrEmpty(m.Categoria) && m.Categoria != categoriaActual)
+            {
+                categoriaActual = m.Categoria;
+                Nav.MenuItems.Add(new NavigationViewItemHeader { Content = categoriaActual });
+            }
+
+            var item = new NavigationViewItem
+            {
+                Content = m.Nombre,
+                Tag = m.Id,
+                Icon = new FontIcon { Glyph = m.Glyph },
+            };
+
+            if (!m.Disponible)
+            {
+                ToolTipService.SetToolTip(item, "Próximamente");
+                item.Opacity = 0.75;
+            }
+
+            Nav.MenuItems.Add(item);
         }
     }
 
     private void Nav_Loaded(object sender, RoutedEventArgs e)
     {
-        Nav.SelectedItem = Nav.MenuItems[0];
-        Navegar("inicio");
+        if (Nav.MenuItems.Count > 0)
+        {
+            Nav.SelectedItem = Nav.MenuItems[0];
+            Navegar("inicio");
+        }
     }
 
     private void Nav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -33,25 +73,22 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private void Navegar(string tag)
+    private void Navegar(string id)
     {
-        Type pagina = tag switch
+        Modulo? m = RegistroModulos.Buscar(id);
+        if (m is null)
         {
-            "inicio" => typeof(InicioPage),
-            "modos" => typeof(ModosPage),
-            "red" => typeof(RedPage),
-            "actualizar" => typeof(ActualizarPage),
-            "limpieza" => typeof(LimpiezaPage),
-            "bateria" => typeof(BateriaPage),
-            "respaldo" => typeof(RespaldoPage),
-            "wind" => typeof(WindPage),
-            "salud" => typeof(SaludPage),
-            _ => typeof(PlaceholderPage),
-        };
+            return;
+        }
 
-        if (ContentFrame.CurrentSourcePageType != pagina || pagina == typeof(PlaceholderPage))
+        Type pagina = m.Pagina ?? typeof(ProximamentePage);
+        object parametro = m.Pagina is null ? m : id;
+
+        // Las páginas "Próximamente" comparten tipo, así que siempre navegamos
+        // para que el contenido del módulo seleccionado se actualice.
+        if (ContentFrame.CurrentSourcePageType != pagina || pagina == typeof(ProximamentePage))
         {
-            ContentFrame.Navigate(pagina, tag, new DrillInNavigationTransitionInfo());
+            ContentFrame.Navigate(pagina, parametro, new DrillInNavigationTransitionInfo());
         }
     }
 }

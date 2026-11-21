@@ -15,39 +15,10 @@
             PaneDisplayMode="Left"
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="False"
-            OpenPaneLength="220"
+            OpenPaneLength="240"
+            PaneTitle="Aether"
             SelectionChanged="Nav_SelectionChanged"
             Loaded="Nav_Loaded">
-
-            <muxc:NavigationView.MenuItems>
-                <muxc:NavigationViewItem Content="Aether" Tag="inicio">
-                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE80F;" /></muxc:NavigationViewItem.Icon>
-                </muxc:NavigationViewItem>
-                <muxc:NavigationViewItem Content="Modos" Tag="modos">
-                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE7FC;" /></muxc:NavigationViewItem.Icon>
-                </muxc:NavigationViewItem>
-                <muxc:NavigationViewItem Content="Red" Tag="red">
-                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE839;" /></muxc:NavigationViewItem.Icon>
-                </muxc:NavigationViewItem>
-                <muxc:NavigationViewItem Content="Actualizar" Tag="actualizar">
-                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE895;" /></muxc:NavigationViewItem.Icon>
-                </muxc:NavigationViewItem>
-                <muxc:NavigationViewItem Content="Limpieza" Tag="limpieza">
-                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE75C;" /></muxc:NavigationViewItem.Icon>
-                </muxc:NavigationViewItem>
-                <muxc:NavigationViewItem Content="Batería" Tag="bateria">
-                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE83E;" /></muxc:NavigationViewItem.Icon>
-                </muxc:NavigationViewItem>
-                <muxc:NavigationViewItem Content="Respaldo" Tag="respaldo">
-                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE8C8;" /></muxc:NavigationViewItem.Icon>
-                </muxc:NavigationViewItem>
-                <muxc:NavigationViewItem Content="Wind-Aether" Tag="wind">
-                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE790;" /></muxc:NavigationViewItem.Icon>
-                </muxc:NavigationViewItem>
-                <muxc:NavigationViewItem Content="Salud" Tag="salud">
-                    <muxc:NavigationViewItem.Icon><FontIcon Glyph="&#xE95E;" /></muxc:NavigationViewItem.Icon>
-                </muxc:NavigationViewItem>
-            </muxc:NavigationView.MenuItems>
 
             <Frame x:Name="ContentFrame" Padding="0" />
         </muxc:NavigationView>
