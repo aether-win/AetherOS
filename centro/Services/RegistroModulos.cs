@@ -29,11 +29,8 @@ public static class RegistroModulos
             "Rendimiento", "", typeof(LimpiezaPage)),
 
         // ── Juegos ───────────────────────────────────────────────────────────
-        new("biblioteca", "Biblioteca", "Tus juegos detectados en un solo lugar",
-            "Juegos", "", null,
-            "Detección de Steam, Epic y Xbox",
-            "Portadas y lanzamiento rápido",
-            "Aplica el modo Gaming al iniciar un juego"),
+        new("biblioteca", "Biblioteca", "Tus juegos de Steam detectados",
+            "Juegos", "", typeof(BibliotecaPage)),
         new("control", "Control", "Aether Controller: soporte de mandos",
             "Juegos", "", null,
             "DualShock 4, DualSense, Switch Pro",
@@ -55,10 +52,7 @@ public static class RegistroModulos
 
         // ── Software ─────────────────────────────────────────────────────────
         new("software", "Software", "Catálogo de aplicaciones (winget)",
-            "Software", "", null,
-            "Instala y actualiza apps con un clic",
-            "Catálogo curado y confiable",
-            "Estado de instalación en vivo"),
+            "Software", "", typeof(SoftwarePage)),
         new("runtimes", "Runtimes", "VC++, DirectX, .NET, WebView2 y Python",
             "Software", "", typeof(RuntimesPage)),
 
