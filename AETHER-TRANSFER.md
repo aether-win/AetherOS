@@ -21,10 +21,10 @@ Leyenda: ✅ hecho · 🟡 parcial · ⬜ pendiente
 | 2 | Arquitectura (proyecto modular) | ✅ esqueleto creado |
 | 3 | Identidad gráfica e icono | ✅ icono integrado + recursos |
 | 4 | Interfaz fiel al mockup | ✅ shell completo (datos de ejemplo), compila en CI |
-| 5 | Motor de protocolos (FluentFTP/SSH.NET) | ⬜ |
-| 6 | Administrador de sitios (DPAPI) | ⬜ |
-| 7 | Explorador dual (operaciones reales, local y remoto) | ⬜ |
-| 8 | Motor de transferencias (cola, progreso, pausar/reanudar) | ⬜ |
+| 5 | Motor de protocolos (FluentFTP/SSH.NET) | ✅ FTP/FTPS/SFTP: conectar, listar, subir, descargar, crear/eliminar/renombrar |
+| 6 | Administrador de sitios (DPAPI) | ⬜ (ahora solo conexión rápida) |
+| 7 | Explorador dual (operaciones reales, local y remoto) | 🟡 listar/navegar/transferir ✅; menús contextuales (renombrar/eliminar/crear) por cablear |
+| 8 | Motor de transferencias (cola, progreso, pausar/reanudar) | 🟡 transferencia directa ✅; cola/progreso/pausa pendiente |
 | 9 | Sincronización | ⬜ |
 | 10 | Seguridad (TLS/SSH, credenciales) | ⬜ |
 | 11 | Configuración y herramientas | ⬜ |
@@ -36,7 +36,16 @@ Leyenda: ✅ hecho · 🟡 parcial · ⬜ pendiente
 PS4 (FTP por IP/puerto), PS5 si tiene servidor, Android (FTP/SFTP), Linux, Windows, NAS,
 routers, hosting. La app explica errores de conexión y qué configuración falta.
 
+## Bitácora
+**2026-11-21 — núcleo funcional (compila en verde en CI):**
+- Fases 1-4: proyecto, icono, interfaz fiel al mockup ✅
+- Fase 5: motor de protocolos FTP/FTPS/SFTP (FluentFTP + SSH.NET) ✅
+- Fases 5-7: conexión rápida real, exploradores local y remoto con navegación,
+  subir/descargar por botones o doble clic, registro de actividad y barra de estado ✅
+
 ## Realidad honesta
-La interfaz ya está y compila; **lo que sigue es la lógica real** (conectar, listar,
-transferir), que es el grueso del trabajo y necesita **pruebas con servidores de verdad**.
-El spec es claro: no declarar que algo funciona sin probarlo.
+El código ya conecta y transfiere, pero **compila ≠ probado**: falta ejecutarlo contra
+**servidores reales** (tu PS4, un FTP de prueba, un SFTP). El spec es claro: no declarar
+que algo funciona sin probarlo. Pendiente de mayor valor: administrador de sitios con
+credenciales guardadas (DPAPI), cola de transferencias con progreso/pausa, menús contextuales,
+y sincronización.
