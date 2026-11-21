@@ -34,10 +34,10 @@ jobs:
       - name: Publish (unpackaged, self-contained completo)
         working-directory: aether-transfer
         run: >
-          dotnet publish AetherTransfer.csproj
-          -c Release -r win-x64 --self-contained true
-          /p:Platform=x64 /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true
-          -o publish
+          msbuild AetherTransfer.csproj /t:Publish
+          /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64
+          /p:SelfContained=true /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true
+          /p:PublishDir=publish\
 
       - name: Upload Aether Transfer
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
