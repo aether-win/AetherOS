@@ -22,9 +22,10 @@ Leyenda: ✅ hecho · 🟡 parcial · ⬜ pendiente
 | 3 | Identidad gráfica e icono | ✅ icono integrado + recursos |
 | 4 | Interfaz fiel al mockup | ✅ shell completo (datos de ejemplo), compila en CI |
 | 5 | Motor de protocolos (FluentFTP/SSH.NET) | ✅ FTP/FTPS/SFTP: conectar, listar, subir, descargar, crear/eliminar/renombrar |
-| 6 | Administrador de sitios (DPAPI) | ⬜ (ahora solo conexión rápida) |
-| 7 | Explorador dual (operaciones reales, local y remoto) | 🟡 listar/navegar/transferir ✅; menús contextuales (renombrar/eliminar/crear) por cablear |
-| 8 | Motor de transferencias (cola, progreso, pausar/reanudar) | 🟡 transferencia directa ✅; cola/progreso/pausa pendiente |
+| 6 | Administrador de sitios (DPAPI) | ✅ sitios guardados, credenciales cifradas, conectar/editar/eliminar |
+| 7 | Explorador dual (operaciones reales, local y remoto) | ✅ listar/navegar/transferir + menús contextuales (crear/renombrar/eliminar) |
+| 8 | Motor de transferencias (cola, progreso, pausar/reanudar) | ✅ cola secuencial, progreso/velocidad, pausar/reanudar (Resume), cancelar |
+| 9 | Sincronización | ✅ comparar local/remoto, subir o descargar diferencias, sin borrado automático |
 | 9 | Sincronización | ⬜ |
 | 10 | Seguridad (TLS/SSH, credenciales) | ⬜ |
 | 11 | Configuración y herramientas | ⬜ |
@@ -42,6 +43,13 @@ routers, hosting. La app explica errores de conexión y qué configuración falt
 - Fase 5: motor de protocolos FTP/FTPS/SFTP (FluentFTP + SSH.NET) ✅
 - Fases 5-7: conexión rápida real, exploradores local y remoto con navegación,
   subir/descargar por botones o doble clic, registro de actividad y barra de estado ✅
+- Fase 6/10: administrador de sitios con credenciales cifradas (DPAPI) ✅
+- Fase 7: menús contextuales (crear carpeta / renombrar / eliminar) local y remoto ✅
+- Fase 8: cola de transferencias con progreso, velocidad, pausar/reanudar y cancelar ✅
+- Fase 9: sincronización local↔remoto (comparar y copiar diferencias, sin borrado automático) ✅
+
+**Núcleo funcional completo.** Pendiente: Fase 11 (configuración + herramientas extra:
+editor remoto, visor, hash…) y Fase 13 (pruebas con servidores reales).
 
 ## Realidad honesta
 El código ya conecta y transfiere, pero **compila ≠ probado**: falta ejecutarlo contra
