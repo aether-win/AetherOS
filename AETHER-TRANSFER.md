@@ -48,8 +48,12 @@ routers, hosting. La app explica errores de conexión y qué configuración falt
 - Fase 8: cola de transferencias con progreso, velocidad, pausar/reanudar y cancelar ✅
 - Fase 9: sincronización local↔remoto (comparar y copiar diferencias, sin borrado automático) ✅
 
-**Núcleo funcional completo.** Pendiente: Fase 11 (configuración + herramientas extra:
-editor remoto, visor, hash…) y Fase 13 (pruebas con servidores reales).
+- Fase 11: configuración (límite de velocidad, tiempo de espera, confirmar eliminaciones) ✅
+
+**Aplicación funcionalmente completa** (Fases 1-11). Pendiente opcional: herramientas extra
+de la Fase 11 (editor de texto remoto, visor, cálculo de hash, compresión) y, lo importante,
+**Fase 13: pruebas con servidores reales** (tu PS4, un FTP/SFTP de prueba) — eso no puede
+hacerse en CI; necesita tu hardware.
 
 ## Realidad honesta
 El código ya conecta y transfiere, pero **compila ≠ probado**: falta ejecutarlo contra
