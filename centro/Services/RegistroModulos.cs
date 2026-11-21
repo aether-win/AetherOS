@@ -77,11 +77,8 @@ public static class RegistroModulos
             "Cargar módulos de terceros",
             "API segura y con permisos",
             "Activar y desactivar sin reiniciar"),
-        new("compatibilidad", "Compatibilidad", "Base de datos de compatibilidad",
-            "Avanzado", "", null,
-            "Qué apps funcionan tras los ajustes",
-            "Advertencias conocidas",
-            "Recomendaciones por equipo"),
+        new("compatibilidad", "Compatibilidad", "Cómo se comportan las apps con Aether",
+            "Avanzado", "", typeof(CompatibilidadPage)),
     };
 
     public static Modulo? Buscar(string id) => Todos.FirstOrDefault(m => m.Id == id);
