@@ -37,11 +37,8 @@ public static class RegistroModulos
             "Emulación de mando Xbox 360",
             "Perfiles por juego",
             "Basado en DS4Windows (GPLv3, acreditado)"),
-        new("perfiles", "Perfiles", "Ajustes automáticos por aplicación o juego",
-            "Juegos", "", null,
-            "Perfil que se aplica solo al abrir una app",
-            "Modo y ajustes guardados por juego",
-            "Vuelve al estado normal al cerrar"),
+        new("perfiles", "Perfiles", "Modo por aplicación o juego",
+            "Juegos", "", typeof(PerfilesPage)),
 
         // ── Trabajo ──────────────────────────────────────────────────────────
         new("oficina", "Oficina", "Protección de Office y modo trabajo",

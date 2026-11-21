@@ -1,0 +1,109 @@
+using System.Collections.Generic;
+using System.Linq;
+using CentroAether.Services;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+
+namespace CentroAether.Pages;
+
+/// <summary>
+/// Aether Profiles: CRUD de perfiles que asocian una app a un modo. Se guardan en
+/// ProgramData\Aether\perfiles.json. La aplicación automática llega con Background Intelligence.
+/// </summary>
+public sealed partial class PerfilesPage : Page
+{
+    private List<PerfilApp> _perfiles = new();
+
+    public PerfilesPage()
+    {
+        this.InitializeComponent();
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+        _perfiles = PerfilesServicio.Cargar();
+        Pintar();
+    }
+
+    private void Pintar()
+    {
+        Contenedor.Children.Clear();
+        TxtVacio.Visibility = _perfiles.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        foreach (PerfilApp p in _perfiles)
+        {
+            Contenedor.Children.Add(CrearTarjeta(p));
+        }
+    }
+
+    private Border CrearTarjeta(PerfilApp p)
+    {
+        var grid = new Grid();
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+        var textos = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
+        textos.Children.Add(new TextBlock { Text = p.App, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        textos.Children.Add(new TextBlock
+        {
+            Text = $"Modo {p.Modo}",
+            FontSize = 13,
+            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+        });
+        Grid.SetColumn(textos, 0);
+        grid.Children.Add(textos);
+
+        var btn = new Button { Content = "Quitar", VerticalAlignment = VerticalAlignment.Center };
+        btn.Click += (_, _) =>
+        {
+            _perfiles.Remove(p);
+            PerfilesServicio.Guardar(_perfiles);
+            Pintar();
+        };
+        Grid.SetColumn(btn, 1);
+        grid.Children.Add(btn);
+
+        return new Border
+        {
+            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
+            BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(8),
+            Padding = new Thickness(16, 12, 16, 12),
+            Child = grid,
+        };
+    }
+
+    private void Agregar_Click(object sender, RoutedEventArgs e)
+    {
+        string app = TxtApp.Text.Trim();
+        if (string.IsNullOrEmpty(app))
+        {
+            Estado.Severity = InfoBarSeverity.Warning;
+            Estado.Message = "Escribe el nombre de la app o juego.";
+            Estado.IsOpen = true;
+            return;
+        }
+
+        string modo = (CmbModo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Gaming";
+
+        if (_perfiles.Any(x => x.App.Equals(app, System.StringComparison.OrdinalIgnoreCase)))
+        {
+            Estado.Severity = InfoBarSeverity.Warning;
+            Estado.Message = $"Ya existe un perfil para «{app}».";
+            Estado.IsOpen = true;
+            return;
+        }
+
+        _perfiles.Add(new PerfilApp { App = app, Modo = modo });
+        bool ok = PerfilesServicio.Guardar(_perfiles);
+        TxtApp.Text = "";
+        Pintar();
+
+        Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Error;
+        Estado.Message = ok ? $"Perfil para «{app}» guardado." : "No se pudo guardar el perfil.";
+        Estado.IsOpen = true;
+    }
+}
