@@ -77,10 +77,8 @@ public static class InteligenciaFondo
                 {
                     _perfilActivo = p.App;
                     _ = Aether.CambiarModo(p.Modo);
-                    if (p.Modo.Equals("Gaming", StringComparison.OrdinalIgnoreCase))
-                    {
-                        VentanaOverlayGaming.Mostrar(p.App);
-                    }
+                    // El overlay del modo correspondiente (Gaming, Trabajo o Batería).
+                    VentanaOverlayModo.Mostrar(p.Modo, p.App);
                 }
                 return;   // un perfil activo a la vez
             }

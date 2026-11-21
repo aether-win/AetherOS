@@ -14,6 +14,8 @@ public sealed partial class ModosPage : Page
         this.InitializeComponent();
     }
 
+    private string _modoActual = "Gaming";
+
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
@@ -30,6 +32,7 @@ public sealed partial class ModosPage : Page
         }
 
         string modo = await Aether.ModoActual();
+        _modoActual = modo;
         TxtModoActual.Text = $"Modo actual: {modo}";
         TxtModoDesc.Text = modo switch
         {
@@ -65,14 +68,12 @@ public sealed partial class ModosPage : Page
         {
             Estado.Severity = InfoBarSeverity.Success;
             Estado.Message = $"Modo {modo} activo.";
-            if (modo == "Gaming")
-            {
-                VentanaOverlayGaming.Mostrar("Máximo rendimiento activado");
-            }
+            // Cada modo muestra su propio overlay (Gaming, Trabajo o Batería).
+            VentanaOverlayModo.Mostrar(modo);
         }
         Estado.IsOpen = true;
     }
 
     private void VistaPreviaOverlay_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
-        => VentanaOverlayGaming.Mostrar("Vista previa del overlay");
+        => VentanaOverlayModo.Mostrar(_modoActual);
 }

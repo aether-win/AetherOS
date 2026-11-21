@@ -95,7 +95,7 @@ public sealed partial class BibliotecaPage : Page
         if (ModoAlJugar.IsOn)
         {
             await Aether.CambiarModo("Gaming");
-            VentanaOverlayGaming.Mostrar(j.Nombre);
+            VentanaOverlayModo.Mostrar("Gaming", j.Nombre);
         }
 
         try
