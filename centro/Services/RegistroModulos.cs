@@ -66,10 +66,7 @@ public static class RegistroModulos
 
         // ── Avanzado ─────────────────────────────────────────────────────────
         new("plugins", "Plugins", "Sistema de extensiones de Aether",
-            "Avanzado", "", null,
-            "Cargar módulos de terceros",
-            "API segura y con permisos",
-            "Activar y desactivar sin reiniciar"),
+            "Avanzado", "", typeof(PluginsPage)),
         new("compatibilidad", "Compatibilidad", "Cómo se comportan las apps con Aether",
             "Avanzado", "", typeof(CompatibilidadPage)),
     };
