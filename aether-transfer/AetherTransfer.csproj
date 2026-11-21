@@ -18,6 +18,8 @@
     <AssemblyName>AetherTransfer</AssemblyName>
     <ApplicationIcon>Assets\aether-transfer.ico</ApplicationIcon>
     <DefaultLanguage>es</DefaultLanguage>
+    <!-- Diagnóstico: usamos nuestro Program.Main (con captura de errores) -->
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
