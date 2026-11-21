@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CentroAether.Pages.MonitorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer>
+        <StackPanel Padding="32,28,32,28" Spacing="20" MaxWidth="720" HorizontalAlignment="Left">
+
+            <StackPanel Spacing="2">
+                <TextBlock Text="Monitor" Style="{StaticResource TitleTextBlockStyle}" />
+                <TextBlock Text="Uso del equipo en tiempo real"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <!-- CPU -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="20,16,20,16">
+                <StackPanel Spacing="10">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xE950;" FontSize="18"
+                                      Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                            <TextBlock Text="Procesador (CPU)" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        </StackPanel>
+                        <TextBlock x:Name="TxtCpu" Text="—" HorizontalAlignment="Right"
+                                   Style="{StaticResource SubtitleTextBlockStyle}" />
+                    </Grid>
+                    <ProgressBar x:Name="BarraCpu" Minimum="0" Maximum="100" Value="0" />
+                    <TextBlock x:Name="TxtCpuDetalle" Text=""
+                               FontSize="12" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <!-- RAM -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="20,16,20,16">
+                <StackPanel Spacing="10">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xEEA0;" FontSize="18"
+                                      Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                            <TextBlock Text="Memoria (RAM)" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        </StackPanel>
+                        <TextBlock x:Name="TxtRam" Text="—" HorizontalAlignment="Right"
+                                   Style="{StaticResource SubtitleTextBlockStyle}" />
+                    </Grid>
+                    <ProgressBar x:Name="BarraRam" Minimum="0" Maximum="100" Value="0" />
+                    <TextBlock x:Name="TxtRamDetalle" Text=""
+                               FontSize="12" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Resumen -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="20,16,20,16">
+                <Grid ColumnSpacing="24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Encendido desde hace" FontSize="12"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                        <TextBlock x:Name="TxtUptime" Text="—" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="2">
+                        <TextBlock Text="Procesos activos" FontSize="12"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                        <TextBlock x:Name="TxtProcesos" Text="—" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <TextBlock Text="La temperatura y el uso de GPU se añadirán en una próxima fase."
+                       FontSize="12" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -23,12 +23,8 @@ public static class RegistroModulos
         // ── Rendimiento ──────────────────────────────────────────────────────
         new("modos", "Modos", "Motor de rendimiento: Gaming, Trabajo y Batería",
             "Rendimiento", "", typeof(ModosPage)),
-        new("monitor", "Monitor", "CPU, GPU, RAM y red en tiempo real",
-            "Rendimiento", "", null,
-            "Uso de CPU, GPU, RAM y disco en vivo",
-            "Temperaturas y velocidades",
-            "Procesos que más consumen",
-            "Gráficas del último minuto"),
+        new("monitor", "Monitor", "CPU, RAM y uso del equipo en tiempo real",
+            "Rendimiento", "", typeof(MonitorPage)),
         new("boost", "Smart Boost", "Limpieza y liberación de recursos",
             "Rendimiento", "", typeof(LimpiezaPage)),
 
