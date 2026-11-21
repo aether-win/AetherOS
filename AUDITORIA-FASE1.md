@@ -43,18 +43,18 @@ Leyenda: ✅ hecho · 🟡 parcial (base existe) · ⬜ no empezado · ⛔ desca
 |---|---|---|---|
 | 1 | Aether Toolbox (Centro de Control) | 🟡 | `centro/` WinUI 3 (9 páginas) |
 | 2 | System Performance Engine | 🟡 | `Aether.Centro.ps1` (planes de energía) + Centro·Modos |
-| 3 | Gaming Mode (+ overlay 470×260) | 🟡 | Centro·Modos (modo sí, overlay no) |
+| 3 | Gaming Mode (+ overlay 470×260) | 🟡 | Centro·Modos + overlay nativo 470×260 ✅ |
 | 4 | Work Mode | 🟡 | Centro·Modos |
 | 5 | Office Protection | 🟡 | tweaks `aether-office*`, Wind-Aether excluye apps Office |
 | 6 | Aether Controller (DS4Windows) | ⬜ | fuente disponible (GPLv3 OK) |
-| 7 | Game Library | ⬜ | — |
+| 7 | Game Library | 🟡 | Centro·Biblioteca: detección de Steam + lanzar ✅ |
 | 8 | Aether Profiles | ⬜ | — |
-| 9 | Software Center | 🟡 | `Install-AetherApps.ps1` (winget) |
-| 10 | Runtime Manager (VC++/DX/.NET/WebView2/Python) | ⬜ | idea discutida (paquete offline con binarios oficiales MS) |
+| 9 | Software Center | ✅ | Centro·Software: catálogo winget + instalar/actualizar ✅ |
+| 10 | Runtime Manager (VC++/DX/.NET/WebView2/Python) | ✅ | Centro·Runtimes: detección nativa + instalar oficial ✅ |
 | 11 | Network Engine (solo diagnóstico) | 🟡 | Centro·Red (`RepararRed`, `HacerRedPrivada`) |
 | 12 | Audio Engine | ⛔/⬜ | Daniel pidió **no** control de volumen |
 | 13 | Camera Engine | ⛔ | Daniel pidió **no** agregar cámara |
-| 14 | Live Monitor | ⬜ | — |
+| 14 | Live Monitor | ✅ | Centro·Monitor: CPU/RAM/uptime/procesos + modo activo ✅ |
 | 15 | Smart Boost | 🟡 | Centro·Limpieza |
 | 16 | Plugin System | ⬜ | — |
 | 17 | Update Engine | 🟡 | Centro·Actualizar (pausa Windows Update) |
@@ -118,3 +118,20 @@ a la pregunta: *"¿Deseas compilar Aether OS en un ejecutable .exe?"*
   `GamingLibrary.exe` / `Bin.zip` aportado — se descarta a favor de redistribuibles
   oficiales de Microsoft).
 - No modificar configuración personal sin autorización.
+
+---
+
+## 6. Bitácora de avance
+
+**2026-11-20 (noche) — Fases 1-6 en marcha, todo validado en CI (centro.yml verde):**
+- F1 Auditoría completa ✅
+- F2 Toolbox como shell de módulos (registro central + navegación por categorías) ✅
+- F3 Monitor en vivo (CPU/RAM/uptime/procesos + modo activo) ✅
+- F3 Overlay de Gaming 470×260 (ventana nativa, fundido, auto-cierre) ✅
+- F5 Runtime Manager (detección nativa + instalación oficial winget) ✅
+- F6 Software Center (catálogo winget + actualizar todo) ✅
+- F6 Biblioteca de juegos (detección de Steam + lanzar, opción Modo Gaming al jugar) ✅
+
+Pendiente de mayor valor: Aether Controller (DS4Windows, GPLv3), Aether Profiles,
+Oficina (Office Protection), Plugin System, Compatibility DB, Background Intelligence.
+Sigue vigente la Regla 38: **no compilar el .exe final** hasta autorización expresa.
