@@ -41,6 +41,7 @@ public static class MotorControlador
     private static IDualShock4Controller? _ds4;
     private static CancellationTokenSource? _cts;
     private static Task? _bucle;
+    private static LectorDs4Hid? _ds4Lector;
 
     public static bool Activo { get; private set; }
 
@@ -136,6 +137,18 @@ public static class MotorControlador
                 _x360.Connect();
             }
 
+            // Abrir el DualShock 4 por HID (si está conectado); si no, usaremos un gamepad.
+            var lector = new LectorDs4Hid();
+            if (lector.Abrir())
+            {
+                _ds4Lector = lector;
+            }
+            else
+            {
+                lector.Dispose();
+                _ds4Lector = null;
+            }
+
             _cts = new CancellationTokenSource();
             _bucle = Task.Run(() => Bucle(_cts.Token));
             Activo = true;
@@ -156,6 +169,8 @@ public static class MotorControlador
         try { _x360?.Disconnect(); } catch { /* ignore */ }
         try { _ds4?.Disconnect(); } catch { /* ignore */ }
         try { _client?.Dispose(); } catch { /* ignore */ }
+        try { _ds4Lector?.Cerrar(); } catch { /* ignore */ }
+        _ds4Lector = null;
         _bucle = null;
         _cts?.Dispose();
         _cts = null;
@@ -198,11 +213,10 @@ public static class MotorControlador
 
     private static EstadoMando? LeerEntrada()
     {
-        RawGameController? sony = RawGameController.RawGameControllers
-            .FirstOrDefault(c => c.HardwareVendorId == VendorSony);
-        if (sony is not null)
+        // DualShock 4 por HID (fiable) si está abierto; si no, un gamepad estándar (Xbox).
+        if (_ds4Lector is { Abierto: true })
         {
-            return LeerDs4(sony);
+            return _ds4Lector.Leer();
         }
 
         Gamepad? gp = Gamepad.Gamepads.FirstOrDefault();
@@ -237,64 +251,6 @@ public static class MotorControlador
         };
     }
 
-    // Índices del DualShock 4 vía RawGameController (afinables si tu mando difiere).
-    private const int Ds4Square = 0, Ds4Cross = 1, Ds4Circle = 2, Ds4Triangle = 3;
-    private const int Ds4L1 = 4, Ds4R1 = 5, Ds4L2 = 6, Ds4R2 = 7;
-    private const int Ds4Share = 8, Ds4Options = 9, Ds4L3 = 10, Ds4R3 = 11, Ds4Ps = 12;
-    private const int AxLX = 0, AxLY = 1, AxRX = 2, AxRY = 5;
-
-    private static bool[] _botones = Array.Empty<bool>();
-    private static GameControllerSwitchPosition[] _switches = Array.Empty<GameControllerSwitchPosition>();
-    private static double[] _ejes = Array.Empty<double>();
-
-    private static EstadoMando LeerDs4(RawGameController rc)
-    {
-        if (_botones.Length != rc.ButtonCount)
-        {
-            _botones = new bool[rc.ButtonCount];
-        }
-        if (_switches.Length != rc.SwitchCount)
-        {
-            _switches = new GameControllerSwitchPosition[rc.SwitchCount];
-        }
-        if (_ejes.Length != rc.AxisCount)
-        {
-            _ejes = new double[rc.AxisCount];
-        }
-
-        rc.GetCurrentReading(_botones, _switches, _ejes);
-
-        bool Bt(int i) => i >= 0 && i < _botones.Length && _botones[i];
-        double Ax(int i) => i >= 0 && i < _ejes.Length ? _ejes[i] : 0.5;
-        double Centro(double v) => (Math.Clamp(v, 0.0, 1.0) * 2.0) - 1.0;
-
-        GameControllerSwitchPosition sw = _switches.Length > 0 ? _switches[0] : GameControllerSwitchPosition.Center;
-
-        return new EstadoMando
-        {
-            A = Bt(Ds4Cross),
-            B = Bt(Ds4Circle),
-            X = Bt(Ds4Square),
-            Y = Bt(Ds4Triangle),
-            L1 = Bt(Ds4L1),
-            R1 = Bt(Ds4R1),
-            L3 = Bt(Ds4L3),
-            R3 = Bt(Ds4R3),
-            Atras = Bt(Ds4Share),
-            Inicio = Bt(Ds4Options),
-            Guia = Bt(Ds4Ps),
-            Up = sw is GameControllerSwitchPosition.Up or GameControllerSwitchPosition.UpLeft or GameControllerSwitchPosition.UpRight,
-            Down = sw is GameControllerSwitchPosition.Down or GameControllerSwitchPosition.DownLeft or GameControllerSwitchPosition.DownRight,
-            Left = sw is GameControllerSwitchPosition.Left or GameControllerSwitchPosition.UpLeft or GameControllerSwitchPosition.DownLeft,
-            Right = sw is GameControllerSwitchPosition.Right or GameControllerSwitchPosition.UpRight or GameControllerSwitchPosition.DownRight,
-            LX = Centro(Ax(AxLX)),
-            LY = -Centro(Ax(AxLY)),   // RawGameController: Y invertido
-            RX = Centro(Ax(AxRX)),
-            RY = -Centro(Ax(AxRY)),
-            LT = Bt(Ds4L2) ? 1.0 : 0.0,
-            RT = Bt(Ds4R2) ? 1.0 : 0.0,
-        };
-    }
 
     // ── Salida: Xbox 360 ─────────────────────────────────────────────────────
 
