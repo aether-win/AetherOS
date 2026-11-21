@@ -1,19 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ContentDialog
-    x:Class="AetherTransfer.Views.DialogoConfig"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Configuración"
-    PrimaryButtonText="Guardar"
-    CloseButtonText="Cancelar"
-    DefaultButton="Primary"
-    RequestedTheme="Dark">
+<Window x:Class="AetherTransfer.Views.DialogoConfig"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Preferencias" Height="300" Width="440"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        WindowStyle="ToolWindow" Background="#0A1524"
+        FontFamily="Segoe UI" FontSize="13">
+    <StackPanel Margin="18">
+        <TextBlock Text="Preferencias de Aether Transfer" Foreground="#22D3EE" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,14" />
 
-    <StackPanel Width="440" Spacing="16">
-        <TextBox x:Name="CLimite" Header="Límite de velocidad en KB/s (0 = sin límite)" />
-        <TextBox x:Name="CTimeout" Header="Tiempo de espera de conexión (segundos)" />
-        <ToggleSwitch x:Name="CConfirmar" Header="Confirmar antes de eliminar" OnContent="Sí" OffContent="No" />
-        <TextBlock Text="Las transferencias se procesan de una en una por conexión. El límite de velocidad se aplica a FTP/FTPS."
-                   FontSize="12" Foreground="#9DB2CC" TextWrapping="Wrap" />
+        <TextBlock Text="Límite de velocidad (KB/s, 0 = sin límite)" Foreground="#9DB2CC" Margin="0,0,0,2" />
+        <TextBox x:Name="CLimite" Text="0" Margin="0,0,0,12" />
+
+        <TextBlock Text="Tiempo de espera de conexión (segundos)" Foreground="#9DB2CC" Margin="0,0,0,2" />
+        <TextBox x:Name="CTimeout" Text="15" Margin="0,0,0,12" />
+
+        <CheckBox x:Name="CConfirmar" Content="Pedir confirmación antes de eliminar" Foreground="#E6EEF8" Margin="0,4,0,0" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+            <Button Content="Guardar" Click="Guardar_Click" Background="#1E6BFF" Width="110" Margin="0,0,8,0" />
+            <Button Content="Cancelar" Click="Cancelar_Click" Background="#12283F" Width="100" />
+        </StackPanel>
     </StackPanel>
-</ContentDialog>
+</Window>

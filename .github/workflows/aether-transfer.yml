@@ -1,7 +1,8 @@
-name: Aether Transfer (WinUI 3)
+name: Aether Transfer (WPF)
 
-# Compila el cliente FTP/FTPS/SFTP Aether Transfer (WinUI 3, unpackaged, self-contained)
-# como validación de compilación. No genera el ejecutable final de distribución.
+# Compila el cliente FTP/FTPS/SFTP Aether Transfer (WPF, .NET 8, self-contained,
+# un solo .exe) como validacion de compilacion. No es el ejecutable final de
+# distribucion gestionado por release.yml.
 on:
   workflow_dispatch:
   push:
@@ -24,20 +25,15 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2.0.0
-
-      - name: Restore
-        working-directory: aether-transfer
-        run: msbuild AetherTransfer.csproj /t:Restore /p:Configuration=Debug /p:Platform=x64 /p:RuntimeIdentifier=win-x64
-
-      - name: Publish (DEBUG temporal para obtener numero de linea del XAML)
+      - name: Publish (WPF, self-contained, un solo .exe)
         working-directory: aether-transfer
         run: >
-          msbuild AetherTransfer.csproj /t:Publish
-          /p:Configuration=Debug /p:Platform=x64 /p:RuntimeIdentifier=win-x64
-          /p:SelfContained=true /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true
-          /p:PublishDir=publish\
+          dotnet publish AetherTransfer.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -o publish
 
       - name: Upload Aether Transfer
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

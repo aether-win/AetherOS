@@ -1,13 +1,15 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using AetherTransfer.Connections;
 using AetherTransfer.Models;
 using AetherTransfer.Security;
-using Microsoft.UI.Xaml.Controls;
 
 namespace AetherTransfer.Views;
 
-public sealed partial class DialogoSitios : ContentDialog
+public partial class DialogoSitios : Window
 {
     private readonly ObservableCollection<SitioGuardado> _sitios = new();
 
@@ -16,14 +18,21 @@ public sealed partial class DialogoSitios : ContentDialog
 
     public DialogoSitios()
     {
-        this.InitializeComponent();
+        InitializeComponent();
         foreach (SitioGuardado s in AlmacenSitios.Cargar())
         {
             _sitios.Add(s);
         }
         SitiosLista.ItemsSource = _sitios;
-        this.PrimaryButtonClick += (_, _) => SitioParaConectar = LeerFormularioComoSitio(SitiosLista.SelectedItem as SitioGuardado);
     }
+
+    private void Conectar_Click(object sender, RoutedEventArgs e)
+    {
+        SitioParaConectar = LeerFormularioComoSitio(SitiosLista.SelectedItem as SitioGuardado);
+        DialogResult = true;
+    }
+
+    private void Cerrar_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 
     private void Sitio_Changed(object sender, SelectionChangedEventArgs e)
     {
@@ -39,7 +48,7 @@ public sealed partial class DialogoSitios : ContentDialog
         }
     }
 
-    private void Nuevo_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    private void Nuevo_Click(object sender, RoutedEventArgs e)
     {
         SitiosLista.SelectedItem = null;
         FNombre.Text = "";
@@ -54,7 +63,6 @@ public sealed partial class DialogoSitios : ContentDialog
 
     private void Protocolo_Changed(object sender, SelectionChangedEventArgs e)
     {
-        // Sugerir el puerto por defecto del protocolo si el campo está vacío o es un puerto estándar.
         if (FPuerto is null)
         {
             return;
@@ -66,7 +74,7 @@ public sealed partial class DialogoSitios : ContentDialog
         }
     }
 
-    private void Guardar_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    private void Guardar_Click(object sender, RoutedEventArgs e)
     {
         SitioGuardado? sel = SitiosLista.SelectedItem as SitioGuardado;
         SitioGuardado nuevo = LeerFormularioComoSitio(sel);
@@ -95,7 +103,7 @@ public sealed partial class DialogoSitios : ContentDialog
         FAviso.Text = "Sitio guardado.";
     }
 
-    private void Eliminar_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    private void Eliminar_Click(object sender, RoutedEventArgs e)
     {
         if (SitiosLista.SelectedItem is SitioGuardado s)
         {
@@ -114,7 +122,7 @@ public sealed partial class DialogoSitios : ContentDialog
 
         return new SitioGuardado
         {
-            Id = baseSitio?.Id ?? System.Guid.NewGuid().ToString("N"),
+            Id = baseSitio?.Id ?? Guid.NewGuid().ToString("N"),
             Nombre = nombre,
             Host = FHost.Text.Trim(),
             Puerto = puerto,

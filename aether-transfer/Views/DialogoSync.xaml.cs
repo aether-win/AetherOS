@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using AetherTransfer.Models;
-using Microsoft.UI.Xaml.Controls;
 
 namespace AetherTransfer.Views;
 
@@ -25,7 +26,7 @@ public sealed class AccionSync
     public long Tamano { get; set; }
 }
 
-public sealed partial class DialogoSync : ContentDialog
+public partial class DialogoSync : Window
 {
     private readonly ObservableCollection<FilaSync> _filas = new();
     private readonly Dictionary<string, long> _tam = new();
@@ -35,7 +36,7 @@ public sealed partial class DialogoSync : ContentDialog
 
     public DialogoSync(IReadOnlyList<ElementoRemoto> locales, IReadOnlyList<ElementoRemoto> remotos)
     {
-        this.InitializeComponent();
+        InitializeComponent();
 
         var loc = locales.Where(x => !x.EsCarpeta && x.Nombre != "..").ToDictionary(x => x.Nombre, x => x);
         var rem = remotos.Where(x => !x.EsCarpeta && x.Nombre != "..").ToDictionary(x => x.Nombre, x => x);
@@ -75,9 +76,16 @@ public sealed partial class DialogoSync : ContentDialog
         }
 
         ListaSync.ItemsSource = _filas;
-        this.PrimaryButtonClick += (_, _) => RecogerAcciones();
         Resumen();
     }
+
+    private void Sincronizar_Click(object sender, RoutedEventArgs e)
+    {
+        RecogerAcciones();
+        DialogResult = true;
+    }
+
+    private void Cancelar_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 
     private void Direccion_Changed(object sender, SelectionChangedEventArgs e) => Resumen();
 

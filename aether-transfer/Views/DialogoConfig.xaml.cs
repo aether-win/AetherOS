@@ -1,21 +1,20 @@
+using System.Windows;
 using AetherTransfer.Settings;
-using Microsoft.UI.Xaml.Controls;
 
 namespace AetherTransfer.Views;
 
-public sealed partial class DialogoConfig : ContentDialog
+public partial class DialogoConfig : Window
 {
     public DialogoConfig()
     {
-        this.InitializeComponent();
+        InitializeComponent();
         ConfigApp.Datos d = ConfigApp.Actual;
         CLimite.Text = d.LimiteVelocidadKBps.ToString();
         CTimeout.Text = d.TimeoutSegundos.ToString();
-        CConfirmar.IsOn = d.ConfirmarEliminar;
-        this.PrimaryButtonClick += (_, _) => Guardar();
+        CConfirmar.IsChecked = d.ConfirmarEliminar;
     }
 
-    private void Guardar()
+    private void Guardar_Click(object sender, RoutedEventArgs e)
     {
         ConfigApp.Datos d = ConfigApp.Actual;
         if (int.TryParse(CLimite.Text.Trim(), out int lim) && lim >= 0)
@@ -26,7 +25,10 @@ public sealed partial class DialogoConfig : ContentDialog
         {
             d.TimeoutSegundos = to;
         }
-        d.ConfirmarEliminar = CConfirmar.IsOn;
+        d.ConfirmarEliminar = CConfirmar.IsChecked == true;
         ConfigApp.Guardar(d);
+        DialogResult = true;
     }
+
+    private void Cancelar_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 }

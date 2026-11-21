@@ -1,24 +1,23 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Specialized;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using AetherTransfer.Connections;
 using AetherTransfer.Models;
 using AetherTransfer.Protocols;
 using AetherTransfer.Settings;
 using AetherTransfer.TransferEngine;
 using AetherTransfer.Views;
-using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 
 namespace AetherTransfer;
 
-public sealed partial class MainWindow : Window
+public partial class MainWindow : Window
 {
     private readonly ObservableCollection<ElementoRemoto> _local = new();
     private readonly ObservableCollection<ElementoRemoto> _remoto = new();
@@ -31,33 +30,19 @@ public sealed partial class MainWindow : Window
 
     public MainWindow()
     {
-        Program.Paso("MW: antes de InitializeComponent");
-        this.InitializeComponent();
-        Program.Paso("MW: InitializeComponent OK");
-        this.Title = "AETHER TRANSFER";
-
-        if (this.AppWindow is not null)
-        {
-            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1300, 840));
-            try { this.AppWindow.SetIcon("Assets\\aether-transfer.ico"); } catch { /* opcional */ }
-        }
-        Program.Paso("MW: AppWindow OK");
+        InitializeComponent();
 
         LocalLista.ItemsSource = _local;
         RemotoLista.ItemsSource = _remoto;
         LogLista.ItemsSource = _log;
-        Program.Paso("MW: ItemsSource OK");
 
         _gestor = new GestorTransferencias(() => _servidor, OnTransferenciaCompletada);
         ColaLista.ItemsSource = _gestor.Items;
         _gestor.Items.CollectionChanged += OnColaChanged;
         ActualizarContadores();
-        Program.Paso("MW: gestor OK");
 
         CargarLocal(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-        Program.Paso("MW: CargarLocal OK");
         Log("Aether Transfer listo.");
-        Program.Paso("MW: ctor fin");
     }
 
     private void OnTransferenciaCompletada()
@@ -194,7 +179,7 @@ public sealed partial class MainWindow : Window
 
     private void LocalActualizar_Click(object sender, RoutedEventArgs e) => CargarLocal(_rutaLocal);
 
-    private void LocalLista_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+    private void LocalLista_DoubleTapped(object sender, MouseButtonEventArgs e)
     {
         if (LocalLista.SelectedItem is not ElementoRemoto item)
         {
@@ -234,9 +219,8 @@ public sealed partial class MainWindow : Window
 
     private async void AdminSitios_Click(object sender, RoutedEventArgs e)
     {
-        var dlg = new DialogoSitios { XamlRoot = Raiz.XamlRoot };
-        ContentDialogResult res = await dlg.ShowAsync();
-        if (res == ContentDialogResult.Primary && dlg.SitioParaConectar is SitioGuardado s)
+        var dlg = new DialogoSitios { Owner = this };
+        if (dlg.ShowDialog() == true && dlg.SitioParaConectar is SitioGuardado s)
         {
             ConexionInfo info = s.AConexion();
             TxtHost.Text = info.Host;
@@ -247,21 +231,21 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private async void Config_Click(object sender, RoutedEventArgs e)
+    private void Config_Click(object sender, RoutedEventArgs e)
     {
-        var dlg = new DialogoConfig { XamlRoot = Raiz.XamlRoot };
-        await dlg.ShowAsync();
+        var dlg = new DialogoConfig { Owner = this };
+        dlg.ShowDialog();
     }
 
-    private async void Sincronizar_Click(object sender, RoutedEventArgs e)
+    private void Sincronizar_Click(object sender, RoutedEventArgs e)
     {
         if (_servidor is null || !_servidor.Conectado)
         {
             Log("Conéctate primero para sincronizar.");
             return;
         }
-        var dlg = new DialogoSync(_local.ToList(), _remoto.ToList()) { XamlRoot = Raiz.XamlRoot };
-        if (await dlg.ShowAsync() == ContentDialogResult.Primary)
+        var dlg = new DialogoSync(_local.ToList(), _remoto.ToList()) { Owner = this };
+        if (dlg.ShowDialog() == true)
         {
             foreach (AccionSync a in dlg.Acciones)
             {
@@ -386,7 +370,7 @@ public sealed partial class MainWindow : Window
 
     private void RemotoActualizar_Click(object sender, RoutedEventArgs e) => _ = CargarRemoto(_rutaRemota);
 
-    private async void RemotoLista_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+    private async void RemotoLista_DoubleTapped(object sender, MouseButtonEventArgs e)
     {
         if (RemotoLista.SelectedItem is not ElementoRemoto item)
         {
@@ -457,9 +441,9 @@ public sealed partial class MainWindow : Window
 
     // ── Menús contextuales ───────────────────────────────────────────────────
 
-    private void Lista_RightTapped(object sender, RightTappedRoutedEventArgs e)
+    private void Lista_RightTapped(object sender, MouseButtonEventArgs e)
     {
-        if (sender is ListView lv && e.OriginalSource is FrameworkElement fe && fe.DataContext is ElementoRemoto it)
+        if (sender is ListView lv && (e.OriginalSource as FrameworkElement)?.DataContext is ElementoRemoto it)
         {
             lv.SelectedItem = it;
         }
@@ -588,40 +572,17 @@ public sealed partial class MainWindow : Window
         catch (Exception ex) { Log($"Error al eliminar: {ex.Message}"); }
     }
 
-    private async Task<string?> PedirTexto(string titulo, string valor)
+    // ── Diálogos sencillos ───────────────────────────────────────────────────
+
+    private Task<string?> PedirTexto(string titulo, string valor)
+        => Task.FromResult(InputBox.Pedir(this, titulo, valor));
+
+    private Task<bool> Confirmar(string mensaje)
     {
-        var tb = new TextBox { Text = valor };
-        var dlg = new ContentDialog
-        {
-            Title = titulo,
-            Content = tb,
-            PrimaryButtonText = "Aceptar",
-            CloseButtonText = "Cancelar",
-            DefaultButton = ContentDialogButton.Primary,
-            RequestedTheme = ElementTheme.Dark,
-            XamlRoot = Raiz.XamlRoot,
-        };
-        ContentDialogResult r = await dlg.ShowAsync();
-        return r == ContentDialogResult.Primary ? tb.Text.Trim() : null;
+        MessageBoxResult r = MessageBox.Show(this, mensaje, "Confirmar",
+            MessageBoxButton.YesNo, MessageBoxImage.Question);
+        return Task.FromResult(r == MessageBoxResult.Yes);
     }
-
-    private async Task<bool> Confirmar(string mensaje)
-    {
-        var dlg = new ContentDialog
-        {
-            Title = "Confirmar",
-            Content = mensaje,
-            PrimaryButtonText = "Sí",
-            CloseButtonText = "No",
-            RequestedTheme = ElementTheme.Dark,
-            XamlRoot = Raiz.XamlRoot,
-        };
-        return await dlg.ShowAsync() == ContentDialogResult.Primary;
-    }
-
-    // ── Menú ─────────────────────────────────────────────────────────────────
-
-    private void Salir_Click(object sender, RoutedEventArgs e) => this.Close();
 
     // ── Utilidades de rutas POSIX ────────────────────────────────────────────
 
