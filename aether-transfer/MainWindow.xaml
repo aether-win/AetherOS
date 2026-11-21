@@ -17,7 +17,7 @@
             <SolidColorBrush x:Key="Acento" Color="#1E6BFF" />
             <SolidColorBrush x:Key="Cian" Color="#22D3EE" />
 
-            <DataTemplate x:Key="FilaArchivo" x:DataType="models:ElementoRemoto">
+            <DataTemplate x:Key="FilaArchivo">
                 <Grid Height="24">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -26,12 +26,12 @@
                         <ColumnDefinition Width="100" />
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                        <FontIcon Glyph="{x:Bind Glyph}" FontSize="15" Foreground="#E0C060" />
-                        <TextBlock Text="{x:Bind Nombre}" FontSize="12.5" VerticalAlignment="Center" />
+                        <FontIcon Glyph="{Binding Glyph}" FontSize="15" Foreground="#E0C060" />
+                        <TextBlock Text="{Binding Nombre}" FontSize="12.5" VerticalAlignment="Center" />
                     </StackPanel>
-                    <TextBlock Grid.Column="1" Text="{x:Bind TamanoTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
-                    <TextBlock Grid.Column="2" Text="{x:Bind Tipo}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
-                    <TextBlock Grid.Column="3" Text="{x:Bind FechaTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="{Binding TamanoTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="{Binding Tipo}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="3" Text="{Binding FechaTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
                 </Grid>
             </DataTemplate>
         </Grid.Resources>
@@ -297,24 +297,24 @@
                         <Grid Grid.Row="2">
                             <ListView x:Name="ColaLista" SelectionMode="None" Padding="0,2,0,2">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="te:TransferItem">
+                                    <DataTemplate>
                                         <Grid Height="30" Padding="12,0,12,0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" /><ColumnDefinition Width="220" /><ColumnDefinition Width="70" /><ColumnDefinition Width="110" /><ColumnDefinition Width="90" /><ColumnDefinition Width="140" />
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                                <FontIcon Glyph="{x:Bind DireccionIcono}" FontSize="13" Foreground="#22D3EE" />
-                                                <TextBlock Text="{x:Bind Nombre}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                                <FontIcon Glyph="{Binding DireccionIcono}" FontSize="13" Foreground="#22D3EE" />
+                                                <TextBlock Text="{Binding Nombre}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                                             </StackPanel>
-                                            <TextBlock Grid.Column="1" Text="{x:Bind RutaRemota}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-                                            <TextBlock Grid.Column="2" Text="{x:Bind TamanoTexto}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="1" Text="{Binding RutaRemota}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Grid.Column="2" Text="{Binding TamanoTexto}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" />
                                             <StackPanel Grid.Column="3" VerticalAlignment="Center" Spacing="1">
-                                                <muxc:ProgressBar Value="{x:Bind Progreso, Mode=OneWay}" Maximum="100" Width="90" HorizontalAlignment="Left" Foreground="#1E6BFF" />
-                                                <TextBlock Text="{x:Bind ProgresoTexto, Mode=OneWay}" FontSize="10.5" Foreground="#9DB2CC" />
+                                                <muxc:ProgressBar Value="{Binding Progreso, Mode=OneWay}" Maximum="100" Width="90" HorizontalAlignment="Left" Foreground="#1E6BFF" />
+                                                <TextBlock Text="{Binding ProgresoTexto, Mode=OneWay}" FontSize="10.5" Foreground="#9DB2CC" />
                                             </StackPanel>
-                                            <TextBlock Grid.Column="4" Text="{x:Bind VelocidadTexto, Mode=OneWay}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="4" Text="{Binding VelocidadTexto, Mode=OneWay}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" />
                                             <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-                                                <TextBlock Text="{x:Bind EstadoTexto, Mode=OneWay}" FontSize="11.5" Foreground="#E6EEF8" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="70" />
+                                                <TextBlock Text="{Binding EstadoTexto, Mode=OneWay}" FontSize="11.5" Foreground="#E6EEF8" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="70" />
                                                 <Button Click="Pausar_Click" Padding="4" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="Pausar/Reanudar">
                                                     <FontIcon Glyph="&#xE769;" FontSize="12" Foreground="#9DB2CC" />
                                                 </Button>
