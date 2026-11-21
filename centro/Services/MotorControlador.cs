@@ -319,7 +319,7 @@ public static class MotorControlador
         d.SetButtonState(DualShock4Button.ThumbRight, e.R3);
         d.SetButtonState(DualShock4Button.Share, e.Atras);
         d.SetButtonState(DualShock4Button.Options, e.Inicio);
-        d.SetButtonState(DualShock4Button.Ps, e.Guia);
+        d.SetButtonState(DualShock4SpecialButton.Ps, e.Guia);
         d.SetButtonState(DualShock4Button.TriggerLeft, e.LT > 0.5);
         d.SetButtonState(DualShock4Button.TriggerRight, e.RT > 0.5);
 
