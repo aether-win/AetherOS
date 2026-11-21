@@ -36,7 +36,7 @@ jobs:
         run: >
           msbuild AetherTransfer.csproj /t:Publish
           /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64
-          /p:SelfContained=true /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true
+          /p:SelfContained=true /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=false
           /p:PublishDir=publish\
 
       - name: Upload Aether Transfer
