@@ -18,7 +18,12 @@ public sealed class FilaSync
 }
 
 /// <summary>Una acción de sincronización a encolar.</summary>
-public sealed record AccionSync(string Nombre, bool Subida, long Tamano);
+public sealed class AccionSync
+{
+    public string Nombre { get; set; } = "";
+    public bool Subida { get; set; }
+    public long Tamano { get; set; }
+}
 
 public sealed partial class DialogoSync : ContentDialog
 {
@@ -98,7 +103,7 @@ public sealed partial class DialogoSync : ContentDialog
             bool actuar = EsSubir ? (f.SoloLocal || f.LocalNuevo) : (f.SoloRemoto || f.RemotoNuevo);
             if (actuar)
             {
-                Acciones.Add(new AccionSync(f.Nombre, EsSubir, _tam.TryGetValue(f.Nombre, out long t) ? t : 0));
+                Acciones.Add(new AccionSync { Nombre = f.Nombre, Subida = EsSubir, Tamano = _tam.TryGetValue(f.Nombre, out long t) ? t : 0 });
             }
         }
     }
