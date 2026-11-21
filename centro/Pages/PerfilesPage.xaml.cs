@@ -15,6 +15,7 @@ namespace CentroAether.Pages;
 public sealed partial class PerfilesPage : Page
 {
     private List<PerfilApp> _perfiles = new();
+    private bool _cargando;
 
     public PerfilesPage()
     {
@@ -24,8 +25,26 @@ public sealed partial class PerfilesPage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
+        _cargando = true;
+        TglInteligencia.IsOn = ConfigCentro.InteligenciaActiva;
+        _cargando = false;
         _perfiles = PerfilesServicio.Cargar();
         Pintar();
+    }
+
+    private void Inteligencia_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_cargando)
+        {
+            return;
+        }
+        ConfigCentro.InteligenciaActiva = TglInteligencia.IsOn;
+        InteligenciaFondo.Refrescar();
+        Estado.Severity = InfoBarSeverity.Informational;
+        Estado.Message = TglInteligencia.IsOn
+            ? "Segundo plano activado: los perfiles se aplicarán al abrir cada app."
+            : "Segundo plano desactivado.";
+        Estado.IsOpen = true;
     }
 
     private void Pintar()
@@ -48,7 +67,7 @@ public sealed partial class PerfilesPage : Page
         textos.Children.Add(new TextBlock { Text = p.App, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         textos.Children.Add(new TextBlock
         {
-            Text = $"Modo {p.Modo}",
+            Text = string.IsNullOrEmpty(p.Proceso) ? $"Modo {p.Modo}" : $"Modo {p.Modo} · {p.Proceso}",
             FontSize = 13,
             Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
         });
@@ -97,9 +116,10 @@ public sealed partial class PerfilesPage : Page
             return;
         }
 
-        _perfiles.Add(new PerfilApp { App = app, Modo = modo });
+        _perfiles.Add(new PerfilApp { App = app, Proceso = TxtProceso.Text.Trim(), Modo = modo });
         bool ok = PerfilesServicio.Guardar(_perfiles);
         TxtApp.Text = "";
+        TxtProceso.Text = "";
         Pintar();
 
         Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Error;

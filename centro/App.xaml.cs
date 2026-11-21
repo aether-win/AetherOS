@@ -1,3 +1,4 @@
+using CentroAether.Services;
 using Microsoft.UI.Xaml;
 
 namespace CentroAether;
@@ -15,5 +16,8 @@ public partial class App : Application
     {
         MainWindow = new MainWindow();
         MainWindow.Activate();
+
+        // Background Intelligence: solo si el usuario lo activó (apagado por defecto).
+        InteligenciaFondo.Refrescar();
     }
 }

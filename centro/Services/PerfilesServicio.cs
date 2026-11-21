@@ -9,6 +9,7 @@ namespace CentroAether.Services;
 public sealed class PerfilApp
 {
     public string App { get; set; } = "";
+    public string Proceso { get; set; } = "";   // nombre del .exe para la detección automática
     public string Modo { get; set; } = "Gaming";
 }
 

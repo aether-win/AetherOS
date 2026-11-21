@@ -9,9 +9,24 @@
 
             <StackPanel Spacing="2">
                 <TextBlock Text="Perfiles" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBlock Text="Asocia una app o juego a un modo. La aplicación automática al abrirlo llegará con Background Intelligence."
+                <TextBlock Text="Asocia una app o juego a un modo. Con el segundo plano activado, el modo se aplica solo al abrir la app."
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
             </StackPanel>
+
+            <!-- Background Intelligence -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="18,12,18,12">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Aplicar perfiles automáticamente" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        <TextBlock Text="Vigila los procesos y aplica el modo al abrir una app con perfil (no revierte al cerrar)."
+                                   FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <ToggleSwitch x:Name="TglInteligencia" HorizontalAlignment="Right"
+                                  Toggled="Inteligencia_Toggled" />
+                </Grid>
+            </Border>
 
             <!-- Alta -->
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -19,13 +34,15 @@
                     BorderThickness="1" CornerRadius="8" Padding="18">
                 <StackPanel Spacing="12">
                     <TextBlock Text="Nuevo perfil" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBox x:Name="TxtApp" PlaceholderText="Nombre de la app o juego" />
                     <Grid ColumnSpacing="12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="TxtApp" Grid.Column="0" PlaceholderText="Nombre de la app o juego" />
+                        <TextBox x:Name="TxtProceso" Grid.Column="0"
+                                 PlaceholderText="Proceso para autodetección (ej. cs2.exe)" />
                         <ComboBox x:Name="CmbModo" Grid.Column="1" MinWidth="130" SelectedIndex="0">
                             <ComboBoxItem Content="Gaming" />
                             <ComboBoxItem Content="Trabajo" />
