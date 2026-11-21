@@ -42,8 +42,7 @@
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Text="Para crear uno, coloca un archivo .json en la carpeta de plugins con este formato:" />
                     <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="12">
-                        <TextBlock FontFamily="Consolas" FontSize="12" TextWrapping="Wrap"
-                                   Text="{ &quot;Nombre&quot;: &quot;Mi plugin&quot;, &quot;Descripcion&quot;: &quot;Qué hace&quot;, &quot;Abrir&quot;: &quot;https://ejemplo.com&quot; }" />
+                        <TextBlock x:Name="TxtEjemplo" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" />
                     </Border>
                 </StackPanel>
             </Border>

@@ -24,6 +24,7 @@ public sealed partial class PluginsPage : Page
     {
         base.OnNavigatedTo(e);
         PluginsServicio.AsegurarCarpeta();
+        TxtEjemplo.Text = "{ \"Nombre\": \"Mi plugin\", \"Descripcion\": \"Qué hace\", \"Abrir\": \"https://ejemplo.com\" }";
         Cargar();
     }
 
