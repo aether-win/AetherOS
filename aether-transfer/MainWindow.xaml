@@ -150,8 +150,8 @@
                     <ScrollViewer Padding="10,6,10,6">
                         <ItemsControl x:Name="LogLista">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="x:String">
-                                    <TextBlock Text="{x:Bind}" FontFamily="Consolas" FontSize="12" Foreground="#9DB2CC" />
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12" Foreground="#9DB2CC" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
