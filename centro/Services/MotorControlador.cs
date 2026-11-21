@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,6 +39,29 @@ public static class MotorControlador
         {
             return false;
         }
+    }
+
+    /// <summary>Devuelve el nombre de otro emulador de mandos en ejecución, o null.</summary>
+    public static string? ConflictoActivo()
+    {
+        foreach (string nombre in new[] { "DS4Windows", "InputMapper", "x360ce" })
+        {
+            try
+            {
+                Process[] ps = Process.GetProcessesByName(nombre);
+                bool hay = ps.Length > 0;
+                foreach (Process p in ps)
+                {
+                    p.Dispose();
+                }
+                if (hay)
+                {
+                    return nombre;
+                }
+            }
+            catch { /* siguiente */ }
+        }
+        return null;
     }
 
     public static bool Iniciar()

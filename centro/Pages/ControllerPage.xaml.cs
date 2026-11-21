@@ -70,6 +70,20 @@ public sealed partial class ControllerPage : Page
                 RefrescarMotor();
                 return;
             }
+
+            // No aplicar doble emulación: si hay otro emulador activo, avisar y no iniciar.
+            string? conflicto = MotorControlador.ConflictoActivo();
+            if (conflicto is not null)
+            {
+                _cargando = true;
+                TglEmular.IsOn = false;
+                _cargando = false;
+                Estado.Severity = InfoBarSeverity.Warning;
+                Estado.Message = $"{conflicto} está en ejecución. Ciérralo para evitar entrada doble y vuelve a intentar.";
+                Estado.IsOpen = true;
+                return;
+            }
+
             bool ok = MotorControlador.Iniciar();
             Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning;
             Estado.Message = ok ? "Emulación Xbox 360 activada." : "No se pudo iniciar la emulación.";
@@ -146,7 +160,13 @@ public sealed partial class ControllerPage : Page
         textos.Children.Add(new TextBlock { Text = m.Nombre, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         textos.Children.Add(new TextBlock
         {
-            Text = m.EsGamepad ? "Conectado · compatible" : "Conectado",
+            Text = $"{m.Marca} · {m.Protocolo}",
+            FontSize = 12,
+            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+        });
+        textos.Children.Add(new TextBlock
+        {
+            Text = m.EsGamepad ? "Conectado · compatible con emulación" : "Conectado",
             FontSize = 12,
             Foreground = (Brush)Application.Current.Resources["SystemFillColorSuccessBrush"],
         });
