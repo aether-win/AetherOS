@@ -63,6 +63,12 @@ public static class Aether
     public static Task<string> ActualizarProgramas() =>
         CorrerPowerShell("winget upgrade --all --accept-source-agreements --accept-package-agreements --disable-interactivity");
 
+    // --- Software / Runtimes (winget) --------------------------------------------------
+    /// <summary>Instala un paquete por su Id de winget, de forma silenciosa.</summary>
+    public static Task<string> InstalarWinget(string id) =>
+        CorrerPowerShell(
+            $"winget install --id {id} -e --accept-source-agreements --accept-package-agreements --disable-interactivity");
+
     // --- Red ---------------------------------------------------------------------------
     public static Task<string> RepararRed()
     {

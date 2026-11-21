@@ -60,10 +60,7 @@ public static class RegistroModulos
             "Catálogo curado y confiable",
             "Estado de instalación en vivo"),
         new("runtimes", "Runtimes", "VC++, DirectX, .NET, WebView2 y Python",
-            "Software", "", null,
-            "Detecta qué runtimes faltan",
-            "Instala binarios oficiales de Microsoft",
-            "Modo sin internet opcional"),
+            "Software", "", typeof(RuntimesPage)),
 
         // ── Sistema ──────────────────────────────────────────────────────────
         new("actualizar", "Actualizar", "Motor de actualizaciones de Windows",
