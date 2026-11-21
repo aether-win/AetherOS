@@ -21,6 +21,9 @@ public sealed partial class MainWindow : Window
         }
 
         ConstruirMenu();
+
+        // Al cerrar el Centro, detener el motor del controlador si quedó activo.
+        this.Closed += (_, _) => Services.MotorControlador.Detener();
     }
 
     /// <summary>

@@ -15,6 +15,7 @@ namespace CentroAether.Pages;
 public sealed partial class ControllerPage : Page
 {
     private bool _ocupado;
+    private bool _cargando;
 
     public ControllerPage()
     {
@@ -25,6 +26,96 @@ public sealed partial class ControllerPage : Page
     {
         base.OnNavigatedTo(e);
         Buscar();
+        RefrescarMotor();
+    }
+
+    private void RefrescarMotor()
+    {
+        bool vigem = MotorControlador.ViGEmDisponible();
+
+        _cargando = true;
+        TglEmular.IsOn = MotorControlador.Activo;
+        _cargando = false;
+
+        TglEmular.IsEnabled = vigem;
+        PanelRequisitos.Visibility = vigem ? Visibility.Collapsed : Visibility.Visible;
+
+        if (!vigem)
+        {
+            TxtMotor.Text = "Falta el driver ViGEmBus. Instálalo para activar la emulación.";
+        }
+        else
+        {
+            TxtMotor.Text = MotorControlador.Activo
+                ? "Activa: tu mando se refleja como un Xbox 360 virtual."
+                : "Lista para activar. Convierte tu mando en un Xbox 360 virtual.";
+        }
+    }
+
+    private void Emular_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_cargando)
+        {
+            return;
+        }
+
+        if (TglEmular.IsOn)
+        {
+            if (!MotorControlador.ViGEmDisponible())
+            {
+                _cargando = true;
+                TglEmular.IsOn = false;
+                _cargando = false;
+                RefrescarMotor();
+                return;
+            }
+            bool ok = MotorControlador.Iniciar();
+            Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning;
+            Estado.Message = ok ? "Emulación Xbox 360 activada." : "No se pudo iniciar la emulación.";
+            Estado.IsOpen = true;
+        }
+        else
+        {
+            MotorControlador.Detener();
+            Estado.Severity = InfoBarSeverity.Informational;
+            Estado.Message = "Emulación detenida.";
+            Estado.IsOpen = true;
+        }
+        RefrescarMotor();
+    }
+
+    private async void Vigem_Click(object sender, RoutedEventArgs e)
+        => await InstalarRequisito(BtnVigem, "Nefarius.ViGEmBus", "ViGEmBus");
+
+    private async void HidHide_Click(object sender, RoutedEventArgs e)
+        => await InstalarRequisito(BtnHidHide, "Nefarius.HidHide", "HidHide");
+
+    private async System.Threading.Tasks.Task InstalarRequisito(Button btn, string wingetId, string nombre)
+    {
+        if (_ocupado)
+        {
+            return;
+        }
+        _ocupado = true;
+        btn.IsEnabled = false;
+        string original = btn.Content?.ToString() ?? "Instalar";
+        btn.Content = "Instalando…";
+        Estado.Severity = InfoBarSeverity.Informational;
+        Estado.Message = $"Instalando {nombre}…";
+        Estado.IsOpen = true;
+
+        string salida = await Aether.InstalarWinget(wingetId);
+
+        bool ok = !salida.Contains("ERROR", StringComparison.OrdinalIgnoreCase);
+        btn.IsEnabled = true;
+        btn.Content = original;
+        Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning;
+        Estado.Message = ok
+            ? $"{nombre} instalado. Puede que necesites reiniciar para que el driver cargue."
+            : $"No se pudo instalar {nombre}.";
+        Estado.IsOpen = true;
+        _ocupado = false;
+        RefrescarMotor();
     }
 
     private void Refrescar_Click(object sender, RoutedEventArgs e) => Buscar();
