@@ -48,7 +48,7 @@ Leyenda: ✅ hecho · 🟡 parcial (base existe) · ⬜ no empezado · ⛔ desca
 | 5 | Office Protection | 🟡 | tweaks `aether-office*`, Wind-Aether excluye apps Office |
 | 6 | Aether Controller (DS4Windows) | ⬜ | fuente disponible (GPLv3 OK) |
 | 7 | Game Library | 🟡 | Centro·Biblioteca: detección de Steam + lanzar ✅ |
-| 8 | Aether Profiles | ⬜ | — |
+| 8 | Aether Profiles | ✅ | Centro·Perfiles: app→modo con almacenamiento propio ✅ |
 | 9 | Software Center | ✅ | Centro·Software: catálogo winget + instalar/actualizar ✅ |
 | 10 | Runtime Manager (VC++/DX/.NET/WebView2/Python) | ✅ | Centro·Runtimes: detección nativa + instalar oficial ✅ |
 | 11 | Network Engine (solo diagnóstico) | 🟡 | Centro·Red (`RepararRed`, `HacerRedPrivada`) |
@@ -59,8 +59,8 @@ Leyenda: ✅ hecho · 🟡 parcial (base existe) · ⬜ no empezado · ⛔ desca
 | 16 | Plugin System | ⬜ | — |
 | 17 | Update Engine | 🟡 | Centro·Actualizar (pausa Windows Update) |
 | 18 | Smart Restore | 🟡 | Centro·Respaldo |
-| 19 | Background Intelligence | ⬜ | — |
-| 20 | Compatibility Database | ⬜ | — |
+| 19 | Background Intelligence | ✅ | Centro: vigila procesos y aplica perfiles (opt-in) ✅ |
+| 20 | Compatibility Database | ✅ | Centro·Compatibilidad: base curada de comportamiento ✅ |
 | 21 | WindAether | ✅ | `Wind-Aether-mods.json` (37 mods, sincronizado con backup) |
 | 22 | Fotos de perfil (restaurar) | ✅ | `Foto-Perfil.ps1` |
 | 23 | Instalador "Configurar Aether" | ✅ | `app/` (Rust/GPUI) |
@@ -132,6 +132,11 @@ a la pregunta: *"¿Deseas compilar Aether OS en un ejecutable .exe?"*
 - F6 Software Center (catálogo winget + actualizar todo) ✅
 - F6 Biblioteca de juegos (detección de Steam + lanzar, opción Modo Gaming al jugar) ✅
 
-Pendiente de mayor valor: Aether Controller (DS4Windows, GPLv3), Aether Profiles,
-Oficina (Office Protection), Plugin System, Compatibility DB, Background Intelligence.
-Sigue vigente la Regla 38: **no compilar el .exe final** hasta autorización expresa.
+**2026-11-20 (continuación autónoma) — más módulos, todos verdes en CI:**
+- F6 Aether Profiles (perfiles app→modo, almacenamiento propio) ✅
+- F8 Background Intelligence (vigilante de procesos que aplica perfiles, opt-in, apagado por defecto) ✅
+- F8 Compatibility Database (base curada de comportamiento tras ajustes) ✅
+
+Pendiente de mayor valor: **Aether Controller** (DS4Windows, GPLv3 — merece sesión propia),
+**Oficina** (Office Protection) y **Plugin System**. Lo demás de la visión ya tiene módulo real
+o base funcional. Sigue vigente la Regla 38: **no compilar el .exe final** hasta autorización expresa.
