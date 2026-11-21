@@ -54,7 +54,7 @@ public static class Program
 
     private static readonly object _candado = new();
 
-    private static void Paso(string mensaje)
+    public static void Paso(string mensaje)
     {
         try
         {

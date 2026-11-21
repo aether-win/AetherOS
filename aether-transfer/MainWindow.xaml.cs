@@ -31,7 +31,9 @@ public sealed partial class MainWindow : Window
 
     public MainWindow()
     {
+        Program.Paso("MW: antes de InitializeComponent");
         this.InitializeComponent();
+        Program.Paso("MW: InitializeComponent OK");
         this.Title = "AETHER TRANSFER";
 
         if (this.AppWindow is not null)
@@ -39,18 +41,23 @@ public sealed partial class MainWindow : Window
             this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1300, 840));
             try { this.AppWindow.SetIcon("Assets\\aether-transfer.ico"); } catch { /* opcional */ }
         }
+        Program.Paso("MW: AppWindow OK");
 
         LocalLista.ItemsSource = _local;
         RemotoLista.ItemsSource = _remoto;
         LogLista.ItemsSource = _log;
+        Program.Paso("MW: ItemsSource OK");
 
         _gestor = new GestorTransferencias(() => _servidor, OnTransferenciaCompletada);
         ColaLista.ItemsSource = _gestor.Items;
         _gestor.Items.CollectionChanged += OnColaChanged;
         ActualizarContadores();
+        Program.Paso("MW: gestor OK");
 
         CargarLocal(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+        Program.Paso("MW: CargarLocal OK");
         Log("Aether Transfer listo.");
+        Program.Paso("MW: ctor fin");
     }
 
     private void OnTransferenciaCompletada()
