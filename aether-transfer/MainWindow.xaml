@@ -2,344 +2,285 @@
 <Window
     x:Class="AetherTransfer.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:models="using:AetherTransfer.Models"
-    xmlns:te="using:AetherTransfer.TransferEngine">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid x:Name="Raiz" RequestedTheme="Dark" Background="#0A1524">
-        <Grid.Resources>
-            <SolidColorBrush x:Key="Panel" Color="#0F2036" />
-            <SolidColorBrush x:Key="PanelAlt" Color="#122844" />
-            <SolidColorBrush x:Key="Linea" Color="#1E3A5C" />
-            <SolidColorBrush x:Key="TxtPri" Color="#E6EEF8" />
-            <SolidColorBrush x:Key="TxtSec" Color="#9DB2CC" />
-            <SolidColorBrush x:Key="Acento" Color="#1E6BFF" />
-            <SolidColorBrush x:Key="Cian" Color="#22D3EE" />
-
-            <DataTemplate x:Key="FilaArchivo">
-                <Grid Height="24">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="64" />
-                        <ColumnDefinition Width="86" />
-                        <ColumnDefinition Width="100" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                        <FontIcon Glyph="{Binding Glyph}" FontSize="15" Foreground="#E0C060" />
-                        <TextBlock Text="{Binding Nombre}" FontSize="12.5" VerticalAlignment="Center" />
-                    </StackPanel>
-                    <TextBlock Grid.Column="1" Text="{Binding TamanoTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
-                    <TextBlock Grid.Column="2" Text="{Binding Tipo}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
-                    <TextBlock Grid.Column="3" Text="{Binding FechaTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
-                </Grid>
-            </DataTemplate>
-        </Grid.Resources>
-
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- MENÚ (quitado temporalmente para diagnóstico - sospechoso del crash) -->
-        <Border Grid.Row="0" Background="#0C1B30" Height="32" />
-
         <!-- BARRA DE HERRAMIENTAS -->
-        <Grid Grid.Row="1" Background="#0C1B30" BorderBrush="{StaticResource Linea}" BorderThickness="0,1,0,1">
+        <Grid Grid.Row="0" Background="#0C1B30" BorderBrush="#1E3A5C" BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" Padding="10,8,10,8" Spacing="4">
-                <Button Style="{StaticResource Herramienta}" Click="AdminSitios_Click">
-                    <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE774;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Administrador de sitios" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
+                <Button Background="Transparent" BorderThickness="0" Padding="10,6" Click="AdminSitios_Click">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE774;" FontSize="18" Foreground="#22D3EE" />
+                        <TextBlock Text="Sitios" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" Foreground="#E6EEF8" />
+                    </StackPanel>
                 </Button>
-                <Button Style="{StaticResource Herramienta}" Click="Conectar_Click">
-                    <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE710;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Nueva conexión" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
+                <Button Background="Transparent" BorderThickness="0" Padding="10,6" Click="Conectar_Click">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE710;" FontSize="18" Foreground="#22D3EE" />
+                        <TextBlock Text="Conectar" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" Foreground="#E6EEF8" />
+                    </StackPanel>
                 </Button>
-                <Button Style="{StaticResource Herramienta}" Click="Desconectar_Click">
-                    <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE8CB;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Desconectar" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
+                <Button Background="Transparent" BorderThickness="0" Padding="10,6" Click="Desconectar_Click">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE8CB;" FontSize="18" Foreground="#22D3EE" />
+                        <TextBlock Text="Desconectar" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" Foreground="#E6EEF8" />
+                    </StackPanel>
                 </Button>
-                <Border Width="1" Background="{StaticResource Linea}" Margin="4,2,4,2" />
-                <Button Style="{StaticResource Herramienta}">
-                    <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE898;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Transferencias" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
+                <Border Width="1" Background="#1E3A5C" Margin="4,2" />
+                <Button Background="Transparent" BorderThickness="0" Padding="10,6" Click="Sincronizar_Click">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE895;" FontSize="18" Foreground="#22D3EE" />
+                        <TextBlock Text="Sincronizar" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" Foreground="#E6EEF8" />
+                    </StackPanel>
                 </Button>
-                <Button Style="{StaticResource Herramienta}" Click="Sincronizar_Click">
-                    <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE895;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Sincronizar" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Herramienta}">
-                    <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE734;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Marcadores" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Herramienta}">
-                    <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE81C;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Historial" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Herramienta}" Click="Config_Click">
-                    <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE713;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Configuración" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
+                <Button Background="Transparent" BorderThickness="0" Padding="10,6" Click="Config_Click">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE713;" FontSize="18" Foreground="#22D3EE" />
+                        <TextBlock Text="Configuración" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" Foreground="#E6EEF8" />
+                    </StackPanel>
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,18,0" Spacing="8">
                 <Image Source="Assets/aether-transfer.png" Width="26" Height="26" />
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="AETHER" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TxtPri}" />
-                    <TextBlock Text="TRANSFER" FontSize="10" Foreground="{StaticResource Cian}" Margin="0,-3,0,0" />
+                    <TextBlock Text="AETHER" FontWeight="Bold" FontSize="15" Foreground="#E6EEF8" />
+                    <TextBlock Text="TRANSFER" FontSize="10" Foreground="#22D3EE" Margin="0,-3,0,0" />
                 </StackPanel>
             </StackPanel>
         </Grid>
 
         <!-- CONEXIÓN RÁPIDA -->
-        <Grid Grid.Row="2" Background="#0B1A2E" Padding="12,8,12,8" BorderBrush="{StaticResource Linea}" BorderThickness="0,0,0,1">
+        <Grid Grid.Row="1" Background="#0B1A2E" Padding="12,8" BorderBrush="#1E3A5C" BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                <TextBlock Text="Servidor:" Foreground="{StaticResource TxtSec}" VerticalAlignment="Center" />
+                <TextBlock Text="Servidor:" Foreground="#9DB2CC" VerticalAlignment="Center" />
                 <TextBox x:Name="TxtHost" Text="192.168.1.10" Width="150" />
-                <TextBlock Text="Nombre de usuario:" Foreground="{StaticResource TxtSec}" VerticalAlignment="Center" Margin="6,0,0,0" />
+                <TextBlock Text="Usuario:" Foreground="#9DB2CC" VerticalAlignment="Center" Margin="6,0,0,0" />
                 <TextBox x:Name="TxtUsuario" Text="anonymous" Width="120" />
-                <TextBlock Text="Contraseña:" Foreground="{StaticResource TxtSec}" VerticalAlignment="Center" Margin="6,0,0,0" />
+                <TextBlock Text="Contraseña:" Foreground="#9DB2CC" VerticalAlignment="Center" Margin="6,0,0,0" />
                 <PasswordBox x:Name="TxtPass" Width="120" />
-                <TextBlock Text="Puerto:" Foreground="{StaticResource TxtSec}" VerticalAlignment="Center" Margin="6,0,0,0" />
+                <TextBlock Text="Puerto:" Foreground="#9DB2CC" VerticalAlignment="Center" Margin="6,0,0,0" />
                 <TextBox x:Name="TxtPuerto" Text="21" Width="60" />
-                <Button x:Name="BtnConectar" Content="Conexión rápida" Background="{StaticResource Acento}" Foreground="White" Margin="6,0,0,0" Click="Conectar_Click" />
+                <Button x:Name="BtnConectar" Content="Conexión rápida" Background="#1E6BFF" Foreground="White" Margin="6,0,0,0" Click="Conectar_Click" />
             </StackPanel>
         </Grid>
 
         <!-- CUERPO -->
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <!-- Rail de navegación -->
-            <StackPanel Grid.Column="0" Width="158" Background="#0C1B30" Padding="8,10,8,10" Spacing="2"
-                        BorderBrush="{StaticResource Linea}" BorderThickness="0,0,1,0">
-                <Button Style="{StaticResource Nav}" Background="{StaticResource PanelAlt}">
-                    <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE80F;" FontSize="16" Foreground="{StaticResource Cian}" /><TextBlock Text="Inicio" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Nav}">
-                    <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE8B7;" FontSize="16" /><TextBlock Text="Sitios guardados" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Nav}">
-                    <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE898;" FontSize="16" /><TextBlock Text="Transferencias" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Nav}">
-                    <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE895;" FontSize="16" /><TextBlock Text="Sincronización" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Nav}">
-                    <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE81C;" FontSize="16" /><TextBlock Text="Historial" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Nav}">
-                    <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE734;" FontSize="16" /><TextBlock Text="Marcadores" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Nav}">
-                    <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE90F;" FontSize="16" /><TextBlock Text="Herramientas" /></StackPanel>
-                </Button>
-                <Button Style="{StaticResource Nav}" Click="Config_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE713;" FontSize="16" /><TextBlock Text="Configuración" /></StackPanel>
-                </Button>
-            </StackPanel>
+            <!-- Registro de actividad -->
+            <Border Grid.Row="0" Height="92" Margin="10,10,10,6" CornerRadius="6"
+                    Background="#0F2036" BorderBrush="#1E3A5C" BorderThickness="1">
+                <ScrollViewer Padding="10,6">
+                    <ItemsControl x:Name="LogLista">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12" Foreground="#9DB2CC" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
 
-            <!-- Área principal -->
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            <!-- Explorador doble -->
+            <Grid Grid.Row="1" Margin="10,0,10,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="46" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-                <!-- Registro de actividad -->
-                <Border Grid.Row="0" Height="96" Margin="10,10,10,6" CornerRadius="6"
-                        Background="{StaticResource Panel}" BorderBrush="{StaticResource Linea}" BorderThickness="1">
-                    <ScrollViewer Padding="10,6,10,6">
-                        <ItemsControl x:Name="LogLista">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12" Foreground="#9DB2CC" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </Border>
-
-                <!-- Explorador doble -->
-                <Grid Grid.Row="1" Margin="10,0,10,6">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="46" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Sitio local -->
-                    <Border Grid.Column="0" CornerRadius="6" Background="{StaticResource Panel}"
-                            BorderBrush="{StaticResource Linea}" BorderThickness="1">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Padding="10,8,10,4">
-                                <TextBlock Text="Sitio local:" Foreground="{StaticResource TxtSec}" VerticalAlignment="Center" />
-                                <TextBox x:Name="TxtLocalRuta" Width="260" IsReadOnly="True" />
-                                <Button Style="{StaticResource Mini}" Content="&#xE74A;" Click="LocalSubir_Click" ToolTipService.ToolTip="Subir un nivel" />
-                                <Button Style="{StaticResource Mini}" Content="&#xE72C;" Click="LocalActualizar_Click" ToolTipService.ToolTip="Actualizar" />
-                            </StackPanel>
-                            <Border Grid.Row="1" Height="1" Background="{StaticResource Linea}" />
-                            <Grid Grid.Row="2" Padding="12,5,12,5" Background="#0C1C32">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" /><ColumnDefinition Width="64" /><ColumnDefinition Width="86" /><ColumnDefinition Width="100" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Nombre" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                                <TextBlock Grid.Column="1" Text="Tamaño" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                                <TextBlock Grid.Column="2" Text="Tipo" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                                <TextBlock Grid.Column="3" Text="Modificado" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                            </Grid>
-                            <ListView x:Name="LocalLista" Grid.Row="3" SelectionMode="Extended"
-                                      ItemTemplate="{StaticResource FilaArchivo}" DoubleTapped="LocalLista_DoubleTapped"
-                                      RightTapped="Lista_RightTapped" Padding="4,2,4,2">
-                                <ListView.ContextFlyout>
-                                    <MenuFlyout>
-                                        <MenuFlyoutItem Text="Subir al servidor" Click="Subir_Click" />
-                                        <MenuFlyoutItem Text="Nueva carpeta" Click="LocalNuevaCarpeta_Click" />
-                                        <MenuFlyoutItem Text="Renombrar" Click="LocalRenombrar_Click" />
-                                        <MenuFlyoutItem Text="Eliminar" Click="LocalEliminar_Click" />
-                                        <MenuFlyoutSeparator />
-                                        <MenuFlyoutItem Text="Actualizar" Click="LocalActualizar_Click" />
-                                    </MenuFlyout>
-                                </ListView.ContextFlyout>
-                            </ListView>
-                            <TextBlock x:Name="LocalInfo" Grid.Row="4" Text="" Foreground="{StaticResource TxtSec}" FontSize="11.5" Padding="10,5,10,5" />
-                        </Grid>
-                    </Border>
-
-                    <!-- Botones de transferencia -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
-                        <Button Click="Subir_Click" Width="34" Height="34" Background="{StaticResource Acento}"
-                                ToolTipService.ToolTip="Subir al servidor">
-                            <FontIcon Glyph="&#xE72A;" FontSize="16" Foreground="White" />
-                        </Button>
-                        <Button Click="Descargar_Click" Width="34" Height="34" Background="{StaticResource PanelAlt}"
-                                ToolTipService.ToolTip="Descargar al equipo">
-                            <FontIcon Glyph="&#xE72B;" FontSize="16" Foreground="{StaticResource Cian}" />
-                        </Button>
-                    </StackPanel>
-
-                    <!-- Sitio remoto -->
-                    <Border Grid.Column="2" CornerRadius="6" Background="{StaticResource Panel}"
-                            BorderBrush="{StaticResource Linea}" BorderThickness="1">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Padding="10,8,10,4">
-                                <TextBlock Text="Sitio remoto:" Foreground="{StaticResource TxtSec}" VerticalAlignment="Center" />
-                                <TextBox x:Name="TxtRemotoRuta" Width="240" IsReadOnly="True" />
-                                <Button Style="{StaticResource Mini}" Content="&#xE74A;" Click="RemotoSubir_Click" ToolTipService.ToolTip="Subir un nivel" />
-                                <Button Style="{StaticResource Mini}" Content="&#xE72C;" Click="RemotoActualizar_Click" ToolTipService.ToolTip="Actualizar" />
-                            </StackPanel>
-                            <Border Grid.Row="1" Height="1" Background="{StaticResource Linea}" />
-                            <Grid Grid.Row="2" Padding="12,5,12,5" Background="#0C1C32">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" /><ColumnDefinition Width="64" /><ColumnDefinition Width="86" /><ColumnDefinition Width="100" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Nombre" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                                <TextBlock Grid.Column="1" Text="Tamaño" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                                <TextBlock Grid.Column="2" Text="Tipo" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                                <TextBlock Grid.Column="3" Text="Modificado" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                            </Grid>
-                            <ListView x:Name="RemotoLista" Grid.Row="3" SelectionMode="Extended"
-                                      ItemTemplate="{StaticResource FilaArchivo}" DoubleTapped="RemotoLista_DoubleTapped"
-                                      RightTapped="Lista_RightTapped" Padding="4,2,4,2">
-                                <ListView.ContextFlyout>
-                                    <MenuFlyout>
-                                        <MenuFlyoutItem Text="Descargar al equipo" Click="Descargar_Click" />
-                                        <MenuFlyoutItem Text="Nueva carpeta" Click="RemotoNuevaCarpeta_Click" />
-                                        <MenuFlyoutItem Text="Renombrar" Click="RemotoRenombrar_Click" />
-                                        <MenuFlyoutItem Text="Eliminar" Click="RemotoEliminar_Click" />
-                                        <MenuFlyoutSeparator />
-                                        <MenuFlyoutItem Text="Actualizar" Click="RemotoActualizar_Click" />
-                                    </MenuFlyout>
-                                </ListView.ContextFlyout>
-                            </ListView>
-                            <TextBlock x:Name="RemotoInfo" Grid.Row="4" Text="No conectado" Foreground="{StaticResource TxtSec}" FontSize="11.5" Padding="10,5,10,5" />
-                        </Grid>
-                    </Border>
-                </Grid>
-
-                <!-- Cola de transferencias -->
-                <Border Grid.Row="2" Height="150" Margin="10,0,10,8" CornerRadius="6"
-                        Background="{StaticResource Panel}" BorderBrush="{StaticResource Linea}" BorderThickness="1">
+                <!-- Sitio local -->
+                <Border Grid.Column="0" CornerRadius="6" Background="#0F2036" BorderBrush="#1E3A5C" BorderThickness="1">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="18" Padding="12,8,12,6">
-                            <TextBlock x:Name="TabCola" Text="Archivos en cola (0)" Foreground="{StaticResource Cian}" FontWeight="SemiBold" />
-                            <TextBlock x:Name="TabFallidas" Text="Transferencias fallidas (0)" Foreground="{StaticResource TxtSec}" />
-                            <TextBlock x:Name="TabHechas" Text="Transferencias satisfactorias (0)" Foreground="{StaticResource TxtSec}" />
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Padding="10,8,10,4">
+                            <TextBlock Text="Sitio local:" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                            <TextBox x:Name="TxtLocalRuta" Width="240" IsReadOnly="True" />
+                            <Button Content="&#xE74A;" FontFamily="Segoe Fluent Icons" Padding="7,4" Background="Transparent" BorderThickness="0" Foreground="#C7D6EC" Click="LocalSubir_Click" ToolTipService.ToolTip="Subir un nivel" />
+                            <Button Content="&#xE72C;" FontFamily="Segoe Fluent Icons" Padding="7,4" Background="Transparent" BorderThickness="0" Foreground="#C7D6EC" Click="LocalActualizar_Click" ToolTipService.ToolTip="Actualizar" />
                         </StackPanel>
-                        <Grid Grid.Row="1" Padding="12,4,12,4" Background="#0C1C32" BorderBrush="{StaticResource Linea}" BorderThickness="0,1,0,1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" /><ColumnDefinition Width="220" /><ColumnDefinition Width="70" /><ColumnDefinition Width="110" /><ColumnDefinition Width="90" /><ColumnDefinition Width="140" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Servidor / Archivo local" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                            <TextBlock Grid.Column="1" Text="Dirección remota" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                            <TextBlock Grid.Column="2" Text="Tamaño" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                            <TextBlock Grid.Column="3" Text="Progreso" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                            <TextBlock Grid.Column="4" Text="Velocidad" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                            <TextBlock Grid.Column="5" Text="Estado" Foreground="{StaticResource TxtSec}" FontSize="12" />
-                        </Grid>
-                        <Grid Grid.Row="2">
-                            <ListView x:Name="ColaLista" SelectionMode="None" Padding="0,2,0,2">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Height="30" Padding="12,0,12,0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" /><ColumnDefinition Width="220" /><ColumnDefinition Width="70" /><ColumnDefinition Width="110" /><ColumnDefinition Width="90" /><ColumnDefinition Width="140" />
-                                            </Grid.ColumnDefinitions>
-                                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                                <FontIcon Glyph="{Binding DireccionIcono}" FontSize="13" Foreground="#22D3EE" />
-                                                <TextBlock Text="{Binding Nombre}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-                                            </StackPanel>
-                                            <TextBlock Grid.Column="1" Text="{Binding RutaRemota}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-                                            <TextBlock Grid.Column="2" Text="{Binding TamanoTexto}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" />
-                                            <StackPanel Grid.Column="3" VerticalAlignment="Center" Spacing="1">
-                                                <muxc:ProgressBar Value="{Binding Progreso, Mode=OneWay}" Maximum="100" Width="90" HorizontalAlignment="Left" Foreground="#1E6BFF" />
-                                                <TextBlock Text="{Binding ProgresoTexto, Mode=OneWay}" FontSize="10.5" Foreground="#9DB2CC" />
-                                            </StackPanel>
-                                            <TextBlock Grid.Column="4" Text="{Binding VelocidadTexto, Mode=OneWay}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" />
-                                            <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding EstadoTexto, Mode=OneWay}" FontSize="11.5" Foreground="#E6EEF8" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="70" />
-                                                <Button Click="Pausar_Click" Padding="4" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="Pausar/Reanudar">
-                                                    <FontIcon Glyph="&#xE769;" FontSize="12" Foreground="#9DB2CC" />
-                                                </Button>
-                                                <Button Click="Cancelar_Click" Padding="4" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="Cancelar/Quitar">
-                                                    <FontIcon Glyph="&#xE711;" FontSize="12" Foreground="#9DB2CC" />
-                                                </Button>
-                                            </StackPanel>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <TextBlock x:Name="ColaVacia" Text="No hay transferencias en cola."
-                                       Foreground="{StaticResource TxtSec}" FontSize="12" Padding="12,10,12,10"
-                                       VerticalAlignment="Top" />
-                        </Grid>
+                        <Border Grid.Row="1" Height="1" Background="#1E3A5C" />
+                        <ListView x:Name="LocalLista" Grid.Row="2" SelectionMode="Extended"
+                                  DoubleTapped="LocalLista_DoubleTapped" RightTapped="Lista_RightTapped" Padding="4,2">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="24">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="64" />
+                                            <ColumnDefinition Width="86" />
+                                            <ColumnDefinition Width="100" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                            <FontIcon Glyph="{Binding Glyph}" FontSize="15" Foreground="#E0C060" />
+                                            <TextBlock Text="{Binding Nombre}" FontSize="12.5" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding TamanoTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Tipo}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="{Binding FechaTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Subir al servidor" Click="Subir_Click" />
+                                    <MenuFlyoutItem Text="Nueva carpeta" Click="LocalNuevaCarpeta_Click" />
+                                    <MenuFlyoutItem Text="Renombrar" Click="LocalRenombrar_Click" />
+                                    <MenuFlyoutItem Text="Eliminar" Click="LocalEliminar_Click" />
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem Text="Actualizar" Click="LocalActualizar_Click" />
+                                </MenuFlyout>
+                            </ListView.ContextFlyout>
+                        </ListView>
+                        <TextBlock x:Name="LocalInfo" Grid.Row="3" Text="" Foreground="#9DB2CC" FontSize="11.5" Padding="10,5" />
+                    </Grid>
+                </Border>
+
+                <!-- Botones de transferencia -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
+                    <Button Click="Subir_Click" Width="34" Height="34" Background="#1E6BFF" ToolTipService.ToolTip="Subir al servidor">
+                        <FontIcon Glyph="&#xE74A;" FontSize="16" Foreground="White" />
+                    </Button>
+                    <Button Click="Descargar_Click" Width="34" Height="34" Background="#122844" ToolTipService.ToolTip="Descargar al equipo">
+                        <FontIcon Glyph="&#xE74B;" FontSize="16" Foreground="#22D3EE" />
+                    </Button>
+                </StackPanel>
+
+                <!-- Sitio remoto -->
+                <Border Grid.Column="2" CornerRadius="6" Background="#0F2036" BorderBrush="#1E3A5C" BorderThickness="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Padding="10,8,10,4">
+                            <TextBlock Text="Sitio remoto:" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                            <TextBox x:Name="TxtRemotoRuta" Width="220" IsReadOnly="True" />
+                            <Button Content="&#xE74A;" FontFamily="Segoe Fluent Icons" Padding="7,4" Background="Transparent" BorderThickness="0" Foreground="#C7D6EC" Click="RemotoSubir_Click" ToolTipService.ToolTip="Subir un nivel" />
+                            <Button Content="&#xE72C;" FontFamily="Segoe Fluent Icons" Padding="7,4" Background="Transparent" BorderThickness="0" Foreground="#C7D6EC" Click="RemotoActualizar_Click" ToolTipService.ToolTip="Actualizar" />
+                        </StackPanel>
+                        <Border Grid.Row="1" Height="1" Background="#1E3A5C" />
+                        <ListView x:Name="RemotoLista" Grid.Row="2" SelectionMode="Extended"
+                                  DoubleTapped="RemotoLista_DoubleTapped" RightTapped="Lista_RightTapped" Padding="4,2">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="24">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="64" />
+                                            <ColumnDefinition Width="86" />
+                                            <ColumnDefinition Width="100" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                            <FontIcon Glyph="{Binding Glyph}" FontSize="15" Foreground="#E0C060" />
+                                            <TextBlock Text="{Binding Nombre}" FontSize="12.5" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding TamanoTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Tipo}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="{Binding FechaTexto}" FontSize="12" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Descargar al equipo" Click="Descargar_Click" />
+                                    <MenuFlyoutItem Text="Nueva carpeta" Click="RemotoNuevaCarpeta_Click" />
+                                    <MenuFlyoutItem Text="Renombrar" Click="RemotoRenombrar_Click" />
+                                    <MenuFlyoutItem Text="Eliminar" Click="RemotoEliminar_Click" />
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem Text="Actualizar" Click="RemotoActualizar_Click" />
+                                </MenuFlyout>
+                            </ListView.ContextFlyout>
+                        </ListView>
+                        <TextBlock x:Name="RemotoInfo" Grid.Row="3" Text="No conectado" Foreground="#9DB2CC" FontSize="11.5" Padding="10,5" />
                     </Grid>
                 </Border>
             </Grid>
+
+            <!-- Cola de transferencias -->
+            <Border Grid.Row="2" Height="150" Margin="10,0,10,8" CornerRadius="6"
+                    Background="#0F2036" BorderBrush="#1E3A5C" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="18" Padding="12,8,12,6">
+                        <TextBlock x:Name="TabCola" Text="Archivos en cola (0)" Foreground="#22D3EE" FontWeight="SemiBold" />
+                        <TextBlock x:Name="TabFallidas" Text="Transferencias fallidas (0)" Foreground="#9DB2CC" />
+                        <TextBlock x:Name="TabHechas" Text="Transferencias satisfactorias (0)" Foreground="#9DB2CC" />
+                    </StackPanel>
+                    <Border Grid.Row="1" Height="1" Background="#1E3A5C" />
+                    <Grid Grid.Row="2">
+                        <ListView x:Name="ColaLista" SelectionMode="None" Padding="0,2">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="30" Padding="12,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="220" />
+                                            <ColumnDefinition Width="70" />
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="90" />
+                                            <ColumnDefinition Width="140" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                            <FontIcon Glyph="{Binding DireccionIcono}" FontSize="13" Foreground="#22D3EE" />
+                                            <TextBlock Text="{Binding Nombre}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding RutaRemota}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Grid.Column="2" Text="{Binding TamanoTexto}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                        <StackPanel Grid.Column="3" VerticalAlignment="Center" Spacing="1">
+                                            <ProgressBar Value="{Binding Progreso, Mode=OneWay}" Maximum="100" Width="90" HorizontalAlignment="Left" Foreground="#1E6BFF" />
+                                            <TextBlock Text="{Binding ProgresoTexto, Mode=OneWay}" FontSize="10.5" Foreground="#9DB2CC" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="4" Text="{Binding VelocidadTexto, Mode=OneWay}" FontSize="11.5" Foreground="#9DB2CC" VerticalAlignment="Center" />
+                                        <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding EstadoTexto, Mode=OneWay}" FontSize="11.5" Foreground="#E6EEF8" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="70" />
+                                            <Button Click="Pausar_Click" Padding="4" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="Pausar/Reanudar">
+                                                <FontIcon Glyph="&#xE769;" FontSize="12" Foreground="#9DB2CC" />
+                                            </Button>
+                                            <Button Click="Cancelar_Click" Padding="4" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="Cancelar/Quitar">
+                                                <FontIcon Glyph="&#xE711;" FontSize="12" Foreground="#9DB2CC" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <TextBlock x:Name="ColaVacia" Text="No hay transferencias en cola."
+                                   Foreground="#9DB2CC" FontSize="12" Padding="12,10"
+                                   VerticalAlignment="Top" />
+                    </Grid>
+                </Grid>
+            </Border>
         </Grid>
 
         <!-- BARRA DE ESTADO -->
-        <Grid Grid.Row="4" Background="#0C1B30" Padding="12,5,12,5" BorderBrush="{StaticResource Linea}" BorderThickness="0,1,0,0">
+        <Grid Grid.Row="3" Background="#0C1B30" Padding="12,5" BorderBrush="#1E3A5C" BorderThickness="0,1,0,0">
             <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                 <Ellipse x:Name="EstadoPunto" Width="8" Height="8" Fill="#6B7B90" />
-                <TextBlock x:Name="TxtEstado" Text="No conectado" Foreground="{StaticResource TxtSec}" FontSize="12" />
+                <TextBlock x:Name="TxtEstado" Text="No conectado" Foreground="#9DB2CC" FontSize="12" />
             </StackPanel>
         </Grid>
     </Grid>
