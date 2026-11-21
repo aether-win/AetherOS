@@ -49,6 +49,15 @@
                                       Toggled="Emular_Toggled" />
                     </Grid>
 
+                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                        <TextBlock Text="Convertir a:" VerticalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <ComboBox x:Name="CmbObjetivo" MinWidth="160" SelectionChanged="Objetivo_Changed">
+                            <ComboBoxItem Content="Xbox 360" />
+                            <ComboBoxItem Content="DualShock 4" />
+                        </ComboBox>
+                    </StackPanel>
+
                     <StackPanel x:Name="PanelRequisitos" Orientation="Horizontal" Spacing="10" Visibility="Collapsed">
                         <Button x:Name="BtnVigem" Content="Instalar ViGEmBus" Click="Vigem_Click" />
                         <Button x:Name="BtnHidHide" Content="Instalar HidHide" Click="HidHide_Click" />

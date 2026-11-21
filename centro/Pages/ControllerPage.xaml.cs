@@ -35,9 +35,11 @@ public sealed partial class ControllerPage : Page
 
         _cargando = true;
         TglEmular.IsOn = MotorControlador.Activo;
+        CmbObjetivo.SelectedIndex = MotorControlador.Objetivo == TipoVirtual.DualShock4 ? 1 : 0;
         _cargando = false;
 
         TglEmular.IsEnabled = vigem;
+        CmbObjetivo.IsEnabled = vigem && !MotorControlador.Activo;   // no cambiar destino en caliente
         PanelRequisitos.Visibility = vigem ? Visibility.Collapsed : Visibility.Visible;
 
         if (!vigem)
@@ -51,6 +53,17 @@ public sealed partial class ControllerPage : Page
                 ? "Activa: tu mando se refleja como un Xbox 360 virtual." + sony
                 : "Lista para activar. Convierte tu mando en un Xbox 360 virtual." + sony;
         }
+    }
+
+    private void Objetivo_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (_cargando)
+        {
+            return;
+        }
+        MotorControlador.Objetivo = CmbObjetivo.SelectedIndex == 1
+            ? TipoVirtual.DualShock4
+            : TipoVirtual.Xbox360;
     }
 
     private void Emular_Toggled(object sender, RoutedEventArgs e)
