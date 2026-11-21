@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Specialized;
 using AetherTransfer.Connections;
 using AetherTransfer.Models;
 using AetherTransfer.Protocols;
+using AetherTransfer.TransferEngine;
 using AetherTransfer.Views;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -22,6 +24,7 @@ public sealed partial class MainWindow : Window
     private readonly ObservableCollection<string> _log = new();
 
     private IServidorRemoto? _servidor;
+    private GestorTransferencias _gestor = null!;
     private string _rutaLocal = "";
     private string _rutaRemota = "/";
 
@@ -40,8 +43,77 @@ public sealed partial class MainWindow : Window
         RemotoLista.ItemsSource = _remoto;
         LogLista.ItemsSource = _log;
 
+        _gestor = new GestorTransferencias(() => _servidor, OnTransferenciaCompletada);
+        ColaLista.ItemsSource = _gestor.Items;
+        _gestor.Items.CollectionChanged += OnColaChanged;
+        ActualizarContadores();
+
         CargarLocal(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
         Log("Aether Transfer listo.");
+    }
+
+    private void OnTransferenciaCompletada()
+    {
+        CargarLocal(_rutaLocal);
+        _ = CargarRemoto(_rutaRemota);
+    }
+
+    private void OnColaChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems is not null)
+        {
+            foreach (object o in e.NewItems)
+            {
+                if (o is TransferItem ti)
+                {
+                    ti.PropertyChanged += (_, _) => ActualizarContadores();
+                }
+            }
+        }
+        ActualizarContadores();
+    }
+
+    private void ActualizarContadores()
+    {
+        int enCola = _gestor.Items.Count(i => i.Estado is EstadoTransfer.EnCola or EstadoTransfer.Transfiriendo or EstadoTransfer.Pausado);
+        int fallidas = _gestor.Items.Count(i => i.Estado is EstadoTransfer.Fallido or EstadoTransfer.Cancelado);
+        int hechas = _gestor.Items.Count(i => i.Estado == EstadoTransfer.Completado);
+        TabCola.Text = $"Archivos en cola ({enCola})";
+        TabFallidas.Text = $"Transferencias fallidas ({fallidas})";
+        TabHechas.Text = $"Transferencias satisfactorias ({hechas})";
+        ColaVacia.Visibility = _gestor.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void Pausar_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.DataContext is not TransferItem item)
+        {
+            return;
+        }
+        if (item.Estado == EstadoTransfer.Transfiriendo)
+        {
+            _gestor.Pausar(item);
+        }
+        else
+        {
+            _gestor.Reanudar(item);
+        }
+    }
+
+    private void Cancelar_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.DataContext is not TransferItem item)
+        {
+            return;
+        }
+        if (item.Estado is EstadoTransfer.Completado or EstadoTransfer.Cancelado or EstadoTransfer.Fallido)
+        {
+            _gestor.Quitar(item);
+        }
+        else
+        {
+            _gestor.Cancelar(item);
+        }
     }
 
     // ── Registro ─────────────────────────────────────────────────────────────
@@ -114,7 +186,7 @@ public sealed partial class MainWindow : Window
 
     private void LocalActualizar_Click(object sender, RoutedEventArgs e) => CargarLocal(_rutaLocal);
 
-    private async void LocalLista_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+    private void LocalLista_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
     {
         if (LocalLista.SelectedItem is not ElementoRemoto item)
         {
@@ -126,7 +198,7 @@ public sealed partial class MainWindow : Window
         }
         else
         {
-            await SubirUno(item);
+            SubirUno(item);
         }
     }
 
@@ -287,67 +359,61 @@ public sealed partial class MainWindow : Window
         }
         else
         {
-            await DescargarUno(item);
+            DescargarUno(item);
         }
     }
 
     // ── Transferencias ───────────────────────────────────────────────────────
 
-    private async void Subir_Click(object sender, RoutedEventArgs e)
+    private void Subir_Click(object sender, RoutedEventArgs e)
     {
         foreach (ElementoRemoto item in LocalLista.SelectedItems.OfType<ElementoRemoto>().Where(x => !x.EsCarpeta).ToList())
         {
-            await SubirUno(item);
+            SubirUno(item);
         }
     }
 
-    private async Task SubirUno(ElementoRemoto archivo)
+    private void SubirUno(ElementoRemoto archivo)
     {
         if (_servidor is null || !_servidor.Conectado)
         {
             Log("Conéctate primero para subir archivos.");
             return;
         }
-        try
+        _gestor.Encolar(new TransferItem
         {
-            string destino = UnirPosix(_rutaRemota, archivo.Nombre);
-            Log($"Subiendo {archivo.Nombre}…");
-            await _servidor.SubirAsync(archivo.Ruta, destino);
-            Log($"Subido: {archivo.Nombre}");
-            await CargarRemoto(_rutaRemota);
-        }
-        catch (Exception ex)
-        {
-            Log($"Error al subir {archivo.Nombre}: {ex.Message}");
-        }
+            Nombre = archivo.Nombre,
+            RutaLocal = archivo.Ruta,
+            RutaRemota = UnirPosix(_rutaRemota, archivo.Nombre),
+            Subida = true,
+            Tamano = archivo.Tamano,
+        });
+        Log($"En cola (subir): {archivo.Nombre}");
     }
 
-    private async void Descargar_Click(object sender, RoutedEventArgs e)
+    private void Descargar_Click(object sender, RoutedEventArgs e)
     {
         foreach (ElementoRemoto item in RemotoLista.SelectedItems.OfType<ElementoRemoto>().Where(x => !x.EsCarpeta).ToList())
         {
-            await DescargarUno(item);
+            DescargarUno(item);
         }
     }
 
-    private async Task DescargarUno(ElementoRemoto archivo)
+    private void DescargarUno(ElementoRemoto archivo)
     {
         if (_servidor is null || !_servidor.Conectado)
         {
             return;
         }
-        try
+        _gestor.Encolar(new TransferItem
         {
-            string destino = Path.Combine(_rutaLocal, archivo.Nombre);
-            Log($"Descargando {archivo.Nombre}…");
-            await _servidor.DescargarAsync(archivo.Ruta, destino);
-            Log($"Descargado: {archivo.Nombre}");
-            CargarLocal(_rutaLocal);
-        }
-        catch (Exception ex)
-        {
-            Log($"Error al descargar {archivo.Nombre}: {ex.Message}");
-        }
+            Nombre = archivo.Nombre,
+            RutaLocal = Path.Combine(_rutaLocal, archivo.Nombre),
+            RutaRemota = archivo.Ruta,
+            Subida = false,
+            Tamano = archivo.Tamano,
+        });
+        Log($"En cola (descargar): {archivo.Nombre}");
     }
 
     // ── Menú ─────────────────────────────────────────────────────────────────

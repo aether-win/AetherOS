@@ -15,8 +15,8 @@ public interface IServidorRemoto : IAsyncDisposable
     Task DesconectarAsync();
 
     Task<IReadOnlyList<ElementoRemoto>> ListarAsync(string ruta, CancellationToken ct = default);
-    Task DescargarAsync(string rutaRemota, string rutaLocal, IProgress<double>? progreso = null, CancellationToken ct = default);
-    Task SubirAsync(string rutaLocal, string rutaRemota, IProgress<double>? progreso = null, CancellationToken ct = default);
+    Task DescargarAsync(string rutaRemota, string rutaLocal, IProgress<ProgresoTransfer>? progreso = null, bool reanudar = false, CancellationToken ct = default);
+    Task SubirAsync(string rutaLocal, string rutaRemota, IProgress<ProgresoTransfer>? progreso = null, bool reanudar = false, CancellationToken ct = default);
     Task CrearCarpetaAsync(string ruta, CancellationToken ct = default);
     Task EliminarAsync(string ruta, bool esCarpeta, CancellationToken ct = default);
     Task RenombrarAsync(string origen, string destino, CancellationToken ct = default);

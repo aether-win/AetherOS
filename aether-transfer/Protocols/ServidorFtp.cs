@@ -60,24 +60,26 @@ public sealed class ServidorFtp : IServidorRemoto
             .ToList();
     }
 
-    public async Task DescargarAsync(string rutaRemota, string rutaLocal, IProgress<double>? progreso = null, CancellationToken ct = default)
+    public async Task DescargarAsync(string rutaRemota, string rutaLocal, IProgress<ProgresoTransfer>? progreso = null, bool reanudar = false, CancellationToken ct = default)
     {
         if (_cliente is null)
         {
             return;
         }
-        IProgress<FtpProgress>? fp = progreso is null ? null : new Progress<FtpProgress>(p => progreso.Report(p.Progress));
-        await _cliente.DownloadFile(rutaLocal, rutaRemota, FtpLocalExists.Overwrite, FtpVerify.None, fp, ct);
+        IProgress<FtpProgress>? fp = progreso is null ? null : new Progress<FtpProgress>(p => progreso.Report(new ProgresoTransfer(p.Progress, p.TransferSpeed)));
+        FtpLocalExists modo = reanudar ? FtpLocalExists.Resume : FtpLocalExists.Overwrite;
+        await _cliente.DownloadFile(rutaLocal, rutaRemota, modo, FtpVerify.None, fp, ct);
     }
 
-    public async Task SubirAsync(string rutaLocal, string rutaRemota, IProgress<double>? progreso = null, CancellationToken ct = default)
+    public async Task SubirAsync(string rutaLocal, string rutaRemota, IProgress<ProgresoTransfer>? progreso = null, bool reanudar = false, CancellationToken ct = default)
     {
         if (_cliente is null)
         {
             return;
         }
-        IProgress<FtpProgress>? fp = progreso is null ? null : new Progress<FtpProgress>(p => progreso.Report(p.Progress));
-        await _cliente.UploadFile(rutaLocal, rutaRemota, FtpRemoteExists.Overwrite, false, FtpVerify.None, fp, ct);
+        IProgress<FtpProgress>? fp = progreso is null ? null : new Progress<FtpProgress>(p => progreso.Report(new ProgresoTransfer(p.Progress, p.TransferSpeed)));
+        FtpRemoteExists modo = reanudar ? FtpRemoteExists.Resume : FtpRemoteExists.Overwrite;
+        await _cliente.UploadFile(rutaLocal, rutaRemota, modo, false, FtpVerify.None, fp, ct);
     }
 
     public async Task CrearCarpetaAsync(string ruta, CancellationToken ct = default)

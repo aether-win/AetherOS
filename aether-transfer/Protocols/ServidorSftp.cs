@@ -63,7 +63,7 @@ public sealed class ServidorSftp : IServidorRemoto
             .ToList();
     }, ct);
 
-    public Task DescargarAsync(string rutaRemota, string rutaLocal, IProgress<double>? progreso = null, CancellationToken ct = default) => Task.Run(() =>
+    public Task DescargarAsync(string rutaRemota, string rutaLocal, IProgress<ProgresoTransfer>? progreso = null, bool reanudar = false, CancellationToken ct = default) => Task.Run(() =>
     {
         if (_cliente is null)
         {
@@ -72,16 +72,15 @@ public sealed class ServidorSftp : IServidorRemoto
         long total = 0;
         try { total = _cliente.GetAttributes(rutaRemota).Size; } catch { /* sin tamaño */ }
         using FileStream fs = File.Create(rutaLocal);
+        var medidor = new MedidorVelocidad();
         _cliente.DownloadFile(rutaRemota, fs, b =>
         {
-            if (total > 0)
-            {
-                progreso?.Report((double)b / total * 100.0);
-            }
+            ct.ThrowIfCancellationRequested();
+            Reportar(progreso, b, total, medidor);
         });
     }, ct);
 
-    public Task SubirAsync(string rutaLocal, string rutaRemota, IProgress<double>? progreso = null, CancellationToken ct = default) => Task.Run(() =>
+    public Task SubirAsync(string rutaLocal, string rutaRemota, IProgress<ProgresoTransfer>? progreso = null, bool reanudar = false, CancellationToken ct = default) => Task.Run(() =>
     {
         if (_cliente is null)
         {
@@ -89,14 +88,48 @@ public sealed class ServidorSftp : IServidorRemoto
         }
         long total = new FileInfo(rutaLocal).Length;
         using FileStream fs = File.OpenRead(rutaLocal);
+        var medidor = new MedidorVelocidad();
         _cliente.UploadFile(fs, rutaRemota, b =>
         {
-            if (total > 0)
-            {
-                progreso?.Report((double)b / total * 100.0);
-            }
+            ct.ThrowIfCancellationRequested();
+            Reportar(progreso, b, total, medidor);
         });
     }, ct);
+
+    private static void Reportar(IProgress<ProgresoTransfer>? progreso, ulong bytes, long total, MedidorVelocidad medidor)
+    {
+        if (progreso is null)
+        {
+            return;
+        }
+        double pct = total > 0 ? (double)bytes / total * 100.0 : 0;
+        double vel = medidor.Calcular((long)bytes);
+        progreso.Report(new ProgresoTransfer(pct, vel));
+    }
+
+    private sealed class MedidorVelocidad
+    {
+        private readonly System.Diagnostics.Stopwatch _sw = System.Diagnostics.Stopwatch.StartNew();
+        private long _ultimoMs;
+        private long _ultimosBytes;
+        private double _velocidad;
+
+        public double Calcular(long bytes)
+        {
+            long ms = _sw.ElapsedMilliseconds;
+            if (ms - _ultimoMs >= 250)
+            {
+                double seg = (ms - _ultimoMs) / 1000.0;
+                if (seg > 0)
+                {
+                    _velocidad = (bytes - _ultimosBytes) / seg;
+                }
+                _ultimoMs = ms;
+                _ultimosBytes = bytes;
+            }
+            return _velocidad;
+        }
+    }
 
     public Task CrearCarpetaAsync(string ruta, CancellationToken ct = default) => Task.Run(() => _cliente?.CreateDirectory(ruta), ct);
 
