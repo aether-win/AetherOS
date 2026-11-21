@@ -10,6 +10,8 @@ public static class ConfigCentro
     private sealed class Datos
     {
         public bool Inteligencia { get; set; }
+        public double Deadzone { get; set; } = 0.10;      // 0..1 (zona muerta de sticks)
+        public double Sensibilidad { get; set; } = 1.0;   // 0.5..2.0
     }
 
     private static string Carpeta =>
@@ -48,6 +50,30 @@ public static class ConfigCentro
         {
             Datos d = Leer();
             d.Inteligencia = value;
+            Escribir(d);
+        }
+    }
+
+    /// <summary>Zona muerta de los sticks del controlador (0..1).</summary>
+    public static double Deadzone
+    {
+        get => Leer().Deadzone;
+        set
+        {
+            Datos d = Leer();
+            d.Deadzone = value;
+            Escribir(d);
+        }
+    }
+
+    /// <summary>Sensibilidad de los sticks (0.5..2.0).</summary>
+    public static double Sensibilidad
+    {
+        get => Leer().Sensibilidad;
+        set
+        {
+            Datos d = Leer();
+            d.Sensibilidad = value;
             Escribir(d);
         }
     }

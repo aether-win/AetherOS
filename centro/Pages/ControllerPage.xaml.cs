@@ -19,6 +19,7 @@ public sealed partial class ControllerPage : Page
 {
     private bool _ocupado;
     private bool _cargando;
+    private bool _listo;
     private readonly DispatcherTimer _diag = new() { Interval = TimeSpan.FromMilliseconds(60) };
 
     public ControllerPage()
@@ -98,7 +99,12 @@ public sealed partial class ControllerPage : Page
         _cargando = true;
         TglEmular.IsOn = MotorControlador.Activo;
         CmbObjetivo.SelectedIndex = MotorControlador.Objetivo == TipoVirtual.DualShock4 ? 1 : 0;
+        SldDeadzone.Value = Math.Clamp(ConfigCentro.Deadzone * 100.0, 0, 40);
+        SldSens.Value = Math.Clamp(ConfigCentro.Sensibilidad * 100.0, 50, 200);
+        TxtDeadzone.Text = $"{SldDeadzone.Value:0}%";
+        TxtSens.Text = $"{SldSens.Value:0}%";
         _cargando = false;
+        _listo = true;
 
         TglEmular.IsEnabled = vigem;
         CmbObjetivo.IsEnabled = vigem && !MotorControlador.Activo;   // no cambiar destino en caliente
@@ -115,6 +121,21 @@ public sealed partial class ControllerPage : Page
                 ? "Activa: tu mando se refleja como un Xbox 360 virtual." + sony
                 : "Lista para activar. Convierte tu mando en un Xbox 360 virtual." + sony;
         }
+    }
+
+    private void Ajuste_Changed(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        if (!_listo || _cargando)
+        {
+            return;
+        }
+        double dz = SldDeadzone.Value / 100.0;
+        double s = SldSens.Value / 100.0;
+        ConfigCentro.Deadzone = dz;
+        ConfigCentro.Sensibilidad = s;
+        MotorControlador.ActualizarAjustes(dz, s);
+        TxtDeadzone.Text = $"{SldDeadzone.Value:0}%";
+        TxtSens.Text = $"{SldSens.Value:0}%";
     }
 
     private void Objetivo_Changed(object sender, SelectionChangedEventArgs e)

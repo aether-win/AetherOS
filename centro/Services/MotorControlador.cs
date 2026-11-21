@@ -47,6 +47,23 @@ public static class MotorControlador
     /// <summary>Destino de conversión. Solo tiene efecto al (re)iniciar.</summary>
     public static TipoVirtual Objetivo { get; set; } = TipoVirtual.Xbox360;
 
+    private static double _deadzone = 0.10;
+    private static double _sens = 1.0;
+
+    /// <summary>Recarga zona muerta y sensibilidad desde la configuración.</summary>
+    public static void CargarAjustes()
+    {
+        _deadzone = Math.Clamp(ConfigCentro.Deadzone, 0.0, 0.9);
+        _sens = Math.Clamp(ConfigCentro.Sensibilidad, 0.1, 3.0);
+    }
+
+    /// <summary>Actualiza en caliente zona muerta y sensibilidad.</summary>
+    public static void ActualizarAjustes(double deadzone, double sensibilidad)
+    {
+        _deadzone = Math.Clamp(deadzone, 0.0, 0.9);
+        _sens = Math.Clamp(sensibilidad, 0.1, 3.0);
+    }
+
     public static bool ViGEmDisponible()
     {
         try
@@ -103,6 +120,7 @@ public static class MotorControlador
         }
         try
         {
+            CargarAjustes();
             _client = new ViGEmClient();
 
             if (Objetivo == TipoVirtual.DualShock4)
@@ -155,6 +173,7 @@ public static class MotorControlador
                 EstadoMando? st = LeerEntrada();
                 if (st is EstadoMando e)
                 {
+                    AjustarSticks(ref e);
                     if (_x360 is not null)
                     {
                         AplicarXbox360(e, _x360);
@@ -344,6 +363,28 @@ public static class MotorControlador
         if (e.Left) { return DualShock4DPadDirection.West; }
         if (e.Right) { return DualShock4DPadDirection.East; }
         return DualShock4DPadDirection.None;
+    }
+
+    // ── Zona muerta y sensibilidad ───────────────────────────────────────────
+
+    private static void AjustarSticks(ref EstadoMando e)
+    {
+        (e.LX, e.LY) = ProcesarStick(e.LX, e.LY);
+        (e.RX, e.RY) = ProcesarStick(e.RX, e.RY);
+    }
+
+    private static (double, double) ProcesarStick(double x, double y)
+    {
+        double mag = Math.Sqrt((x * x) + (y * y));
+        if (mag <= _deadzone || mag <= 0.0)
+        {
+            return (0.0, 0.0);
+        }
+
+        // Reescalar fuera de la zona muerta a 0..1 y aplicar sensibilidad.
+        double norm = (mag - _deadzone) / (1.0 - _deadzone);
+        norm = Math.Min(norm * _sens, 1.0);
+        return (x / mag * norm, y / mag * norm);
     }
 
     // ── Conversiones ─────────────────────────────────────────────────────────

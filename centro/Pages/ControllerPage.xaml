@@ -81,6 +81,23 @@
                         </ComboBox>
                     </StackPanel>
 
+                    <StackPanel Spacing="4">
+                        <Grid>
+                            <TextBlock Text="Zona muerta de sticks" FontSize="13"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock x:Name="TxtDeadzone" Text="10%" HorizontalAlignment="Right" FontSize="13" />
+                        </Grid>
+                        <Slider x:Name="SldDeadzone" Minimum="0" Maximum="40" StepFrequency="1"
+                                ValueChanged="Ajuste_Changed" />
+                        <Grid>
+                            <TextBlock Text="Sensibilidad" FontSize="13"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock x:Name="TxtSens" Text="100%" HorizontalAlignment="Right" FontSize="13" />
+                        </Grid>
+                        <Slider x:Name="SldSens" Minimum="50" Maximum="200" StepFrequency="5"
+                                ValueChanged="Ajuste_Changed" />
+                    </StackPanel>
+
                     <StackPanel x:Name="PanelRequisitos" Orientation="Horizontal" Spacing="10" Visibility="Collapsed">
                         <Button x:Name="BtnVigem" Content="Instalar ViGEmBus" Click="Vigem_Click" />
                         <Button x:Name="BtnHidHide" Content="Instalar HidHide" Click="HidHide_Click" />
