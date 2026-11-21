@@ -44,40 +44,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- MENÚ -->
-        <muxc:MenuBar Grid.Row="0" Background="#0C1B30">
-            <muxc:MenuBarItem Title="Archivo">
-                <MenuFlyoutItem Text="Administrador de sitios" Click="AdminSitios_Click" />
-                <MenuFlyoutItem Text="Nueva conexión" Click="Conectar_Click" />
-                <MenuFlyoutSeparator />
-                <MenuFlyoutItem Text="Salir" Click="Salir_Click" />
-            </muxc:MenuBarItem>
-            <muxc:MenuBarItem Title="Edición">
-                <MenuFlyoutItem Text="Copiar" />
-                <MenuFlyoutItem Text="Pegar" />
-                <MenuFlyoutItem Text="Preferencias" Click="Config_Click" />
-            </muxc:MenuBarItem>
-            <muxc:MenuBarItem Title="Ver">
-                <MenuFlyoutItem Text="Actualizar" Click="RemotoActualizar_Click" />
-                <MenuFlyoutItem Text="Mostrar archivos ocultos" />
-            </muxc:MenuBarItem>
-            <muxc:MenuBarItem Title="Transferencia">
-                <MenuFlyoutItem Text="Cola de transferencias" />
-                <MenuFlyoutItem Text="Límites de velocidad" />
-            </muxc:MenuBarItem>
-            <muxc:MenuBarItem Title="Servidor">
-                <MenuFlyoutItem Text="Conectar" Click="Conectar_Click" />
-                <MenuFlyoutItem Text="Desconectar" Click="Desconectar_Click" />
-                <MenuFlyoutItem Text="Información del servidor" />
-            </muxc:MenuBarItem>
-            <muxc:MenuBarItem Title="Marcadores">
-                <MenuFlyoutItem Text="Añadir marcador" />
-                <MenuFlyoutItem Text="Administrar marcadores" />
-            </muxc:MenuBarItem>
-            <muxc:MenuBarItem Title="Ayuda">
-                <MenuFlyoutItem Text="Acerca de Aether Transfer" />
-            </muxc:MenuBarItem>
-        </muxc:MenuBar>
+        <!-- MENÚ (quitado temporalmente para diagnóstico - sospechoso del crash) -->
+        <Border Grid.Row="0" Background="#0C1B30" Height="32" />
 
         <!-- BARRA DE HERRAMIENTAS -->
         <Grid Grid.Row="1" Background="#0C1B30" BorderBrush="{StaticResource Linea}" BorderThickness="0,1,0,1">
