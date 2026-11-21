@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using CentroAether;
 using CentroAether.Services;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -64,7 +65,14 @@ public sealed partial class ModosPage : Page
         {
             Estado.Severity = InfoBarSeverity.Success;
             Estado.Message = $"Modo {modo} activo.";
+            if (modo == "Gaming")
+            {
+                VentanaOverlayGaming.Mostrar("Máximo rendimiento activado");
+            }
         }
         Estado.IsOpen = true;
     }
+
+    private void VistaPreviaOverlay_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => VentanaOverlayGaming.Mostrar("Vista previa del overlay");
 }

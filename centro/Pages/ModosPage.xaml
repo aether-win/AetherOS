@@ -59,6 +59,13 @@
             <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                        Text="Trabajo: todo activo y con todas las animaciones de Windows 11. Gaming (solo con cargador): maximo rendimiento y animaciones reducidas. Bateria: eficiente, se activa solo al nivel que elijas." />
 
+            <Button Click="VistaPreviaOverlay_Click" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE7FC;" FontSize="16" />
+                    <TextBlock Text="Ver overlay de Gaming" />
+                </StackPanel>
+            </Button>
+
             <InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
 
         </StackPanel>
