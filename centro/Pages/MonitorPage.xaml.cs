@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using CentroAether.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -31,6 +33,18 @@ public sealed partial class MonitorPage : Page
         _tieneBase = false;
         Actualizar();      // primera lectura (establece la base de CPU)
         _timer.Start();
+        _ = MostrarModo();
+    }
+
+    private async Task MostrarModo()
+    {
+        if (!Aether.Disponible)
+        {
+            TxtModo.Text = "Modo: —";
+            return;
+        }
+        string modo = await Aether.ModoActual();
+        TxtModo.Text = $"Modo activo: {modo}";
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
