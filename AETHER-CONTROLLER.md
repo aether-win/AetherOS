@@ -4,6 +4,12 @@
 > **No** es un cambio de nombre de DS4Windows: identidad y arquitectura propias, en español.
 > Regla 15/38 vigente: **no compilar el .exe final** hasta autorización expresa.
 
+## Alcance real (decidido por Daniel, 2026-11-20)
+Lo único que importa: **DualShock 4 (PS4) → mando Xbox** funcionando, y **mando Xbox**
+cuando se quiera. **Fuera de alcance:** Nintendo/Joy-Con y los extras de PlayStation
+(giroscopio, touchpad, barra luminosa, gatillos adaptativos, vibración). No se desarrollan
+salvo que Daniel lo pida.
+
 ## Principios y límites (del spec, obligatorios)
 - No afirmar compatibilidad de un mando/función sin **probarlo en hardware real**.
 - No instalar drivers en silencio. ViGEmBus/HidHide solo con acción explícita del usuario.
@@ -16,7 +22,7 @@
 
 | # | Área | Estado |
 |---|------|--------|
-| 1 | Compatibilidad universal (PS/Xbox/Nintendo/genéricos) | 🟡 clasificación por fabricante hecha; por-modelo a probar |
+| 1 | DS4 (PS4) + Xbox (lo que importa a Daniel) | ✅ DS4 por HID crudo (USB+BT) + Xbox por gamepad; a probar en hardware |
 | 2 | Motor de conversión (virtual Xbox 360 / DualShock 4) | ✅ ambos destinos, entrada neutral, PS→Xbox y Xbox→PS |
 | 3 | Perfiles de mando (crear/editar; mando virtual por juego) | 🟡 perfil por juego fija el mando; import/export + editor visual pendientes |
 | 4 | Editor visual de botones + prueba en vivo | 🟡 **diagnóstico en vivo ✅**; editor gráfico de reasignación pendiente |
