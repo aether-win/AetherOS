@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AetherTransfer.Models;
+using AetherTransfer.Settings;
 using FluentFTP;
 
 namespace AetherTransfer.Protocols;
@@ -24,8 +25,14 @@ public sealed class ServidorFtp : IServidorRemoto
             Protocolo.FtpsImplicito => FtpEncryptionMode.Implicit,
             _ => FtpEncryptionMode.None,
         };
-        cliente.Config.ConnectTimeout = 15000;
+        ConfigApp.Datos cfg = ConfigApp.Actual;
+        cliente.Config.ConnectTimeout = Math.Max(5, cfg.TimeoutSegundos) * 1000;
         cliente.Config.DataConnectionType = FtpDataConnectionType.AutoPassive;
+        if (cfg.LimiteVelocidadKBps > 0)
+        {
+            cliente.Config.DownloadRateLimit = cfg.LimiteVelocidadKBps;
+            cliente.Config.UploadRateLimit = cfg.LimiteVelocidadKBps;
+        }
 
         await cliente.Connect(ct);
         _cliente = cliente;

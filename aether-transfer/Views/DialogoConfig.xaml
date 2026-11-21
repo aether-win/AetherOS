@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="AetherTransfer.Views.DialogoConfig"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Configuración"
+    PrimaryButtonText="Guardar"
+    CloseButtonText="Cancelar"
+    DefaultButton="Primary"
+    RequestedTheme="Dark">
+
+    <StackPanel Width="440" Spacing="16">
+        <TextBox x:Name="CLimite" Header="Límite de velocidad en KB/s (0 = sin límite)" />
+        <TextBox x:Name="CTimeout" Header="Tiempo de espera de conexión (segundos)" />
+        <ToggleSwitch x:Name="CConfirmar" Header="Confirmar antes de eliminar" OnContent="Sí" OffContent="No" />
+        <TextBlock Text="Las transferencias se procesan de una en una por conexión. El límite de velocidad se aplica a FTP/FTPS."
+                   FontSize="12" Foreground="#9DB2CC" TextWrapping="Wrap" />
+    </StackPanel>
+</ContentDialog>

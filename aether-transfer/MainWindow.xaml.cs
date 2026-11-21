@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using AetherTransfer.Connections;
 using AetherTransfer.Models;
 using AetherTransfer.Protocols;
+using AetherTransfer.Settings;
 using AetherTransfer.TransferEngine;
 using AetherTransfer.Views;
 using Microsoft.UI;
@@ -237,6 +238,12 @@ public sealed partial class MainWindow : Window
             TxtPuerto.Text = info.Puerto.ToString();
             await ConectarCon(info);
         }
+    }
+
+    private async void Config_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new DialogoConfig { XamlRoot = Raiz.XamlRoot };
+        await dlg.ShowAsync();
     }
 
     private async void Sincronizar_Click(object sender, RoutedEventArgs e)
@@ -499,7 +506,7 @@ public sealed partial class MainWindow : Window
         {
             return;
         }
-        if (!await Confirmar($"¿Eliminar «{item.Nombre}» del equipo?"))
+        if (ConfigApp.Actual.ConfirmarEliminar && !await Confirmar($"¿Eliminar «{item.Nombre}» del equipo?"))
         {
             return;
         }
@@ -562,7 +569,7 @@ public sealed partial class MainWindow : Window
         {
             return;
         }
-        if (!await Confirmar($"¿Eliminar «{item.Nombre}» del servidor?"))
+        if (ConfigApp.Actual.ConfirmarEliminar && !await Confirmar($"¿Eliminar «{item.Nombre}» del servidor?"))
         {
             return;
         }

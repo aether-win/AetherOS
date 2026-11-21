@@ -55,7 +55,7 @@
             <muxc:MenuBarItem Title="Edición">
                 <MenuFlyoutItem Text="Copiar" />
                 <MenuFlyoutItem Text="Pegar" />
-                <MenuFlyoutItem Text="Preferencias" />
+                <MenuFlyoutItem Text="Preferencias" Click="Config_Click" />
             </muxc:MenuBarItem>
             <muxc:MenuBarItem Title="Ver">
                 <MenuFlyoutItem Text="Actualizar" Click="RemotoActualizar_Click" />
@@ -104,7 +104,7 @@
                 <Button Style="{StaticResource Herramienta}">
                     <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE81C;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Historial" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
                 </Button>
-                <Button Style="{StaticResource Herramienta}">
+                <Button Style="{StaticResource Herramienta}" Click="Config_Click">
                     <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE713;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Configuración" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
                 </Button>
             </StackPanel>
@@ -163,7 +163,7 @@
                 <Button Style="{StaticResource Nav}">
                     <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE90F;" FontSize="16" /><TextBlock Text="Herramientas" /></StackPanel>
                 </Button>
-                <Button Style="{StaticResource Nav}">
+                <Button Style="{StaticResource Nav}" Click="Config_Click">
                     <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE713;" FontSize="16" /><TextBlock Text="Configuración" /></StackPanel>
                 </Button>
             </StackPanel>
