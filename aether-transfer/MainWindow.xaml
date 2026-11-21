@@ -227,7 +227,18 @@
                             </Grid>
                             <ListView x:Name="LocalLista" Grid.Row="3" SelectionMode="Extended"
                                       ItemTemplate="{StaticResource FilaArchivo}" DoubleTapped="LocalLista_DoubleTapped"
-                                      Padding="4,2,4,2" />
+                                      RightTapped="Lista_RightTapped" Padding="4,2,4,2">
+                                <ListView.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Text="Subir al servidor" Click="Subir_Click" />
+                                        <MenuFlyoutItem Text="Nueva carpeta" Click="LocalNuevaCarpeta_Click" />
+                                        <MenuFlyoutItem Text="Renombrar" Click="LocalRenombrar_Click" />
+                                        <MenuFlyoutItem Text="Eliminar" Click="LocalEliminar_Click" />
+                                        <MenuFlyoutSeparator />
+                                        <MenuFlyoutItem Text="Actualizar" Click="LocalActualizar_Click" />
+                                    </MenuFlyout>
+                                </ListView.ContextFlyout>
+                            </ListView>
                             <TextBlock x:Name="LocalInfo" Grid.Row="4" Text="" Foreground="{StaticResource TxtSec}" FontSize="11.5" Padding="10,5,10,5" />
                         </Grid>
                     </Border>
@@ -273,7 +284,18 @@
                             </Grid>
                             <ListView x:Name="RemotoLista" Grid.Row="3" SelectionMode="Extended"
                                       ItemTemplate="{StaticResource FilaArchivo}" DoubleTapped="RemotoLista_DoubleTapped"
-                                      Padding="4,2,4,2" />
+                                      RightTapped="Lista_RightTapped" Padding="4,2,4,2">
+                                <ListView.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Text="Descargar al equipo" Click="Descargar_Click" />
+                                        <MenuFlyoutItem Text="Nueva carpeta" Click="RemotoNuevaCarpeta_Click" />
+                                        <MenuFlyoutItem Text="Renombrar" Click="RemotoRenombrar_Click" />
+                                        <MenuFlyoutItem Text="Eliminar" Click="RemotoEliminar_Click" />
+                                        <MenuFlyoutSeparator />
+                                        <MenuFlyoutItem Text="Actualizar" Click="RemotoActualizar_Click" />
+                                    </MenuFlyout>
+                                </ListView.ContextFlyout>
+                            </ListView>
                             <TextBlock x:Name="RemotoInfo" Grid.Row="4" Text="No conectado" Foreground="{StaticResource TxtSec}" FontSize="11.5" Padding="10,5,10,5" />
                         </Grid>
                     </Border>

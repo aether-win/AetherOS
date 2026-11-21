@@ -416,6 +416,170 @@ public sealed partial class MainWindow : Window
         Log($"En cola (descargar): {archivo.Nombre}");
     }
 
+    // ── Menús contextuales ───────────────────────────────────────────────────
+
+    private void Lista_RightTapped(object sender, RightTappedRoutedEventArgs e)
+    {
+        if (sender is ListView lv && e.OriginalSource is FrameworkElement fe && fe.DataContext is ElementoRemoto it)
+        {
+            lv.SelectedItem = it;
+        }
+    }
+
+    private async void LocalNuevaCarpeta_Click(object sender, RoutedEventArgs e)
+    {
+        string? nombre = await PedirTexto("Nueva carpeta", "Nueva carpeta");
+        if (string.IsNullOrWhiteSpace(nombre))
+        {
+            return;
+        }
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(_rutaLocal, nombre));
+            CargarLocal(_rutaLocal);
+        }
+        catch (Exception ex) { Log($"Error al crear carpeta: {ex.Message}"); }
+    }
+
+    private async void LocalRenombrar_Click(object sender, RoutedEventArgs e)
+    {
+        if (LocalLista.SelectedItem is not ElementoRemoto item || item.Nombre == "..")
+        {
+            return;
+        }
+        string? nuevo = await PedirTexto("Renombrar", item.Nombre);
+        if (string.IsNullOrWhiteSpace(nuevo) || nuevo == item.Nombre)
+        {
+            return;
+        }
+        try
+        {
+            string destino = Path.Combine(_rutaLocal, nuevo);
+            if (item.EsCarpeta)
+            {
+                Directory.Move(item.Ruta, destino);
+            }
+            else
+            {
+                File.Move(item.Ruta, destino);
+            }
+            CargarLocal(_rutaLocal);
+        }
+        catch (Exception ex) { Log($"Error al renombrar: {ex.Message}"); }
+    }
+
+    private async void LocalEliminar_Click(object sender, RoutedEventArgs e)
+    {
+        if (LocalLista.SelectedItem is not ElementoRemoto item || item.Nombre == "..")
+        {
+            return;
+        }
+        if (!await Confirmar($"¿Eliminar «{item.Nombre}» del equipo?"))
+        {
+            return;
+        }
+        try
+        {
+            if (item.EsCarpeta)
+            {
+                Directory.Delete(item.Ruta, true);
+            }
+            else
+            {
+                File.Delete(item.Ruta);
+            }
+            CargarLocal(_rutaLocal);
+        }
+        catch (Exception ex) { Log($"Error al eliminar: {ex.Message}"); }
+    }
+
+    private async void RemotoNuevaCarpeta_Click(object sender, RoutedEventArgs e)
+    {
+        if (_servidor is null || !_servidor.Conectado)
+        {
+            return;
+        }
+        string? nombre = await PedirTexto("Nueva carpeta remota", "nueva_carpeta");
+        if (string.IsNullOrWhiteSpace(nombre))
+        {
+            return;
+        }
+        try
+        {
+            await _servidor.CrearCarpetaAsync(UnirPosix(_rutaRemota, nombre));
+            await CargarRemoto(_rutaRemota);
+        }
+        catch (Exception ex) { Log($"Error al crear carpeta remota: {ex.Message}"); }
+    }
+
+    private async void RemotoRenombrar_Click(object sender, RoutedEventArgs e)
+    {
+        if (_servidor is null || RemotoLista.SelectedItem is not ElementoRemoto item || item.Nombre == "..")
+        {
+            return;
+        }
+        string? nuevo = await PedirTexto("Renombrar", item.Nombre);
+        if (string.IsNullOrWhiteSpace(nuevo) || nuevo == item.Nombre)
+        {
+            return;
+        }
+        try
+        {
+            await _servidor.RenombrarAsync(item.Ruta, UnirPosix(_rutaRemota, nuevo));
+            await CargarRemoto(_rutaRemota);
+        }
+        catch (Exception ex) { Log($"Error al renombrar: {ex.Message}"); }
+    }
+
+    private async void RemotoEliminar_Click(object sender, RoutedEventArgs e)
+    {
+        if (_servidor is null || RemotoLista.SelectedItem is not ElementoRemoto item || item.Nombre == "..")
+        {
+            return;
+        }
+        if (!await Confirmar($"¿Eliminar «{item.Nombre}» del servidor?"))
+        {
+            return;
+        }
+        try
+        {
+            await _servidor.EliminarAsync(item.Ruta, item.EsCarpeta);
+            await CargarRemoto(_rutaRemota);
+        }
+        catch (Exception ex) { Log($"Error al eliminar: {ex.Message}"); }
+    }
+
+    private async Task<string?> PedirTexto(string titulo, string valor)
+    {
+        var tb = new TextBox { Text = valor };
+        var dlg = new ContentDialog
+        {
+            Title = titulo,
+            Content = tb,
+            PrimaryButtonText = "Aceptar",
+            CloseButtonText = "Cancelar",
+            DefaultButton = ContentDialogButton.Primary,
+            RequestedTheme = ElementTheme.Dark,
+            XamlRoot = Raiz.XamlRoot,
+        };
+        ContentDialogResult r = await dlg.ShowAsync();
+        return r == ContentDialogResult.Primary ? tb.Text.Trim() : null;
+    }
+
+    private async Task<bool> Confirmar(string mensaje)
+    {
+        var dlg = new ContentDialog
+        {
+            Title = "Confirmar",
+            Content = mensaje,
+            PrimaryButtonText = "Sí",
+            CloseButtonText = "No",
+            RequestedTheme = ElementTheme.Dark,
+            XamlRoot = Raiz.XamlRoot,
+        };
+        return await dlg.ShowAsync() == ContentDialogResult.Primary;
+    }
+
     // ── Menú ─────────────────────────────────────────────────────────────────
 
     private void Salir_Click(object sender, RoutedEventArgs e) => this.Close();
