@@ -3,8 +3,10 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AetherTransfer.Connections;
 using AetherTransfer.Models;
 using AetherTransfer.Protocols;
+using AetherTransfer.Views;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -140,15 +142,33 @@ public sealed partial class MainWindow : Window
             _ => Protocolo.Ftp,
         };
 
-        var info = new ConexionInfo
+        await ConectarCon(new ConexionInfo
         {
             Host = TxtHost.Text.Trim(),
             Usuario = TxtUsuario.Text.Trim(),
             Password = TxtPass.Password,
             Puerto = puerto,
             Protocolo = proto,
-        };
+        });
+    }
 
+    private async void AdminSitios_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new DialogoSitios { XamlRoot = Raiz.XamlRoot };
+        ContentDialogResult res = await dlg.ShowAsync();
+        if (res == ContentDialogResult.Primary && dlg.SitioParaConectar is SitioGuardado s)
+        {
+            ConexionInfo info = s.AConexion();
+            TxtHost.Text = info.Host;
+            TxtUsuario.Text = info.Usuario;
+            TxtPass.Password = info.Password;
+            TxtPuerto.Text = info.Puerto.ToString();
+            await ConectarCon(info);
+        }
+    }
+
+    private async Task ConectarCon(ConexionInfo info)
+    {
         if (string.IsNullOrWhiteSpace(info.Host))
         {
             Log("Escribe la dirección del servidor.");
@@ -158,17 +178,18 @@ public sealed partial class MainWindow : Window
         BtnConectar.IsEnabled = false;
         await DesconectarInterno();
 
-        _servidor = proto == Protocolo.Sftp ? new ServidorSftp() : new ServidorFtp();
-        Log($"Conectando a {info.Host}:{info.Puerto} ({proto})…");
+        _servidor = info.Protocolo == Protocolo.Sftp ? new ServidorSftp() : new ServidorFtp();
+        Log($"Conectando a {info.Host}:{info.Puerto} ({info.Protocolo})…");
 
         try
         {
             await _servidor.ConectarAsync(info);
             Log("Sesión iniciada correctamente.");
             EstadoPunto.Fill = new SolidColorBrush(Colors.LightGreen);
-            TxtEstado.Text = $"Conectado: {info.Host} ({proto})";
-            _rutaRemota = "/";
-            await CargarRemoto("/");
+            TxtEstado.Text = $"Conectado: {info.Host} ({info.Protocolo})";
+            string inicio = string.IsNullOrWhiteSpace(info.DirectorioInicial) ? "/" : info.DirectorioInicial;
+            _rutaRemota = inicio;
+            await CargarRemoto(inicio);
         }
         catch (Exception ex)
         {

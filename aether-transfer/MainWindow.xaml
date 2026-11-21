@@ -46,8 +46,8 @@
         <!-- MENÚ -->
         <muxc:MenuBar Grid.Row="0" Background="#0C1B30">
             <muxc:MenuBarItem Title="Archivo">
-                <MenuFlyoutItem Text="Administrador de sitios" />
-                <MenuFlyoutItem Text="Nueva conexión" />
+                <MenuFlyoutItem Text="Administrador de sitios" Click="AdminSitios_Click" />
+                <MenuFlyoutItem Text="Nueva conexión" Click="Conectar_Click" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem Text="Salir" Click="Salir_Click" />
             </muxc:MenuBarItem>
@@ -81,7 +81,7 @@
         <!-- BARRA DE HERRAMIENTAS -->
         <Grid Grid.Row="1" Background="#0C1B30" BorderBrush="{StaticResource Linea}" BorderThickness="0,1,0,1">
             <StackPanel Orientation="Horizontal" Padding="10,8,10,8" Spacing="4">
-                <Button Style="{StaticResource Herramienta}">
+                <Button Style="{StaticResource Herramienta}" Click="AdminSitios_Click">
                     <StackPanel HorizontalAlignment="Center"><FontIcon Glyph="&#xE774;" FontSize="18" Foreground="{StaticResource Cian}" /><TextBlock Text="Administrador de sitios" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" /></StackPanel>
                 </Button>
                 <Button Style="{StaticResource Herramienta}" Click="Conectar_Click">
