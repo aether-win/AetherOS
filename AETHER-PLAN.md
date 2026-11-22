@@ -529,6 +529,18 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
 - [x] Fix `0ac3698`: si hay otra versión abierta en segundo plano (otro .exe, p. ej. el viejo CentroAether.exe), la
       nueva la cierra y toma su lugar. Antes la regla de "una sola copia" mostraba la ventana vieja (Daniel vio la
       versión vieja a las 23:12 por esto).
+- [x] **Mando DualShock 4 original** (reporte de Daniel 23:16: sin luz, se conecta/desconecta, aparece duplicado; con
+      un DS4 genérico sí funcionaba). Commit `8e382fe`, compila en verde:
+      * **Luz**: `LuzDs4` manda el color (USB informe 0x05; Bluetooth 0x11 de 78 bytes con CRC32 sembrado con 0xA2,
+        vía `HidD_SetOutputReport` y respaldo `WriteFile`). Azul jugador 1 al conectar (vigía cada 3 s en el segundo
+        plano, aunque no se emule) y el color que pida el juego por el DS4 virtual (`FeedbackReceived`).
+      * **Causa del conecta/desconecta**: se creaba el DS4 virtual antes de abrir el real y el lector podía abrir el
+        VIRTUAL (también VID 054C). Ahora: real primero, rutas virtuales anotadas y excluidas; respaldo Xbox solo con
+        mandos previos (por `NonRoamableId`). Reconexión automática cada 1 s.
+      * **Ocultar el original**: `HidHideServicio` (HidHideCLI: `--app-reg <exe>`, `--dev-hide <instancia>`,
+        `--cloak-on`; al detener `--dev-unhide`). Pendientes guardados en `%ProgramData%\Aether\hidhide-ocultos.txt` y
+        restaurados al iniciar. Sin HidHide se avisa (botón Instalar HidHide en Control).
+      * **Sin probar con hardware** (no hay Windows aquí): verificar con el DS4 original por USB y por Bluetooth.
 - [ ] Aviso general + botones desactivados cuando Aether OS no está instalado (ofrecido, sin respuesta).
 - [ ] **Prueba de Daniel en la laptop de pruebas**: bajar `Centro-Aether-<sha>` de Actions, abrir
       `CentroAether.exe` (pide administrador), recorrer las secciones. Si algo falla, mandar el
