@@ -565,3 +565,31 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
 2. Resolver la contradicción de macros de la sección Oficina (pregunta en TRASPASO D.3).
 3. Después: pendientes del Centro (sección 7: inicio/bienvenida/tema) y la pasada de limpieza
    (Borrado parte 2) del plan.
+
+## 10. Aether OS 2.0 — lista de trabajo ANTES de la compilación final
+
+Directiva de Daniel (21-nov 23:39, "AETHER OS 2.0 — MASTER FINALIZATION"). Reglas: no inventar pruebas, no decir que
+algo funciona sin probarlo (aquí solo hay CI; las pruebas reales las hace Daniel en la VM Hyper-V), la compilación
+final "Aether OS 2.0" va al final y después de la prueba en la VM. Decisión tomada: "nombre del equipo: Aether" =
+organización/propietario registrados, NO el nombre de red de la PC (rompería las carpetas compartidas del trabajo).
+
+- [~] **Office: colores invertidos en Word** (Daniel 23:43: al poner texto blanco se ve negro). Causa raíz: tema Negro
+      de Office (sigue a Windows oscuro) = modo oscuro de Word, que invierte blanco/negro. Office pisa `UI Theme` al
+      iniciar con la copia de la cuenta (`Common\Roaming\...\Settings\1186\{0…0}\Data`). Commit `61da075`: Aether
+      Toolbox cambia valor local + PendingUITheme + todas las copias de cuenta + directiva; guardia cada 2 min.
+      **Falta confirmar con Daniel** (cerrar todas las apps de Office y reabrir). Plan B si la cuenta lo vuelve a
+      pisar: casilla "Deshabilitar modo oscuro" (clave de registro aún no identificada; investigar con Procmon).
+- [~] **Paso 1 Mandos**: hecho `87aca2a` instalador instala ViGEmBus/HidHide solo si faltan (con firma).
+      Falta: indicador 🟢 MANDO CONECTADO (bandeja + Toolbox, tiempo real, USB/Bluetooth), servicio de mandos por
+      eventos, registro `%ProgramData%\Aether\mandos.log` (incl. resultado de la luz), temporizador de apagado del
+      mando Bluetooth (IOCTL_BTH_DISCONNECT_DEVICE, como DS4Windows), interruptor general de mandos.
+- [ ] **Paso 2 Perfiles**: selector de procesos, editar/borrar/pausar, mando predeterminado y restaurar al cerrar el
+      juego, sonidos distintos DS4/Xbox (desactivables, solo si el cambio se verificó).
+- [x] **Paso 3 Dependencias** (`87aca2a`): VC++ x64/x86, DirectX, .NET Desktop 8, .NET 3.5 (DISM), .NET 4.8
+      verificado; solo lo que falta, verificado después. Corre siempre al primer inicio de sesión.
+- [ ] **Paso 4 Visual**: Mica/Acrylic real de Windows 11 en Aether Toolbox (respaldo Windows 10).
+- [ ] **Paso 5 Gaming**: perfiles Equilibrado / Gaming / Gaming Extremo / Máximo Rendimiento con restauración.
+- [ ] **Paso 6**: versión 2.0 (Set-AtlasVersion), nombre "Aether OS 2.0", organización registrada "Aether",
+      compilación `aether-app.yml`, verificación del paquete y lista de pruebas en VM para Daniel.
+- Fuera de alcance honesto (documentar): instalador Rust (GPUI) rediseñado por completo; medir FPS/latencia DPC
+  (requiere hardware real).
