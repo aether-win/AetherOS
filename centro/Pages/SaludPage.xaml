@@ -7,7 +7,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
-            <c:Encabezado Glyph="&#xE95E;" ColorIcono="#F0565C" Titulo="Salud" Subtitulo="Estado de la batería de tu laptop." />
+            <c:Encabezado Glyph="&#xE95E;" ColorIcono="#F0565C" Titulo="Salud" Subtitulo="Batería y discos en vivo: lo mismo que el informe de Windows, sin abrir el navegador." />
 
             <Border Style="{StaticResource TarjetaStyle}" Padding="24,22">
                 <Grid>
@@ -23,6 +23,12 @@
                     </c:Pila>
                 </Grid>
             </Border>
+
+            <TextBlock Text="Batería (informe completo)" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:Estadisticas x:Name="InfoBateria" />
+
+            <TextBlock Text="Discos" Style="{StaticResource SeccionTextBlockStyle}" />
+            <StackPanel x:Name="PanelDiscos" />
 
             <TextBlock Text="Consejo" Style="{StaticResource SeccionTextBlockStyle}" />
             <c:FilaAjuste Glyph="&#xE82F;" Titulo="Cuida la batería"

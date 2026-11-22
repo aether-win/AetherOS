@@ -9,10 +9,12 @@ namespace CentroAether.Pages;
 public sealed partial class BateriaPage : PaginaBase
 {
     private bool _cargando;
+    private readonly System.Windows.Threading.DispatcherTimer _vivo = new() { Interval = TimeSpan.FromSeconds(2) };
 
     public BateriaPage()
     {
         this.InitializeComponent();
+        _vivo.Tick += async (_, _) => await PintarVivo();
         foreach (int v in new[] { 10, 15, 20, 25, 30, 35, 40, 45, 50 })
         {
             CmbUmbral.Items.Add($"{v}%");
@@ -24,18 +26,8 @@ public sealed partial class BateriaPage : PaginaBase
         base.OnNavigatedTo(e);
         _cargando = true;
 
-        string carga = await Aether.Bateria();
-        carga = carga.Trim();
-        if (carga == "SIN" || !int.TryParse(carga, out int nivel))
-        {
-            TxtCarga.Text = "Esta PC no tiene batería.";
-            BarraCarga.Visibility = Visibility.Collapsed;
-        }
-        else
-        {
-            TxtCarga.Text = $"{nivel}% de carga";
-            BarraCarga.Value = nivel;
-        }
+        await PintarVivo();
+        _vivo.Start();
 
         string auto = await Aether.LeerAjuste("BateriaAuto", "1");
         SwAuto.IsOn = auto.Trim() != "0";
@@ -48,6 +40,33 @@ public sealed partial class BateriaPage : PaginaBase
         SwTurbo.IsOn = turbo.Trim() == "1";
 
         _cargando = false;
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        base.OnNavigatedFrom(e);
+        _vivo.Stop();
+    }
+
+    private async System.Threading.Tasks.Task PintarVivo()
+    {
+        EstadoBateria b = await System.Threading.Tasks.Task.Run(BateriaVivo.Leer);
+        if (!b.Hay)
+        {
+            TxtCarga.Text = "Esta PC no tiene batería.";
+            BarraCarga.Visibility = Visibility.Collapsed;
+            Vivo.Visibility = Visibility.Collapsed;
+            return;
+        }
+        string estado = b.Cargando ? "cargando" : b.Conectado ? "conectada" : "con batería";
+        TxtCarga.Text = $"{b.Porcentaje}% · {estado}";
+        BarraCarga.Value = b.Porcentaje;
+        Vivo.Poner(b.Cargando ? "Carga entrando" : "Consumo ahora", BateriaVivo.Tasa(b.TasaMw));
+        Vivo.Poner(b.Cargando ? "Para llenarse" : "Tiempo restante", BateriaVivo.Tiempo(b.MinutosRestantes));
+        Vivo.Poner("Energía guardada", b.RestanteMwh > 0 ? $"{b.RestanteMwh / 1000.0:0.0} Wh" : "—");
+        Vivo.Poner("Voltaje", b.VoltajeMv > 0 ? $"{b.VoltajeMv / 1000.0:0.00} V" : "—");
+        Vivo.Poner("Salud", b.SaludPct > 0 ? $"{b.SaludPct}%" : "—");
+        Vivo.Poner("Ciclos de carga", b.Ciclos >= 0 ? b.Ciclos.ToString() : "—");
     }
 
     private async void Auto_Toggled(object sender, RoutedEventArgs e)

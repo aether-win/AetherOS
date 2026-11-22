@@ -54,8 +54,13 @@
                 </c:FilaAjuste>
             </UniformGrid>
 
-            <TextBlock Text="La temperatura y el uso de la gráfica se añadirán en una próxima fase."
-                       FontSize="12.5" Margin="2,4,0,0" Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+            <TextBlock Text="Gráfica, disco, red y temperatura" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:Estadisticas x:Name="Detalle" />
+
+            <TextBlock Text="Lo que más consume ahora" Style="{StaticResource SeccionTextBlockStyle}" />
+            <Border Style="{StaticResource TarjetaStyle}" Padding="18,12">
+                <StackPanel x:Name="PanelTop" />
+            </Border>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

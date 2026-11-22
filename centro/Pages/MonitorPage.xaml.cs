@@ -21,6 +21,8 @@ public sealed partial class MonitorPage : PaginaBase
     private ulong _prevIdle, _prevKernel, _prevUser;
     private bool _tieneBase;
     private int _tick;
+    private MonitorVivo? _vivo;
+    private bool _muestreando;
 
     public MonitorPage()
     {
@@ -35,6 +37,7 @@ public sealed partial class MonitorPage : PaginaBase
         Actualizar();      // primera lectura (establece la base de CPU)
         _timer.Start();
         _ = MostrarModo();
+        _ = Task.Run(() => _vivo ??= new MonitorVivo());
     }
 
     private async Task MostrarModo()
@@ -60,10 +63,11 @@ public sealed partial class MonitorPage : PaginaBase
         ActualizarRam();
         ActualizarUptime();
 
-        // Los procesos se cuentan cada 2 segundos (más costoso).
+        // Los procesos y los contadores detallados cada 2 segundos (más costoso).
         if (_tick % 2 == 0)
         {
             ActualizarProcesos();
+            _ = ActualizarDetalle();
         }
         _tick++;
     }
@@ -113,6 +117,54 @@ public sealed partial class MonitorPage : PaginaBase
         TxtRam.Text = $"{m.MemoryLoad}%";
         TxtRamDetalle.Text = $"{usadaGb:0.0} GB usados de {totalGb:0.0} GB";
     }
+
+    private async Task ActualizarDetalle()
+    {
+        if (_vivo is null || _muestreando)
+        {
+            return;
+        }
+        _muestreando = true;
+        try
+        {
+            MuestraMonitor m = await Task.Run(() => _vivo.Muestrear());
+            Detalle.Poner("Gráfica", double.IsNaN(m.GpuPct) ? "—" : $"{m.GpuPct:0}%");
+            Detalle.Poner("Disco activo", double.IsNaN(m.DiscoPct) ? "—" : $"{m.DiscoPct:0}%");
+            Detalle.Poner("Disco lee / escribe", $"{m.LecturaMBs:0.0} / {m.EscrituraMBs:0.0} MB/s");
+            Detalle.Poner("Red baja / sube", $"{Kb(m.BajadaKBs)} / {Kb(m.SubidaKBs)}");
+            Detalle.Poner("Temperatura", double.IsNaN(m.TempC) ? "no la informa" : $"{m.TempC:0} °C");
+            Detalle.Poner("Procesador ahora", double.IsNaN(m.FrecuenciaGhz) ? "—" : $"{m.FrecuenciaGhz:0.00} GHz");
+            if (!string.IsNullOrEmpty(m.GpuNombre))
+            {
+                Detalle.Poner("Tarjeta gráfica", m.GpuNombre);
+            }
+
+            PanelTop.Children.Clear();
+            foreach (var p in m.Top)
+            {
+                var fila = new Grid { Margin = new Thickness(0, 4, 0, 4) };
+                fila.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                fila.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(90) });
+                fila.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+                var nombre = new TextBlock { Text = p.Nombre, FontWeight = FontWeights.SemiBold };
+                var cpu = new TextBlock { Text = $"{p.Cpu:0.0}% CPU", HorizontalAlignment = HorizontalAlignment.Right };
+                var ram = new TextBlock { Text = $"{p.RamMb:0} MB", HorizontalAlignment = HorizontalAlignment.Right };
+                Grid.SetColumn(cpu, 1);
+                Grid.SetColumn(ram, 2);
+                fila.Children.Add(nombre);
+                fila.Children.Add(cpu);
+                fila.Children.Add(ram);
+                PanelTop.Children.Add(fila);
+            }
+        }
+        catch { /* una muestra fallida no detiene el Monitor */ }
+        finally
+        {
+            _muestreando = false;
+        }
+    }
+
+    private static string Kb(double kbs) => kbs >= 1024 ? $"{kbs / 1024:0.0} MB/s" : $"{kbs:0} KB/s";
 
     private void ActualizarUptime()
     {

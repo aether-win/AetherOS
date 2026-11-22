@@ -7,7 +7,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
-            <c:Encabezado Glyph="&#xE83E;" ColorIcono="#2FA86A" Titulo="Batería" Subtitulo="Carga actual y Modo Batería automático." />
+            <c:Encabezado Glyph="&#xE83E;" ColorIcono="#2FA86A" Titulo="Batería" Subtitulo="Carga, consumo y tiempo restante en vivo, y Modo Batería automático." />
             <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
             <Border Style="{StaticResource TarjetaStyle}" Padding="24,20">
@@ -23,6 +23,9 @@
                     </c:Pila>
                 </Grid>
             </Border>
+
+            <TextBlock Text="En vivo" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:Estadisticas x:Name="Vivo" />
 
             <TextBlock Text="Modo Batería" Style="{StaticResource SeccionTextBlockStyle}" />
             <c:FilaAjuste Glyph="&#xE945;" Titulo="Modo Batería automático"
