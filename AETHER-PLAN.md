@@ -597,5 +597,7 @@ organización/propietario registrados, NO el nombre de red de la PC (rompería l
 - [~] **Correcciones tras la instalación real (22-nov)**: Aether Transfer en el instalador, bienvenida nativa
       oscura, uso compartido sin contraseña (`e63e12d`, `1e8cc6a`). Sin compilar: Actions bloqueado por facturación.
       Pendiente decidir Windhawk 2.0 (alfa, trae CLI) vs importar los mods a mano en Windhawk 1.x.
+- [x] **Decisión (22-nov 04:10)**: nada de la versión de PowerShell del Toolbox en el nuevo (revertido en `9726758`).
+- [~] **Compilación final AETHER OS 2.0** (artefacto `AETHER-OS-2.0`, `AETHER OS 2.0.exe`). Pruebas en hardware pendientes.
 - Fuera de alcance honesto (documentar): instalador Rust (GPUI) rediseñado por completo; medir FPS/latencia DPC
   (requiere hardware real).
