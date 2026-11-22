@@ -201,6 +201,23 @@
                 </Setter>
             </Style>
 
+            <!-- ====== ToolTip oscuro ====== -->
+            <Style TargetType="ToolTip">
+                <Setter Property="Foreground" Value="#E6EEF8" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToolTip">
+                            <Border Background="#0F2036" BorderBrush="#24456B" BorderThickness="1" CornerRadius="5" Padding="9,5">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="2" Opacity="0.45" />
+                                </Border.Effect>
+                                <ContentPresenter />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <!-- ====== ListBox (registro) ====== -->
             <Style TargetType="ListBox">
                 <Setter Property="Background" Value="Transparent" />

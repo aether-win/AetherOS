@@ -166,10 +166,7 @@
                     <Button Style="{StaticResource BtnNav}" Click="Adelante_Click" ToolTip="Adelante">
                         <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#C7D6EC" />
                     </Button>
-                    <Button Style="{StaticResource BtnNav}" Click="Arriba_Click" ToolTip="Subir un nivel" Margin="4,0,0,0">
-                        <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#C7D6EC" />
-                    </Button>
-                    <Button Style="{StaticResource BtnNav}" Click="RemotoActualizar_Click" ToolTip="Actualizar">
+                    <Button Style="{StaticResource BtnNav}" Click="RemotoActualizar_Click" ToolTip="Actualizar" Margin="4,0,0,0">
                         <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#C7D6EC" />
                     </Button>
                     <TextBox x:Name="TxtRuta" Width="520" Margin="8,0,0,0" IsReadOnly="True" VerticalAlignment="Center" />
