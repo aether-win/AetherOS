@@ -303,7 +303,25 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
 - El workflow viejo **"Aether Transfer (WinUI 3)"** quedó obsoleto; ahora el activo es
   **"Aether Transfer (WPF)"**.
 
-## Preguntas pendientes para Daniel (responder al retomar)
+---
+
+# Parte D — Tercera sesión (vuelta a la primera cuenta, 2026-11-21 noche)
+
+## D.1 Respuestas de Daniel a las preguntas de la Parte C (21-nov, 21:40)
+1. **Aether Transfer se congela** tal como está. Sus pendientes (SFTP real, subir carpetas por
+   arrastre, arrastre de archivos grandes sin pausa) quedan anotados para después.
+2. **Centro:** se mantiene el alcance de mandos: **solo DualShock 4 (PS4) → mando Xbox** y que
+   funcionen los mandos Xbox. Nada más.
+3. **Prueba del Centro WPF:** Daniel lo prueba en su **laptop de pruebas** (la aparte, no la de
+   trabajo), bajando el artefacto de Actions, igual que hizo con Aether Transfer. Esto **no** es
+   el .exe final (Regla 38 sigue vigente).
+4. Se **borraron las 7 ejecuciones con ❌** ya corregidas de GitHub Actions (autorizado).
+- Preguntas 3–5 de abajo (archivos grandes, carpetas, SFTP): quedan **en pausa** con Transfer congelado.
+
+## D.2 Trabajo de esta sesión
+- Migración del **Centro (`centro/`) de WinUI 3 a WPF** (ver AETHER-PLAN.md sección 9).
+
+## Preguntas pendientes para Daniel (sesión anterior; 1 y 2 ya respondidas en D.1)
 1. ¿**Aether Transfer** ya está lo bastante bien para **congelarlo** y pasar a **migrar Centro a
    WPF**? (Centro en WinUI 3 casi seguro no abrirá en tu laptop, igual que pasó aquí.)
 2. **Centro**: ¿se mantiene el alcance de solo **PS4 (DualShock 4) → mando Xbox** + que funcionen
