@@ -1,6 +1,6 @@
-name: Centro Aether (WPF)
+name: Aether Toolbox (WPF)
 
-# Compila el Centro Aether (WPF, .NET 8, self-contained, un solo .exe) como
+# Compila Aether Toolbox, antes "Centro Aether" (WPF, .NET 8, self-contained, un solo .exe) como
 # validacion de compilacion. No es el ejecutable final de distribucion: el
 # instalador completo lo arma aether-app.yml (manual).
 on:
@@ -35,9 +35,9 @@ jobs:
           -p:EnableCompressionInSingleFile=true
           -o publish
 
-      - name: Upload Centro
+      - name: Upload Aether Toolbox
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: Centro-Aether-${{ github.sha }}
+          name: Aether-Toolbox-${{ github.sha }}
           path: centro/publish
           if-no-files-found: error

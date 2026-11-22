@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    Centro Aether en WPF (.NET 8). Antes era WinUI 3, pero WinUI 3 sin empaquetar no
+    Aether Toolbox (antes "Centro Aether") en WPF (.NET 8). Antes era WinUI 3, pero WinUI 3 sin empaquetar no
     arranca en la laptop de Daniel (combase 0x802B000A). Igual que Aether Transfer, se
     publica self-contained en un solo .exe que abre sin instalar ningún runtime.
     La versión de Windows en el TargetFramework es para Windows.Gaming.Input (mandos).
@@ -14,14 +14,15 @@
     <!-- Solo para el ícono de la bandeja (NotifyIcon); el menú es WPF oscuro. -->
     <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>CentroAether</RootNamespace>
-    <AssemblyName>CentroAether</AssemblyName>
+    <AssemblyName>AetherToolbox</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\aether.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <Version>1.0.0</Version>
-    <Product>Centro Aether</Product>
+    <Product>Aether Toolbox</Product>
+    <AssemblyTitle>Aether Toolbox</AssemblyTitle>
     <Company>Aether OS</Company>
   </PropertyGroup>
 

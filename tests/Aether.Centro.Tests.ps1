@@ -24,7 +24,7 @@ Describe 'Centro Aether' {
                     $nodo.Value.TrimStart().StartsWith('<Window')
                 }, $true))
         $ventanas.Count | Should -Be 2
-        $texto = @($ventanas | Where-Object { $_.Value -match 'Title="Centro Aether"' })[0].Value
+        $texto = @($ventanas | Where-Object { $_.Value -match 'Title="Aether Toolbox"' })[0].Value
         [xml]$bienvenida = @($ventanas | Where-Object { $_.Value -match 'Title="Bienvenido a Aether OS"' })[0].Value
         $nombresB = @($bienvenida.SelectNodes('//*[@*[local-name()="Name"]]') | ForEach-Object {
                 $_.GetAttribute('Name', 'http://schemas.microsoft.com/winfx/2006/xaml')

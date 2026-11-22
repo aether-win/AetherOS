@@ -1,5 +1,5 @@
 ﻿<#
-    Aether OS - Centro Aether (app de control).
+    Aether OS - Aether Toolbox (app de control; antes "Centro Aether"). Versión clásica de respaldo.
     Sin parámetros abre la ventana. Con -Bandeja queda en la bandeja del sistema: cambia de
     modo desde el menú o con atajos (Ctrl+Alt+T / G / B), mantiene la resolución alta del
     temporizador en Modo Gaming, activa el Modo Batería solo al 30% (configurable) y vuelve
@@ -70,10 +70,10 @@ namespace Aether {
 '@
     }
 
-    # Si está el Centro nativo (CentroAether.exe), ÉL es el ícono de la bandeja, el menú y los
+    # Si está Aether Toolbox (AetherToolbox.exe), ÉL es el ícono de la bandeja, el menú y los
     # atajos (siempre en segundo plano). Esta bandeja queda solo como vigilante invisible
     # (batería automática, temporizador, unidades de red, colores de Wind-Aether, respaldo).
-    $script:HayNativo = Test-Path -LiteralPath (Join-Path $PSScriptRoot 'app\CentroAether.exe') -PathType Leaf
+    $script:HayNativo = Test-Path -LiteralPath (Join-Path $PSScriptRoot 'app\AetherToolbox.exe') -PathType Leaf
 
     $script:IconoBandeja = New-Object System.Windows.Forms.NotifyIcon
     $script:IconoBandeja.Icon = New-Object System.Drawing.Icon($script:Icono)
@@ -87,7 +87,7 @@ namespace Aether {
         $script:ItemsModo[$nombre] = $item
     }
     [void]$menu.Items.Add('-')
-    $abrir = $menu.Items.Add('Abrir Centro Aether')
+    $abrir = $menu.Items.Add('Abrir Aether Toolbox')
     $abrir.add_Click({ Show-AetherCentro })
     $salir = $menu.Items.Add('Salir de la bandeja')
     $salir.add_Click({ [System.Windows.Forms.Application]::Exit() })
@@ -333,7 +333,7 @@ if ($Bienvenida) {
     </StackPanel>
     <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
       <TextBlock Text="Bienvenido a Aether OS" FontSize="26" FontWeight="SemiBold"/>
-      <TextBlock Foreground="#C7CBD1" Margin="0,6,0,0" Text="Elige cómo quieres empezar. Todo se puede cambiar después en el Centro Aether."/>
+      <TextBlock Foreground="#C7CBD1" Margin="0,6,0,0" Text="Elige cómo quieres empezar. Todo se puede cambiar después en Aether Toolbox."/>
       <TextBlock Style="{StaticResource Seccion}" Text="Modo"/>
       <WrapPanel>
         <RadioButton x:Name="RbTrabajo" GroupName="Modo" Content="Trabajo" IsChecked="True"/>
@@ -357,7 +357,7 @@ if ($Bienvenida) {
       <TextBlock Foreground="#C7CBD1" Text="Por ejemplo \\192.168.1.10\SISTEMA EF RED. Queda fija como unidad Z: y lista para las macros de Excel."/>
       <TextBox x:Name="TxtRuta" Padding="6" Margin="0,6,0,0"/>
       <TextBlock Style="{StaticResource Seccion}" Text="Respaldo"/>
-      <CheckBox x:Name="ChkRespaldo" Content="Abrir el Centro Aether en Respaldo al terminar"/>
+      <CheckBox x:Name="ChkRespaldo" Content="Abrir Aether Toolbox en Respaldo al terminar"/>
       <TextBlock x:Name="TxtResultado" Foreground="#4FC3F7" Margin="0,12,0,0"/>
     </StackPanel></ScrollViewer>
   </DockPanel>
@@ -371,7 +371,7 @@ if ($Bienvenida) {
     }
     if ((Get-AetherTema) -eq 'claro') { $b.RbClaro.IsChecked = $true } else { $b.RbOscuro.IsChecked = $true }
     if (-not (Get-AetherWindhawkCli)) {
-        $b.TxtWindNota.Text = 'Windhawk no está instalado todavía; podrás elegirlo después en el Centro Aether.'
+        $b.TxtWindNota.Text = 'Windhawk no está instalado todavía; podrás elegirlo después en Aether Toolbox.'
         $b.RbGlass.IsEnabled = $false
         $b.RbLimpio.IsEnabled = $false
     }
@@ -417,7 +417,7 @@ Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
 [xml]$xaml = @'
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Centro Aether" Width="940" Height="640" MinWidth="820" MinHeight="560"
+        Title="Aether Toolbox" Width="940" Height="640" MinWidth="820" MinHeight="560"
         WindowStartupLocation="CenterScreen" Background="#0A0F1E" FontFamily="Segoe UI" FontSize="14">
   <Window.Resources>
     <Style TargetType="TextBlock"><Setter Property="Foreground" Value="#F3F5F8"/><Setter Property="TextWrapping" Value="Wrap"/></Style>

@@ -7,7 +7,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
-            <c:Encabezado Glyph="&#xEA86;" ColorIcono="#E879F9" Titulo="Plugins" Subtitulo="Extensiones del Centro. Cada plugin es un archivo .json en tu carpeta de plugins.">
+            <c:Encabezado Glyph="&#xEA86;" ColorIcono="#E879F9" Titulo="Plugins" Subtitulo="Extensiones de Aether Toolbox. Cada plugin es un archivo .json en tu carpeta de plugins.">
                 <c:Pila Orientation="Horizontal" Spacing="8">
                     <Button x:Name="BtnCarpeta" Click="Carpeta_Click">
                         <c:Pila Orientation="Horizontal" Spacing="8">

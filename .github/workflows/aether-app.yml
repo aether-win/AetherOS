@@ -27,7 +27,7 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Compilar el Centro Aether (WPF) y meterlo en el paquete
+      - name: Compilar Aether Toolbox (WPF) y meterlo en el paquete
         shell: pwsh
         working-directory: centro
         run: |
@@ -37,8 +37,8 @@ jobs:
           $destino = '..\playbook\Executables\AtlasModules\Aether\Centro\app'
           New-Item -ItemType Directory -Path $destino -Force | Out-Null
           Copy-Item -Path 'publish\*' -Destination $destino -Recurse -Force
-          if (-not (Test-Path (Join-Path $destino 'CentroAether.exe'))) { throw 'No se copió CentroAether.exe al paquete.' }
-          Write-Host "Centro nativo incluido en el paquete ($(@(Get-ChildItem $destino -Recurse -File).Count) archivos)."
+          if (-not (Test-Path (Join-Path $destino 'AetherToolbox.exe'))) { throw 'No se copió AetherToolbox.exe al paquete.' }
+          Write-Host "Aether Toolbox incluido en el paquete ($(@(Get-ChildItem $destino -Recurse -File).Count) archivos)."
 
       - name: Armar el paquete de Aether OS
         shell: pwsh

@@ -95,8 +95,15 @@ public partial class MenuBandeja : Window
 
         Contenido.Children.Add(Separador());
 
-        Contenido.Children.Add(Opcion("", Ui.Hex("#4FC3F7"), "Abrir Centro Aether", false,
+        Contenido.Children.Add(Opcion("\uE80F", Ui.Hex("#4FC3F7"), "Abrir Aether Toolbox", false,
             () => ((App)Application.Current).MostrarCentro()));
+
+        Contenido.Children.Add(Separador());
+
+        // Cerrar TODO: ventana, bandeja, atajos y mando emulado (p. ej. para borrar o actualizar
+        // la carpeta del programa). Se vuelve a abrir con su acceso directo o al iniciar sesión.
+        Contenido.Children.Add(Opcion("\uE7E8", Ui.Hex("#F0565C"), "Cerrar Aether Toolbox", false,
+            () => Application.Current.Shutdown()));
     }
 
     private static TextBlock Titulo(string texto) => new()

@@ -10,7 +10,7 @@ using Forms = System.Windows.Forms;
 namespace CentroAether;
 
 /// <summary>
-/// Segundo plano del Centro Aether (siempre activo). Mientras la sesión esté abierta:
+/// Segundo plano de Aether Toolbox (siempre activo). Mientras la sesión esté abierta:
 ///  - Ícono en la bandeja: clic abre el Centro; clic derecho abre el menú oscuro
 ///    (modo de uso y mando) — nada blanco.
 ///  - Atajos Ctrl+Alt+T / G / B para Trabajo, Gaming y Batería, con su animación.
@@ -145,7 +145,7 @@ public static class SegundoPlano
 
         if (!MotorControlador.ViGEmDisponible())
         {
-            Notificar("Falta el driver ViGEmBus. Instálalo en Centro Aether › Control.");
+            Notificar("Falta el driver ViGEmBus. Instálalo en Aether Toolbox › Control.");
             return;
         }
         if (MotorControlador.Activo && MotorControlador.Objetivo == destino)
@@ -192,7 +192,7 @@ public static class SegundoPlano
     {
         string texto = Aether.Disponible
             ? $"Aether OS · Modo {Controles.Ui.NombreModo(_ultimoModo)}"
-            : "Centro Aether";
+            : "Aether Toolbox";
         return texto.Length > 63 ? texto[..63] : texto;   // límite de Windows
     }
 

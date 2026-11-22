@@ -1,7 +1,7 @@
-﻿# Companion de aether-centro.psd1: deja listo el Centro Aether.
+﻿# Companion de aether-centro.psd1: deja listo Aether Toolbox (antes "Centro Aether").
 #  - Bandeja (automatizacion en segundo plano: modo bateria automatico, atajos, etc.):
 #    corre al iniciar sesion, OCULTA, con un .vbs (sin ventana de PowerShell).
-#  - Interfaz: si esta el Centro NATIVO (WPF, CentroAether.exe), los accesos directos
+#  - Interfaz: si esta Aether Toolbox (WPF, AetherToolbox.exe), los accesos directos
 #    lo abren mediante una tarea programada con privilegios altos -> SIN pedir permisos (UAC)
 #    y sin consola. Si no esta el exe nativo, se usa la ventana clasica como respaldo.
 $ErrorActionPreference = 'Stop'
@@ -16,9 +16,9 @@ trap {
 $carpeta = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules\Aether\Centro'
 $centro = Join-Path $carpeta 'Centro-Aether.ps1'
 $icono = Join-Path $carpeta 'aether.ico'
-$exeNativo = Join-Path $carpeta 'app\CentroAether.exe'
+$exeNativo = Join-Path $carpeta 'app\AetherToolbox.exe'
 if (-not (Test-Path -LiteralPath $centro -PathType Leaf)) {
-    throw "Falta el Centro Aether en '$centro'."
+    throw "Falta Aether Toolbox en '$centro'."
 }
 $powershell = Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\powershell.exe'
 $wscript = Join-Path ([Environment]::SystemDirectory) 'wscript.exe'
@@ -27,7 +27,7 @@ $shell = New-Object -ComObject WScript.Shell
 # --- Bandeja oculta (segundo plano) -----------------------------------------------------
 $vbsBandeja = Join-Path $carpeta 'Centro-Aether.vbs'
 [IO.File]::WriteAllText($vbsBandeja, @"
-' Lanza la bandeja del Centro Aether sin ventana de PowerShell.
+' Lanza el vigilante de Aether Toolbox sin ventana de PowerShell.
 Dim shell
 Set shell = CreateObject("WScript.Shell")
 shell.Run "$powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""$centro"" -Bandeja", 0, False
@@ -49,22 +49,26 @@ if ($usarNativo) {
     $principal = New-ScheduledTaskPrincipal -GroupId 'S-1-5-32-545' -RunLevel Highest
     $ajustes = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -ExecutionTimeLimit ([TimeSpan]::Zero)
     $tarea = New-ScheduledTask -Action $accion -Principal $principal -Settings $ajustes
-    Register-ScheduledTask -TaskName 'Centro' -TaskPath '\Aether\' -InputObject $tarea -Force | Out-Null
+    # Tareas viejas (nombre anterior "Centro"): se quitan para no dejar duplicados.
+    foreach ($vieja in @('Centro', 'Centro segundo plano')) {
+        Unregister-ScheduledTask -TaskName $vieja -TaskPath '\Aether\' -Confirm:$false -ErrorAction SilentlyContinue
+    }
+    Register-ScheduledTask -TaskName 'Toolbox' -TaskPath '\Aether\' -InputObject $tarea -Force | Out-Null
 
     # Segundo plano SIEMPRE activo: al iniciar sesion, el Centro arranca solo en la bandeja
     # (menu de modos y mando, atajos Ctrl+Alt+T/G/B), con privilegios altos y sin UAC.
     $accionFondo = New-ScheduledTaskAction -Execute $exeNativo -Argument '--segundo-plano' -WorkingDirectory (Split-Path $exeNativo)
     $disparador = New-ScheduledTaskTrigger -AtLogOn
     $tareaFondo = New-ScheduledTask -Action $accionFondo -Principal $principal -Settings $ajustes -Trigger $disparador
-    Register-ScheduledTask -TaskName 'Centro segundo plano' -TaskPath '\Aether\' -InputObject $tareaFondo -Force | Out-Null
+    Register-ScheduledTask -TaskName 'Toolbox segundo plano' -TaskPath '\Aether\' -InputObject $tareaFondo -Force | Out-Null
 
     # .vbs que dispara la tarea sin consola (schtasks es un programa de consola).
     $vbsAbrir = Join-Path $carpeta 'Abrir-Centro.vbs'
     [IO.File]::WriteAllText($vbsAbrir, @"
-' Abre el Centro Aether nativo mediante su tarea programada (sin ventana ni UAC).
+' Abre Aether Toolbox mediante su tarea programada (sin ventana ni UAC).
 Dim shell
 Set shell = CreateObject("WScript.Shell")
-shell.Run "schtasks /run /tn ""\Aether\Centro""", 0, False
+shell.Run "schtasks /run /tn ""\Aether\Toolbox""", 0, False
 "@, (New-Object Text.UTF8Encoding($false)))
     $accesoArgs = "`"$vbsAbrir`""
     $accesoIcono = "$exeNativo,0"
@@ -73,7 +77,7 @@ else {
     # Respaldo: la ventana clasica (WPF) sin consola.
     $vbsAbrir = Join-Path $carpeta 'Abrir-Centro.vbs'
     [IO.File]::WriteAllText($vbsAbrir, @"
-' Abre el Centro Aether clasico sin ventana de PowerShell.
+' Abre Aether Toolbox clasico sin ventana de PowerShell.
 Dim shell
 Set shell = CreateObject("WScript.Shell")
 shell.Run "$powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""$centro""", 0, False
@@ -81,9 +85,17 @@ shell.Run "$powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -F
     $accesoArgs = "`"$vbsAbrir`""
 }
 
-foreach ($destino in @(
+# Accesos viejos con el nombre anterior ("Centro Aether").
+foreach ($viejo in @(
         (Join-Path ([Environment]::GetFolderPath('CommonPrograms')) 'Centro Aether.lnk'),
         (Join-Path ([Environment]::GetFolderPath('CommonDesktopDirectory')) 'Centro Aether.lnk')
+    )) {
+    Remove-Item -LiteralPath $viejo -Force -ErrorAction SilentlyContinue
+}
+
+foreach ($destino in @(
+        (Join-Path ([Environment]::GetFolderPath('CommonPrograms')) 'Aether Toolbox.lnk'),
+        (Join-Path ([Environment]::GetFolderPath('CommonDesktopDirectory')) 'Aether Toolbox.lnk')
     )) {
     try {
         $acceso = $shell.CreateShortcut($destino)
@@ -91,12 +103,12 @@ foreach ($destino in @(
         $acceso.Arguments = $accesoArgs
         $acceso.WorkingDirectory = $carpeta
         $acceso.IconLocation = $accesoIcono
-        $acceso.Description = 'Centro Aether: modos, red, respaldo, limpieza y mas.'
+        $acceso.Description = 'Aether Toolbox: modos, mandos, red, respaldo, limpieza y mas.'
         $acceso.Save()
     }
     catch {
-        Write-AtlasLog -Level Warning -Message "Centro Aether: no se pudo crear '$destino': $($_.Exception.Message)" -ErrorRecord $_
+        Write-AtlasLog -Level Warning -Message "Aether Toolbox: no se pudo crear '$destino': $($_.Exception.Message)" -ErrorRecord $_
     }
 }
 
-Write-AtlasLog -Message "Centro Aether listo (interfaz $(if ($usarNativo) { 'nativa' } else { 'clasica' }), bandeja oculta)."
+Write-AtlasLog -Message "Aether Toolbox listo (interfaz $(if ($usarNativo) { 'nativa' } else { 'clasica' }), bandeja oculta)."

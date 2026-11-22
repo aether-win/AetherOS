@@ -33,7 +33,7 @@ public partial class App : Application
         ThreadPool.RegisterWaitForSingleObject(_senal,
             (_, _) => Dispatcher.BeginInvoke(new Action(MostrarCentro)), null, Timeout.Infinite, false);
 
-        // Si algo falla, queda escrito en CentroAether-aether-crash.log (Escritorio, %TEMP%
+        // Si algo falla, queda escrito en AetherToolbox-error.log (Escritorio, %TEMP%
         // y junto al .exe) para poder ver la causa real, en vez de que la app solo se cierre.
         AppDomain.CurrentDomain.UnhandledException += (_, a) =>
             Registrar("UnhandledException", a.ExceptionObject as Exception);
@@ -79,7 +79,7 @@ public partial class App : Application
         // Un error en un botón no debe cerrar todo el Centro: se avisa y se sigue.
         e.Handled = true;
         // Aviso por notificación de Windows (nada de cuadros blancos).
-        SegundoPlano.Notificar("Algo falló, pero el Centro sigue funcionando. El detalle quedó en el Escritorio (CentroAether-aether-crash.log).");
+        SegundoPlano.Notificar("Algo falló, pero Aether Toolbox sigue funcionando. El detalle quedó en el Escritorio (AetherToolbox-error.log).");
     }
 
     private static readonly object Candado = new();
@@ -89,7 +89,7 @@ public partial class App : Application
         try
         {
             var sb = new StringBuilder();
-            sb.AppendLine("===== CENTRO AETHER: ERROR =====");
+            sb.AppendLine("===== AETHER TOOLBOX: ERROR =====");
             sb.AppendLine($"Fecha:  {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             sb.AppendLine($"Origen: {origen}");
             sb.AppendLine($"OS:     {Environment.OSVersion}");
@@ -102,7 +102,7 @@ public partial class App : Application
             string texto = sb.ToString();
             lock (Candado)
             {
-                foreach (string ruta in RutasLog("aether-crash.log"))
+                foreach (string ruta in RutasLog("error.log"))
                 {
                     try { File.AppendAllText(ruta, texto); } catch { /* siguiente ruta */ }
                 }
@@ -118,13 +118,13 @@ public partial class App : Application
         try { escritorio = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory); } catch { }
         if (!string.IsNullOrEmpty(escritorio))
         {
-            yield return Path.Combine(escritorio, "CentroAether-" + nombre);
+            yield return Path.Combine(escritorio, "AetherToolbox-" + nombre);
         }
         string? temp = null;
         try { temp = Path.GetTempPath(); } catch { }
         if (!string.IsNullOrEmpty(temp))
         {
-            yield return Path.Combine(temp, "CentroAether-" + nombre);
+            yield return Path.Combine(temp, "AetherToolbox-" + nombre);
         }
     }
 }
