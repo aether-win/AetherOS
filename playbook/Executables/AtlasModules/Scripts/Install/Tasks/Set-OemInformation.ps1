@@ -20,3 +20,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInfor
     -Name 'Model' -Value $reportedVersion -Type String -Force -ErrorAction Stop
 Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' `
     -Name 'RegisteredOrganization' -Value $reportedVersion -Type String -Force -ErrorAction Stop
+
+# Nombre registrado del producto (no cambia el nombre del equipo ni de la cuenta).
+Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' `
+    -Name 'RegisteredOwner' -Value 'Aether' -Type String -Force -ErrorAction Stop
