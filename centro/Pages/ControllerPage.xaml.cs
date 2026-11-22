@@ -109,7 +109,11 @@ public sealed partial class ControllerPage : PaginaBase
 
         TglEmular.IsEnabled = vigem;
         CmbObjetivo.IsEnabled = vigem && !MotorControlador.Activo;   // no cambiar destino en caliente
-        PanelRequisitos.Visibility = vigem ? Visibility.Collapsed : Visibility.Visible;
+        bool hidhide = HidHideServicio.Disponible;
+        PanelRequisitos.Visibility = vigem && hidhide ? Visibility.Collapsed : Visibility.Visible;
+        BtnVigem.Visibility = vigem ? Visibility.Collapsed : Visibility.Visible;
+        BtnHidHide.Visibility = hidhide ? Visibility.Collapsed : Visibility.Visible;
+        PanelRequisitos.Titulo = !vigem ? "Faltan drivers" : "Falta HidHide (recomendado)";
 
         if (!vigem)
         {
@@ -117,10 +121,11 @@ public sealed partial class ControllerPage : PaginaBase
         }
         else
         {
-            string sony = MotorControlador.HaySony() ? " Detecté un mando Sony (PS4/PS5)." : "";
+            string destino = MotorControlador.Objetivo == TipoVirtual.DualShock4 ? "un DualShock 4 (PS4)" : "un Xbox 360";
+            string oculto = MotorControlador.MandoRealOculto ? " El original está oculto: los juegos solo ven el emulado." : "";
             FilaEmular.Descripcion = MotorControlador.Activo
-                ? "Activa: tu mando se refleja como un Xbox 360 virtual." + sony
-                : "Lista para activar. Convierte tu mando en un Xbox 360 virtual." + sony;
+                ? $"Activa: tu mando funciona como {destino} virtual.{oculto}"
+                : "Lista para activar. Tu mando se presenta a los juegos como un Xbox 360 o un PS4 virtual, con la luz encendida y el original oculto.";
         }
     }
 

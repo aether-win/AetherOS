@@ -25,12 +25,31 @@ public static class SegundoPlano
     private static HwndSource? _atajos;
     private static readonly DispatcherTimer Vigia = new() { Interval = TimeSpan.FromSeconds(2) };
     private static readonly DispatcherTimer GuardiaOffice = new() { Interval = TimeSpan.FromMinutes(10) };
+    private static readonly DispatcherTimer LuzMandos = new() { Interval = TimeSpan.FromSeconds(3) };
     private static string _ultimoModo = "";
     private static bool _ocupado;
+    private static bool _luzOcupada;
 
     public static void Iniciar()
     {
         _ultimoModo = Aether.ModoGuardado();
+
+        // Si la vez anterior se cerró de golpe con el mando real oculto, volver a mostrarlo.
+        _ = Task.Run(HidHideServicio.RestaurarPendientes);
+
+        // Barra de luz del DualShock 4 original al conectarlo (como en una PS4), aunque no se emule.
+        LuzMandos.Tick += async (_, _) =>
+        {
+            if (MotorControlador.Activo || _luzOcupada)
+            {
+                return;
+            }
+            _luzOcupada = true;
+            try { await Task.Run(LuzDs4.AsegurarEnConectados); }
+            catch { /* sin mando */ }
+            finally { _luzOcupada = false; }
+        };
+        LuzMandos.Start();
 
         _icono = new Forms.NotifyIcon
         {
@@ -82,6 +101,7 @@ public static class SegundoPlano
     {
         Vigia.Stop();
         GuardiaOffice.Stop();
+        LuzMandos.Stop();
         _atajos?.Dispose();
         if (_icono is not null)
         {
@@ -190,7 +210,11 @@ public static class SegundoPlano
         MotorControlador.Objetivo = destino.Value;
         bool ok = MotorControlador.Iniciar();
         string nombre = destino == TipoVirtual.DualShock4 ? "mando de PS4 (DualShock 4)" : "mando de Xbox 360";
-        Notificar(ok ? $"Tu mando ahora funciona como {nombre}." : "No se pudo iniciar la emulación del mando.");
+        string oculto = !ok ? ""
+            : MotorControlador.MandoRealOculto ? " El original quedó oculto: los juegos solo ven el emulado."
+            : HidHideServicio.Disponible ? ""
+            : " Instala HidHide (Aether Toolbox › Control) para ocultar el original.";
+        Notificar(ok ? $"Tu mando ahora funciona como {nombre}.{oculto}" : "No se pudo iniciar la emulación del mando.");
     }
 
     // ── Menú y avisos ────────────────────────────────────────────────────────────
