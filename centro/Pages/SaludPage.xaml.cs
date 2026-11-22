@@ -42,4 +42,6 @@ public sealed partial class SaludPage : PaginaBase
             TxtDetalle.Text = "No se pudo interpretar la salud de la bateria.";
         }
     }
+
+    private void RevisionCompleta_Click(object sender, System.Windows.RoutedEventArgs e) => Herramientas.RevisionCompleta();
 }

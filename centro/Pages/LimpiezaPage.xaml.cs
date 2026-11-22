@@ -31,4 +31,20 @@ public sealed partial class LimpiezaPage : PaginaBase
     {
         await Aether.AbrirAlmacenamiento();
     }
+
+    private async void LimpiezaWindows_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+        BtnLimpiezaWindows.IsEnabled = false;
+        await Herramientas.LimpiezaWindows();
+        BtnLimpiezaWindows.IsEnabled = true;
+        BtnLimpiezaWindows.Content = "Hecho ✓";
+    }
+
+    private async void QueOcupa_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+        BtnQueOcupa.IsEnabled = false;
+        TxtEspacio.Text = "Midiendo carpetas… puede tardar un poco.";
+        TxtEspacio.Text = (await Herramientas.QueOcupaEspacio()).Trim();
+        BtnQueOcupa.IsEnabled = true;
+    }
 }

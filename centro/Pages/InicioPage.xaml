@@ -70,6 +70,14 @@
                     </Button>
                 </c:Pila>
             </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xE8BC;" Titulo="Asistente de bienvenida"
+                          Descripcion="Vuelve a elegir modo, tema, perfil de Wind-Aether, carpeta de red y respaldo.">
+                <Button Content="Abrir" Click="Bienvenida_Click" />
+            </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xE896;" Titulo="Aether Transfer (FTP)"
+                          Descripcion="Cliente FTP/FTPS/SFTP para la PS4 y servidores: arrastra archivos desde el Explorador.">
+                <Button Content="Abrir" Click="Transfer_Click" />
+            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

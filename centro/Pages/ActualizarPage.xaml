@@ -21,6 +21,11 @@
                           Descripcion="Busca versiones nuevas de los programas instalados (navegadores, apps, etc.) y las instala.">
                 <Button x:Name="BtnApps" Content="Actualizar" Style="{StaticResource AccentButtonStyle}" Click="BtnApps_Click" />
             </c:FilaAjuste>
+            <TextBlock Text="Edge" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE721;" Titulo="Google como buscador en Edge"
+                          Descripcion="Abre la página de buscadores de Edge para elegir Google (Aether lo repone solo si vuelve Bing).">
+                <Button Content="Abrir" Click="EdgeGoogle_Click" />
+            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

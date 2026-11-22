@@ -54,4 +54,6 @@ public sealed partial class ActualizarPage : PaginaBase
         Estado.Message = "Listo. Tus programas quedaron al dia.";
         Estado.IsOpen = true;
     }
+
+    private void EdgeGoogle_Click(object sender, System.Windows.RoutedEventArgs e) => Herramientas.EdgeGoogle();
 }

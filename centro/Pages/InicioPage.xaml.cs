@@ -129,4 +129,18 @@ public sealed partial class InicioPage : PaginaBase
         Estado.Message = texto;
         Estado.IsOpen = true;
     }
+
+    private void Bienvenida_Click(object sender, System.Windows.RoutedEventArgs e) =>
+        new VentanaBienvenida { Owner = System.Windows.Window.GetWindow(this) }.Show();
+
+    private void Transfer_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+        string exe = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Windows),
+            "AtlasModules", "Aether", "Transfer", "AetherTransfer.exe");
+        if (System.IO.File.Exists(exe))
+        {
+            // Sin privilegios, para poder arrastrar archivos desde el Explorador.
+            System.Diagnostics.Process.Start("explorer.exe", "\"" + exe + "\"");
+        }
+    }
 }

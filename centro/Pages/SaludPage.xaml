@@ -20,7 +20,11 @@
                         <TextBlock x:Name="TxtSalud" FontSize="30" FontWeight="SemiBold" Text="…" />
                         <ProgressBar x:Name="BarSalud" Minimum="0" Maximum="100" Value="0" Height="8" Foreground="#3FBF7F" />
                         <TextBlock x:Name="TxtDetalle" Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Text="" />
-                    </c:Pila>
+                        <c:FilaAjuste Glyph="&#xE9D9;" Titulo="Revisión completa de Aether"
+                          Descripcion="Revisa a fondo que todo lo de Aether siga bien aplicado y lo repara si hace falta.">
+                <Button Content="Revisar" Click="RevisionCompleta_Click" />
+            </c:FilaAjuste>
+        </c:Pila>
                 </Grid>
             </Border>
 
