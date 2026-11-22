@@ -48,6 +48,18 @@ public static class SegundoPlano
         ServicioMandos.Iniciar();
         ActualizarIndicador();
 
+        // Automatización: al iniciar sesión, Aether se completa solo (drivers de mandos, Windhawk 2.0
+        // y los mods de Wind-Aether). Espera un poco a que haya red. Avisa solo si hizo algo.
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(TimeSpan.FromSeconds(45));
+            string r = (await Aether.Ejecutar("(@(Invoke-AetherAutoReparacion) -join '; ')")).Trim();
+            if (r.Length > 0 && !r.StartsWith("ERROR", StringComparison.OrdinalIgnoreCase))
+            {
+                Application.Current?.Dispatcher.BeginInvoke(new Action(() => Notificar("Aether se completó: " + r)));
+            }
+        });
+
         _iconoBase = CargarIcono();
         _icono = new Forms.NotifyIcon
         {

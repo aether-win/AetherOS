@@ -2,7 +2,7 @@
 name = "atlas-app"
 # Equal to <Version> in playbook/playbook.conf; tools/build/Set-AtlasVersion.ps1 bumps both.
 # Tester builds and the tag release fail when they differ.
-version = "2.0.0"
+version = "3.0.0"
 edition = "2024"
 description = "Aether OS: instalador y centro de control (basado en Atlas Manager)."
 license = "GPL-3.0-only"

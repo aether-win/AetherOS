@@ -142,7 +142,7 @@ public static class Aether
     }
 
     public static Task<string> ActivarMod(string id, bool activo) =>
-        Ejecutar($"[void](Set-AetherModWind -Id '{id.Replace("'", "''")}' -Activo ${(activo ? "true" : "false")})");
+        Ejecutar($"Set-AetherModWind -Id '{id.Replace("'", "''")}' -Activo ${(activo ? "true" : "false")}");
 
     public static bool WindhawkInstalado() =>
         File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Windhawk", "windhawk-cli.exe"));

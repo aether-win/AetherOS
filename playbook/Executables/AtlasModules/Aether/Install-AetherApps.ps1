@@ -268,9 +268,10 @@ if ($apps -contains 'wind-aether') {
             ForEach-Object { Join-Path $_ 'Windhawk\windhawk-cli.exe' } |
             Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
         if ($cli) {
-            & $cli data import $paquete --yes
-            if ($LASTEXITCODE -eq 0) { Ok 'Mods de Wind-Aether importados (todos desactivados; actívalos desde la app de Aether)' }
-            else { Aviso 'Algunos mods no se importaron'; $pendientes.Add("Wind-Aether: en Windhawk, Ajustes > Importar, elige $copia") }
+            # Cada mod se instala por separado (apagado y con sus ajustes de Aether).
+            $fallosMods = @(Install-AetherWindMods)
+            if ($fallosMods.Count -eq 0) { Ok 'Mods de Wind-Aether instalados (apagados; actívalos desde Aether Toolbox)' }
+            else { Aviso ('Mods con problemas (Aether Toolbox los reintenta al iniciar sesión): ' + ($fallosMods -join ', ')) }
         }
         else {
             Aviso 'Esta versión de Windhawk no trae la herramienta de línea de comandos (llega con Windhawk 2.0).'
@@ -358,6 +359,14 @@ function Test-AetherDriverFirmado {
 }
 
 Titulo 'Drivers de mandos'
+# Primero la descarga oficial de Nefarius (GitHub, firma verificada, silenciosa); winget queda de respaldo.
+$centroPs1 = Join-Path $carpetaAether 'Centro\Aether.Centro.ps1'
+if (Test-Path -LiteralPath $centroPs1) {
+    . $centroPs1
+    Start-AetherSpinner -Texto 'Instalando drivers de mandos'
+    try { $resDrivers = @(Install-AetherDriversMando) } finally { Stop-AetherSpinner }
+    $resDrivers | ForEach-Object { Write-Host "   $_" }
+}
 foreach ($d in @(
         @{ Nombre = 'ViGEmBus (mando virtual)'; Servicio = 'ViGEmBus'; Id = 'Nefarius.ViGEmBus' },
         @{ Nombre = 'HidHide (oculta el mando real)'; Servicio = 'HidHide'; Id = 'Nefarius.HidHide' }

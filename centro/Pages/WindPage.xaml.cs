@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CentroAether.Services;
 using System.Windows;
@@ -50,10 +51,24 @@ public sealed partial class WindPage : PaginaBase
         if (sender is ToggleSwitch sw && sw.Tag is string id)
         {
             bool activo = sw.IsOn;
-            await Aether.ActivarMod(id, activo);
+            sw.IsEnabled = false;
+            Estado.Severity = InfoBarSeverity.Informational;
+            Estado.Message = activo ? "Activando el mod en Windhawk…" : "Desactivando el mod…";
+            Estado.IsOpen = true;
+            bool ok = (await Aether.ActivarMod(id, activo)).Contains("True", StringComparison.OrdinalIgnoreCase);
+            sw.IsEnabled = true;
+            if (!ok)
+            {
+                // Windhawk no confirmó el cambio: el interruptor vuelve a como estaba.
+                _cargando = true;
+                sw.IsOn = !activo;
+                _cargando = false;
+            }
             ActualizarConteo();
-            Estado.Severity = InfoBarSeverity.Success;
-            Estado.Message = activo ? "Mod activado." : "Mod desactivado.";
+            Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Error;
+            Estado.Message = ok
+                ? (activo ? "Mod activado en Windhawk." : "Mod desactivado.")
+                : "Windhawk no pudo aplicar el mod. Detalle en C:\\ProgramData\\Aether\\autoreparacion.log";
             Estado.IsOpen = true;
         }
     }
@@ -73,6 +88,7 @@ public sealed partial class WindPage : PaginaBase
             // Mods de Wind-Aether importados (desactivados) para poder activarlos desde aquí.
             await Aether.Ejecutar("$m = Join-Path $script:AetherCarpeta 'Wind-Aether\\Wind-Aether-mods.json'; & (Get-AetherWindhawkCli) data import $m --yes");
         }
+        await Aether.Ejecutar("[void](Install-AetherWindMods)");
         AvisoWindhawk.IsOpen = !Aether.WindhawkInstalado();
         Estado.Severity = InfoBarSeverity.Success;
         Estado.Message = Aether.WindhawkInstalado() ? "Windhawk instalado." : "Revisa la instalacion de Windhawk.";

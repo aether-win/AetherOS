@@ -226,15 +226,19 @@ public sealed partial class ControllerPage : PaginaBase
         Estado.Message = $"Instalando {nombre}…";
         Estado.IsOpen = true;
 
-        string salida = await Aether.InstalarWinget(wingetId);
-
-        bool ok = !salida.Contains("ERROR", StringComparison.OrdinalIgnoreCase);
+        // Descarga oficial de Nefarius (firma verificada) y, si falla, winget. Se comprueba el servicio.
+        await Aether.Ejecutar("[void](Install-AetherDriversMando)");
+        bool ok;
+        using (var clave = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\" + nombre))
+        {
+            ok = clave is not null;
+        }
         btn.IsEnabled = true;
         btn.Content = original;
         Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning;
         Estado.Message = ok
             ? $"{nombre} instalado. Puede que necesites reiniciar para que el driver cargue."
-            : $"No se pudo instalar {nombre}.";
+            : $"No se pudo instalar {nombre}. Mira el registro: C:\\ProgramData\\Aether\\autoreparacion.log";
         Estado.IsOpen = true;
         _ocupado = false;
         RefrescarMotor();

@@ -3,7 +3,7 @@ name: Compilar Aether (instalador)
 # Aether: corre a mano (Actions > Compilar Aether (instalador) > Run workflow).
 # Arma el paquete de Aether OS y lo mete dentro de la app (embedded-playbook), así el
 # instalador funciona sin conectarse a GitHub ni a los servidores de Atlas. Deja
-# "AETHER OS 2.0.exe" como artefacto descargable desde la página de la ejecución.
+# "AETHER OS 3.0.exe" como artefacto descargable desde la página de la ejecución.
 on:
   workflow_dispatch:
 
@@ -91,15 +91,15 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "cargo build falló con $LASTEXITCODE" }
           $out = Join-Path $env:RUNNER_TEMP 'aether'
           New-Item -ItemType Directory -Path $out -Force | Out-Null
-          Copy-Item -LiteralPath 'target\x86_64-pc-windows-msvc\release\AtlasManager.exe' -Destination (Join-Path $out 'AETHER OS 2.0.exe')
+          Copy-Item -LiteralPath 'target\x86_64-pc-windows-msvc\release\AtlasManager.exe' -Destination (Join-Path $out 'AETHER OS 3.0.exe')
           Copy-Item -LiteralPath $env:ATLAS_EMBED_APBX -Destination $out
           Copy-Item -LiteralPath '..\LICENSE' -Destination (Join-Path $out 'LICENSE.txt')
           "AETHER_OUT=$out" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Guardar AETHER OS 2.0
+      - name: Guardar AETHER OS 3.0
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: AETHER-OS-2.0
+          name: AETHER-OS-3.0
           path: ${{ env.AETHER_OUT }}
           if-no-files-found: error
           retention-days: 14

@@ -40,7 +40,7 @@ actions:
     wait: true
     weight: 1
     onUpgrade: true
-    onUpgradeVersions: ['2.0.0']
+    onUpgradeVersions: ['3.0.0']
     oobe: false
     handleExitCodes: { "!0": halt }
   - !run:
@@ -77,7 +77,7 @@ actions:
     wait: true
     weight: 1
     onUpgrade: true
-    onUpgradeVersions: ['2.0.0']
+    onUpgradeVersions: ['3.0.0']
     oobe: only
     handleExitCodes: { "!0": halt }
 
