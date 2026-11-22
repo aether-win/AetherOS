@@ -31,8 +31,10 @@ Revisión de cada pedido de Daniel contra el código. "Código" = está hecho y 
 | Versión 2.0.0, propietario registrado "Aether" | playbook.conf, Set-OemInformation.ps1 | Código |
 | Sin software crackeado; de sus portables solo KeyVault | Install-AetherApps.ps1 | Código |
 
-## Pendiente que necesita decisión de Daniel
-- **Wind-Aether (perfiles Aether Glass / Limpio):** se aplican con `windhawk-cli.exe`, que solo
-  trae Windhawk 2.0 (todavía alfa). winget instala Windhawk 1.x estable → los perfiles no se
-  activan solos. Opciones: instalar Windhawk 2.0 alfa, o importar los mods a mano en 1.x.
+| Wind-Aether controlado desde Aether Toolbox | Install-AetherWindhawkCli: Windhawk 2.0 oficial (firma verificada) con windhawk-cli; si falla, 1.x estable | Código · Probar (2.0 es versión alfa de Windhawk) |
+
+## Notas
+- Windhawk 2.0 todavía es alfa (pedido de Daniel: que Windhawk funcione con el Toolbox).
+  La exclusión de Office en Windhawk (`HKLM\SOFTWARE\Windhawk\Engine\Settings\Exclude`) hay que
+  confirmarla en 2.0 durante la prueba.
 - IObit Driver Booster y DriverHub del Escritorio no los instala Aether.
