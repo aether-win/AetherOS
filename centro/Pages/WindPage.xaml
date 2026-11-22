@@ -15,18 +15,24 @@
 
         <c:Encabezado Grid.Row="0" Glyph="&#xE790;" ColorIcono="#E879F9" Titulo="Wind-Aether"
                       Subtitulo="Activa o desactiva cada mod visual de Windhawk. Empiezan todos apagados." Margin="0,0,0,14">
-            <Border CornerRadius="14" Padding="14,6" Background="#3A1F4A" BorderBrush="#E879F9" BorderThickness="1">
-                <TextBlock x:Name="TxtConteo" Text="…" FontWeight="SemiBold" />
-            </Border>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Ver registro" Margin="0,0,10,0" Click="Registro_Click" />
+                <Border CornerRadius="14" Padding="14,6" Background="#3A1F4A" BorderBrush="#E879F9" BorderThickness="1">
+                    <TextBlock x:Name="TxtConteo" Text="…" FontWeight="SemiBold" />
+                </Border>
+            </StackPanel>
         </c:Encabezado>
 
-        <c:InfoBar x:Name="AvisoWindhawk" Grid.Row="1" IsOpen="False" IsClosable="False" Margin="0,0,0,14"
+        <StackPanel Grid.Row="1">
+        <c:InfoBar x:Name="Progreso" IsOpen="False" IsClosable="False" Margin="0,0,0,10" Severity="Informational" />
+        <c:InfoBar x:Name="AvisoWindhawk" IsOpen="False" IsClosable="False" Margin="0,0,0,14"
                    Severity="Warning"
                    Message="Windhawk todavia no esta instalado. Wind-Aether usa Windhawk para aplicar los mods.">
             <c:InfoBar.ActionButton>
                 <Button Content="Instalar Windhawk" Click="InstalarWindhawk_Click" />
             </c:InfoBar.ActionButton>
         </c:InfoBar>
+        </StackPanel>
 
         <Border Grid.Row="2" Background="#0F2036" BorderBrush="#1C3756" BorderThickness="1" CornerRadius="12">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="4,6">

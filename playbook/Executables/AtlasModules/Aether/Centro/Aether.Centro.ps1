@@ -226,21 +226,49 @@ function Get-AetherReleaseAsset {
     return $null
 }
 
+function Get-AetherArgsSilencio {
+    # Argumentos silenciosos correctos según la tecnología del instalador.
+    param([string]$Archivo)
+    $tipoGuardado = "$Archivo.tipo"
+    $tipo = if (Test-Path -LiteralPath $tipoGuardado) { (Get-Content -LiteralPath $tipoGuardado -Raw).Trim() } else {
+        $texto = [Text.Encoding]::ASCII.GetString([IO.File]::ReadAllBytes($Archivo))
+        if ($texto.Contains('.wixburn')) { 'WiX' } elseif ($texto.Contains('Advanced Installer')) { 'AdvancedInstaller' } elseif ($texto.Contains('Inno Setup')) { 'Inno' } else { 'Desconocido' }
+    }
+    switch ($tipo) {
+        'WiX' { return @('/quiet /norestart') }
+        'AdvancedInstaller' { return @('/exenoui /qn /norestart') }
+        'Inno' { return @('/VERYSILENT /SUPPRESSMSGBOXES /NORESTART') }
+        default { return @('/quiet /norestart', '/exenoui /qn /norestart', '/S') }
+    }
+}
+
+function Invoke-AetherInstalador {
+    # Ejecuta un instalador ya descargado/incluido: firma válida obligatoria, argumentos según su tipo
+    # y tiempo límite (si se queda esperando, se cierra en vez de colgarse para siempre).
+    param([string]$Archivo, [scriptblock]$Listo, [string]$Nombre, [int]$Minutos = 6)
+    $firma = Get-AuthenticodeSignature -LiteralPath $Archivo
+    if ($firma.Status -ne 'Valid') { Write-AetherAutoLog "${Nombre}: firma NO válida ($($firma.Status)); no se instala."; return $false }
+    foreach ($argumentos in (Get-AetherArgsSilencio -Archivo $Archivo)) {
+        $p = Start-Process -FilePath $Archivo -ArgumentList $argumentos -PassThru -WindowStyle Hidden
+        if (-not $p.WaitForExit($Minutos * 60000)) {
+            try { $p.Kill() } catch { Write-Verbose 'Ya terminó.' }
+            Write-AetherAutoLog "${Nombre}: '$argumentos' no terminó en $Minutos min; se cerró."
+            continue
+        }
+        Write-AetherAutoLog "${Nombre}: instalador '$argumentos' -> código $($p.ExitCode)"
+        for ($i = 0; $i -lt 10; $i++) { if (& $Listo) { return $true }; Start-Sleep -Seconds 2 }
+    }
+    return [bool](& $Listo)
+}
+
 function Invoke-AetherInstaladorFirmado {
-    # Descarga, exige firma digital válida y prueba cada juego de argumentos silenciosos hasta que $Listo dé $true.
-    param([string]$Url, [string[]]$Intentos, [scriptblock]$Listo, [string]$Nombre)
+    # Descarga un instalador oficial y lo ejecuta con Invoke-AetherInstalador.
+    param([string]$Url, [scriptblock]$Listo, [string]$Nombre)
     $archivo = Join-Path $env:TEMP ('aether-' + [guid]::NewGuid().ToString('N') + '.exe')
     try {
         $ProgressPreference = 'SilentlyContinue'
         Invoke-WebRequest -Uri $Url -OutFile $archivo -UseBasicParsing -ErrorAction Stop
-        $firma = Get-AuthenticodeSignature -LiteralPath $archivo
-        if ($firma.Status -ne 'Valid') { Write-AetherAutoLog "${Nombre}: firma NO válida ($($firma.Status)); no se instala."; return $false }
-        foreach ($argumentos in $Intentos) {
-            $p = Start-Process -FilePath $archivo -ArgumentList $argumentos -PassThru -Wait -WindowStyle Hidden
-            Write-AetherAutoLog "${Nombre}: instalador '$argumentos' -> código $($p.ExitCode)"
-            for ($i = 0; $i -lt 10; $i++) { if (& $Listo) { return $true }; Start-Sleep -Seconds 2 }
-        }
-        return [bool](& $Listo)
+        return (Invoke-AetherInstalador -Archivo $archivo -Listo $Listo -Nombre $Nombre)
     }
     catch { Write-AetherAutoLog "${Nombre}: error $($_.Exception.Message)"; return $false }
     finally { Remove-Item -LiteralPath $archivo -Force -ErrorAction SilentlyContinue }
@@ -248,23 +276,27 @@ function Invoke-AetherInstaladorFirmado {
 
 function Install-AetherDriversMando {
     # ViGEmBus (mando virtual) y HidHide (oculta el mando real): solo si faltan.
+    # 1) Instalador oficial incluido en Aether (sin Internet), 2) GitHub de Nefarius, 3) winget.
     $resultado = @()
+    $incluidos = Join-Path $script:AetherCarpeta 'Drivers'
     foreach ($d in @(
-            @{ Nombre = 'ViGEmBus'; Servicio = 'ViGEmBus'; Repo = 'nefarius/ViGEmBus'; Patron = '(?i)vigembus.*\.exe$'; Winget = 'Nefarius.ViGEmBus' },
-            @{ Nombre = 'HidHide'; Servicio = 'HidHide'; Repo = 'nefarius/HidHide'; Patron = '(?i)hidhide.*x64.*\.exe$|(?i)hidhide.*\.exe$'; Winget = 'Nefarius.HidHide' }
+            @{ Nombre = 'ViGEmBus'; Servicio = 'ViGEmBus'; Archivo = 'ViGEmBus-Setup.exe'; Repo = 'nefarius/ViGEmBus'; Patron = '(?i)vigembus.*\.exe$'; Winget = 'Nefarius.ViGEmBus' },
+            @{ Nombre = 'HidHide'; Servicio = 'HidHide'; Archivo = 'HidHide-Setup.exe'; Repo = 'nefarius/HidHide'; Patron = '(?i)hidhide.*x64.*\.exe$'; Winget = 'Nefarius.HidHide' }
         )) {
         $servicio = $d.Servicio
         $listo = { [bool](Get-Service -Name $servicio -ErrorAction SilentlyContinue) }.GetNewClosure()
         if (& $listo) { continue }
+        Write-AetherAutoLog "$($d.Nombre): no está; se instala."
         $ok = $false
-        try {
-            $url = Get-AetherReleaseAsset -Repo $d.Repo -Patron $d.Patron
-            if ($url) {
-                $ok = Invoke-AetherInstaladorFirmado -Url $url -Nombre $d.Nombre -Listo $listo `
-                    -Intentos @('/exenoui /qn /norestart', '/qn /norestart', '/quiet /norestart')
+        $local = Join-Path $incluidos $d.Archivo
+        if (Test-Path -LiteralPath $local) { $ok = Invoke-AetherInstalador -Archivo $local -Listo $listo -Nombre $d.Nombre }
+        if (-not $ok) {
+            try {
+                $url = Get-AetherReleaseAsset -Repo $d.Repo -Patron $d.Patron
+                if ($url) { $ok = Invoke-AetherInstaladorFirmado -Url $url -Nombre $d.Nombre -Listo $listo }
             }
+            catch { Write-AetherAutoLog "$($d.Nombre): GitHub no respondió ($($_.Exception.Message))." }
         }
-        catch { Write-AetherAutoLog "$($d.Nombre): GitHub no respondió ($($_.Exception.Message))." }
         if (-not $ok) {
             $winget = Get-Command winget.exe -ErrorAction SilentlyContinue
             if ($winget) {
@@ -278,10 +310,37 @@ function Install-AetherDriversMando {
     return $resultado
 }
 
+function Use-AetherCandadoWindhawk {
+    # Un solo trabajo con Windhawk a la vez (bienvenida, Toolbox y autoreparación no se pisan).
+    param([scriptblock]$Bloque, [int]$Minutos = 30)
+    $m = New-Object System.Threading.Mutex($false, 'Global\AetherWindhawk')
+    $tengo = $false
+    try {
+        try { $tengo = $m.WaitOne($Minutos * 60000) } catch [System.Threading.AbandonedMutexException] { $tengo = $true }
+        if (-not $tengo) { Write-AetherAutoLog 'Windhawk ocupado demasiado tiempo; se omite.'; return $null }
+        & $Bloque
+    }
+    finally {
+        if ($tengo) { $m.ReleaseMutex() }
+        $m.Dispose()
+    }
+}
+
+function Set-AetherProgresoWind {
+    param([string]$Texto)
+    $archivo = Join-Path $env:ProgramData 'Aether\windhawk-progreso.txt'
+    try {
+        if ($Texto) { Set-Content -LiteralPath $archivo -Value $Texto -Encoding UTF8 }
+        else { Remove-Item -LiteralPath $archivo -Force -ErrorAction SilentlyContinue }
+    }
+    catch { Write-Verbose 'Sin progreso.' }
+}
+
 function Install-AetherWindMods {
     # Instala en Windhawk (apagados) los mods de Wind-Aether que falten, con los ajustes de Aether.
     # Mods del repositorio: precompilados. Mods propios (local@): desde su código fuente.
     param([string]$Solo)
+    Use-AetherCandadoWindhawk {
     $cli = Get-AetherWindhawkCli
     if (-not $cli) { return @('Windhawk sin windhawk-cli') }
     $paquete = Join-Path $script:AetherCarpeta 'Wind-Aether\Wind-Aether-mods.json'
@@ -290,9 +349,13 @@ function Install-AetherWindMods {
     try { $instalados = @(((& $cli mod list --json 2>$null) | Out-String | ConvertFrom-Json) | ForEach-Object { $_.id }) }
     catch { Write-AetherAutoLog 'Windhawk: no se pudo leer la lista de mods.' }
     $fallos = @()
+    $pendientes = @($datos.mods | Where-Object { (-not $Solo -or $_.modId -eq $Solo) -and $instalados -notcontains $_.modId }).Count
+    $n = 0
     foreach ($m in @($datos.mods)) {
         if ($Solo -and $m.modId -ne $Solo) { continue }
         if ($instalados -contains $m.modId) { continue }
+        $n++
+        Set-AetherProgresoWind ("Instalando en Windhawk: {0} ({1} de {2})" -f $m.modId, $n, $pendientes)
         if ($m.modId -like 'local@*') {
             $archivo = Join-Path $env:TEMP (($m.modId -replace '^local@', '') + '.wh.cpp')
             [IO.File]::WriteAllText($archivo, [string]$m.source, (New-Object Text.UTF8Encoding($false)))
@@ -316,14 +379,17 @@ function Install-AetherWindMods {
             Write-AetherAutoLog "Windhawk: ajustes de $($m.modId) -> código $LASTEXITCODE"
         }
     }
+    Set-AetherProgresoWind ''
     return $fallos
+    }
 }
 
 function Invoke-AetherAutoReparacion {
     # Deja Aether OS completo sin intervención: drivers de mandos, Windhawk 2.0 y mods.
     # Mientras el instalador de apps del primer inicio no termine, no se cruza con él.
-    $marca = Get-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\AtlasOS\Aether' -Name AppsInstaladas -ErrorAction SilentlyContinue
-    if (-not $marca -or $marca.AppsInstaladas -ne 1) { Write-AetherAutoLog 'Primer inicio: se espera al instalador de apps.'; return @() }
+    $enCurso = @(Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue |
+            Where-Object { $_.CommandLine -match 'Install-AetherApps' })
+    if ($enCurso.Count) { Write-AetherAutoLog 'El instalador de apps del primer inicio sigue trabajando; se reintenta en el próximo inicio de sesión.'; return @() }
     $lineas = @()
     $lineas += Install-AetherDriversMando
     if (-not (Get-AetherWindhawkCli)) {
@@ -382,8 +448,9 @@ function Set-AetherModWind {
     # Activa/desactiva un mod de Wind-Aether. Si el mod todavía no está en Windhawk, lo instala
     # primero (con sus ajustes de Aether). Devuelve $true solo si Windhawk confirmó el cambio.
     param([string]$Id, [bool]$Activo)
+    $r = Use-AetherCandadoWindhawk {
     $cli = Get-AetherWindhawkCli
-    if (-not $cli) { return $false }
+    if (-not $cli) { Write-AetherAutoLog 'Windhawk: falta windhawk-cli.exe (Windhawk 2.0).'; return $false }
     $accion = if ($Activo) { 'enable' } else { 'disable' }
     & $cli mod $accion $Id *> $null
     $codigo = $LASTEXITCODE
@@ -393,7 +460,10 @@ function Set-AetherModWind {
         $codigo = $LASTEXITCODE
     }
     Write-AetherAutoLog "Windhawk: mod $accion $Id -> código $codigo"
-    return ($codigo -eq 0)
+    # Apagar un mod que ni siquiera está instalado = ya está apagado.
+    return ($codigo -eq 0 -or ($codigo -eq 4 -and -not $Activo))
+    }
+    return [bool]($r | Select-Object -Last 1)
 }
 
 function Set-AetherPerfilWind {

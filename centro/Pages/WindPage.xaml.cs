@@ -19,6 +19,7 @@ public sealed partial class WindPage : PaginaBase
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
+        IniciarVigiaProgreso();
         AvisoWindhawk.IsOpen = !Aether.WindhawkInstalado();
 
         _cargando = true;
@@ -93,5 +94,54 @@ public sealed partial class WindPage : PaginaBase
         Estado.Severity = InfoBarSeverity.Success;
         Estado.Message = Aether.WindhawkInstalado() ? "Windhawk instalado." : "Revisa la instalacion de Windhawk.";
         Estado.IsOpen = true;
+    }
+
+    // Progreso de Windhawk (instalando/compilando mods en segundo plano).
+    private readonly System.Windows.Threading.DispatcherTimer _vigiaProgreso = new() { Interval = TimeSpan.FromSeconds(2) };
+    private bool _vigiaLista;
+
+    private void RevisarProgreso()
+    {
+        string archivo = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Aether", "windhawk-progreso.txt");
+        string texto = "";
+        try { if (System.IO.File.Exists(archivo)) { texto = System.IO.File.ReadAllText(archivo).Trim(); } } catch { /* en uso */ }
+        bool antes = Progreso.IsOpen;
+        Progreso.IsOpen = texto.Length > 0;
+        if (texto.Length > 0)
+        {
+            Progreso.Message = texto + " — puede tardar unos minutos; los interruptores esperan a que termine.";
+        }
+        else if (antes)
+        {
+            _cargando = true;
+            ListaMods.ItemsSource = Aether.ListaMods();
+            _cargando = false;
+            ActualizarConteo();
+        }
+    }
+
+    private void IniciarVigiaProgreso()
+    {
+        if (!_vigiaLista)
+        {
+            _vigiaProgreso.Tick += (_, _) => RevisarProgreso();
+            Unloaded += (_, _) => _vigiaProgreso.Stop();
+            Loaded += (_, _) => _vigiaProgreso.Start();
+            _vigiaLista = true;
+        }
+        _vigiaProgreso.Start();
+        RevisarProgreso();
+    }
+
+    private void Registro_Click(object sender, RoutedEventArgs e)
+    {
+        string log = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Aether", "autoreparacion.log");
+        if (!System.IO.File.Exists(log))
+        {
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(log)!);
+            System.IO.File.WriteAllText(log, "Registro de Aether (Windhawk y drivers). Todavía no hay entradas." + Environment.NewLine);
+        }
+        // Se abre sin privilegios con el Bloc de notas.
+        System.Diagnostics.Process.Start("explorer.exe", "\"" + log + "\"");
     }
 }

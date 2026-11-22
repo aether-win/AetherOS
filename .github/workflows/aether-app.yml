@@ -40,6 +40,30 @@ jobs:
           if (-not (Test-Path (Join-Path $destino 'AetherToolbox.exe'))) { throw 'No se copió AetherToolbox.exe al paquete.' }
           Write-Host "Aether Toolbox incluido en el paquete ($(@(Get-ChildItem $destino -Recurse -File).Count) archivos)."
 
+      - name: Incluir drivers de mandos (ViGEmBus y HidHide oficiales de Nefarius)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $destino = 'playbook\Executables\AtlasModules\Aether\Drivers'
+          New-Item -ItemType Directory -Path $destino -Force | Out-Null
+          foreach ($d in @(@{ Repo = 'nefarius/ViGEmBus'; Patron = '(?i)vigembus.*\.exe$'; Nombre = 'ViGEmBus-Setup.exe' },
+                           @{ Repo = 'nefarius/HidHide'; Patron = '(?i)hidhide.*x64.*\.exe$'; Nombre = 'HidHide-Setup.exe' })) {
+            $rel = gh api "repos/$($d.Repo)/releases/latest" | ConvertFrom-Json
+            $activo = @($rel.assets | Where-Object { $_.name -match $d.Patron }) | Select-Object -First 1
+            if (-not $activo) { throw "No hay instalador en $($d.Repo) $($rel.tag_name)" }
+            $archivo = Join-Path $destino $d.Nombre
+            Invoke-WebRequest -Uri $activo.browser_download_url -OutFile $archivo
+            $firma = Get-AuthenticodeSignature -LiteralPath $archivo
+            if ($firma.Status -ne 'Valid') { throw "$($d.Nombre): firma $($firma.Status)" }
+            $bytes = [IO.File]::ReadAllBytes($archivo)
+            $texto = [Text.Encoding]::ASCII.GetString($bytes)
+            $tipo = if ($texto.Contains('.wixburn')) { 'WiX' } elseif ($texto.Contains('Advanced Installer')) { 'AdvancedInstaller' } elseif ($texto.Contains('Inno Setup')) { 'Inno' } else { 'Desconocido' }
+            Write-Host "$($d.Nombre): $($activo.name) ($($rel.tag_name)), firmado por $($firma.SignerCertificate.Subject), tipo $tipo"
+            Set-Content -LiteralPath "$archivo.tipo" -Value $tipo -Encoding ascii
+          }
+
       - name: Compilar Aether Transfer (FTP) y meterlo en el paquete
         shell: pwsh
         working-directory: aether-transfer
@@ -62,7 +86,7 @@ jobs:
           & .\tools\build\Test-Apbx.ps1 -Path $apbx.FullName
           # Aether: el paquete debe llevar Aether Toolbox y Aether Transfer (no solo la versión clásica).
           $lista = & 7z l -slt -p'malte' $apbx.FullName 2>&1 | Out-String
-          foreach ($exe in 'AetherToolbox.exe', 'AetherTransfer.exe') {
+          foreach ($exe in 'AetherToolbox.exe', 'AetherTransfer.exe', 'ViGEmBus-Setup.exe', 'HidHide-Setup.exe') {
             if ($lista -notmatch [regex]::Escape($exe)) { throw "El paquete no contiene $exe." }
           }
           Write-Host 'Paquete verificado: AetherToolbox.exe y AetherTransfer.exe incluidos.'

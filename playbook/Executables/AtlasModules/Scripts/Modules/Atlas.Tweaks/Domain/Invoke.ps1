@@ -220,7 +220,7 @@ function Get-AtlasUpgradeRegistryEntries {
     }
 }
 
-function Invoke-AtlasTweak {
+function Invoke-AtlasTweakCore {
     <#
     .SYNOPSIS
         Loads a tweak .psd1, checks its gates and applies its keys in order: Registry,
@@ -343,6 +343,88 @@ function Invoke-AtlasTweak {
         if ($exitCode -ne 0) {
             throw "Tweak '$tweakName' companion script (RunAs=$runAs) exited with code $exitCode."
         }
+    }
+}
+
+function Get-AtlasTweakFingerprint {
+    # Aether: huella de un tweak (su .psd1, su script compañero y las opciones elegidas).
+    param([string]$Path, [psobject]$Context)
+    $partes = New-Object System.Collections.Generic.List[string]
+    $partes.Add([IO.File]::ReadAllText($Path))
+    try {
+        $def = Import-AtlasDataFile -LiteralPath $Path
+        if ($def.ContainsKey('Script') -and $def['Script']) {
+            $companion = Join-Path -Path (Split-Path -Path $Path -Parent) -ChildPath ([string]$def['Script'])
+            if (Test-Path -LiteralPath $companion -PathType Leaf) { $partes.Add([IO.File]::ReadAllText($companion)) }
+        }
+    }
+    catch { $partes.Add('sin-definicion') }
+    $partes.Add((@($Context.Options) | Sort-Object) -join ',')
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes(($partes -join "`n")))).Replace('-', '') }
+    finally { $sha.Dispose() }
+}
+
+function Invoke-AtlasTweak {
+    <#
+    .SYNOPSIS
+        Aplica un tweak (ver Invoke-AtlasTweakCore). Aether: al actualizar o reinstalar, los tweaks
+        de equipo que no cambiaron desde la última instalación correcta se saltan (huella SHA-256
+        del .psd1, su script y las opciones elegidas), así la reinstalación solo aplica lo nuevo
+        o lo modificado. Los pasos por usuario y las instalaciones nuevas aplican todo.
+    #>
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Path,
+
+        [ValidateSet('All', 'Machine', 'ProtectedCurrentUser', 'CurrentUser', 'DefaultUser')]
+        [string]$RegistryScope = 'All',
+
+        [switch]$RegistryOnly,
+
+        [psobject]$Context
+    )
+
+    if (-not $PSBoundParameters.ContainsKey('Context')) { $Context = Get-AtlasContext }
+    $huellas = $null
+    $clave = $null
+    $huella = $null
+    $diferencial = $null -ne $Context -and
+        $null -ne $Context.PSObject.Properties['IsInstallStateBacked'] -and [bool]$Context.IsInstallStateBacked -and
+        $RegistryScope -cin @('All', 'Machine') -and -not $RegistryOnly -and
+        (Test-Path -LiteralPath $Path -PathType Leaf)
+    if ($diferencial) {
+        try {
+            $huellas = Join-Path -Path ([string]$Context.WinDir) -ChildPath 'AtlasOS\Install\tweak-huellas.json'
+            $clave = '{0}|{1}' -f ([IO.Path]::GetFileNameWithoutExtension($Path)), $RegistryScope
+            $huella = Get-AtlasTweakFingerprint -Path $Path -Context $Context
+            if ([string]$Context.Mode -cin @('Upgrade', 'Reapply') -and (Test-Path -LiteralPath $huellas -PathType Leaf)) {
+                $previas = Get-Content -LiteralPath $huellas -Raw | ConvertFrom-Json
+                if ($null -ne $previas.PSObject.Properties[$clave] -and [string]$previas.$clave -ceq $huella) {
+                    Write-AtlasLog -Message "Skipping tweak '$clave': sin cambios desde la última instalación."
+                    return
+                }
+            }
+        }
+        catch { $diferencial = $false }
+    }
+
+    $argumentos = @{} + $PSBoundParameters
+    $argumentos['Context'] = $Context
+    Invoke-AtlasTweakCore @argumentos
+
+    if ($diferencial -and $huella) {
+        try {
+            $mapa = @{}
+            if (Test-Path -LiteralPath $huellas -PathType Leaf) {
+                $previas = Get-Content -LiteralPath $huellas -Raw | ConvertFrom-Json
+                foreach ($p in $previas.PSObject.Properties) { $mapa[$p.Name] = [string]$p.Value }
+            }
+            $mapa[$clave] = $huella
+            [IO.File]::WriteAllText($huellas, ($mapa | ConvertTo-Json -Compress), (New-Object Text.UTF8Encoding($false)))
+        }
+        catch { Write-AtlasLog -Level Warning -Message "No se pudo guardar la huella de '$clave': $($_.Exception.Message)" }
     }
 }
 
