@@ -337,7 +337,7 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
   ejecución → Artifacts.
 
 ## D.4 Estado de entrega (2026-11-21, noche)
-- Último commit de código: `8e382fe` (mando DS4 original: luz, reconexión, ocultar el real). Antes: `0ac3698` (la versión nueva reemplaza a la vieja abierta). Antes: `7151fdb` (Office blindado; CI todo verde). Antes: `45fa36b` (nombre Aether Toolbox + botón Cerrar), `504dab3` (segundo plano siempre activo + bandeja oscura). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
+- Último commit de código: `f808dea` (Office con tema fijo, no sigue a Windows; CI todo verde). Antes: `8e382fe` (mando DS4 original: luz, reconexión, ocultar el real). Antes: `0ac3698` (la versión nueva reemplaza a la vieja abierta). Antes: `7151fdb` (Office blindado; CI todo verde). Antes: `45fa36b` (nombre Aether Toolbox + botón Cerrar), `504dab3` (segundo plano siempre activo + bandeja oscura). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
 - "Centro Aether (WPF)" en `7970b64`: ✅ verde.
 - **Confirmado por Daniel con captura: el Centro WPF abre en su equipo.**
 - GitHub Actions en `c06f888`: **TODO EN VERDE** ✅ — Centro Aether (WPF), Build Playbook, Lint

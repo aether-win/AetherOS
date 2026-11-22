@@ -541,6 +541,16 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
         `--cloak-on`; al detener `--dev-unhide`). Pendientes guardados en `%ProgramData%\Aether\hidhide-ocultos.txt` y
         restaurados al iniciar. Sin HidHide se avisa (botón Instalar HidHide en Control).
       * **Sin probar con hardware** (no hay Windows aquí): verificar con el DS4 original por USB y por Bluetooth.
+- [x] **Office no cambia con el tema de Windows** (Daniel 23:24: Word seguía "lavado" con Office ya excluido de Windhawk;
+      "protege Office de absolutamente todo, incluso del modo de color de Windows"). Commit `f808dea`, CI todo verde.
+      * Causa (doc. de Microsoft): Office por defecto "Usar configuración del sistema"; Windows oscuro = tema Negro, y
+        en Negro Word/Outlook recolorean el documento.
+      * `HKCU\Software\Microsoft\Office\16.0\Common` `UI Theme` (+ `PendingUITheme`) fijo: 0 Colorido (defecto),
+        5 Blanco o 3 Gris oscuro (elegible en Oficina). Nunca 6 (sistema) ni 4 (Negro). Guardia del segundo plano lo
+        repone. Instalador: `misc/aether-office-macros` fija `UI Theme`=0 (catálogo: registry 12).
+      * Opción "Compatibilidad gráfica" (`Common\Graphics\DisableHardwareAcceleration`) por si aún se ve raro.
+      * Pendiente sin verificar: la clave de registro de "No cambiar nunca el color de página del documento" (no
+        documentada); con tema fijo distinto de Negro no hace falta.
 - [ ] Aviso general + botones desactivados cuando Aether OS no está instalado (ofrecido, sin respuesta).
 - [ ] **Prueba de Daniel en la laptop de pruebas**: bajar `Centro-Aether-<sha>` de Actions, abrir
       `CentroAether.exe` (pide administrador), recorrer las secciones. Si algo falla, mandar el
