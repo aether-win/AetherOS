@@ -150,7 +150,7 @@ public partial class VentanaBienvenida : Window
         for (int i = 0; i < NombresPasos.Length; i++)
         {
             bool actual = i + 1 == paso, hecho = i + 1 < paso;
-            var fila = new StackPanel { Orientation = System.Windows.Controls.Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 16) };
+            var fila = new System.Windows.Controls.StackPanel { Orientation = System.Windows.Controls.Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 16) };
             var punto = new System.Windows.Controls.Border
             {
                 Width = 28, Height = 28, CornerRadius = new CornerRadius(14),
