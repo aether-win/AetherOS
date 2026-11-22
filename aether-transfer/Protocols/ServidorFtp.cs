@@ -26,8 +26,17 @@ public sealed class ServidorFtp : IServidorRemoto
             _ => FtpEncryptionMode.None,
         };
         ConfigApp.Datos cfg = ConfigApp.Actual;
-        cliente.Config.ConnectTimeout = Math.Max(5, cfg.TimeoutSegundos) * 1000;
+        int to = Math.Max(5, cfg.TimeoutSegundos) * 1000;
+        cliente.Config.ConnectTimeout = to;
+        cliente.Config.ReadTimeout = to;
+        cliente.Config.DataConnectionConnectTimeout = to;
+        cliente.Config.DataConnectionReadTimeout = to;
         cliente.Config.DataConnectionType = FtpDataConnectionType.AutoPassive;
+        cliente.Config.SocketKeepAlive = true;
+        cliente.Config.RetryAttempts = 3;
+        cliente.Config.StaleDataCheck = false;          // más rápido en LAN
+        cliente.Config.TransferChunkSize = 262144;      // 256 KB: mejor velocidad
+        cliente.Config.LocalFileBufferSize = 262144;
         if (cfg.LimiteVelocidadKBps > 0)
         {
             cliente.Config.DownloadRateLimit = (uint)cfg.LimiteVelocidadKBps;

@@ -118,12 +118,51 @@
                 </Setter>
             </Style>
 
-            <!-- ====== ComboBox (oscuro, sencillo) ====== -->
+            <!-- ====== ComboBox totalmente oscuro ====== -->
             <Style TargetType="ComboBox">
-                <Setter Property="Background" Value="{StaticResource Campo}" />
-                <Setter Property="Foreground" Value="{StaticResource TxtPri}" />
-                <Setter Property="BorderBrush" Value="{StaticResource Linea}" />
-                <Setter Property="Padding" Value="6,3" />
+                <Setter Property="Foreground" Value="#E6EEF8" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBox">
+                            <Grid TextElement.Foreground="#E6EEF8">
+                                <ToggleButton Focusable="False" ClickMode="Press"
+                                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border Background="#0A1726" BorderBrush="#1E3A5C" BorderThickness="1" CornerRadius="4">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="22" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="1" Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="9"
+                                                               Foreground="#9DB2CC" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                                <ContentPresenter Content="{TemplateBinding SelectionBoxItem}"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  Margin="10,0,26,0" VerticalAlignment="Center" IsHitTestVisible="False" />
+                                <Popup Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
+                                       AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                    <Border Background="#0F2036" BorderBrush="#24456B" BorderThickness="1" CornerRadius="6" Margin="0,3,0,0"
+                                            MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="#000000" BlurRadius="14" ShadowDepth="2" Opacity="0.5" />
+                                        </Border.Effect>
+                                        <ScrollViewer MaxHeight="280">
+                                            <StackPanel IsItemsHost="True" Margin="3" />
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <!-- ====== CheckBox ====== -->
@@ -259,9 +298,22 @@
 
             <!-- ====== Elemento de ComboBox oscuro ====== -->
             <Style TargetType="ComboBoxItem">
-                <Setter Property="Background" Value="#0F2036" />
                 <Setter Property="Foreground" Value="#E6EEF8" />
-                <Setter Property="Padding" Value="6,4" />
+                <Setter Property="Padding" Value="9,6" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBoxItem">
+                            <Border x:Name="b" Background="Transparent" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsHighlighted" Value="True">
+                                    <Setter TargetName="b" Property="Background" Value="#1E6BFF" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
         </ResourceDictionary>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
@@ -12,47 +13,61 @@ using AetherTransfer.Connections;
 using AetherTransfer.Models;
 using AetherTransfer.Protocols;
 using AetherTransfer.Settings;
-using AetherTransfer.TransferEngine;
 using AetherTransfer.Views;
+using Microsoft.Win32;
 
 namespace AetherTransfer;
 
 public partial class MainWindow : Window
 {
-    private readonly ObservableCollection<ElementoRemoto> _local = new();
     private readonly ObservableCollection<ElementoRemoto> _remoto = new();
     private readonly ObservableCollection<string> _log = new();
+    private readonly ObservableCollection<SitioGuardado> _sitios = new();
 
     private IServidorRemoto? _servidor;
     private GestorTransferencias _gestor = null!;
-    private string _rutaLocal = "";
     private string _rutaRemota = "/";
 
+    // Historial de navegación (para ‹ ›)
+    private readonly List<string> _hist = new();
+    private int _histPos = -1;
+
     private System.Windows.Point _inicioArrastre;
+    private bool _cargandoSitio;
 
     public MainWindow()
     {
         InitializeComponent();
         Tema.BarraOscura(this);
 
-        LocalLista.ItemsSource = _local;
-        RemotoLista.ItemsSource = _remoto;
         LogLista.ItemsSource = _log;
+        RemotoLista.ItemsSource = _remoto;
 
         _gestor = new GestorTransferencias(() => _servidor, OnTransferenciaCompletada);
         ColaLista.ItemsSource = _gestor.Items;
         _gestor.Items.CollectionChanged += OnColaChanged;
         ActualizarContadores();
 
-        CargarLocal(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-        Log("Aether Transfer listo.");
+        CargarSitios();
+        Log("Aether Transfer listo. Escribe un servidor o elige uno guardado.");
     }
 
-    private void OnTransferenciaCompletada()
+    // ── Registro (con auto-scroll) ───────────────────────────────────────────
+
+    private void Log(string msg)
     {
-        CargarLocal(_rutaLocal);
-        _ = CargarRemoto(_rutaRemota);
+        _log.Add($"[{DateTime.Now:HH:mm:ss}]  {msg}");
+        while (_log.Count > 300)
+        {
+            _log.RemoveAt(0);
+        }
+        if (_log.Count > 0)
+        {
+            LogLista.ScrollIntoView(_log[^1]);
+        }
     }
+
+    private void OnTransferenciaCompletada() => _ = CargarRemoto(_rutaRemota);
 
     private void OnColaChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -75,8 +90,8 @@ public partial class MainWindow : Window
         int fallidas = _gestor.Items.Count(i => i.Estado is EstadoTransfer.Fallido or EstadoTransfer.Cancelado);
         int hechas = _gestor.Items.Count(i => i.Estado == EstadoTransfer.Completado);
         TabCola.Text = $"Archivos en cola ({enCola})";
-        TabFallidas.Text = $"Transferencias fallidas ({fallidas})";
-        TabHechas.Text = $"Transferencias satisfactorias ({hechas})";
+        TabFallidas.Text = $"Fallidas ({fallidas})";
+        TabHechas.Text = $"Satisfactorias ({hechas})";
         ColaVacia.Visibility = _gestor.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
@@ -86,14 +101,8 @@ public partial class MainWindow : Window
         {
             return;
         }
-        if (item.Estado == EstadoTransfer.Transfiriendo)
-        {
-            _gestor.Pausar(item);
-        }
-        else
-        {
-            _gestor.Reanudar(item);
-        }
+        if (item.Estado == EstadoTransfer.Transfiriendo) { _gestor.Pausar(item); }
+        else { _gestor.Reanudar(item); }
     }
 
     private void Cancelar_Click(object sender, RoutedEventArgs e)
@@ -102,114 +111,92 @@ public partial class MainWindow : Window
         {
             return;
         }
-        if (item.Estado is EstadoTransfer.Completado or EstadoTransfer.Cancelado or EstadoTransfer.Fallido)
-        {
-            _gestor.Quitar(item);
-        }
-        else
-        {
-            _gestor.Cancelar(item);
-        }
+        if (item.Estado is EstadoTransfer.Completado or EstadoTransfer.Cancelado or EstadoTransfer.Fallido) { _gestor.Quitar(item); }
+        else { _gestor.Cancelar(item); }
     }
 
-    // ── Registro ─────────────────────────────────────────────────────────────
+    // ── Sitios guardados ─────────────────────────────────────────────────────
 
-    private void Log(string msg)
+    private void CargarSitios()
     {
-        _log.Add($"[{DateTime.Now:HH:mm:ss}]  {msg}");
-        while (_log.Count > 200)
+        _cargandoSitio = true;
+        _sitios.Clear();
+        foreach (SitioGuardado s in AlmacenSitios.Cargar())
         {
-            _log.RemoveAt(0);
+            _sitios.Add(s);
         }
+        CmbSitios.ItemsSource = null;
+        CmbSitios.ItemsSource = _sitios;
+        CmbSitios.SelectedIndex = -1;
+        _cargandoSitio = false;
     }
 
-    // ── Sitio local ──────────────────────────────────────────────────────────
-
-    private void CargarLocal(string ruta)
+    private void CmbSitios_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        try
-        {
-            var dir = new DirectoryInfo(ruta);
-            if (!dir.Exists)
-            {
-                return;
-            }
-
-            _local.Clear();
-
-            DirectoryInfo? padre = dir.Parent;
-            if (padre is not null)
-            {
-                _local.Add(new ElementoRemoto { Nombre = "..", EsCarpeta = true, Ruta = padre.FullName });
-            }
-
-            try
-            {
-                foreach (DirectoryInfo d in dir.GetDirectories().OrderBy(d => d.Name, StringComparer.CurrentCultureIgnoreCase))
-                {
-                    _local.Add(new ElementoRemoto { Nombre = d.Name, EsCarpeta = true, Ruta = d.FullName, Modificado = d.LastWriteTime });
-                }
-                foreach (FileInfo f in dir.GetFiles().OrderBy(f => f.Name, StringComparer.CurrentCultureIgnoreCase))
-                {
-                    _local.Add(new ElementoRemoto { Nombre = f.Name, EsCarpeta = false, Tamano = f.Length, Ruta = f.FullName, Modificado = f.LastWriteTime });
-                }
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Log($"Sin permiso para leer: {ruta}");
-            }
-
-            _rutaLocal = dir.FullName;
-            TxtLocalRuta.Text = _rutaLocal;
-            int carpetas = _local.Count(e => e.EsCarpeta && e.Nombre != "..");
-            int archivos = _local.Count(e => !e.EsCarpeta);
-            LocalInfo.Text = $"{archivos} archivo(s) y {carpetas} directorio(s)";
-        }
-        catch (Exception ex)
-        {
-            Log($"Error local: {ex.Message}");
-        }
-    }
-
-    private void LocalSubir_Click(object sender, RoutedEventArgs e)
-    {
-        DirectoryInfo? padre = Directory.GetParent(_rutaLocal);
-        if (padre is not null)
-        {
-            CargarLocal(padre.FullName);
-        }
-    }
-
-    private void LocalActualizar_Click(object sender, RoutedEventArgs e) => CargarLocal(_rutaLocal);
-
-    private void LocalLista_DoubleTapped(object sender, MouseButtonEventArgs e)
-    {
-        if (LocalLista.SelectedItem is not ElementoRemoto item)
+        if (_cargandoSitio || CmbSitios.SelectedItem is not SitioGuardado s)
         {
             return;
         }
-        if (item.EsCarpeta)
+        ConexionInfo info = s.AConexion();
+        TxtHost.Text = info.Host;
+        TxtUsuario.Text = info.Usuario;
+        TxtPass.Password = info.Password;
+        TxtPuerto.Text = info.Puerto.ToString();
+        _ = ConectarCon(info);
+        // permitir volver a elegir el mismo
+        _cargandoSitio = true;
+        CmbSitios.SelectedIndex = -1;
+        _cargandoSitio = false;
+    }
+
+    private void AdminSitios_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new DialogoSitios { Owner = this };
+        bool? r = dlg.ShowDialog();
+        CargarSitios();
+        if (r == true && dlg.SitioParaConectar is SitioGuardado s)
         {
-            CargarLocal(item.Ruta);
+            ConexionInfo info = s.AConexion();
+            TxtHost.Text = info.Host;
+            TxtUsuario.Text = info.Usuario;
+            TxtPass.Password = info.Password;
+            TxtPuerto.Text = info.Puerto.ToString();
+            _ = ConectarCon(info);
         }
-        else
+    }
+
+    // Guarda la conexión actual como "reciente" si no existe ya (host+puerto+usuario).
+    private void GuardarReciente(ConexionInfo info)
+    {
+        bool existe = _sitios.Any(x =>
+            string.Equals(x.Host, info.Host, StringComparison.OrdinalIgnoreCase) &&
+            x.Puerto == info.Puerto &&
+            string.Equals(x.Usuario, info.Usuario, StringComparison.OrdinalIgnoreCase));
+        if (existe)
         {
-            SubirUno(item);
+            return;
         }
+        var nuevo = AlmacenSitios.Crear(
+            string.IsNullOrWhiteSpace(info.Nombre) ? $"{info.Host}:{info.Puerto}" : info.Nombre,
+            info.Host, info.Puerto, info.Protocolo, info.Usuario, info.Password,
+            string.IsNullOrWhiteSpace(info.DirectorioInicial) ? "/" : info.DirectorioInicial);
+        var lista = _sitios.ToList();
+        lista.Add(nuevo);
+        AlmacenSitios.Guardar(lista);
+        CargarSitios();
     }
 
     // ── Conexión ─────────────────────────────────────────────────────────────
 
     private async void Conectar_Click(object sender, RoutedEventArgs e)
     {
-        int puerto = int.TryParse(TxtPuerto.Text.Trim(), out int p) ? p : 21;
+        int puerto = int.TryParse(TxtPuerto.Text.Trim(), out int p) && p > 0 ? p : 21;
         Protocolo proto = puerto switch
         {
             22 => Protocolo.Sftp,
             990 => Protocolo.FtpsImplicito,
             _ => Protocolo.Ftp,
         };
-
         await ConectarCon(new ConexionInfo
         {
             Host = TxtHost.Text.Trim(),
@@ -220,51 +207,6 @@ public partial class MainWindow : Window
         });
     }
 
-    private async void AdminSitios_Click(object sender, RoutedEventArgs e)
-    {
-        var dlg = new DialogoSitios { Owner = this };
-        if (dlg.ShowDialog() == true && dlg.SitioParaConectar is SitioGuardado s)
-        {
-            ConexionInfo info = s.AConexion();
-            TxtHost.Text = info.Host;
-            TxtUsuario.Text = info.Usuario;
-            TxtPass.Password = info.Password;
-            TxtPuerto.Text = info.Puerto.ToString();
-            await ConectarCon(info);
-        }
-    }
-
-    private void Config_Click(object sender, RoutedEventArgs e)
-    {
-        var dlg = new DialogoConfig { Owner = this };
-        dlg.ShowDialog();
-    }
-
-    private void Sincronizar_Click(object sender, RoutedEventArgs e)
-    {
-        if (_servidor is null || !_servidor.Conectado)
-        {
-            Log("Conéctate primero para sincronizar.");
-            return;
-        }
-        var dlg = new DialogoSync(_local.ToList(), _remoto.ToList()) { Owner = this };
-        if (dlg.ShowDialog() == true)
-        {
-            foreach (AccionSync a in dlg.Acciones)
-            {
-                _gestor.Encolar(new TransferItem
-                {
-                    Nombre = a.Nombre,
-                    RutaLocal = Path.Combine(_rutaLocal, a.Nombre),
-                    RutaRemota = UnirPosix(_rutaRemota, a.Nombre),
-                    Subida = a.Subida,
-                    Tamano = a.Tamano,
-                });
-            }
-            Log($"Sincronización: {dlg.Acciones.Count} archivo(s) en cola.");
-        }
-    }
-
     private async Task ConectarCon(ConexionInfo info)
     {
         if (string.IsNullOrWhiteSpace(info.Host))
@@ -272,9 +214,10 @@ public partial class MainWindow : Window
             Log("Escribe la dirección del servidor.");
             return;
         }
-
-        // Muchos servidores (p. ej. el FTP de la PS4) no piden usuario/contraseña:
-        // si el usuario está vacío, se conecta de forma anónima.
+        if (info.Puerto <= 0)
+        {
+            info.Puerto = ConexionInfo.PuertoPorDefecto(info.Protocolo);
+        }
         if (string.IsNullOrWhiteSpace(info.Usuario))
         {
             info.Usuario = "anonymous";
@@ -294,16 +237,18 @@ public partial class MainWindow : Window
         {
             await _servidor.ConectarAsync(info);
             Log("Sesión iniciada correctamente.");
-            EstadoPunto.Fill = new SolidColorBrush(Colors.LightGreen);
+            EstadoPunto.Fill = new SolidColorBrush(Color.FromRgb(0x3F, 0xD1, 0x7A));
             TxtEstado.Text = $"Conectado: {info.Host} ({info.Protocolo})";
             string inicio = string.IsNullOrWhiteSpace(info.DirectorioInicial) ? "/" : info.DirectorioInicial;
-            _rutaRemota = inicio;
-            await CargarRemoto(inicio);
+            _hist.Clear();
+            _histPos = -1;
+            await Navegar(inicio, true);
+            GuardarReciente(info);
         }
         catch (Exception ex)
         {
             Log($"Error de conexión: {ex.Message}");
-            EstadoPunto.Fill = new SolidColorBrush(Colors.OrangeRed);
+            EstadoPunto.Fill = new SolidColorBrush(Color.FromRgb(0xE5, 0x5A, 0x3A));
             TxtEstado.Text = "Error de conexión";
             await DesconectarInterno();
         }
@@ -317,11 +262,13 @@ public partial class MainWindow : Window
     {
         await DesconectarInterno();
         Log("Desconectado.");
-        EstadoPunto.Fill = new SolidColorBrush(Colors.Gray);
+        EstadoPunto.Fill = new SolidColorBrush(Color.FromRgb(0x6B, 0x7B, 0x90));
         TxtEstado.Text = "No conectado";
         _remoto.Clear();
         RemotoInfo.Text = "No conectado";
-        TxtRemotoRuta.Text = "";
+        TxtRuta.Text = "";
+        _hist.Clear();
+        _histPos = -1;
     }
 
     private async Task DesconectarInterno()
@@ -333,19 +280,63 @@ public partial class MainWindow : Window
         }
     }
 
-    // ── Sitio remoto ─────────────────────────────────────────────────────────
+    private void Config_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new DialogoConfig { Owner = this };
+        dlg.ShowDialog();
+    }
 
-    private async Task CargarRemoto(string ruta)
+    // ── Navegación remota ────────────────────────────────────────────────────
+
+    private async Task Navegar(string ruta, bool nuevoHistorial)
+    {
+        bool ok = await CargarRemoto(ruta);
+        if (ok && nuevoHistorial)
+        {
+            if (_histPos < _hist.Count - 1)
+            {
+                _hist.RemoveRange(_histPos + 1, _hist.Count - _histPos - 1);
+            }
+            if (_hist.Count == 0 || _hist[^1] != ruta)
+            {
+                _hist.Add(ruta);
+            }
+            _histPos = _hist.Count - 1;
+        }
+    }
+
+    private void Atras_Click(object sender, RoutedEventArgs e)
+    {
+        if (_histPos > 0)
+        {
+            _histPos--;
+            _ = CargarRemoto(_hist[_histPos]);
+        }
+    }
+
+    private void Adelante_Click(object sender, RoutedEventArgs e)
+    {
+        if (_histPos < _hist.Count - 1)
+        {
+            _histPos++;
+            _ = CargarRemoto(_hist[_histPos]);
+        }
+    }
+
+    private void Arriba_Click(object sender, RoutedEventArgs e) => _ = Navegar(PadrePosix(_rutaRemota), true);
+
+    private void RemotoActualizar_Click(object sender, RoutedEventArgs e) => _ = CargarRemoto(_rutaRemota);
+
+    private async Task<bool> CargarRemoto(string ruta)
     {
         if (_servidor is null || !_servidor.Conectado)
         {
-            return;
+            return false;
         }
         try
         {
             var items = await _servidor.ListarAsync(ruta);
             _remoto.Clear();
-
             if (ruta != "/")
             {
                 _remoto.Add(new ElementoRemoto { Nombre = "..", EsCarpeta = true, Ruta = PadrePosix(ruta) });
@@ -358,16 +349,17 @@ public partial class MainWindow : Window
             {
                 _remoto.Add(ConRuta(i, ruta));
             }
-
             _rutaRemota = ruta;
-            TxtRemotoRuta.Text = ruta;
+            TxtRuta.Text = ruta;
             int carpetas = items.Count(x => x.EsCarpeta);
             int archivos = items.Count(x => !x.EsCarpeta);
             RemotoInfo.Text = $"{archivos} archivo(s) y {carpetas} directorio(s)";
+            return true;
         }
         catch (Exception ex)
         {
             Log($"Error al listar {ruta}: {ex.Message}");
+            return false;
         }
     }
 
@@ -380,10 +372,6 @@ public partial class MainWindow : Window
         Ruta = UnirPosix(dir, i.Nombre),
     };
 
-    private void RemotoSubir_Click(object sender, RoutedEventArgs e) => _ = CargarRemoto(PadrePosix(_rutaRemota));
-
-    private void RemotoActualizar_Click(object sender, RoutedEventArgs e) => _ = CargarRemoto(_rutaRemota);
-
     private async void RemotoLista_DoubleTapped(object sender, MouseButtonEventArgs e)
     {
         if (RemotoLista.SelectedItem is not ElementoRemoto item)
@@ -392,7 +380,7 @@ public partial class MainWindow : Window
         }
         if (item.EsCarpeta)
         {
-            await CargarRemoto(item.Ruta);
+            await Navegar(item.Ruta, true);
         }
         else
         {
@@ -400,37 +388,48 @@ public partial class MainWindow : Window
         }
     }
 
-    // ── Transferencias ───────────────────────────────────────────────────────
+    // ── Subir / Descargar ────────────────────────────────────────────────────
 
     private void Subir_Click(object sender, RoutedEventArgs e)
-    {
-        foreach (ElementoRemoto item in LocalLista.SelectedItems.OfType<ElementoRemoto>().Where(x => !x.EsCarpeta).ToList())
-        {
-            SubirUno(item);
-        }
-    }
-
-    private void SubirUno(ElementoRemoto archivo)
     {
         if (_servidor is null || !_servidor.Conectado)
         {
             Log("Conéctate primero para subir archivos.");
             return;
         }
+        var dlg = new OpenFileDialog { Multiselect = true, Title = "Elige archivos para subir" };
+        if (dlg.ShowDialog(this) == true)
+        {
+            foreach (string ruta in dlg.FileNames)
+            {
+                EncolarSubida(ruta);
+            }
+        }
+    }
+
+    private void EncolarSubida(string rutaLocal)
+    {
+        var fi = new FileInfo(rutaLocal);
         _gestor.Encolar(new TransferItem
         {
-            Nombre = archivo.Nombre,
-            RutaLocal = archivo.Ruta,
-            RutaRemota = UnirPosix(_rutaRemota, archivo.Nombre),
+            Nombre = fi.Name,
+            RutaLocal = rutaLocal,
+            RutaRemota = UnirPosix(_rutaRemota, fi.Name),
             Subida = true,
-            Tamano = archivo.Tamano,
+            Tamano = fi.Exists ? fi.Length : 0,
         });
-        Log($"En cola (subir): {archivo.Nombre}");
+        Log($"En cola (subir): {fi.Name}");
     }
 
     private void Descargar_Click(object sender, RoutedEventArgs e)
     {
-        foreach (ElementoRemoto item in RemotoLista.SelectedItems.OfType<ElementoRemoto>().Where(x => !x.EsCarpeta).ToList())
+        var sel = RemotoLista.SelectedItems.OfType<ElementoRemoto>().Where(x => !x.EsCarpeta && x.Nombre != "..").ToList();
+        if (sel.Count == 0)
+        {
+            Log("Selecciona uno o más archivos del servidor para descargar.");
+            return;
+        }
+        foreach (ElementoRemoto item in sel)
         {
             DescargarUno(item);
         }
@@ -442,18 +441,26 @@ public partial class MainWindow : Window
         {
             return;
         }
+        string destino = Path.Combine(CarpetaDescargas(), archivo.Nombre);
         _gestor.Encolar(new TransferItem
         {
             Nombre = archivo.Nombre,
-            RutaLocal = Path.Combine(_rutaLocal, archivo.Nombre),
+            RutaLocal = destino,
             RutaRemota = archivo.Ruta,
             Subida = false,
             Tamano = archivo.Tamano,
         });
-        Log($"En cola (descargar): {archivo.Nombre}");
+        Log($"En cola (descargar → Descargas): {archivo.Nombre}");
     }
 
-    // ── Menús contextuales ───────────────────────────────────────────────────
+    private static string CarpetaDescargas()
+    {
+        string d = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+        try { Directory.CreateDirectory(d); } catch { /* usa la que haya */ }
+        return d;
+    }
+
+    // ── Menú contextual remoto ───────────────────────────────────────────────
 
     private void Lista_RightTapped(object sender, MouseButtonEventArgs e)
     {
@@ -463,83 +470,13 @@ public partial class MainWindow : Window
         }
     }
 
-    private async void LocalNuevaCarpeta_Click(object sender, RoutedEventArgs e)
-    {
-        string? nombre = await PedirTexto("Nueva carpeta", "Nueva carpeta");
-        if (string.IsNullOrWhiteSpace(nombre))
-        {
-            return;
-        }
-        try
-        {
-            Directory.CreateDirectory(Path.Combine(_rutaLocal, nombre));
-            Log($"Carpeta creada en el equipo: {nombre}");
-            CargarLocal(_rutaLocal);
-        }
-        catch (Exception ex) { Log($"Error al crear carpeta: {ex.Message}"); }
-    }
-
-    private async void LocalRenombrar_Click(object sender, RoutedEventArgs e)
-    {
-        if (LocalLista.SelectedItem is not ElementoRemoto item || item.Nombre == "..")
-        {
-            return;
-        }
-        string? nuevo = await PedirTexto("Renombrar", item.Nombre);
-        if (string.IsNullOrWhiteSpace(nuevo) || nuevo == item.Nombre)
-        {
-            return;
-        }
-        try
-        {
-            string destino = Path.Combine(_rutaLocal, nuevo);
-            if (item.EsCarpeta)
-            {
-                Directory.Move(item.Ruta, destino);
-            }
-            else
-            {
-                File.Move(item.Ruta, destino);
-            }
-            Log($"Renombrado en el equipo: {item.Nombre} → {nuevo}");
-            CargarLocal(_rutaLocal);
-        }
-        catch (Exception ex) { Log($"Error al renombrar: {ex.Message}"); }
-    }
-
-    private async void LocalEliminar_Click(object sender, RoutedEventArgs e)
-    {
-        if (LocalLista.SelectedItem is not ElementoRemoto item || item.Nombre == "..")
-        {
-            return;
-        }
-        if (ConfigApp.Actual.ConfirmarEliminar && !await Confirmar($"¿Eliminar «{item.Nombre}» del equipo?"))
-        {
-            return;
-        }
-        try
-        {
-            if (item.EsCarpeta)
-            {
-                Directory.Delete(item.Ruta, true);
-            }
-            else
-            {
-                File.Delete(item.Ruta);
-            }
-            Log($"Eliminado del equipo: {item.Nombre}");
-            CargarLocal(_rutaLocal);
-        }
-        catch (Exception ex) { Log($"Error al eliminar: {ex.Message}"); }
-    }
-
     private async void RemotoNuevaCarpeta_Click(object sender, RoutedEventArgs e)
     {
         if (_servidor is null || !_servidor.Conectado)
         {
             return;
         }
-        string? nombre = await PedirTexto("Nueva carpeta remota", "nueva_carpeta");
+        string? nombre = InputBox.Pedir(this, "Nueva carpeta remota", "nueva_carpeta");
         if (string.IsNullOrWhiteSpace(nombre))
         {
             return;
@@ -559,7 +496,7 @@ public partial class MainWindow : Window
         {
             return;
         }
-        string? nuevo = await PedirTexto("Renombrar", item.Nombre);
+        string? nuevo = InputBox.Pedir(this, "Renombrar", item.Nombre);
         if (string.IsNullOrWhiteSpace(nuevo) || nuevo == item.Nombre)
         {
             return;
@@ -579,7 +516,7 @@ public partial class MainWindow : Window
         {
             return;
         }
-        if (ConfigApp.Actual.ConfirmarEliminar && !await Confirmar($"¿Eliminar «{item.Nombre}» del servidor?"))
+        if (ConfigApp.Actual.ConfirmarEliminar && !Confirmacion.Pedir(this, $"¿Eliminar «{item.Nombre}» del servidor?"))
         {
             return;
         }
@@ -592,27 +529,16 @@ public partial class MainWindow : Window
         catch (Exception ex) { Log($"Error al eliminar: {ex.Message}"); }
     }
 
-    // ── Diálogos sencillos ───────────────────────────────────────────────────
-
-    private Task<string?> PedirTexto(string titulo, string valor)
-        => Task.FromResult(InputBox.Pedir(this, titulo, valor));
-
-    private Task<bool> Confirmar(string mensaje)
-    {
-        MessageBoxResult r = MessageBox.Show(this, mensaje, "Confirmar",
-            MessageBoxButton.YesNo, MessageBoxImage.Question);
-        return Task.FromResult(r == MessageBoxResult.Yes);
-    }
-
     // ── Arrastrar y soltar ───────────────────────────────────────────────────
 
     private void DragSobreArchivos(object sender, DragEventArgs e)
     {
-        e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+        e.Effects = (_servidor is { Conectado: true } && e.Data.GetDataPresent(DataFormats.FileDrop))
+            ? DragDropEffects.Copy : DragDropEffects.None;
         e.Handled = true;
     }
 
-    // Soltar en el panel REMOTO = subir al servidor.
+    // Soltar en el panel remoto = subir.
     private void RemotoDrop(object sender, DragEventArgs e)
     {
         if (_servidor is null || !_servidor.Conectado)
@@ -627,23 +553,8 @@ public partial class MainWindow : Window
         int n = 0;
         foreach (string ruta in rutas)
         {
-            if (File.Exists(ruta))
-            {
-                var fi = new FileInfo(ruta);
-                _gestor.Encolar(new TransferItem
-                {
-                    Nombre = fi.Name,
-                    RutaLocal = ruta,
-                    RutaRemota = UnirPosix(_rutaRemota, fi.Name),
-                    Subida = true,
-                    Tamano = fi.Length,
-                });
-                n++;
-            }
-            else if (Directory.Exists(ruta))
-            {
-                Log($"Las carpetas aún no se suben por arrastre: {Path.GetFileName(ruta)}");
-            }
+            if (File.Exists(ruta)) { EncolarSubida(ruta); n++; }
+            else if (Directory.Exists(ruta)) { Log($"Las carpetas aún no se suben por arrastre: {Path.GetFileName(ruta)}"); }
         }
         if (n > 0)
         {
@@ -651,80 +562,23 @@ public partial class MainWindow : Window
         }
     }
 
-    // Soltar en el panel LOCAL = copiar al equipo (desde Explorador o temporal de arrastre).
-    private void LocalDrop(object sender, DragEventArgs e)
-    {
-        if (e.Data.GetData(DataFormats.FileDrop) is not string[] rutas)
-        {
-            return;
-        }
-        int n = 0;
-        foreach (string ruta in rutas)
-        {
-            try
-            {
-                if (File.Exists(ruta))
-                {
-                    string destino = Path.Combine(_rutaLocal, Path.GetFileName(ruta));
-                    if (!string.Equals(Path.GetFullPath(ruta), Path.GetFullPath(destino), StringComparison.OrdinalIgnoreCase))
-                    {
-                        File.Copy(ruta, destino, true);
-                        n++;
-                    }
-                }
-            }
-            catch (Exception ex) { Log($"Error al copiar {Path.GetFileName(ruta)}: {ex.Message}"); }
-        }
-        if (n > 0)
-        {
-            Log($"Copiado(s) al equipo: {n} archivo(s).");
-            CargarLocal(_rutaLocal);
-        }
-    }
-
-    // Iniciar arrastre desde el panel LOCAL (rutas reales -> sirve para subir o para el Explorador).
-    private void Local_MouseDown(object sender, MouseButtonEventArgs e) => _inicioArrastre = e.GetPosition(null);
-
-    private void Local_MouseMove(object sender, MouseEventArgs e)
-    {
-        if (e.LeftButton != MouseButtonState.Pressed || !SuperaUmbral(e))
-        {
-            return;
-        }
-        string[] archivos = LocalLista.SelectedItems.OfType<ElementoRemoto>()
-            .Where(x => !x.EsCarpeta && x.Nombre != "..")
-            .Select(x => x.Ruta).Where(File.Exists).ToArray();
-        if (archivos.Length == 0)
-        {
-            return;
-        }
-        try { DragDrop.DoDragDrop(LocalLista, new DataObject(DataFormats.FileDrop, archivos), DragDropEffects.Copy); }
-        catch { /* arrastre cancelado */ }
-    }
-
-    // Iniciar arrastre desde el panel REMOTO: descarga a temporal y entrega como archivo real
-    // (así se puede soltar tanto en el Explorador de Windows como en el panel local).
+    // Arrastrar DESDE el servidor hacia afuera (Explorador): descarga a temporal y entrega el archivo real.
     private void Remoto_MouseDown(object sender, MouseButtonEventArgs e) => _inicioArrastre = e.GetPosition(null);
 
     private void Remoto_MouseMove(object sender, MouseEventArgs e)
     {
-        if (e.LeftButton != MouseButtonState.Pressed || !SuperaUmbral(e))
+        if (e.LeftButton != MouseButtonState.Pressed || !SuperaUmbral(e) || _servidor is null || !_servidor.Conectado)
         {
             return;
         }
-        if (_servidor is null || !_servidor.Conectado)
-        {
-            return;
-        }
-        var archivos = RemotoLista.SelectedItems.OfType<ElementoRemoto>()
-            .Where(x => !x.EsCarpeta && x.Nombre != "..").ToList();
+        var archivos = RemotoLista.SelectedItems.OfType<ElementoRemoto>().Where(x => !x.EsCarpeta && x.Nombre != "..").ToList();
         if (archivos.Count == 0)
         {
             return;
         }
 
         string temp = Path.Combine(Path.GetTempPath(), "AetherTransfer");
-        var rutas = new System.Collections.Generic.List<string>();
+        var rutas = new List<string>();
         Mouse.OverrideCursor = Cursors.Wait;
         try
         {
@@ -753,20 +607,14 @@ public partial class MainWindow : Window
     private bool SuperaUmbral(MouseEventArgs e)
     {
         Vector d = _inicioArrastre - e.GetPosition(null);
-        return System.Math.Abs(d.X) >= SystemParameters.MinimumHorizontalDragDistance
-            || System.Math.Abs(d.Y) >= SystemParameters.MinimumVerticalDragDistance;
+        return Math.Abs(d.X) >= SystemParameters.MinimumHorizontalDragDistance
+            || Math.Abs(d.Y) >= SystemParameters.MinimumVerticalDragDistance;
     }
 
     // ── Utilidades de rutas POSIX ────────────────────────────────────────────
 
     private static string UnirPosix(string dir, string nombre)
-    {
-        if (string.IsNullOrEmpty(dir) || dir == "/")
-        {
-            return "/" + nombre;
-        }
-        return dir.TrimEnd('/') + "/" + nombre;
-    }
+        => string.IsNullOrEmpty(dir) || dir == "/" ? "/" + nombre : dir.TrimEnd('/') + "/" + nombre;
 
     private static string PadrePosix(string ruta)
     {

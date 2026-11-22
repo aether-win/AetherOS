@@ -1,8 +1,8 @@
 <Window x:Class="AetherTransfer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="AETHER TRANSFER" Height="840" Width="1320"
-        MinHeight="580" MinWidth="980"
+        Title="AETHER TRANSFER" Height="820" Width="1180"
+        MinHeight="560" MinWidth="820"
         WindowStartupLocation="CenterScreen"
         Icon="Assets/aether-transfer.ico"
         Background="#081220"
@@ -10,12 +10,17 @@
         FontFamily="Segoe UI" FontSize="13">
 
     <Window.Resources>
-        <!-- Cabecera de columnas de los exploradores -->
         <Style x:Key="ColHdr" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#6E89AC" />
             <Setter Property="FontSize" Value="11" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <!-- Botón de navegación (‹ › ↑ ⟳) -->
+        <Style x:Key="BtnNav" TargetType="Button" BasedOn="{StaticResource BtnPlano}">
+            <Setter Property="Width" Value="30" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Padding" Value="0" />
         </Style>
     </Window.Resources>
 
@@ -23,7 +28,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -43,12 +50,6 @@
                             <TextBlock Text="Sitios" FontSize="11" Margin="0,4,0,0" HorizontalAlignment="Center" />
                         </StackPanel>
                     </Button>
-                    <Button Style="{StaticResource BtnPlano}" Click="Conectar_Click" Margin="0,0,2,0">
-                        <StackPanel>
-                            <TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#38BDF8" HorizontalAlignment="Center" />
-                            <TextBlock Text="Conectar" FontSize="11" Margin="0,4,0,0" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
                     <Button Style="{StaticResource BtnPlano}" Click="Desconectar_Click" Margin="0,0,2,0">
                         <StackPanel>
                             <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#38BDF8" HorizontalAlignment="Center" />
@@ -56,10 +57,16 @@
                         </StackPanel>
                     </Button>
                     <Border Width="1" Background="#22425F" Margin="8,6" />
-                    <Button Style="{StaticResource BtnPlano}" Click="Sincronizar_Click" Margin="0,0,2,0">
+                    <Button Style="{StaticResource BtnPlano}" Click="Subir_Click" Margin="0,0,2,0">
                         <StackPanel>
-                            <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#38BDF8" HorizontalAlignment="Center" />
-                            <TextBlock Text="Sincronizar" FontSize="11" Margin="0,4,0,0" HorizontalAlignment="Center" />
+                            <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#38BDF8" HorizontalAlignment="Center" />
+                            <TextBlock Text="Subir" FontSize="11" Margin="0,4,0,0" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource BtnPlano}" Click="Descargar_Click" Margin="0,0,2,0">
+                        <StackPanel>
+                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#38BDF8" HorizontalAlignment="Center" />
+                            <TextBlock Text="Descargar" FontSize="11" Margin="0,4,0,0" HorizontalAlignment="Center" />
                         </StackPanel>
                     </Button>
                     <Button Style="{StaticResource BtnPlano}" Click="Config_Click">
@@ -79,308 +86,210 @@
             </Grid>
         </Border>
 
-        <!-- ===== CONEXIÓN RÁPIDA ===== -->
+        <!-- ===== CONEXIÓN ===== -->
         <Border Grid.Row="1" Background="#0A1A2E" BorderBrush="#1E3A5C" BorderThickness="0,0,0,1" Padding="14,9">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="&#xE753;" FontFamily="Segoe MDL2 Assets" Foreground="#38BDF8" FontSize="15" Margin="0,0,8,0" />
+                <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" Foreground="#38BDF8" FontSize="15" Margin="0,0,6,0" />
+                <TextBlock Text="Guardadas:" Foreground="#9DB2CC" Margin="0,0,6,0" />
+                <ComboBox x:Name="CmbSitios" Width="170" DisplayMemberPath="Nombre"
+                          SelectionChanged="CmbSitios_SelectionChanged" ToolTip="Conéctate con un clic a un sitio guardado" Margin="0,0,14,0" />
+                <Border Width="1" Background="#1E3A5C" Margin="0,0,14,0" />
                 <TextBlock Text="Servidor:" Foreground="#9DB2CC" Margin="0,0,6,0" />
-                <TextBox x:Name="TxtHost" Text="192.168.1.10" Width="150" Margin="0,0,10,0" />
+                <TextBox x:Name="TxtHost" Width="150" Margin="0,0,10,0" />
                 <TextBlock Text="Usuario:" Foreground="#9DB2CC" Margin="0,0,6,0" />
-                <TextBox x:Name="TxtUsuario" Text="" Width="120" Margin="0,0,10,0" />
+                <TextBox x:Name="TxtUsuario" Width="110" Margin="0,0,10,0" />
                 <TextBlock Text="Contraseña:" Foreground="#9DB2CC" Margin="0,0,6,0" />
-                <PasswordBox x:Name="TxtPass" Width="120" Margin="0,0,10,0" />
+                <PasswordBox x:Name="TxtPass" Width="110" Margin="0,0,10,0" />
                 <TextBlock Text="Puerto:" Foreground="#9DB2CC" Margin="0,0,6,0" />
-                <TextBox x:Name="TxtPuerto" Text="21" Width="56" Margin="0,0,10,0" />
-                <Button x:Name="BtnConectar" Content="Conexión rápida" Click="Conectar_Click" />
+                <TextBox x:Name="TxtPuerto" Width="54" Margin="0,0,10,0" />
+                <Button x:Name="BtnConectar" Content="Conectar" Click="Conectar_Click" Padding="18,6" />
             </StackPanel>
         </Border>
 
-        <!-- ===== CUERPO ===== -->
-        <Grid Grid.Row="2" Margin="12,12,12,10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <!-- ===== REGISTRO ===== -->
+        <Border Grid.Row="2" Height="76" Margin="12,12,12,8" CornerRadius="8"
+                Background="#0D1E34" BorderBrush="#1E3A5C" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="REGISTRO" Foreground="#4E6B8C" FontSize="10" FontWeight="SemiBold" Margin="12,6,0,2" />
+                <ListBox x:Name="LogLista" Grid.Row="1" Margin="8,0,8,6" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12" Foreground="#8FB0D0" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
 
-            <!-- Registro de actividad -->
-            <Border Grid.Row="0" Height="82" Margin="0,0,0,10" CornerRadius="8"
-                    Background="#0D1E34" BorderBrush="#1E3A5C" BorderThickness="1">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="REGISTRO" Foreground="#4E6B8C" FontSize="10" FontWeight="SemiBold" Margin="12,6,0,2" />
-                    <ListBox x:Name="LogLista" Grid.Row="1" Margin="8,0,8,6" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="Background" Value="Transparent" />
-                                <Setter Property="Padding" Value="0" />
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListBoxItem">
-                                            <ContentPresenter />
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12" Foreground="#8FB0D0" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-            </Border>
+        <!-- ===== PANEL REMOTO (único) ===== -->
+        <Border Grid.Row="3" Margin="12,0,12,8" CornerRadius="8" Background="#0D1E34" BorderBrush="#1E3A5C" BorderThickness="1"
+                AllowDrop="True" Drop="RemotoDrop" DragOver="DragSobreArchivos">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <!-- Explorador doble -->
-            <Grid Grid.Row="1" Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="58" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <!-- ===== Sitio local ===== -->
-                <Border Grid.Column="0" CornerRadius="8" Background="#0D1E34" BorderBrush="#1E3A5C" BorderThickness="1"
-                        AllowDrop="True" Drop="LocalDrop" DragOver="DragSobreArchivos">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <!-- Cabecera -->
-                        <Border Grid.Row="0" Background="#102A47" CornerRadius="8,8,0,0">
-                            <StackPanel Orientation="Horizontal" Margin="12,8">
-                                <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" Foreground="#38BDF8" FontSize="15" Margin="0,0,8,0" />
-                                <TextBlock Text="Equipo (local)" Foreground="#E6EEF8" FontWeight="SemiBold" />
-                            </StackPanel>
-                        </Border>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="12,8,12,6">
-                            <TextBox x:Name="TxtLocalRuta" Width="250" IsReadOnly="True" Margin="0,0,6,0" />
-                            <Button Style="{StaticResource BtnPlano}" Click="LocalSubir_Click" ToolTip="Subir un nivel" Padding="7,4">
-                                <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#C7D6EC" />
-                            </Button>
-                            <Button Style="{StaticResource BtnPlano}" Click="LocalActualizar_Click" ToolTip="Actualizar" Padding="7,4">
-                                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#C7D6EC" />
-                            </Button>
-                        </StackPanel>
-
-                        <!-- Encabezado de columnas -->
-                        <Border Grid.Row="2" Background="#0A1726" BorderBrush="#1E3A5C" BorderThickness="0,1,0,1">
-                            <Grid Margin="12,4">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="70" />
-                                    <ColumnDefinition Width="80" />
-                                    <ColumnDefinition Width="112" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Nombre" Style="{StaticResource ColHdr}" />
-                                <TextBlock Grid.Column="1" Text="Tamaño" Style="{StaticResource ColHdr}" />
-                                <TextBlock Grid.Column="2" Text="Tipo" Style="{StaticResource ColHdr}" />
-                                <TextBlock Grid.Column="3" Text="Modificado" Style="{StaticResource ColHdr}" />
-                            </Grid>
-                        </Border>
-
-                        <ListView x:Name="LocalLista" Grid.Row="3" Margin="2" SelectionMode="Extended"
-                                  MouseDoubleClick="LocalLista_DoubleTapped"
-                                  PreviewMouseRightButtonDown="Lista_RightTapped"
-                                  PreviewMouseLeftButtonDown="Local_MouseDown"
-                                  PreviewMouseMove="Local_MouseMove">
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Subir al servidor" Click="Subir_Click" />
-                                    <MenuItem Header="Nueva carpeta" Click="LocalNuevaCarpeta_Click" />
-                                    <MenuItem Header="Renombrar" Click="LocalRenombrar_Click" />
-                                    <MenuItem Header="Eliminar" Click="LocalEliminar_Click" />
-                                    <Separator />
-                                    <MenuItem Header="Actualizar" Click="LocalActualizar_Click" />
-                                </ContextMenu>
-                            </ListView.ContextMenu>
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Height="25">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="70" />
-                                            <ColumnDefinition Width="80" />
-                                            <ColumnDefinition Width="112" />
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#E0C060" Margin="0,0,8,0" />
-                                            <TextBlock Text="{Binding Nombre}" FontSize="12.5" TextTrimming="CharacterEllipsis" />
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="1" Text="{Binding TamanoTexto}" FontSize="12" Foreground="#9DB2CC" />
-                                        <TextBlock Grid.Column="2" Text="{Binding Tipo}" FontSize="12" Foreground="#9DB2CC" />
-                                        <TextBlock Grid.Column="3" Text="{Binding FechaTexto}" FontSize="12" Foreground="#9DB2CC" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        <TextBlock x:Name="LocalInfo" Grid.Row="4" Text="" Foreground="#6E89AC" FontSize="11.5" Margin="12,5" />
-                    </Grid>
+                <!-- Cabecera -->
+                <Border Grid.Row="0" Background="#102A47" CornerRadius="8,8,0,0">
+                    <StackPanel Orientation="Horizontal" Margin="12,8">
+                        <TextBlock Text="&#xE753;" FontFamily="Segoe MDL2 Assets" Foreground="#38BDF8" FontSize="15" Margin="0,0,8,0" />
+                        <TextBlock Text="Servidor remoto" Foreground="#E6EEF8" FontWeight="SemiBold" />
+                    </StackPanel>
                 </Border>
 
-                <!-- Botones de transferencia -->
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Button Click="Subir_Click" Width="38" Height="38" Background="#1E6BFF" ToolTip="Subir al servidor" Margin="0,0,0,12">
-                        <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="White" />
+                <!-- Navegación -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,8,12,6">
+                    <Button Style="{StaticResource BtnNav}" Click="Atras_Click" ToolTip="Atrás">
+                        <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#C7D6EC" />
                     </Button>
-                    <Button Click="Descargar_Click" Width="38" Height="38" Background="#15385E" ToolTip="Descargar al equipo">
-                        <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#38BDF8" />
+                    <Button Style="{StaticResource BtnNav}" Click="Adelante_Click" ToolTip="Adelante">
+                        <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#C7D6EC" />
                     </Button>
+                    <Button Style="{StaticResource BtnNav}" Click="Arriba_Click" ToolTip="Subir un nivel" Margin="4,0,0,0">
+                        <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#C7D6EC" />
+                    </Button>
+                    <Button Style="{StaticResource BtnNav}" Click="RemotoActualizar_Click" ToolTip="Actualizar">
+                        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#C7D6EC" />
+                    </Button>
+                    <TextBox x:Name="TxtRuta" Width="520" Margin="8,0,0,0" IsReadOnly="True" VerticalAlignment="Center" />
                 </StackPanel>
 
-                <!-- ===== Sitio remoto ===== -->
-                <Border Grid.Column="2" CornerRadius="8" Background="#0D1E34" BorderBrush="#1E3A5C" BorderThickness="1"
-                        AllowDrop="True" Drop="RemotoDrop" DragOver="DragSobreArchivos">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <Border Grid.Row="0" Background="#102A47" CornerRadius="8,8,0,0">
-                            <StackPanel Orientation="Horizontal" Margin="12,8">
-                                <TextBlock Text="&#xE753;" FontFamily="Segoe MDL2 Assets" Foreground="#38BDF8" FontSize="15" Margin="0,0,8,0" />
-                                <TextBlock Text="Servidor (remoto)" Foreground="#E6EEF8" FontWeight="SemiBold" />
-                            </StackPanel>
-                        </Border>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="12,8,12,6">
-                            <TextBox x:Name="TxtRemotoRuta" Width="230" IsReadOnly="True" Margin="0,0,6,0" />
-                            <Button Style="{StaticResource BtnPlano}" Click="RemotoSubir_Click" ToolTip="Subir un nivel" Padding="7,4">
-                                <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#C7D6EC" />
-                            </Button>
-                            <Button Style="{StaticResource BtnPlano}" Click="RemotoActualizar_Click" ToolTip="Actualizar" Padding="7,4">
-                                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#C7D6EC" />
-                            </Button>
-                        </StackPanel>
-
-                        <Border Grid.Row="2" Background="#0A1726" BorderBrush="#1E3A5C" BorderThickness="0,1,0,1">
-                            <Grid Margin="12,4">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="70" />
-                                    <ColumnDefinition Width="80" />
-                                    <ColumnDefinition Width="112" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Nombre" Style="{StaticResource ColHdr}" />
-                                <TextBlock Grid.Column="1" Text="Tamaño" Style="{StaticResource ColHdr}" />
-                                <TextBlock Grid.Column="2" Text="Tipo" Style="{StaticResource ColHdr}" />
-                                <TextBlock Grid.Column="3" Text="Modificado" Style="{StaticResource ColHdr}" />
-                            </Grid>
-                        </Border>
-
-                        <ListView x:Name="RemotoLista" Grid.Row="3" Margin="2" SelectionMode="Extended"
-                                  MouseDoubleClick="RemotoLista_DoubleTapped"
-                                  PreviewMouseRightButtonDown="Lista_RightTapped"
-                                  PreviewMouseLeftButtonDown="Remoto_MouseDown"
-                                  PreviewMouseMove="Remoto_MouseMove">
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Descargar al equipo" Click="Descargar_Click" />
-                                    <MenuItem Header="Nueva carpeta" Click="RemotoNuevaCarpeta_Click" />
-                                    <MenuItem Header="Renombrar" Click="RemotoRenombrar_Click" />
-                                    <MenuItem Header="Eliminar" Click="RemotoEliminar_Click" />
-                                    <Separator />
-                                    <MenuItem Header="Actualizar" Click="RemotoActualizar_Click" />
-                                </ContextMenu>
-                            </ListView.ContextMenu>
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Height="25">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="70" />
-                                            <ColumnDefinition Width="80" />
-                                            <ColumnDefinition Width="112" />
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#E0C060" Margin="0,0,8,0" />
-                                            <TextBlock Text="{Binding Nombre}" FontSize="12.5" TextTrimming="CharacterEllipsis" />
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="1" Text="{Binding TamanoTexto}" FontSize="12" Foreground="#9DB2CC" />
-                                        <TextBlock Grid.Column="2" Text="{Binding Tipo}" FontSize="12" Foreground="#9DB2CC" />
-                                        <TextBlock Grid.Column="3" Text="{Binding FechaTexto}" FontSize="12" Foreground="#9DB2CC" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        <TextBlock x:Name="RemotoInfo" Grid.Row="4" Text="No conectado" Foreground="#6E89AC" FontSize="11.5" Margin="12,5" />
+                <!-- Encabezado de columnas -->
+                <Border Grid.Row="2" Background="#0A1726" BorderBrush="#1E3A5C" BorderThickness="0,1,0,1">
+                    <Grid Margin="12,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="160" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Nombre" Style="{StaticResource ColHdr}" />
+                        <TextBlock Grid.Column="1" Text="Tamaño" Style="{StaticResource ColHdr}" />
+                        <TextBlock Grid.Column="2" Text="Tipo" Style="{StaticResource ColHdr}" />
+                        <TextBlock Grid.Column="3" Text="Modificado" Style="{StaticResource ColHdr}" />
                     </Grid>
                 </Border>
-            </Grid>
 
-            <!-- Cola de transferencias -->
-            <Border Grid.Row="2" Height="156" CornerRadius="8"
-                    Background="#0D1E34" BorderBrush="#1E3A5C" BorderThickness="1">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Background="#102A47" CornerRadius="8,8,0,0">
-                        <StackPanel Orientation="Horizontal" Margin="14,8">
-                            <TextBlock x:Name="TabCola" Text="Archivos en cola (0)" Foreground="#38BDF8" FontWeight="SemiBold" Margin="0,0,20,0" />
-                            <TextBlock x:Name="TabFallidas" Text="Fallidas (0)" Foreground="#9DB2CC" Margin="0,0,20,0" />
-                            <TextBlock x:Name="TabHechas" Text="Satisfactorias (0)" Foreground="#9DB2CC" />
-                        </StackPanel>
-                    </Border>
-                    <Grid Grid.Row="1">
-                        <ListView x:Name="ColaLista" Margin="2">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Height="30" Margin="12,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="220" />
-                                            <ColumnDefinition Width="70" />
-                                            <ColumnDefinition Width="110" />
-                                            <ColumnDefinition Width="90" />
-                                            <ColumnDefinition Width="150" />
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding DireccionIcono}" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#38BDF8" Margin="0,0,8,0" />
-                                            <TextBlock Text="{Binding Nombre}" FontSize="12" TextTrimming="CharacterEllipsis" />
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="1" Text="{Binding RutaRemota}" FontSize="11.5" Foreground="#9DB2CC" TextTrimming="CharacterEllipsis" />
-                                        <TextBlock Grid.Column="2" Text="{Binding TamanoTexto}" FontSize="11.5" Foreground="#9DB2CC" />
-                                        <StackPanel Grid.Column="3" VerticalAlignment="Center">
-                                            <ProgressBar Value="{Binding Progreso}" Maximum="100" Width="90" Height="6" HorizontalAlignment="Left" Foreground="#1E6BFF" Background="#0A1726" BorderThickness="0" />
-                                            <TextBlock Text="{Binding ProgresoTexto}" FontSize="10.5" Foreground="#9DB2CC" Margin="0,1,0,0" />
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="4" Text="{Binding VelocidadTexto}" FontSize="11.5" Foreground="#9DB2CC" />
-                                        <StackPanel Grid.Column="5" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding EstadoTexto}" FontSize="11.5" Foreground="#E6EEF8" Width="78" TextTrimming="CharacterEllipsis" />
-                                            <Button Style="{StaticResource BtnPlano}" Click="Pausar_Click" ToolTip="Pausar/Reanudar" Padding="4">
-                                                <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#9DB2CC" />
-                                            </Button>
-                                            <Button Style="{StaticResource BtnPlano}" Click="Cancelar_Click" ToolTip="Cancelar/Quitar" Padding="4">
-                                                <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#9DB2CC" />
-                                            </Button>
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        <TextBlock x:Name="ColaVacia" Text="No hay transferencias en cola.  ·  Arrastra archivos aquí o a los paneles."
-                                   Foreground="#4E6B8C" FontSize="12" Margin="14,12" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                    </Grid>
+                <ListView x:Name="RemotoLista" Grid.Row="3" Margin="2" SelectionMode="Extended"
+                          MouseDoubleClick="RemotoLista_DoubleTapped"
+                          PreviewMouseRightButtonDown="Lista_RightTapped"
+                          PreviewMouseLeftButtonDown="Remoto_MouseDown"
+                          PreviewMouseMove="Remoto_MouseMove">
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Descargar al equipo" Click="Descargar_Click" />
+                            <MenuItem Header="Nueva carpeta" Click="RemotoNuevaCarpeta_Click" />
+                            <MenuItem Header="Renombrar" Click="RemotoRenombrar_Click" />
+                            <MenuItem Header="Eliminar" Click="RemotoEliminar_Click" />
+                            <Separator />
+                            <MenuItem Header="Actualizar" Click="RemotoActualizar_Click" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="26">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="160" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#E0C060" Margin="0,0,8,0" />
+                                    <TextBlock Text="{Binding Nombre}" FontSize="12.5" TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding TamanoTexto}" FontSize="12" Foreground="#9DB2CC" />
+                                <TextBlock Grid.Column="2" Text="{Binding Tipo}" FontSize="12" Foreground="#9DB2CC" />
+                                <TextBlock Grid.Column="3" Text="{Binding FechaTexto}" FontSize="12" Foreground="#9DB2CC" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <TextBlock x:Name="RemotoInfo" Grid.Row="4" Text="No conectado" Foreground="#6E89AC" FontSize="11.5" Margin="12,5" />
+            </Grid>
+        </Border>
+
+        <!-- ===== COLA ===== -->
+        <Border Grid.Row="4" Height="150" Margin="12,0,12,10" CornerRadius="8"
+                Background="#0D1E34" BorderBrush="#1E3A5C" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Background="#102A47" CornerRadius="8,8,0,0">
+                    <StackPanel Orientation="Horizontal" Margin="14,8">
+                        <TextBlock x:Name="TabCola" Text="Archivos en cola (0)" Foreground="#38BDF8" FontWeight="SemiBold" Margin="0,0,20,0" />
+                        <TextBlock x:Name="TabFallidas" Text="Fallidas (0)" Foreground="#9DB2CC" Margin="0,0,20,0" />
+                        <TextBlock x:Name="TabHechas" Text="Satisfactorias (0)" Foreground="#9DB2CC" />
+                    </StackPanel>
+                </Border>
+                <Grid Grid.Row="1">
+                    <ListView x:Name="ColaLista" Margin="2">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="30" Margin="12,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="230" />
+                                        <ColumnDefinition Width="70" />
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="90" />
+                                        <ColumnDefinition Width="150" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                        <TextBlock Text="{Binding DireccionIcono}" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#38BDF8" Margin="0,0,8,0" />
+                                        <TextBlock Text="{Binding Nombre}" FontSize="12" TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" Text="{Binding RutaRemota}" FontSize="11.5" Foreground="#9DB2CC" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Column="2" Text="{Binding TamanoTexto}" FontSize="11.5" Foreground="#9DB2CC" />
+                                    <StackPanel Grid.Column="3" VerticalAlignment="Center">
+                                        <ProgressBar Value="{Binding Progreso}" Maximum="100" Width="90" Height="6" HorizontalAlignment="Left" Foreground="#1E6BFF" Background="#0A1726" BorderThickness="0" />
+                                        <TextBlock Text="{Binding ProgresoTexto}" FontSize="10.5" Foreground="#9DB2CC" Margin="0,1,0,0" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="4" Text="{Binding VelocidadTexto}" FontSize="11.5" Foreground="#9DB2CC" />
+                                    <StackPanel Grid.Column="5" Orientation="Horizontal">
+                                        <TextBlock Text="{Binding EstadoTexto}" FontSize="11.5" Foreground="#E6EEF8" Width="78" TextTrimming="CharacterEllipsis" />
+                                        <Button Style="{StaticResource BtnPlano}" Click="Pausar_Click" ToolTip="Pausar/Reanudar" Padding="4">
+                                            <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#9DB2CC" />
+                                        </Button>
+                                        <Button Style="{StaticResource BtnPlano}" Click="Cancelar_Click" ToolTip="Cancelar/Quitar" Padding="4">
+                                            <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#9DB2CC" />
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <TextBlock x:Name="ColaVacia" Text="No hay transferencias en cola.  ·  Arrastra archivos aquí o usa Subir / Descargar."
+                               Foreground="#4E6B8C" FontSize="12" Margin="14,12" VerticalAlignment="Top" HorizontalAlignment="Left" />
                 </Grid>
-            </Border>
-        </Grid>
+            </Grid>
+        </Border>
 
         <!-- ===== BARRA DE ESTADO ===== -->
-        <Border Grid.Row="3" Background="#0C1B30" BorderBrush="#1E3A5C" BorderThickness="0,1,0,0" Padding="14,6">
+        <Border Grid.Row="5" Background="#0C1B30" BorderBrush="#1E3A5C" BorderThickness="0,1,0,0" Padding="14,6">
             <StackPanel Orientation="Horizontal">
                 <Border Background="#0A1726" CornerRadius="10" Padding="9,3">
                     <StackPanel Orientation="Horizontal">
