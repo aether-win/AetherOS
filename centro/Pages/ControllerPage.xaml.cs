@@ -127,10 +127,12 @@ public sealed partial class ControllerPage : PaginaBase
         else
         {
             string destino = MotorControlador.Objetivo == TipoVirtual.DualShock4 ? "un DualShock 4 (PS4)" : "un Xbox 360";
-            string oculto = MotorControlador.MandoRealOculto ? " El original está oculto: los juegos solo ven el emulado." : "";
+            string oculto = MotorControlador.MandoRealOculto ? " Los originales están ocultos: los juegos solo ven los emulados." : "";
+            int n = MotorControlador.MandosEmulados;
             FilaEmular.Descripcion = MotorControlador.Activo
-                ? $"Activa: tu mando funciona como {destino} virtual.{oculto}"
-                : "Lista para activar. Tu mando se presenta a los juegos como un Xbox 360 o un PS4 virtual, con la luz encendida y el original oculto.";
+                ? (n == 0 ? $"Activa como {destino}: conecta un mando y se emula solo."
+                          : $"Activa: {n} mando{(n == 1 ? "" : "s")} funcionando como {destino} (jugador 1 azul, 2 rojo, 3 verde, 4 rosa).{oculto}")
+                : "Lista para activar. Hasta 4 mandos a la vez, cada uno como un Xbox 360 o un PS4 virtual, con la luz de su jugador y el original oculto.";
         }
     }
 

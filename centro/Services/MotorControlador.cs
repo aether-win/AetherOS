@@ -38,24 +38,44 @@ public static class MotorControlador
     private const ushort VendorSony = 0x054C;
 
     private static ViGEmClient? _client;
-    private static IXbox360Controller? _x360;
-    private static IDualShock4Controller? _ds4;
     private static CancellationTokenSource? _cts;
     private static Task? _bucle;
-    private static LectorDs4Hid? _ds4Lector;
-
     // Rutas HID de los mandos VIRTUALES (ViGEm). Un DualShock 4 virtual también es "Sony", así
     // que nunca hay que leerlo como si fuera el real (antes pasaba: se leía a sí mismo).
     private static readonly HashSet<string> _rutasVirtuales = new(StringComparer.OrdinalIgnoreCase);
-    // Mandos estándar (Xbox) que había ANTES de crear el virtual: el virtual nunca se lee.
-    private static HashSet<string> _gamepadsReales = new(StringComparer.OrdinalIgnoreCase);
-    private static string? _rutaReal;          // DualShock 4 real en uso (para reconectar el mismo)
-    private static string? _rutaOculta;        // la que se ocultó con HidHide
-    private static DateTime _proximoIntento = DateTime.MinValue;
+    private static DateTime _proximaBusqueda = DateTime.MinValue;
+    private const int MaxMandos = 4;
 
-    // Color de la barra de luz (azul jugador 1; los juegos pueden cambiarlo por el DS4 virtual).
-    private static (byte R, byte G, byte B) _color = LuzDs4.Jugador1;
-    private static volatile bool _colorCambio;
+    /// <summary>
+    /// Un mando real con su mando virtual. Hasta 4 a la vez (como una consola): cada uno con su
+    /// color de jugador en la barra de luz y su propio mando emulado.
+    /// </summary>
+    private sealed class Ranura
+    {
+        public int Jugador;
+        public LectorDs4Hid? Lector;          // DualShock 4 real por HID
+        public string? RutaReal;              // para reconectar el mismo mando
+        public string? RutaOculta;            // la que se ocultó con HidHide
+        public string? GamepadId;             // mando estándar (Xbox) real
+        public IXbox360Controller? X360;
+        public IDualShock4Controller? Ds4;
+        public (byte R, byte G, byte B) Color;
+        public volatile bool ColorCambio;
+        public DateTime DesconectadoDesde = DateTime.MinValue;
+        public DateTime ProximoIntento = DateTime.MinValue;
+    }
+
+    private static readonly List<Ranura> _ranuras = new();
+    private static readonly object _cerrojo = new();
+
+    // Colores de jugador como en una PS4: azul, rojo, verde, rosa.
+    private static readonly (byte R, byte G, byte B)[] ColoresJugador =
+    {
+        LuzDs4.Jugador1, (0xD8, 0x00, 0x10), (0x00, 0xC0, 0x30), (0xD8, 0x00, 0x90),
+    };
+
+    /// <summary>Cuántos mandos se están emulando ahora.</summary>
+    public static int MandosEmulados { get { lock (_cerrojo) { return _ranuras.Count; } } }
 
     public static bool Activo { get; private set; }
 
@@ -74,7 +94,7 @@ public static class MotorControlador
     public static event Action? EstadoCambiado;
 
     /// <summary>True si el mando real quedó oculto (los juegos solo ven el virtual).</summary>
-    public static bool MandoRealOculto => _rutaOculta is not null;
+    public static bool MandoRealOculto { get { lock (_cerrojo) { return _ranuras.Any(r => r.RutaOculta is not null); } } }
 
     /// <summary>Destino de conversión. Solo tiene efecto al (re)iniciar.</summary>
     public static TipoVirtual Objetivo { get; set; } = TipoVirtual.Xbox360;
@@ -154,105 +174,147 @@ public static class MotorControlador
         {
             CargarAjustes();
             _rutasVirtuales.Clear();
-            _color = LuzDs4.Jugador1;
-
-            // 1) Lo REAL primero (antes de crear el virtual, para no confundirlos).
-            _gamepadsReales = new HashSet<string>(Gamepad.Gamepads.Select(IdGamepad).Where(i => i.Length > 0), StringComparer.OrdinalIgnoreCase);
-            var idsAntes = new HashSet<string>(RawGameController.RawGameControllers.Select(c => c.NonRoamableId ?? ""), StringComparer.OrdinalIgnoreCase);
-            var sonyAntes = new HashSet<string>(LectorDs4Hid.Buscar().Select(d => d.DevicePath), StringComparer.OrdinalIgnoreCase);
-            var lector = new LectorDs4Hid();
-            if (lector.Abrir())
-            {
-                _ds4Lector = lector;
-                _rutaReal = lector.Ruta;
-            }
-            else
-            {
-                lector.Dispose();
-                _ds4Lector = null;
-                _rutaReal = null;
-            }
-
-            // 2) El mando virtual.
-            _client = new ViGEmClient();
-            if (Objetivo == TipoVirtual.DualShock4)
-            {
-                _ds4 = _client.CreateDualShock4Controller();
-                _ds4.AutoSubmitReport = false;
-                _ds4.FeedbackReceived += (_, e) =>
-                {
-                    // El juego pidió otro color de luz (como en una PS4): pasarlo al mando real.
-                    var c = e.LightbarColor;
-                    if (c.Red != 0 || c.Green != 0 || c.Blue != 0)
-                    {
-                        _color = (c.Red, c.Green, c.Blue);
-                        _colorCambio = true;
-                    }
-                };
-                _ds4.Connect();
-            }
-            else
-            {
-                _x360 = _client.CreateXbox360Controller();
-                _x360.AutoSubmitReport = false;
-                _x360.Connect();
-            }
-
-            // 3) Anotar las rutas Sony y los mandos estándar que aparecieron con el virtual.
-            Thread.Sleep(400);
-            foreach (var d in LectorDs4Hid.Buscar())
-            {
-                if (!sonyAntes.Contains(d.DevicePath))
-                {
-                    _rutasVirtuales.Add(d.DevicePath);
-                }
-            }
             _idsVirtuales.Clear();
-            foreach (RawGameController rc in RawGameController.RawGameControllers)
-            {
-                string id = rc.NonRoamableId ?? "";
-                if (id.Length > 0 && !idsAntes.Contains(id))
-                {
-                    _idsVirtuales.Add(id);
-                }
-            }
+            _client = new ViGEmClient();
 
-            // 4) Luz y ocultar el mando real: los juegos y Steam solo ven el virtual.
-            if (_ds4Lector is not null)
+            // Todos los mandos reales conectados: DualShock 4 (HID) y mandos estándar (Xbox).
+            var sony = LectorDs4Hid.Buscar().Select(d => d.DevicePath).ToList();
+            var estandar = Gamepad.Gamepads
+                .Where(g => { try { return RawGameController.FromGameController(g)?.HardwareVendorId != VendorSony; } catch { return false; } })
+                .Select(IdGamepad).Where(i => i.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+
+            foreach (string ruta in sony)
             {
-                _ds4Lector.EnviarLuz(_color.R, _color.G, _color.B);
-                OcultarReal(_ds4Lector.Ruta);
+                if (_ranuras.Count >= MaxMandos) { break; }
+                AgregarRanura(ruta, null);
+            }
+            foreach (string id in estandar)
+            {
+                if (_ranuras.Count >= MaxMandos) { break; }
+                AgregarRanura(null, id);
+            }
+            if (_ranuras.Count == 0)
+            {
+                // Sin mandos todavía: el primero que se conecte se emula solo.
+                ServicioMandos.Registrar("Emulación lista: esperando a que se conecte un mando.");
             }
 
             _cts = new CancellationTokenSource();
             _bucle = Task.Run(() => Bucle(_cts.Token));
             Activo = true;
-            ServicioMandos.Registrar($"Emulación iniciada como {(Objetivo == TipoVirtual.DualShock4 ? "DualShock 4" : "Xbox 360")}; mando real {(_ds4Lector is null ? "no encontrado por HID" : "abierto")}; oculto con HidHide: {(_rutaOculta is null ? "no" : "sí")}.");
+            ServicioMandos.Registrar($"Emulación iniciada como {(Objetivo == TipoVirtual.DualShock4 ? "DualShock 4" : "Xbox 360")} para {_ranuras.Count} mando(s).");
             EstadoCambiado?.Invoke();
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            ServicioMandos.Registrar("No se pudo iniciar la emulación: " + ex.Message);
             Detener();
             return false;
         }
     }
 
-    private static void OcultarReal(string? ruta)
+    /// <summary>Crea el mando virtual de un mando real (DualShock 4 por ruta HID o mando estándar por id).</summary>
+    private static void AgregarRanura(string? rutaSony, string? gamepadId)
     {
-        if (ruta is null || string.Equals(ruta, _rutaOculta, StringComparison.OrdinalIgnoreCase))
+        if (_client is null)
         {
             return;
         }
-        if (_rutaOculta is not null)
+        var r = new Ranura { Jugador = SiguienteJugador(), GamepadId = gamepadId };
+        r.Color = ColoresJugador[(r.Jugador - 1) % ColoresJugador.Length];
+
+        if (rutaSony is not null)
         {
-            HidHideServicio.Mostrar(_rutaOculta);
-            _rutaOculta = null;
+            var lector = new LectorDs4Hid();
+            if (!lector.Abrir(RutasOcupadas(), rutaSony) || !string.Equals(lector.Ruta, rutaSony, StringComparison.OrdinalIgnoreCase))
+            {
+                lector.Dispose();
+                return;
+            }
+            r.Lector = lector;
+            r.RutaReal = lector.Ruta;
         }
-        if (HidHideServicio.Ocultar(ruta))
+
+        // Lo que hay ANTES del virtual, para anotar qué apareció con él (y no leerlo nunca).
+        var sonyAntes = new HashSet<string>(LectorDs4Hid.Buscar().Select(d => d.DevicePath), StringComparer.OrdinalIgnoreCase);
+        var idsAntes = new HashSet<string>(RawGameController.RawGameControllers.Select(c => c.NonRoamableId ?? ""), StringComparer.OrdinalIgnoreCase);
+
+        if (Objetivo == TipoVirtual.DualShock4)
         {
-            _rutaOculta = ruta;
+            r.Ds4 = _client.CreateDualShock4Controller();
+            r.Ds4.AutoSubmitReport = false;
+            r.Ds4.FeedbackReceived += (_, e) =>
+            {
+                // El juego pidió otro color de luz (como en una PS4): pasarlo a ESTE mando real.
+                var c = e.LightbarColor;
+                if (c.Red != 0 || c.Green != 0 || c.Blue != 0)
+                {
+                    r.Color = (c.Red, c.Green, c.Blue);
+                    r.ColorCambio = true;
+                }
+            };
+            r.Ds4.Connect();
         }
+        else
+        {
+            r.X360 = _client.CreateXbox360Controller();
+            r.X360.AutoSubmitReport = false;
+            r.X360.Connect();
+        }
+
+        Thread.Sleep(400);
+        foreach (var d in LectorDs4Hid.Buscar())
+        {
+            if (!sonyAntes.Contains(d.DevicePath)) { _rutasVirtuales.Add(d.DevicePath); }
+        }
+        foreach (RawGameController rc in RawGameController.RawGameControllers)
+        {
+            string id = rc.NonRoamableId ?? "";
+            if (id.Length > 0 && !idsAntes.Contains(id)) { _idsVirtuales.Add(id); }
+        }
+
+        if (r.Lector is not null)
+        {
+            r.Lector.EnviarLuz(r.Color.R, r.Color.G, r.Color.B);
+            if (HidHideServicio.Ocultar(r.Lector.Ruta!)) { r.RutaOculta = r.Lector.Ruta; }
+        }
+        lock (_cerrojo) { _ranuras.Add(r); }
+        ServicioMandos.Registrar($"Jugador {r.Jugador}: {(r.Lector is not null ? (r.Lector.EsBluetooth ? "DualShock 4 por Bluetooth" : "DualShock 4 por USB") : "mando estándar")} emulado; oculto con HidHide: {(r.RutaOculta is null ? "no" : "sí")}.");
+        EstadoCambiado?.Invoke();
+    }
+
+    private static int SiguienteJugador()
+    {
+        for (int n = 1; n <= MaxMandos; n++)
+        {
+            lock (_cerrojo) { if (_ranuras.All(r => r.Jugador != n)) { return n; } }
+        }
+        return MaxMandos;
+    }
+
+    private static HashSet<string> RutasOcupadas()
+    {
+        var s = new HashSet<string>(_rutasVirtuales, StringComparer.OrdinalIgnoreCase);
+        lock (_cerrojo)
+        {
+            foreach (var r in _ranuras) { if (r.RutaReal is not null) { s.Add(r.RutaReal); } }
+        }
+        return s;
+    }
+
+    private static void QuitarRanura(Ranura r)
+    {
+        try { r.X360?.Disconnect(); } catch { /* ignore */ }
+        try { r.Ds4?.Disconnect(); } catch { /* ignore */ }
+        try { r.Lector?.Cerrar(); } catch { /* ignore */ }
+        if (r.RutaOculta is not null)
+        {
+            try { HidHideServicio.Mostrar(r.RutaOculta); } catch { /* ignore */ }
+        }
+        lock (_cerrojo) { _ranuras.Remove(r); }
+        ServicioMandos.Registrar($"Jugador {r.Jugador}: mando retirado de la emulación.");
+        EstadoCambiado?.Invoke();
     }
 
     public static void Detener()
@@ -261,30 +323,30 @@ public static class MotorControlador
         Activo = false;
         try { _cts?.Cancel(); } catch { /* ignore */ }
         try { _bucle?.Wait(500); } catch { /* ignore */ }
-        try { _x360?.Disconnect(); } catch { /* ignore */ }
-        try { _ds4?.Disconnect(); } catch { /* ignore */ }
-        try { _client?.Dispose(); } catch { /* ignore */ }
-        try { _ds4Lector?.Cerrar(); } catch { /* ignore */ }
-        // El mando real vuelve a verse normal.
-        if (_rutaOculta is not null)
+        List<Ranura> todas;
+        lock (_cerrojo) { todas = _ranuras.ToList(); }
+        foreach (var r in todas)
         {
-            try { HidHideServicio.Mostrar(_rutaOculta); } catch { /* ignore */ }
-            _rutaOculta = null;
+            try { r.X360?.Disconnect(); } catch { /* ignore */ }
+            try { r.Ds4?.Disconnect(); } catch { /* ignore */ }
+            try { r.Lector?.Cerrar(); } catch { /* ignore */ }
+            // El mando real vuelve a verse normal.
+            if (r.RutaOculta is not null)
+            {
+                try { HidHideServicio.Mostrar(r.RutaOculta); } catch { /* ignore */ }
+            }
         }
-        _ds4Lector = null;
-        _rutaReal = null;
+        lock (_cerrojo) { _ranuras.Clear(); }
+        try { _client?.Dispose(); } catch { /* ignore */ }
         _rutasVirtuales.Clear();
-        _gamepadsReales = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        _idsVirtuales.Clear();
         _bucle = null;
         _cts?.Dispose();
         _cts = null;
-        _x360 = null;
-        _ds4 = null;
         _client = null;
-        _idsVirtuales.Clear();
         if (estaba)
         {
-            ServicioMandos.Registrar("Emulación detenida; el mando real vuelve a verse normal.");
+            ServicioMandos.Registrar("Emulación detenida; los mandos reales vuelven a verse normal.");
             EstadoCambiado?.Invoke();
         }
     }
@@ -293,71 +355,136 @@ public static class MotorControlador
     {
         while (!ct.IsCancellationRequested)
         {
-            try
+            List<Ranura> ranuras;
+            lock (_cerrojo) { ranuras = _ranuras.ToList(); }
+            foreach (var r in ranuras)
             {
-                EstadoMando? st = LeerEntrada();
-                if (st is EstadoMando e)
+                try
                 {
-                    AjustarSticks(ref e);
-                    if (_x360 is not null)
+                    EstadoMando? st = LeerEntrada(r);
+                    if (st is EstadoMando e)
                     {
-                        AplicarXbox360(e, _x360);
-                        _x360.SubmitReport();
-                    }
-                    else if (_ds4 is not null)
-                    {
-                        AplicarDs4(e, _ds4);
-                        _ds4.SubmitReport();
+                        AjustarSticks(ref e);
+                        if (r.X360 is not null)
+                        {
+                            AplicarXbox360(e, r.X360);
+                            r.X360.SubmitReport();
+                        }
+                        else if (r.Ds4 is not null)
+                        {
+                            AplicarDs4(e, r.Ds4);
+                            r.Ds4.SubmitReport();
+                        }
                     }
                 }
+                catch
+                {
+                    // Un fallo puntual de lectura no debe tumbar el bucle.
+                }
             }
-            catch
+
+            // Cada segundo: mandos nuevos (se emulan solos) y mandos que ya no vuelven (se retiran).
+            if (DateTime.UtcNow >= _proximaBusqueda)
             {
-                // Un fallo puntual de lectura no debe tumbar el bucle.
+                _proximaBusqueda = DateTime.UtcNow.AddSeconds(1);
+                try { RevisarConexiones(ranuras); } catch { /* siguiente vuelta */ }
             }
-            Thread.Sleep(8);   // ~125 Hz
+            Thread.Sleep(ranuras.Count > 1 ? 4 : 8);   // ~125-250 Hz por mando
+        }
+    }
+
+    private static void RevisarConexiones(List<Ranura> ranuras)
+    {
+        // Mandos que se fueron hace más de 60 s: se retira su virtual (no quedan fantasmas).
+        foreach (var r in ranuras)
+        {
+            bool fuera = r.Lector is not null ? !r.Lector.Abierto
+                : r.GamepadId is not null && !Gamepad.Gamepads.Any(g => string.Equals(IdGamepad(g), r.GamepadId, StringComparison.OrdinalIgnoreCase));
+            if (!fuera)
+            {
+                r.DesconectadoDesde = DateTime.MinValue;
+                continue;
+            }
+            if (r.DesconectadoDesde == DateTime.MinValue) { r.DesconectadoDesde = DateTime.UtcNow; }
+            else if ((DateTime.UtcNow - r.DesconectadoDesde).TotalSeconds > 60) { QuitarRanura(r); }
+        }
+
+        int ocupadas;
+        lock (_cerrojo) { ocupadas = _ranuras.Count; }
+        if (ocupadas >= MaxMandos)
+        {
+            return;
+        }
+        // DualShock 4 nuevos (que no son virtuales ni ya tienen ranura).
+        var usadas = RutasOcupadas();
+        foreach (var d in LectorDs4Hid.Buscar(usadas))
+        {
+            // Si es la ruta de un mando que se cortó, lo reconecta su propia ranura.
+            bool deAlguien;
+            lock (_cerrojo) { deAlguien = _ranuras.Any(r => string.Equals(r.RutaReal, d.DevicePath, StringComparison.OrdinalIgnoreCase)); }
+            if (!deAlguien) { AgregarRanura(d.DevicePath, null); }
+            lock (_cerrojo) { if (_ranuras.Count >= MaxMandos) { return; } }
+        }
+        // Mandos estándar nuevos (no virtuales, no Sony, sin ranura).
+        foreach (Gamepad g in Gamepad.Gamepads)
+        {
+            string id = IdGamepad(g);
+            if (id.Length == 0 || _idsVirtuales.Contains(id)) { continue; }
+            try { if (RawGameController.FromGameController(g)?.HardwareVendorId == VendorSony) { continue; } } catch { continue; }
+            bool tiene;
+            lock (_cerrojo) { tiene = _ranuras.Any(r => string.Equals(r.GamepadId, id, StringComparison.OrdinalIgnoreCase)); }
+            if (!tiene) { AgregarRanura(null, id); }
+            lock (_cerrojo) { if (_ranuras.Count >= MaxMandos) { return; } }
         }
     }
 
     // ── Entrada ──────────────────────────────────────────────────────────────
 
-    private static EstadoMando? LeerEntrada()
+    private static EstadoMando? LeerEntrada(Ranura r)
     {
-        // DualShock 4 real por HID (fiable) si está abierto.
-        if (_ds4Lector is { Abierto: true })
+        if (r.Lector is not null)
         {
-            if (_colorCambio)
+            if (r.Lector.Abierto)
             {
-                _colorCambio = false;
-                _ds4Lector.EnviarLuz(_color.R, _color.G, _color.B);
+                if (r.ColorCambio)
+                {
+                    r.ColorCambio = false;
+                    r.Lector.EnviarLuz(r.Color.R, r.Color.G, r.Color.B);
+                }
+                EstadoMando? st = r.Lector.Leer(out bool desconectado);
+                if (desconectado)
+                {
+                    // Se cortó (p. ej. Bluetooth): cerrar y reconectar el MISMO mando, sin tumbar su virtual.
+                    r.Lector.Cerrar();
+                    r.ProximoIntento = DateTime.UtcNow;
+                }
+                return st;
             }
-            EstadoMando? st = _ds4Lector.Leer(out bool desconectado);
-            if (desconectado)
+            if (DateTime.UtcNow >= r.ProximoIntento)
             {
-                // Se cortó (p. ej. Bluetooth): cerrar y reconectar solo, sin tumbar el virtual.
-                _ds4Lector.Cerrar();
-                _proximoIntento = DateTime.UtcNow;
+                r.ProximoIntento = DateTime.UtcNow.AddSeconds(1);
+                var otras = RutasOcupadas();
+                if (r.RutaReal is not null) { otras.Remove(r.RutaReal); }
+                if (r.Lector.Abrir(otras, r.RutaReal) && string.Equals(r.Lector.Ruta, r.RutaReal, StringComparison.OrdinalIgnoreCase))
+                {
+                    r.Lector.EnviarLuz(r.Color.R, r.Color.G, r.Color.B);
+                    if (r.RutaOculta is null && HidHideServicio.Ocultar(r.RutaReal!)) { r.RutaOculta = r.RutaReal; }
+                    ServicioMandos.Registrar($"Jugador {r.Jugador}: mando reconectado.");
+                }
+                else if (r.Lector.Abierto)
+                {
+                    r.Lector.Cerrar();   // abrió otro mando: no es este; lo tomará su propia ranura
+                }
             }
-            return st;
+            return null;
         }
 
-        // Reconectar el DualShock 4 real (cada segundo) si se había cortado o se conectó después.
-        if (DateTime.UtcNow >= _proximoIntento)
+        if (r.GamepadId is not null)
         {
-            _proximoIntento = DateTime.UtcNow.AddSeconds(1);
-            _ds4Lector ??= new LectorDs4Hid();
-            if (_ds4Lector.Abrir(_rutasVirtuales, _rutaReal))
-            {
-                _rutaReal = _ds4Lector.Ruta;
-                _ds4Lector.EnviarLuz(_color.R, _color.G, _color.B);
-                OcultarReal(_rutaReal);
-                return null;
-            }
+            Gamepad? gp = Gamepad.Gamepads.FirstOrDefault(g => string.Equals(IdGamepad(g), r.GamepadId, StringComparison.OrdinalIgnoreCase));
+            return gp is not null ? LeerGamepad(gp.GetCurrentReading()) : null;
         }
-
-        // Mando estándar (Xbox) real: solo los que existían antes de crear el virtual.
-        Gamepad? gp = Gamepad.Gamepads.FirstOrDefault(g => _gamepadsReales.Contains(IdGamepad(g)));
-        return gp is not null ? LeerGamepad(gp.GetCurrentReading()) : null;
+        return null;
     }
 
     /// <summary>Identificador estable de un mando (los objetos de WinRT cambian en cada consulta).</summary>
