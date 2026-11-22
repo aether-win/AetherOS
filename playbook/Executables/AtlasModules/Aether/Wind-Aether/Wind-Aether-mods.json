@@ -15,7 +15,18 @@
       "loggingVerbosity": 0,
       "include": [],
       "exclude": [
-        "C:\\Program Files (x86)\\Steam\\steamapps\\common\\*"
+        "C:\\Program Files (x86)\\Steam\\steamapps\\common\\*",
+        "WINWORD.EXE",
+        "EXCEL.EXE",
+        "POWERPNT.EXE",
+        "OUTLOOK.EXE",
+        "olk.exe",
+        "ONENOTE.EXE",
+        "ONENOTEM.EXE",
+        "MSACCESS.EXE",
+        "MSPUB.EXE",
+        "VISIO.EXE",
+        "WINPROJ.EXE"
       ],
       "injectIntoCriticalProcesses": false,
       "injectIntoIncompatiblePrograms": false,

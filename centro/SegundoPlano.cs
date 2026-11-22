@@ -24,6 +24,7 @@ public static class SegundoPlano
     private static MenuBandeja? _menu;
     private static HwndSource? _atajos;
     private static readonly DispatcherTimer Vigia = new() { Interval = TimeSpan.FromSeconds(2) };
+    private static readonly DispatcherTimer GuardiaOffice = new() { Interval = TimeSpan.FromMinutes(10) };
     private static string _ultimoModo = "";
     private static bool _ocupado;
 
@@ -53,11 +54,34 @@ public static class SegundoPlano
 
         Vigia.Tick += (_, _) => RevisarModo();
         Vigia.Start();
+
+        // Guardia de Office: al iniciar y cada 10 minutos comprueba que Office siga fuera del
+        // alcance de Windhawk (si se reinstaló o se cambiaron sus ajustes, lo repone solo).
+        GuardiaOffice.Tick += (_, _) => _ = ProtegerOffice();
+        GuardiaOffice.Start();
+        _ = ProtegerOffice();
+    }
+
+    private static async Task ProtegerOffice()
+    {
+        bool reparado = await Task.Run(() =>
+        {
+            if (!OficinaServicio.WindhawkInstalado() || OficinaServicio.OfficeBlindado())
+            {
+                return false;
+            }
+            return OficinaServicio.BlindarOffice();
+        });
+        if (reparado)
+        {
+            Notificar("Office quedó protegido: ningún mod de Windhawk puede alterarlo. Si Word o Excel estaban abiertos, ciérralos y ábrelos de nuevo.");
+        }
     }
 
     public static void Detener()
     {
         Vigia.Stop();
+        GuardiaOffice.Stop();
         _atajos?.Dispose();
         if (_icono is not null)
         {

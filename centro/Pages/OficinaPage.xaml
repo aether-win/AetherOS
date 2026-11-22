@@ -7,16 +7,22 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
-            <c:Encabezado Glyph="&#xE8A5;" ColorIcono="#F2B33D" Titulo="Oficina" Subtitulo="Office, macros y comodidad para trabajar." />
+            <c:Encabezado Glyph="&#xE8A5;" ColorIcono="#F2B33D" Titulo="Oficina" Subtitulo="Office protegido: que nada lo altere y que tus archivos abran sin bloqueos." />
             <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <TextBlock Text="Microsoft Office" Style="{StaticResource SeccionTextBlockStyle}" />
             <c:FilaAjuste x:Name="FilaOffice" Glyph="&#xE8A5;" Titulo="Office en este equipo" Descripcion="Comprobando…" />
-            <c:FilaAjuste x:Name="FilaMacros" Glyph="&#xE72E;" Titulo="Seguridad de macros" Descripcion="…">
-                <Button x:Name="BtnMacros" Content="Proteger macros" Click="Macros_Click" />
+
+            <TextBlock Text="Protección de Office" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste x:Name="FilaBlindaje" Glyph="&#xE83D;" Titulo="Office a salvo de los mods" Descripcion="…">
+                <Button x:Name="BtnBlindar" Content="Proteger ahora" Style="{StaticResource AccentButtonStyle}" Click="Blindar_Click" />
             </c:FilaAjuste>
-            <c:FilaAjuste Glyph="&#xE73E;" ColorIcono="{StaticResource SystemFillColorSuccessBrush}" Titulo="Texto siempre visible en Office"
-                          Descripcion="Las transparencias de los mods se desactivan en Word, Excel, PowerPoint, Outlook, OneNote y Access para que el texto nunca se vea invisible." />
+            <c:FilaAjuste x:Name="FilaMacros" Glyph="&#xE943;" Titulo="Macros y archivos de otra PC" Descripcion="…">
+                <Button x:Name="BtnMacros" Content="Aplicar" Style="{StaticResource AccentButtonStyle}" Click="Macros_Click" />
+            </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xE785;" Titulo="Desbloquear archivos de otra PC"
+                          Descripcion="Elige una carpeta (por ejemplo la de la red o Descargas) y Aether quita el bloqueo de todos los Word, Excel y PowerPoint que tenga adentro, también en subcarpetas.">
+                <Button x:Name="BtnDesbloquear" Content="Elegir carpeta…" Click="Desbloquear_Click" />
+            </c:FilaAjuste>
 
             <TextBlock Text="Concentración" Style="{StaticResource SeccionTextBlockStyle}" />
             <c:FilaAjuste Glyph="&#xE708;" Titulo="Modo enfocado"

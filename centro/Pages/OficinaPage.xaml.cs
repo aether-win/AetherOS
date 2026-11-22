@@ -1,20 +1,20 @@
-using System;
-using CentroAether.Services;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using CentroAether.Controles;
+using CentroAether.Services;
 
 namespace CentroAether.Pages;
 
 /// <summary>
-/// Office Protection: detecta Office, protege la seguridad de macros y da acceso
-/// al modo enfocado. No desactiva funciones de Office.
+/// Oficina: blindaje de Office contra los mods de Windhawk (exclusión global), macros sin
+/// bloqueo, desbloqueo de archivos que llegaron de otra PC y modo enfocado.
 /// </summary>
 public sealed partial class OficinaPage : PaginaBase
 {
     public OficinaPage()
     {
-        this.InitializeComponent();
+        InitializeComponent();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -25,28 +25,79 @@ public sealed partial class OficinaPage : PaginaBase
 
     private void Refrescar()
     {
-        bool office = OficinaServicio.OfficeInstalado();
-        FilaOffice.Descripcion = office
+        FilaOffice.Descripcion = OficinaServicio.OfficeInstalado()
             ? "Microsoft Office detectado en este equipo."
-            : "No se detectó Microsoft Office. Las protecciones se aplicarán si lo instalas.";
+            : "No se detectó Microsoft Office. La protección queda lista para cuando lo instales.";
 
-        bool protegidas = OficinaServicio.MacrosProtegidas();
-        FilaMacros.Descripcion = protegidas
-            ? "Protegidas: las macros se bloquean con aviso antes de ejecutarse."
-            : "Las macros podrían ejecutarse sin aviso. Recomendado protegerlas.";
-        BtnMacros.IsEnabled = !protegidas;
-        BtnMacros.Content = protegidas ? "Protegidas" : "Proteger macros";
+        // Blindaje contra mods
+        if (!OficinaServicio.WindhawkInstalado())
+        {
+            FilaBlindaje.Descripcion = "Windhawk no está instalado, así que ningún mod puede tocar Office. Si lo instalas, Aether Toolbox protege Office automáticamente.";
+            FilaBlindaje.Accion = Ui.Insignia("Protegido", Ui.Hex("#3FBF7F"));
+        }
+        else if (OficinaServicio.OfficeBlindado())
+        {
+            FilaBlindaje.Descripcion = "Word, Excel, PowerPoint, Outlook, OneNote, Access, Publisher, Visio y Project están fuera del alcance de Windhawk: ningún mod (transparencias, vidrio, colores…) los puede alterar. Aether Toolbox lo vigila en segundo plano.";
+            FilaBlindaje.Accion = Ui.Insignia("Protegido", Ui.Hex("#3FBF7F"));
+        }
+        else
+        {
+            FilaBlindaje.Descripcion = "Algunos mods de Windhawk pueden alterar Office (por ejemplo, texto que se ve lavado o invisible en Word). Protégelo para dejarlo fuera de todos los mods.";
+            FilaBlindaje.Accion = BtnBlindar;
+        }
+
+        // Macros
+        if (OficinaServicio.MacrosSinBloqueo())
+        {
+            FilaMacros.Descripcion = "Las macros VBA funcionan sin aviso y los archivos que vienen de otra PC no se bloquean ni abren en Vista protegida.";
+            FilaMacros.Accion = Ui.Insignia("Listo", Ui.Hex("#3FBF7F"));
+        }
+        else
+        {
+            FilaMacros.Descripcion = "Office puede bloquear tus macros o abrir en Vista protegida los archivos que vienen de otra PC. Aplica los ajustes de Aether.";
+            FilaMacros.Accion = BtnMacros;
+        }
+    }
+
+    private async void Blindar_Click(object sender, RoutedEventArgs e)
+    {
+        BtnBlindar.IsEnabled = false;
+        Aviso("Protegiendo Office…", InfoBarSeverity.Informational);
+        bool ok = await Task.Run(() => OficinaServicio.BlindarOffice());
+        BtnBlindar.IsEnabled = true;
+        Aviso(ok
+            ? "Office quedó protegido. Cierra y vuelve a abrir Word, Excel o PowerPoint si estaban abiertos."
+            : "No se pudo proteger Office. Abre Windhawk una vez y vuelve a intentarlo.",
+            ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning);
+        Refrescar();
     }
 
     private void Macros_Click(object sender, RoutedEventArgs e)
     {
-        bool ok = OficinaServicio.ProtegerMacros();
-        Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning;
-        Estado.Message = ok
-            ? "Macros protegidas. Reinicia las apps de Office que estén abiertas."
-            : "No se pudo aplicar la protección.";
-        Estado.IsOpen = true;
+        bool ok = OficinaServicio.AplicarMacrosSinBloqueo();
+        Aviso(ok
+            ? "Listo. Cierra y vuelve a abrir Office para que tome los cambios."
+            : "No se pudieron aplicar los ajustes de macros.",
+            ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning);
         Refrescar();
+    }
+
+    private async void Desbloquear_Click(object sender, RoutedEventArgs e)
+    {
+        var dialogo = new Microsoft.Win32.OpenFolderDialog { Title = "Elige la carpeta con los archivos a desbloquear" };
+        if (dialogo.ShowDialog(Window.GetWindow(this)) != true || string.IsNullOrEmpty(dialogo.FolderName))
+        {
+            return;
+        }
+        string carpeta = dialogo.FolderName;
+        BtnDesbloquear.IsEnabled = false;
+        Aviso("Desbloqueando archivos…", InfoBarSeverity.Informational);
+        int cuenta = await Task.Run(() => OficinaServicio.DesbloquearCarpeta(carpeta));
+        BtnDesbloquear.IsEnabled = true;
+        Aviso(cuenta == 0
+            ? "No había archivos de Office bloqueados en esa carpeta."
+            : $"Listo: se desbloquearon {cuenta} archivo(s) de Office.",
+            InfoBarSeverity.Success);
     }
 
     private void Enfocado_Click(object sender, RoutedEventArgs e)
@@ -57,9 +108,14 @@ public sealed partial class OficinaPage : PaginaBase
         }
         catch
         {
-            Estado.Severity = InfoBarSeverity.Warning;
-            Estado.Message = "No se pudo abrir la configuración de concentración.";
-            Estado.IsOpen = true;
+            Aviso("No se pudo abrir la configuración de concentración.", InfoBarSeverity.Warning);
         }
+    }
+
+    private void Aviso(string texto, InfoBarSeverity tipo)
+    {
+        Estado.Severity = tipo;
+        Estado.Message = texto;
+        Estado.IsOpen = true;
     }
 }
