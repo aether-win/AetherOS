@@ -6,7 +6,7 @@
         Width="1220" Height="820" MinWidth="900" MinHeight="600"
         WindowStartupLocation="CenterScreen"
         Icon="Assets/aether.ico"
-        Background="{StaticResource FondoVentanaBrush}"
+        Background="{DynamicResource FondoVentanaBrush}"
         Foreground="{StaticResource TextFillColorPrimaryBrush}"
         FontFamily="Segoe UI Variable Text, Segoe UI"
         FontSize="14"
@@ -66,14 +66,8 @@
         </Grid.ColumnDefinitions>
 
         <!-- Menú lateral -->
-        <Border Grid.Column="0" BorderBrush="{StaticResource LineaBrush}" BorderThickness="0,0,1,0">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#0E2140" Offset="0" />
-                    <GradientStop Color="#0B1A2E" Offset="0.35" />
-                    <GradientStop Color="#0A1628" Offset="1" />
-                </LinearGradientBrush>
-            </Border.Background>
+        <Border Grid.Column="0" BorderBrush="{StaticResource LineaBrush}" BorderThickness="0,0,1,0"
+                Background="{DynamicResource MenuFondoBrush}">
             <DockPanel>
                 <!-- Marca -->
                 <Grid DockPanel.Dock="Top" Margin="22,22,16,14">
@@ -98,7 +92,7 @@
 
                 <!-- Pie: mando (indicador en tiempo real) y modo actual -->
                 <Border DockPanel.Dock="Bottom" Margin="14,0,14,16" Padding="14,12" CornerRadius="10"
-                        Background="#0F2036" BorderBrush="#1C3756" BorderThickness="1">
+                        Background="{DynamicResource TarjetaFondoBrush}" BorderBrush="#1C3756" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -113,7 +107,7 @@
                 </Border>
 
                 <Border x:Name="CajaMando" DockPanel.Dock="Bottom" Margin="14,8,14,8" Padding="14,12" CornerRadius="10"
-                        Background="#0F2036" BorderBrush="#1C3756" BorderThickness="1" Cursor="Hand"
+                        Background="{DynamicResource TarjetaFondoBrush}" BorderBrush="#1C3756" BorderThickness="1" Cursor="Hand"
                         MouseLeftButtonUp="CajaMando_Click">
                     <Grid>
                         <Grid.ColumnDefinitions>

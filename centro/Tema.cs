@@ -5,9 +5,65 @@ using System.Windows.Interop;
 
 namespace CentroAether;
 
-/// <summary>Aplica la barra de título oscura (modo inmersivo de Windows 10/11).</summary>
+/// <summary>
+/// Apariencia de las ventanas: barra de título oscura (Windows 10/11) y material Mica REAL de
+/// Windows 11 (22H2 o más nuevo) con el compositor del sistema (DWM), no un color semitransparente.
+/// Si Mica no está disponible (Windows 10 o 11 antiguo) se usa el fondo sólido oscuro de Aether.
+/// </summary>
 public static class Tema
 {
+    [StructLayout(LayoutKind.Sequential)]
+    private struct Margenes
+    {
+        public int Izq, Der, Arriba, Abajo;
+    }
+
+    [DllImport("dwmapi.dll")]
+    private static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref Margenes m);
+
+    private const int DWMWA_SYSTEMBACKDROP_TYPE = 38;
+    private const int FondoMica = 2;
+
+    /// <summary>Windows 11 22H2 (compilación 22621) o más nuevo: Mica disponible.</summary>
+    public static bool MicaDisponible => Environment.OSVersion.Version.Build >= 22621;
+
+    /// <summary>Mica de Windows 11 en esta ventana (o barra oscura + fondo sólido si no hay Mica).</summary>
+    public static void Mica(Window v)
+    {
+        if (!MicaDisponible)
+        {
+            BarraOscura(v);
+            return;
+        }
+        v.Background = System.Windows.Media.Brushes.Transparent;
+        v.SourceInitialized += (_, _) =>
+        {
+            try
+            {
+                IntPtr h = new WindowInteropHelper(v).Handle;
+                HwndSource? fuente = HwndSource.FromHwnd(h);
+                if (fuente?.CompositionTarget is not null)
+                {
+                    fuente.CompositionTarget.BackgroundColor = System.Windows.Media.Colors.Transparent;
+                }
+                var m = new Margenes { Izq = -1, Der = -1, Arriba = -1, Abajo = -1 };
+                DwmExtendFrameIntoClientArea(h, ref m);
+                int si = 1;
+                DwmSetWindowAttribute(h, DWMWA_USE_IMMERSIVE_DARK_MODE, ref si, sizeof(int));
+                int tipo = FondoMica;
+                if (DwmSetWindowAttribute(h, DWMWA_SYSTEMBACKDROP_TYPE, ref tipo, sizeof(int)) != 0)
+                {
+                    // No aceptó Mica: volver al fondo sólido para que nunca quede transparente.
+                    v.SetResourceReference(Window.BackgroundProperty, "FondoSolidoBrush");
+                }
+            }
+            catch
+            {
+                v.SetResourceReference(Window.BackgroundProperty, "FondoSolidoBrush");
+            }
+        };
+    }
+
     [DllImport("dwmapi.dll")]
     private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int valor, int tam);
 

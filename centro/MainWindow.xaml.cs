@@ -19,7 +19,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        Tema.BarraOscura(this);
+        Tema.Mica(this);
         ConstruirMenu();
 
         Loaded += (_, _) =>

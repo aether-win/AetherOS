@@ -8,6 +8,13 @@
 
             <!-- ====== Colores base (tema oscuro Aether, igual que Aether Transfer) ====== -->
             <SolidColorBrush x:Key="FondoVentanaBrush"  Color="#0A1524" />
+            <SolidColorBrush x:Key="FondoSolidoBrush"   Color="#0A1524" />
+            <SolidColorBrush x:Key="TarjetaFondoBrush"  Color="#0F2036" />
+            <LinearGradientBrush x:Key="MenuFondoBrush" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#0E2140" Offset="0" />
+                <GradientStop Color="#0B1A2E" Offset="0.35" />
+                <GradientStop Color="#0A1628" Offset="1" />
+            </LinearGradientBrush>
             <SolidColorBrush x:Key="FondoMenuBrush"     Color="#0C1B30" />
             <SolidColorBrush x:Key="CampoBrush"         Color="#0A1726" />
             <SolidColorBrush x:Key="LineaBrush"         Color="#1E3A5C" />
@@ -36,14 +43,14 @@
 
             <!-- ====== Diseño: tarjetas, filas de ajuste, mosaicos y títulos de sección ====== -->
             <Style x:Key="TarjetaStyle" TargetType="Border">
-                <Setter Property="Background" Value="#0F2036" />
+                <Setter Property="Background" Value="{DynamicResource TarjetaFondoBrush}" />
                 <Setter Property="BorderBrush" Value="#1C3756" />
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="CornerRadius" Value="12" />
                 <Setter Property="Padding" Value="20,18" />
             </Style>
             <Style x:Key="FilaAjusteStyle" TargetType="c:FilaAjuste">
-                <Setter Property="Background" Value="#0F2036" />
+                <Setter Property="Background" Value="{DynamicResource TarjetaFondoBrush}" />
                 <Setter Property="BorderBrush" Value="#1C3756" />
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="CornerRadius" Value="10" />
@@ -57,7 +64,7 @@
                 <Setter Property="Margin" Value="2,14,0,2" />
             </Style>
             <Style x:Key="MosaicoStyle" TargetType="Button">
-                <Setter Property="Background" Value="#0F2036" />
+                <Setter Property="Background" Value="{DynamicResource TarjetaFondoBrush}" />
                 <Setter Property="BorderBrush" Value="#1C3756" />
                 <Setter Property="Foreground" Value="#E6EEF8" />
                 <Setter Property="BorderThickness" Value="1" />

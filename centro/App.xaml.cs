@@ -48,6 +48,12 @@ public partial class App : Application
 
         base.OnStartup(e);
 
+        // Windows 11: material Mica real. Los fondos pasan a ser translúcidos para que se vea.
+        if (Tema.MicaDisponible)
+        {
+            UsarMica();
+        }
+
         // Segundo plano SIEMPRE activo: ícono en la bandeja, atajos y vigilancia del modo.
         SegundoPlano.Iniciar();
 
@@ -98,6 +104,22 @@ public partial class App : Application
             }
         }
         return cerro;
+    }
+
+    private void UsarMica()
+    {
+        static System.Windows.Media.SolidColorBrush B(byte a, byte r, byte g, byte b) =>
+            new(System.Windows.Media.Color.FromArgb(a, r, g, b));
+
+        Resources["FondoVentanaBrush"] = System.Windows.Media.Brushes.Transparent;
+        Resources["TarjetaFondoBrush"] = B(0xC8, 0x0F, 0x20, 0x36);
+        Resources["LayerFillColorDefaultBrush"] = B(0x99, 0x0B, 0x1A, 0x2E);
+        Resources["CardBackgroundFillColorDefaultBrush"] = B(0xC8, 0x0F, 0x20, 0x36);
+        Resources["InfoBarFondoBrush"] = B(0xD8, 0x10, 0x23, 0x3B);
+        var menu = new System.Windows.Media.LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(0, 1) };
+        menu.GradientStops.Add(new System.Windows.Media.GradientStop(System.Windows.Media.Color.FromArgb(0xA0, 0x0E, 0x21, 0x40), 0));
+        menu.GradientStops.Add(new System.Windows.Media.GradientStop(System.Windows.Media.Color.FromArgb(0x80, 0x0A, 0x16, 0x28), 1));
+        Resources["MenuFondoBrush"] = menu;
     }
 
     /// <summary>Muestra (o crea) la ventana del Centro y la trae al frente.</summary>

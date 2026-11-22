@@ -34,7 +34,7 @@ public partial class VentanaProcesos : Window
     public VentanaProcesos()
     {
         InitializeComponent();
-        Tema.BarraOscura(this);
+        Tema.Mica(this);
         Loaded += async (_, _) => await Cargar();
     }
 
