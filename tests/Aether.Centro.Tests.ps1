@@ -64,10 +64,12 @@ Describe 'Centro Aether' {
         $valores | Should -Be @(2, 1)
     }
 
-    It 'keeps the Wind-Aether profiles readable by the Centro' {
-        $perfiles = Get-Content -LiteralPath (Join-Path $script:AtlasTestRepoRoot 'playbook\Executables\AtlasModules\Aether\Wind-Aether\Wind-Aether-perfiles.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-        @($perfiles.perfiles.'aether-glass'.activar).Count | Should -BeGreaterThan 0
-        @($perfiles.perfiles.'aether-limpio'.activar).Count | Should -BeGreaterThan 0
-        @($perfiles.pausarEnModoGaming).Count | Should -BeGreaterThan 0
+    It 'ships the Windhawk backups as valid Windhawk user data' {
+        foreach ($nombre in 'Aether-Windhawk-Glass.json', 'Aether-Windhawk-Limpio.json', 'Aether-Windhawk-Todo-apagado.json') {
+            $respaldo = Get-Content -LiteralPath (Join-Path $script:AtlasTestRepoRoot "playbook\Executables\AtlasModules\Aether\Windhawk\$nombre") -Raw -Encoding UTF8 | ConvertFrom-Json
+            $respaldo.format | Should -Be 'windhawk-user-data-v1'
+            @($respaldo.mods).Count | Should -BeGreaterThan 0
+            @($respaldo.appSettings.engine.exclude) | Should -Contain 'WINWORD.EXE'
+        }
     }
 }

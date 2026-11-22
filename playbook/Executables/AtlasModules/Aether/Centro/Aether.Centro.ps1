@@ -184,7 +184,7 @@ function Set-AetherAnimaciones {
     Set-ItemProperty -LiteralPath 'HKCU:\SOFTWARE\Microsoft\Windows\DWM' -Name 'EnableAeroPeek' -Value $v -Type DWord -ErrorAction SilentlyContinue
 }
 
-# --- Wind-Aether (Windhawk) ------------------------------------------------------------
+# --- Windhawk ------------------------------------------------------------
 function Get-AetherWindhawkCli {
     foreach ($base in @($env:ProgramFiles, ${env:ProgramFiles(x86)})) {
         if (-not $base) { continue }
@@ -195,8 +195,8 @@ function Get-AetherWindhawkCli {
 }
 
 # =========================================================================================
-# Automatización (Aether Toolbox la corre sola al iniciar sesión): drivers de mandos,
-# Windhawk 2.0 con windhawk-cli y los mods de Wind-Aether. Todo con firma verificada y
+# Automatización (Aether Toolbox la corre sola al iniciar sesión): drivers de mandos y
+# Windhawk 2.0 (trae Copia de seguridad y restauración para tus mods). Todo con firma verificada y
 # registro en %ProgramData%\Aether\autoreparacion.log.
 # =========================================================================================
 function Write-AetherAutoLog {
@@ -310,82 +310,8 @@ function Install-AetherDriversMando {
     return $resultado
 }
 
-function Use-AetherCandadoWindhawk {
-    # Un solo trabajo con Windhawk a la vez (bienvenida, Toolbox y autoreparación no se pisan).
-    param([scriptblock]$Bloque, [int]$Minutos = 30)
-    $m = New-Object System.Threading.Mutex($false, 'Global\AetherWindhawk')
-    $tengo = $false
-    try {
-        try { $tengo = $m.WaitOne($Minutos * 60000) } catch [System.Threading.AbandonedMutexException] { $tengo = $true }
-        if (-not $tengo) { Write-AetherAutoLog 'Windhawk ocupado demasiado tiempo; se omite.'; return $null }
-        & $Bloque
-    }
-    finally {
-        if ($tengo) { $m.ReleaseMutex() }
-        $m.Dispose()
-    }
-}
-
-function Set-AetherProgresoWind {
-    param([string]$Texto)
-    $archivo = Join-Path $env:ProgramData 'Aether\windhawk-progreso.txt'
-    try {
-        if ($Texto) { Set-Content -LiteralPath $archivo -Value $Texto -Encoding UTF8 }
-        else { Remove-Item -LiteralPath $archivo -Force -ErrorAction SilentlyContinue }
-    }
-    catch { Write-Verbose 'Sin progreso.' }
-}
-
-function Install-AetherWindMods {
-    # Instala en Windhawk (apagados) los mods de Wind-Aether que falten, con los ajustes de Aether.
-    # Mods del repositorio: precompilados. Mods propios (local@): desde su código fuente.
-    param([string]$Solo)
-    Use-AetherCandadoWindhawk {
-    $cli = Get-AetherWindhawkCli
-    if (-not $cli) { return @('Windhawk sin windhawk-cli') }
-    $paquete = Join-Path $script:AetherCarpeta 'Wind-Aether\Wind-Aether-mods.json'
-    $datos = Get-Content -LiteralPath $paquete -Raw -Encoding UTF8 | ConvertFrom-Json
-    $instalados = @()
-    try { $instalados = @(((& $cli mod list --json 2>$null) | Out-String | ConvertFrom-Json) | ForEach-Object { $_.id }) }
-    catch { Write-AetherAutoLog 'Windhawk: no se pudo leer la lista de mods.' }
-    $fallos = @()
-    $pendientes = @($datos.mods | Where-Object { (-not $Solo -or $_.modId -eq $Solo) -and $instalados -notcontains $_.modId }).Count
-    $n = 0
-    foreach ($m in @($datos.mods)) {
-        if ($Solo -and $m.modId -ne $Solo) { continue }
-        if ($instalados -contains $m.modId) { continue }
-        $n++
-        Set-AetherProgresoWind ("Instalando en Windhawk: {0} ({1} de {2})" -f $m.modId, $n, $pendientes)
-        if ($m.modId -like 'local@*') {
-            $archivo = Join-Path $env:TEMP (($m.modId -replace '^local@', '') + '.wh.cpp')
-            [IO.File]::WriteAllText($archivo, [string]$m.source, (New-Object Text.UTF8Encoding($false)))
-            & $cli mod install --file $archivo --disabled --yes *> $null
-            Remove-Item -LiteralPath $archivo -Force -ErrorAction SilentlyContinue
-        }
-        else {
-            & $cli mod install --repo $m.modId --disabled --yes *> $null
-        }
-        $codigo = $LASTEXITCODE
-        Write-AetherAutoLog "Windhawk: instalar $($m.modId) -> código $codigo"
-        if ($codigo -ne 0 -and $codigo -ne 7) { $fallos += "$($m.modId) (código $codigo)"; continue }
-        $pares = @()
-        if ($m.settings) {
-            foreach ($p in $m.settings.PSObject.Properties) {
-                if ($null -ne $p.Value -and "$($p.Value)" -ne '') { $pares += ('{0}={1}' -f $p.Name, $p.Value) }
-            }
-        }
-        if ($pares.Count) {
-            & $cli mod settings set $m.modId @pares *> $null
-            Write-AetherAutoLog "Windhawk: ajustes de $($m.modId) -> código $LASTEXITCODE"
-        }
-    }
-    Set-AetherProgresoWind ''
-    return $fallos
-    }
-}
-
 function Invoke-AetherAutoReparacion {
-    # Deja Aether OS completo sin intervención: drivers de mandos, Windhawk 2.0 y mods.
+    # Deja Aether OS completo sin intervención: drivers de mandos y Windhawk 2.0.
     # Mientras el instalador de apps del primer inicio no termine, no se cruza con él.
     $enCurso = @(Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue |
             Where-Object { $_.CommandLine -match 'Install-AetherApps' })
@@ -396,18 +322,14 @@ function Invoke-AetherAutoReparacion {
         if (Install-AetherWindhawkCli) { $lineas += 'Windhawk 2.0 instalado' }
         else { $lineas += 'Windhawk 2.0 NO se pudo instalar' }
     }
-    if (Get-AetherWindhawkCli) {
-        $fallos = @(Install-AetherWindMods)
-        if ($fallos.Count) { $lineas += ('Mods de Wind-Aether con problemas: ' + ($fallos -join ', ')) }
-    }
     Write-AetherAutoLog ('Resumen: ' + ($(if ($lineas.Count) { $lineas -join ' | ' } else { 'todo al día' })))
     return $lineas
 }
 
 function Install-AetherWindhawkCli {
     <#
-        Instala Windhawk 2.0 (trae windhawk-cli.exe, necesario para que Aether Toolbox active
-        los perfiles Wind-Aether solo). Baja el instalador OFICIAL de las versiones de
+        Instala Windhawk 2.0 (trae Copia de seguridad y restauración, para restaurar el respaldo
+        de mods de Aether). Baja el instalador OFICIAL de las versiones de
         github.com/ramensoftware/windhawk, exige firma digital válida y lo instala en silencio.
         Devuelve la ruta de windhawk-cli.exe o $null (entonces se usa la 1.x estable).
     #>
@@ -422,7 +344,7 @@ function Install-AetherWindhawkCli {
             Sort-Object { [datetime]$_.published_at } -Descending | Select-Object -First 1
         if (-not $version) { return $null }
         # El instalador completo (offline) trae también las herramientas para compilar los mods
-        # propios de Wind-Aether (local@...); si no está, el normal.
+        # propios (local@...) del respaldo; si no está, el normal.
         $activo = @($version.assets | Where-Object { $_.name -match '(?i)setup_offline.*\.exe$' }) | Select-Object -First 1
         if (-not $activo) { $activo = @($version.assets | Where-Object { $_.name -match '(?i)setup.*\.exe$' }) | Select-Object -First 1 }
         if (-not $activo) { return $null }
@@ -436,65 +358,6 @@ function Install-AetherWindhawkCli {
     }
     catch { return $null }
     finally { Remove-Item -LiteralPath $setup -Force -ErrorAction SilentlyContinue }
-}
-
-function Get-AetherPerfilesWind {
-    $ruta = Join-Path $script:AetherCarpeta 'Wind-Aether\Wind-Aether-perfiles.json'
-    if (-not (Test-Path -LiteralPath $ruta)) { return $null }
-    return Get-Content -LiteralPath $ruta -Raw -Encoding UTF8 | ConvertFrom-Json
-}
-
-function Set-AetherModWind {
-    # Activa/desactiva un mod de Wind-Aether. Si el mod todavía no está en Windhawk, lo instala
-    # primero (con sus ajustes de Aether). Devuelve $true solo si Windhawk confirmó el cambio.
-    param([string]$Id, [bool]$Activo)
-    $r = Use-AetherCandadoWindhawk {
-    $cli = Get-AetherWindhawkCli
-    if (-not $cli) { Write-AetherAutoLog 'Windhawk: falta windhawk-cli.exe (Windhawk 2.0).'; return $false }
-    $accion = if ($Activo) { 'enable' } else { 'disable' }
-    & $cli mod $accion $Id *> $null
-    $codigo = $LASTEXITCODE
-    if ($codigo -eq 4 -and $Activo) {
-        [void](Install-AetherWindMods -Solo $Id)
-        & $cli mod $accion $Id *> $null
-        $codigo = $LASTEXITCODE
-    }
-    Write-AetherAutoLog "Windhawk: mod $accion $Id -> código $codigo"
-    # Apagar un mod que ni siquiera está instalado = ya está apagado.
-    return ($codigo -eq 0 -or ($codigo -eq 4 -and -not $Activo))
-    }
-    return [bool]($r | Select-Object -Last 1)
-}
-
-function Set-AetherPerfilWind {
-    # Activa los mods del perfil y desactiva los demás mods de Wind-Aether.
-    param([ValidateSet('aether-glass', 'aether-limpio', 'ninguno')][string]$Perfil, [switch]$Temporal)
-    $perfiles = Get-AetherPerfilesWind
-    if (-not $perfiles -or -not (Get-AetherWindhawkCli)) {
-        return 'Windhawk no está instalado o no tiene su herramienta de línea de comandos (Windhawk 2.0).'
-    }
-    $todos = New-Object System.Collections.Generic.HashSet[string]
-    foreach ($p in $perfiles.perfiles.PSObject.Properties) { foreach ($id in @($p.Value.activar)) { [void]$todos.Add([string]$id) } }
-    $activar = if ($Perfil -eq 'ninguno') { @() } else { @($perfiles.perfiles.$Perfil.activar) }
-    $fallos = 0
-    foreach ($id in $todos) {
-        if (-not (Set-AetherModWind -Id $id -Activo ($activar -contains $id))) { $fallos++ }
-    }
-    if (-not $Temporal) { Set-AetherAjuste -Nombre 'PerfilWind' -Valor $Perfil }
-    if ($Perfil -ne 'ninguno') { [void](Set-AetherColoresWind) }
-    if ($fallos -gt 0) { return "Perfil aplicado; $fallos mods no respondieron (quizá no están instalados)." }
-    return 'Perfil aplicado.'
-}
-
-function Set-AetherPausaModsGaming {
-    param([bool]$Pausar)
-    $perfiles = Get-AetherPerfilesWind
-    if (-not $perfiles -or -not (Get-AetherWindhawkCli)) { return }
-    $perfil = [string](Get-AetherAjuste -Nombre 'PerfilWind' -PorDefecto 'ninguno')
-    $activos = if ($perfil -eq 'ninguno') { @() } else { @($perfiles.perfiles.$perfil.activar) }
-    foreach ($id in @($perfiles.pausarEnModoGaming)) {
-        if ($activos -contains $id) { [void](Set-AetherModWind -Id $id -Activo (-not $Pausar)) }
-    }
 }
 
 # --- Modos -------------------------------------------------------------------------------
@@ -598,12 +461,8 @@ function Set-AetherModo {
     # Trabaja siempre sobre el paquete de energía propio de Aether (no toca los del usuario).
     [void](Initialize-AetherPlanEnergia)
     Save-AetherEnergiaOriginal
-    if ($anterior -eq 'Gaming' -and $Modo -ne 'Gaming') { Set-AetherPausaModsGaming -Pausar $false }
     # Los extras de Gaming Extremo / Máximo se deshacen al salir (o antes de re-aplicar Gaming).
     if ($anterior -eq 'Gaming') { Restore-AetherNivelGaming }
-    if ($anterior -eq 'Bateria' -and $Modo -ne 'Bateria') {
-        [void](Set-AetherPerfilWind -Perfil ([string](Get-AetherAjuste -Nombre 'PerfilWind' -PorDefecto 'ninguno')) -Temporal)
-    }
 
     switch ($Modo) {
         'Trabajo' {
@@ -635,7 +494,6 @@ function Set-AetherModo {
             Set-AetherNotificaciones -Activas $false
             Set-AetherAppsSegundoPlano -Permitidas $false
             Set-AetherAnimaciones -Completas $false
-            Set-AetherPausaModsGaming -Pausar $true
             $nivel = [string](Get-AetherAjuste -Nombre 'NivelGaming' -PorDefecto 'Gaming')
             if ($nivel -notin @('Gaming', 'Extremo', 'Maximo')) { $nivel = 'Gaming' }
             Set-AetherNivelGaming -Nivel $nivel
@@ -656,7 +514,6 @@ function Set-AetherModo {
             Set-AetherModoEnergiaWindows -Modo Eficiencia
             Set-AetherAppsSegundoPlano -Permitidas $false
             Set-AetherAnimaciones -Completas $true
-            [void](Set-AetherPerfilWind -Perfil 'aether-limpio' -Temporal)
             $mensaje = 'Modo Batería activo.'
         }
     }
@@ -833,7 +690,7 @@ function Connect-AetherUnidadesRed {
     return $sinConectar
 }
 
-# --- Tema y colores de Wind-Aether --------------------------------------------------------
+# --- Tema de Windows --------------------------------------------------------
 function Get-AetherTema {
     # 'claro' u 'oscuro' según el modo de las apps de Windows.
     try {
@@ -844,32 +701,12 @@ function Get-AetherTema {
     return 'oscuro'
 }
 
-function Set-AetherColoresWind {
-    # Pone en los mods de Wind-Aether los colores del tema (claro u oscuro).
-    param([ValidateSet('claro', 'oscuro')][string]$Tema = (Get-AetherTema))
-    $perfiles = Get-AetherPerfilesWind
-    $cli = Get-AetherWindhawkCli
-    if (-not $perfiles -or -not $cli -or -not $perfiles.PSObject.Properties['coloresPorTema']) { return 0 }
-    $hechos = 0
-    foreach ($mod in $perfiles.coloresPorTema.PSObject.Properties) {
-        $valores = $mod.Value.$Tema
-        if (-not $valores) { continue }
-        $pares = @($valores.PSObject.Properties | ForEach-Object { '{0}={1}' -f $_.Name, $_.Value })
-        if ($pares.Count -eq 0) { continue }
-        & $cli --quiet mod settings set $mod.Name @pares 2>&1 | Out-Null
-        if ($LASTEXITCODE -eq 0) { $hechos++ }
-    }
-    Set-AetherAjuste -Nombre 'TemaColores' -Valor $Tema
-    return $hechos
-}
-
 function Set-AetherTema {
-    # Cambia Windows a claro u oscuro y ajusta los colores de Wind-Aether.
+    # Cambia Windows a claro u oscuro.
     param([Parameter(Mandatory = $true)][ValidateSet('claro', 'oscuro')][string]$Tema)
     $valor = [int]($Tema -eq 'claro')
     $ruta = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'
     if (-not (Test-Path -LiteralPath $ruta)) { New-Item -Path $ruta -Force | Out-Null }
     Set-ItemProperty -LiteralPath $ruta -Name AppsUseLightTheme -Value $valor -Type DWord
     Set-ItemProperty -LiteralPath $ruta -Name SystemUsesLightTheme -Value $valor -Type DWord
-    [void](Set-AetherColoresWind -Tema $Tema)
 }

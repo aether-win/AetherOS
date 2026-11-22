@@ -60,9 +60,6 @@ public static class RegistroModulos
         new("red", "Red", "Diagnóstico de red (sin evasión de controles)",
             "Red", "", typeof(RedPage)),
 
-        // ── Personalización ──────────────────────────────────────────────────
-        new("wind", "Wind-Aether", "Mods de Windhawk (desactivados por defecto)",
-            "Personalización", "", typeof(WindPage)),
 
         // ── Avanzado ─────────────────────────────────────────────────────────
         new("plugins", "Plugins", "Sistema de extensiones de Aether",

@@ -69,7 +69,6 @@ public sealed partial class InicioPage : PaginaBase
             ("", "Respaldo", "Copia tus archivos", "#F2B33D", "respaldo"),
             ("", "Monitor", "CPU y RAM en vivo", "#7A5AF8", "monitor"),
             ("", "Mandos", "PS4 como mando de Xbox", "#2F8CFF", "control"),
-            ("", "Wind-Aether", "Mods visuales", "#E879F9", "wind"),
             ("", "Software", "Apps confiables en un clic", "#4FC3F7", "software"),
         };
         foreach (var a in accesos)

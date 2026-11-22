@@ -230,14 +230,14 @@ if ($apps -contains 'app-steam') {
 }
 
 if ($apps -contains 'wind-aether') {
-    Titulo 'Wind-Aether (Windhawk)'
-    # Primero Windhawk 2.0 (con windhawk-cli: Aether Toolbox controla los mods solo);
-    # si no se puede, la 1.x estable por winget (los mods se importan a mano).
+    Titulo 'Windhawk'
+    # Primero Windhawk 2.0 (trae Copia de seguridad y restauración para el respaldo de mods de
+    # Aether); si no se puede, la versión estable.
     $windhawkOk = $false
     $centroPs1 = Join-Path $carpetaAether 'Centro\Aether.Centro.ps1'
     if (Test-Path -LiteralPath $centroPs1) {
         . $centroPs1
-        if (Install-AetherWindhawkCli) { $windhawkOk = $true; Ok 'Windhawk 2.0 instalado (con control desde Aether Toolbox)' }
+        if (Install-AetherWindhawkCli) { $windhawkOk = $true; Ok 'Windhawk 2.0 instalado' }
     }
     if (-not $windhawkOk) {
         Aviso 'No se pudo instalar Windhawk 2.0; se instala la versión estable.'
@@ -260,25 +260,15 @@ if ($apps -contains 'wind-aether') {
     }
     if ($windhawkOk) {
         Ok 'Windhawk instalado'
-        $paquete = Join-Path $carpetaAether 'Wind-Aether\Wind-Aether-mods.json'
-        $copia = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Wind-Aether-mods.json'
-        Copy-Item -LiteralPath $paquete -Destination $copia -Force -ErrorAction SilentlyContinue
-        $cli = @($env:ProgramFiles, ${env:ProgramFiles(x86)}) |
-            Where-Object { $_ -and $_.Trim() } |
-            ForEach-Object { Join-Path $_ 'Windhawk\windhawk-cli.exe' } |
-            Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-        if ($cli) {
-            # Cada mod se instala por separado (apagado y con sus ajustes de Aether).
-            $fallosMods = @(Install-AetherWindMods)
-            if ($fallosMods.Count -eq 0) { Ok 'Mods de Wind-Aether instalados (apagados; actívalos desde Aether Toolbox)' }
-            else { Aviso ('Mods con problemas (Aether Toolbox los reintenta al iniciar sesión): ' + ($fallosMods -join ', ')) }
-        }
-        else {
-            Aviso 'Esta versión de Windhawk no trae la herramienta de línea de comandos (llega con Windhawk 2.0).'
-            $pendientes.Add("Wind-Aether: en Windhawk, Ajustes > Importar, elige $copia")
-        }
+        # Respaldos de mods de Aether en Documentos\Aether Windhawk, listos para restaurar en
+        # Windhawk (Ajustes > Copia de seguridad y restauración > Restaurar).
+        $destinoRespaldos = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Aether Windhawk'
+        New-Item -ItemType Directory -Path $destinoRespaldos -Force | Out-Null
+        Copy-Item -Path (Join-Path $carpetaAether 'Windhawk\*.json') -Destination $destinoRespaldos -Force -ErrorAction SilentlyContinue
+        Ok "Respaldos de mods listos en $destinoRespaldos"
+        $pendientes.Add("Windhawk: para tus mods, abre Windhawk > Ajustes > Copia de seguridad y restauración > Restaurar y elige un archivo de $destinoRespaldos")
     }
-    else { Fallo 'Windhawk no se pudo instalar'; $pendientes.Add('Wind-Aether: https://windhawk.net') }
+    else { Fallo 'Windhawk no se pudo instalar'; $pendientes.Add('Windhawk: https://windhawk.net') }
 }
 
 # --- Componentes que necesitan juegos y programas (solo lo que falte) ---------------

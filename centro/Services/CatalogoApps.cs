@@ -24,7 +24,7 @@ public static class CatalogoApps
         new() { Nombre = "7-Zip", Descripcion = "Compresor de archivos ligero y gratuito.", WingetId = "7zip.7zip", Categoria = "Esenciales", Glyph = "" },
         new() { Nombre = "PowerToys", Descripcion = "Utilidades avanzadas de Microsoft para Windows.", WingetId = "Microsoft.PowerToys", Categoria = "Esenciales", Glyph = "" },
         new() { Nombre = "PC Manager", Descripcion = "Herramienta oficial de limpieza y mantenimiento.", WingetId = "Microsoft.PCManager", Categoria = "Esenciales", Glyph = "" },
-        new() { Nombre = "Windhawk", Descripcion = "Motor de mods del sistema (base de Wind-Aether).", WingetId = "RamenSoftware.Windhawk", Categoria = "Esenciales", Glyph = "" },
+        new() { Nombre = "Windhawk", Descripcion = "Motor de mods de Windows (restaura tus mods con el respaldo de Aether).", WingetId = "RamenSoftware.Windhawk", Categoria = "Esenciales", Glyph = "" },
 
         // Navegadores
         new() { Nombre = "Google Chrome", Descripcion = "Navegador de Google.", WingetId = "Google.Chrome", Categoria = "Navegadores", Glyph = "" },

@@ -8,12 +8,6 @@ using System.Threading.Tasks;
 
 namespace CentroAether.Services;
 
-/// <summary>Un mod de Wind-Aether (Windhawk) para mostrar con casilla.</summary>
-public sealed class ModWind
-{
-    public string Id { get; set; } = "";
-    public string Nombre { get; set; } = "";
-    public bool Activo { get; set; }
 }
 
 /// <summary>
@@ -109,40 +103,6 @@ public static class Aether
         string script = Path.Combine(CarpetaAether, "Red", "Redes-Privadas.ps1");
         return CorrerPowerShell($"& '{script.Replace("'", "''")}'");
     }
-
-    // --- Wind-Aether (mods) ------------------------------------------------------------
-    public static List<ModWind> ListaMods()
-    {
-        var lista = new List<ModWind>();
-        try
-        {
-            string json = Path.Combine(CarpetaAether, "Wind-Aether", "Wind-Aether-mods.json");
-            if (!File.Exists(json)) return lista;
-            using var doc = JsonDocument.Parse(File.ReadAllText(json));
-            if (doc.RootElement.TryGetProperty("mods", out var mods))
-            {
-                foreach (var m in mods.EnumerateArray())
-                {
-                    string id = m.TryGetProperty("modId", out var i) ? (i.GetString() ?? "") : "";
-                    string nombre = m.TryGetProperty("name", out var n) ? (n.GetString() ?? id) : id;
-                    bool disabled = true;
-                    if (m.TryGetProperty("config", out var c) && c.TryGetProperty("disabled", out var d))
-                    {
-                        disabled = d.ValueKind == JsonValueKind.True;
-                    }
-                    if (!string.IsNullOrEmpty(id))
-                    {
-                        lista.Add(new ModWind { Id = id, Nombre = nombre, Activo = !disabled });
-                    }
-                }
-            }
-        }
-        catch { /* lista vacia */ }
-        return lista;
-    }
-
-    public static Task<string> ActivarMod(string id, bool activo) =>
-        Ejecutar($"Set-AetherModWind -Id '{id.Replace("'", "''")}' -Activo ${(activo ? "true" : "false")}");
 
     public static bool WindhawkInstalado() =>
         File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Windhawk", "windhawk-cli.exe"));

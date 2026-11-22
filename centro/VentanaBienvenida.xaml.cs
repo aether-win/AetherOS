@@ -14,13 +14,12 @@ namespace CentroAether;
 
 /// <summary>
 /// Asistente de bienvenida del primer inicio de sesión (reemplaza al de PowerShell): modo,
-/// Modo Batería automático, tema, perfil Wind-Aether, carpeta de red y respaldo.
+/// Modo Batería automático, tema, carpeta de red y respaldo.
 /// Oscuro por completo y con la barra de título oscura.
 /// </summary>
 public partial class VentanaBienvenida : Window
 {
     private const string Clave = @"Software\AetherOS\Centro";
-    private readonly DispatcherTimer _vigiaWindhawk = new() { Interval = TimeSpan.FromSeconds(3) };
 
     public VentanaBienvenida()
     {
@@ -31,12 +30,6 @@ public partial class VentanaBienvenida : Window
         {
             RbClaro.IsChecked = true;
         }
-        ActualizarWindhawk();
-        // Windhawk se instala al primer inicio de sesión, a veces después de abrir esta ventana:
-        // se revisa cada pocos segundos para activar las opciones en cuanto esté listo.
-        _vigiaWindhawk.Tick += (_, _) => ActualizarWindhawk();
-        _vigiaWindhawk.Start();
-        Closed += (_, _) => _vigiaWindhawk.Stop();
     }
 
     /// <summary>¿Ya se vio (o se saltó) la bienvenida?</summary>
@@ -73,55 +66,6 @@ public partial class VentanaBienvenida : Window
         catch
         {
             return false;
-        }
-    }
-
-    internal static string? RutaWindhawk()
-    {
-        foreach (string? b in new[] { Environment.GetEnvironmentVariable("ProgramFiles"), Environment.GetEnvironmentVariable("ProgramFiles(x86)") })
-        {
-            if (string.IsNullOrEmpty(b))
-            {
-                continue;
-            }
-            string exe = Path.Combine(b, "Windhawk", "windhawk.exe");
-            if (File.Exists(exe))
-            {
-                return exe;
-            }
-        }
-        return null;
-    }
-
-    private void ActualizarWindhawk()
-    {
-        bool cli = Aether.WindhawkInstalado();
-        bool presente = RutaWindhawk() is not null;
-        RbGlass.IsEnabled = cli;
-        RbLimpio.IsEnabled = cli;
-        BtnAbrirWindhawk.Visibility = presente && !cli ? Visibility.Visible : Visibility.Collapsed;
-        if (cli)
-        {
-            TxtWindNota.Text = "Windhawk está listo. Elige un perfil (puedes cambiarlo después en Aether Toolbox › Wind-Aether).";
-            _vigiaWindhawk.Stop();
-        }
-        else if (presente)
-        {
-            TxtWindNota.Text = "Windhawk está instalado, pero esta versión no permite aplicar los perfiles automáticamente " +
-                               "(eso llega con Windhawk 2.0). Puedes importarlos a mano en Windhawk › Ajustes › Importar.";
-        }
-        else
-        {
-            TxtWindNota.Text = "Windhawk se está instalando en segundo plano; estas opciones se activan solas cuando termine.";
-        }
-    }
-
-    private void AbrirWindhawk_Click(object sender, RoutedEventArgs e)
-    {
-        string? exe = RutaWindhawk();
-        if (exe is not null)
-        {
-            try { Process.Start(new ProcessStartInfo(exe) { UseShellExecute = true }); } catch { /* no se pudo abrir */ }
         }
     }
 
@@ -177,12 +121,10 @@ public partial class VentanaBienvenida : Window
         if (paso == 4)
         {
             string modo = RbGaming.IsChecked == true ? "Gaming" : RbBateria.IsChecked == true ? "Batería" : "Trabajo";
-            string wind = RbGlass.IsChecked == true ? "Aether Glass" : RbLimpio.IsChecked == true ? "Aether Limpio" : "Ninguno";
             string red = TxtRuta.Text.Trim().Length > 0 ? TxtRuta.Text.Trim() + "  →  Z:" : "Sin carpeta de red";
             TxtResumen.Text =
                 $"•  Modo: {modo}{(ChkAuto.IsChecked == true ? "  (Batería sola al 30 %)" : "")}\n" +
                 $"•  Tema de Windows: {(RbClaro.IsChecked == true ? "Claro" : "Oscuro")}\n" +
-                $"•  Wind-Aether: {wind}\n" +
                 $"•  Red: {red}" +
                 (ChkRespaldo.IsChecked == true ? "\n•  Abrir Respaldo al terminar" : "");
         }
@@ -240,20 +182,6 @@ public partial class VentanaBienvenida : Window
                 {
                     avisos.Add("Carpeta de red: " + r[(r.IndexOf("RED|ERROR|", StringComparison.Ordinal) + 10)..].Trim());
                 }
-            }
-
-            // Wind-Aether: Windhawk prepara cada mod (los propios se compilan) y eso tarda; se hace
-            // en segundo plano y se avisa al terminar, sin dejar esta ventana esperando.
-            if (RbGlass.IsChecked == true || RbLimpio.IsChecked == true)
-            {
-                string perfil = RbGlass.IsChecked == true ? "aether-glass" : "aether-limpio";
-                string nombre = RbGlass.IsChecked == true ? "Aether Glass" : "Aether Limpio";
-                _ = Task.Run(async () =>
-                {
-                    string r = (await Aether.Ejecutar($"Set-AetherPerfilWind -Perfil {perfil}")).Trim();
-                    Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
-                        SegundoPlano.Notificar(r == "Perfil aplicado." ? $"Wind-Aether: {nombre} aplicado." : $"Wind-Aether: {r}")));
-                });
             }
 
             MarcarVista();

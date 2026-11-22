@@ -151,7 +151,7 @@
                 <ScrollViewer x:Name="Paso2" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <TextBlock Style="{StaticResource PasoTitulo}" Text="Apariencia" />
-                        <TextBlock Style="{StaticResource PasoSub}" Text="Tema de Windows y estilo Wind-Aether (Windhawk)." />
+                        <TextBlock Style="{StaticResource PasoSub}" Text="Elige cómo se ve Windows." />
                         <WrapPanel>
                             <RadioButton x:Name="RbOscuro" GroupName="Tema" IsChecked="True" Style="{StaticResource TarjetaOpcion}" Uid="&#xE708;" Tag="#1E2A44">
                                 <StackPanel><TextBlock Style="{StaticResource TituloTarjeta}" Text="Oscuro" /><TextBlock Style="{StaticResource TextoTarjeta}" Text="Recomendado. Descansa la vista." /></StackPanel>
@@ -160,21 +160,6 @@
                                 <StackPanel><TextBlock Style="{StaticResource TituloTarjeta}" Text="Claro" /><TextBlock Style="{StaticResource TextoTarjeta}" Text="Windows en modo claro." /></StackPanel>
                             </RadioButton>
                         </WrapPanel>
-                        <TextBlock Text="Wind-Aether" FontSize="16" FontWeight="SemiBold" Margin="0,10,0,10" Foreground="#4FC3F7" />
-                        <WrapPanel>
-                            <RadioButton x:Name="RbGlass" GroupName="Wind" Style="{StaticResource TarjetaOpcion}" Uid="&#xE771;" Tag="#00A3D9">
-                                <StackPanel><TextBlock Style="{StaticResource TituloTarjeta}" Text="Aether Glass" /><TextBlock Style="{StaticResource TextoTarjeta}" Text="Barra, menús y ventanas translúcidas." /></StackPanel>
-                            </RadioButton>
-                            <RadioButton x:Name="RbLimpio" GroupName="Wind" Style="{StaticResource TarjetaOpcion}" Uid="&#xE790;" Tag="#5468FF">
-                                <StackPanel><TextBlock Style="{StaticResource TituloTarjeta}" Text="Aether Limpio" /><TextBlock Style="{StaticResource TextoTarjeta}" Text="Sobrio y ordenado, sin transparencias." /></StackPanel>
-                            </RadioButton>
-                            <RadioButton x:Name="RbNinguno" GroupName="Wind" IsChecked="True" Style="{StaticResource TarjetaOpcion}" Uid="&#xE711;" Tag="#3A4A63">
-                                <StackPanel><TextBlock Style="{StaticResource TituloTarjeta}" Text="Ninguno" /><TextBlock Style="{StaticResource TextoTarjeta}" Text="Windows tal cual." /></StackPanel>
-                            </RadioButton>
-                        </WrapPanel>
-                        <TextBlock x:Name="TxtWindNota" Foreground="#AFC0D4" TextWrapping="Wrap" />
-                        <Button x:Name="BtnAbrirWindhawk" Content="Abrir Windhawk" HorizontalAlignment="Left"
-                                Margin="0,8,0,0" Padding="14,7" Visibility="Collapsed" Click="AbrirWindhawk_Click" />
                     </StackPanel>
                 </ScrollViewer>
 
@@ -199,8 +184,6 @@
                     <Border Background="#14223A" BorderBrush="#2A4466" BorderThickness="1" CornerRadius="14" Padding="22,18">
                         <TextBlock x:Name="TxtResumen" LineHeight="26" TextWrapping="Wrap" />
                     </Border>
-                    <TextBlock Foreground="#6F87A3" FontSize="12.5" TextWrapping="Wrap" Margin="0,14,0,0"
-                               Text="El estilo de Wind-Aether se instala en segundo plano (Windhawk prepara cada mod); te aviso cuando esté." />
                 </StackPanel>
             </Grid>
         </DockPanel>

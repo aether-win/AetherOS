@@ -20,7 +20,7 @@ public sealed partial class ModosPage : PaginaBase
         ("Gaming", "Gaming", "Máximo rendimiento para jugar.",
             new[] { "Solo con el cargador conectado", "Sin estacionar núcleos ni segundo plano", "No molestar y mods pesados en pausa" }),
         ("Bateria", "Batería", "Eficiente para durar más.",
-            new[] { "Ahorro de batería de Windows", "Procesador eficiente, sin turbo", "Wind-Aether en versión ligera" }),
+            new[] { "Ahorro de batería de Windows", "Procesador eficiente, sin turbo" }),
     };
 
     public ModosPage()

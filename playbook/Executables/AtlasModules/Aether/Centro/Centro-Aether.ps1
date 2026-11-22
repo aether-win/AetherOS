@@ -250,11 +250,6 @@ function Invoke-AetherVigilante {
             }
         }
 
-        $perfilWind = [string](Get-AetherAjuste -Nombre 'PerfilWind' -PorDefecto 'ninguno')
-        if ($perfilWind -ne 'ninguno' -and (Get-AetherTema) -ne [string](Get-AetherAjuste -Nombre 'TemaColores' -PorDefecto '')) {
-            [void](Set-AetherColoresWind)
-        }
-
         if ($script:Vueltas % 12 -eq 0) {
             $faltan = @(Connect-AetherUnidadesRed)
             $textoFaltan = $faltan -join ', '

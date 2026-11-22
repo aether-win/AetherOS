@@ -31,10 +31,8 @@ public static class CompatibilidadServicio
         new() { Nombre = "Drivers AMD", Ok = true,
             Nota = "No se instalan ni modifican automáticamente (se retiró ese paso por no ser estándar)." },
         new() { Nombre = "Juegos con anti-cheat", Ok = false,
-            Nota = "Normalmente funcionan, pero algunos anti-cheat son sensibles a mods. Mantén Wind-Aether desactivado si un juego competitivo da problemas." },
+            Nota = "Normalmente funcionan, pero algunos anti-cheat son sensibles a mods. Si un juego competitivo da problemas, pausa Windhawk mientras juegas." },
         new() { Nombre = "Xbox Game Bar", Ok = false,
             Nota = "Si notas que falta, se puede reactivar desde Configuración de Windows; Aether no la elimina." },
-        new() { Nombre = "Mods de Wind-Aether", Ok = false,
-            Nota = "Vienen desactivados por defecto. Actívalos uno a uno; si algo se ve raro, desactiva el último que encendiste." },
     };
 }

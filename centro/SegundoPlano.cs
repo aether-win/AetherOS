@@ -48,8 +48,7 @@ public static class SegundoPlano
         ServicioMandos.Iniciar();
         ActualizarIndicador();
 
-        // Automatización: al iniciar sesión, Aether se completa solo (drivers de mandos, Windhawk 2.0
-        // y los mods de Wind-Aether). Espera un poco a que haya red. Avisa solo si hizo algo.
+        // Automatización: al iniciar sesión, Aether se completa solo (drivers de mandos y Windhawk 2.0). Espera un poco a que haya red. Avisa solo si hizo algo.
         _ = Task.Run(async () =>
         {
             await Task.Delay(TimeSpan.FromSeconds(45));
