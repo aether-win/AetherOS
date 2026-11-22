@@ -23,6 +23,13 @@ public partial class App : Application
         // Una sola copia del Centro: si ya está en segundo plano, se le pide que muestre su
         // ventana y esta copia se cierra.
         _unico = new Mutex(true, NombreMutex, out bool soyElPrimero);
+        if (!soyElPrimero && ReemplazarVersionAnterior())
+        {
+            // Había otra versión (otro .exe) abierta: se cerró y esta toma su lugar.
+            _unico.Dispose();
+            Thread.Sleep(300);
+            _unico = new Mutex(true, NombreMutex, out soyElPrimero);
+        }
         if (!soyElPrimero)
         {
             try { EventWaitHandle.OpenExisting(NombreSenal).Set(); } catch { /* la otra copia está cerrando */ }
@@ -53,6 +60,44 @@ public partial class App : Application
 
         // Background Intelligence: solo si el usuario lo activó (apagado por defecto).
         InteligenciaFondo.Refrescar();
+    }
+
+    /// <summary>
+    /// Si la copia que ya está abierta es OTRO archivo (una versión anterior, p. ej. el viejo
+    /// "CentroAether.exe" o un AetherToolbox.exe de otra carpeta), la cierra para que la versión
+    /// nueva tome su lugar. Si es el mismo archivo, no hace nada (solo se mostrará su ventana).
+    /// </summary>
+    private static bool ReemplazarVersionAnterior()
+    {
+        bool cerro = false;
+        string yo = Environment.ProcessPath ?? "";
+        int miId = Environment.ProcessId;
+        foreach (string nombre in new[] { "AetherToolbox", "CentroAether" })
+        {
+            foreach (System.Diagnostics.Process p in System.Diagnostics.Process.GetProcessesByName(nombre))
+            {
+                using (p)
+                {
+                    try
+                    {
+                        if (p.Id == miId)
+                        {
+                            continue;
+                        }
+                        string ruta = p.MainModule?.FileName ?? "";
+                        if (string.Equals(ruta, yo, StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+                        p.Kill();
+                        p.WaitForExit(5000);
+                        cerro = true;
+                    }
+                    catch { /* sin acceso a ese proceso */ }
+                }
+            }
+        }
+        return cerro;
     }
 
     /// <summary>Muestra (o crea) la ventana del Centro y la trae al frente.</summary>
