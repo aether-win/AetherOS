@@ -76,17 +76,15 @@ try {
 catch { $apps = @() }
 $hecho = (Get-ItemProperty -Path $claveAether -Name AppsInstaladas -ErrorAction SilentlyContinue).AppsInstaladas
 if ($hecho -eq 1 -and -not $Forzar) { exit }
-if ($apps.Count -eq 0) {
-    Write-Host '  No elegiste apps en el asistente.'
-    exit
-}
+# Aunque no se haya elegido ninguna app, se sigue: los componentes para juegos y los
+# drivers de mandos se revisan siempre (solo se instala lo que falte).
 
 $registro = Join-Path $env:ProgramData 'Aether\apps.log'
 New-Item -ItemType Directory -Path (Split-Path $registro) -Force | Out-Null
 Start-Transcript -Path $registro -Append | Out-Null
 
 Write-Host ''
-Write-Host '  AETHER OS - Instalando las apps que elegiste' -ForegroundColor Cyan
+Write-Host '  AETHER OS - Instalando tus apps y los componentes que falten' -ForegroundColor Cyan
 Write-Host '  Puedes seguir usando la PC. No cierres esta ventana hasta que termine.'
 
 $pendientes = New-Object System.Collections.Generic.List[string]
@@ -269,6 +267,101 @@ if ($apps -contains 'wind-aether') {
         }
     }
     else { Fallo 'Windhawk no se pudo instalar'; $pendientes.Add('Wind-Aether: https://windhawk.net') }
+}
+
+# --- Componentes que necesitan juegos y programas (solo lo que falte) ---------------
+# Se detecta cada uno por separado y solo se instala lo que falte, desde los paquetes
+# oficiales de Microsoft (winget). Después se vuelve a comprobar para confirmar.
+function Test-AetherVcRedist {
+    param([ValidateSet('x64', 'x86')][string]$Arquitectura)
+    $ruta = if ($Arquitectura -eq 'x64') {
+        'HKLM:\SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64'
+    }
+    else {
+        'HKLM:\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\14.0\VC\Runtimes\x86'
+    }
+    $clave = Get-ItemProperty -LiteralPath $ruta -ErrorAction SilentlyContinue
+    return ($null -ne $clave -and [int]$clave.Installed -eq 1 -and [int]$clave.Major -ge 14)
+}
+
+function Test-AetherDirectX {
+    # DirectX 9/10/11 "heredado" (d3dx9_43, xinput1_3): lo piden muchos juegos viejos.
+    $sistema = [Environment]::SystemDirectory
+    $wow = Join-Path ([Environment]::GetFolderPath('Windows')) 'SysWOW64'
+    return (Test-Path -LiteralPath (Join-Path $sistema 'd3dx9_43.dll')) -and
+        (Test-Path -LiteralPath (Join-Path $sistema 'xinput1_3.dll')) -and
+        (Test-Path -LiteralPath (Join-Path $wow 'd3dx9_43.dll'))
+}
+
+function Test-AetherDotNetEscritorio {
+    $base = Join-Path $env:ProgramFiles 'dotnet\shared\Microsoft.WindowsDesktop.App'
+    return [bool](Get-ChildItem -LiteralPath $base -Directory -Filter '8.*' -ErrorAction SilentlyContinue)
+}
+
+function Test-AetherNetFx48 {
+    $v = Get-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' -ErrorAction SilentlyContinue
+    return ($null -ne $v -and [int]$v.Release -ge 528040)
+}
+
+function Test-AetherNetFx35 {
+    $v = Get-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5' -ErrorAction SilentlyContinue
+    return ($null -ne $v -and [int]$v.Install -eq 1)
+}
+
+Titulo 'Componentes para juegos y programas'
+$componentes = @(
+    @{ Nombre = 'Visual C++ 2015-2022 (64 bits)'; Prueba = { Test-AetherVcRedist -Arquitectura x64 }; Id = 'Microsoft.VCRedist.2015+.x64' },
+    @{ Nombre = 'Visual C++ 2015-2022 (32 bits)'; Prueba = { Test-AetherVcRedist -Arquitectura x86 }; Id = 'Microsoft.VCRedist.2015+.x86' },
+    @{ Nombre = 'DirectX (bibliotecas para juegos)'; Prueba = { Test-AetherDirectX }; Id = 'Microsoft.DirectX' },
+    @{ Nombre = '.NET Desktop Runtime 8'; Prueba = { Test-AetherDotNetEscritorio }; Id = 'Microsoft.DotNet.DesktopRuntime.8' }
+)
+foreach ($c in $componentes) {
+    if (& $c.Prueba) { Ok "$($c.Nombre): ya estaba instalado (se omite)"; continue }
+    [void](Install-ConWinget -Id $c.Id)
+    if (& $c.Prueba) { Ok "$($c.Nombre): instalado y verificado" }
+    else { Fallo "$($c.Nombre): no se pudo instalar"; $pendientes.Add("$($c.Nombre) (winget install $($c.Id))") }
+}
+if (Test-AetherNetFx48) { Ok '.NET Framework 4.8: presente (viene con Windows)' }
+else { Aviso '.NET Framework 4.8 no se detectó; Windows Update lo trae.'; $pendientes.Add('.NET Framework 4.8') }
+if (Test-AetherNetFx35) { Ok '.NET Framework 3.5: ya estaba activado (se omite)' }
+else {
+    # Lo usan programas y juegos viejos. Es una función de Windows (no un descargable aparte).
+    Start-AetherSpinner -Texto 'Activando .NET Framework 3.5'
+    try { & dism.exe /Online /Enable-Feature /FeatureName:NetFx3 /All /NoRestart /Quiet *>> (Join-Path $env:ProgramData 'Aether\winget.log') }
+    finally { Stop-AetherSpinner }
+    if (Test-AetherNetFx35) { Ok '.NET Framework 3.5: activado y verificado' }
+    else { Aviso '.NET Framework 3.5 no se pudo activar (necesita internet).'; $pendientes.Add('.NET Framework 3.5: Panel de control > Programas > Activar o desactivar características') }
+}
+
+# --- Mandos: ViGEmBus y HidHide (solo si faltan) -------------------------------------
+# ViGEmBus crea el mando virtual (Xbox 360 / PS4) y HidHide oculta el mando real para que
+# los juegos no vean dos. Son los drivers firmados de Nefarius (los mismos de DS4Windows).
+function Test-AetherDriverFirmado {
+    param([string]$Servicio)
+    $driver = Get-CimInstance -ClassName Win32_SystemDriver -Filter "Name='$Servicio'" -ErrorAction SilentlyContinue
+    if (-not $driver -or -not $driver.PathName) { return $false }
+    $ruta = $driver.PathName -replace '^\\\?\?\\', '' -replace '^\\SystemRoot', $env:SystemRoot
+    if (-not (Test-Path -LiteralPath $ruta)) { return $true }   # el servicio existe; ruta no estándar
+    $firma = Get-AuthenticodeSignature -LiteralPath $ruta -ErrorAction SilentlyContinue
+    return ($null -ne $firma -and $firma.Status -eq 'Valid')
+}
+
+Titulo 'Drivers de mandos'
+foreach ($d in @(
+        @{ Nombre = 'ViGEmBus (mando virtual)'; Servicio = 'ViGEmBus'; Id = 'Nefarius.ViGEmBus' },
+        @{ Nombre = 'HidHide (oculta el mando real)'; Servicio = 'HidHide'; Id = 'Nefarius.HidHide' }
+    )) {
+    if (Get-Service -Name $d.Servicio -ErrorAction SilentlyContinue) {
+        if (Test-AetherDriverFirmado -Servicio $d.Servicio) { Ok "$($d.Nombre): ya estaba instalado y firmado (se omite)" }
+        else { Aviso "$($d.Nombre): instalado, pero no se pudo comprobar su firma digital" }
+        continue
+    }
+    [void](Install-ConWinget -Id $d.Id)
+    if (Get-Service -Name $d.Servicio -ErrorAction SilentlyContinue) {
+        if (Test-AetherDriverFirmado -Servicio $d.Servicio) { Ok "$($d.Nombre): instalado, firmado y verificado" }
+        else { Aviso "$($d.Nombre): instalado (no se pudo comprobar la firma)" }
+    }
+    else { Fallo "$($d.Nombre): no se pudo instalar"; $pendientes.Add("$($d.Nombre): Aether Toolbox > Control > Instalar") }
 }
 
 # Aether: los drivers de AMD se quitaron (no es algo estándar: no todas las PCs son AMD,

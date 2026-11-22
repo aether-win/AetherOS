@@ -480,13 +480,15 @@ if ($setupMarker -lt 1) {
             Write-Warning "Failed to block Store search recommendations: $($_.Exception.Message)"
         }
 
-        # Aether: las apps elegidas se instalan como este usuario en el próximo inicio de
-        # sesión (después del reinicio del instalador), una sola vez por PC.
+        # Aether: las apps elegidas, los componentes que falten (Visual C++, DirectX, .NET) y
+        # los drivers de mandos se instalan como este usuario en el próximo inicio de sesión
+        # (después del reinicio del instalador), una sola vez por PC.
         try {
             $aetherApps = @((Get-ItemProperty -Path 'HKLM:\SOFTWARE\AtlasOS\SetupOptions' -Name Apps -ErrorAction SilentlyContinue).Apps)
             $aetherAppsDone = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\AtlasOS\Aether' -Name AppsInstaladas -ErrorAction SilentlyContinue).AppsInstaladas
             $aetherAppsScript = Join-Path $atlasModules 'Aether\Install-AetherApps.ps1'
-            if ($aetherApps.Count -gt 0 -and $aetherAppsDone -ne 1 -and (Test-Path -LiteralPath $aetherAppsScript -PathType Leaf)) {
+            [void]$aetherApps
+            if ($aetherAppsDone -ne 1 -and (Test-Path -LiteralPath $aetherAppsScript -PathType Leaf)) {
                 $runOnce = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce'
                 if (-not (Test-Path -LiteralPath $runOnce)) { $null = New-Item -Path $runOnce -Force }
                 Set-ItemProperty -Path $runOnce -Name 'AetherApps' -Type String -Force `
