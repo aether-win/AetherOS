@@ -387,6 +387,14 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
   (`%ProgramData%\Aether\windhawk-progreso.txt`) + "Ver registro"; bienvenida por pasos con tarjetas;
   reinstalación diferencial (`AtlasOS\Install\tweak-huellas.json`, solo tweaks de equipo en Upgrade/Reapply).
 
+- **22-nov 16:29–17:30 — decisiones y cambios de Daniel**: (1) **Wind-Aether eliminado** (`c732fae`): sin página,
+  sin perfiles, sin instalar mods; Windhawk 2.0 se sigue instalando y los respaldos mejorados (Glass 33 activos,
+  Limpio 16, Todo apagado; Office/Steam/anti-cheat excluidos) quedan en `AtlasModules\Aether\Windhawk` y se copian
+  a `Documentos\Aether Windhawk` para restaurarlos a mano. (2) **Game Bar se queda** (ms-gamebar) y se repone si
+  falta (`3c7efb4`). (3) **aether-bluetooth** (`3c7efb4`). (4) Monitor/Batería/Salud en vivo (`3a193a5`).
+  (5) Modos con Modo Juego, MMCSS Games, Wi-Fi, RAM en espera y verificación (`c2f7df6`). (6) **Hasta 4 mandos**
+  (`8c970a5`).
+
 ## D.4b Estado anterior (2026-11-21, noche)
 - Último commit de código: `87aca2a` (instalador: componentes y drivers de mandos solo si faltan) y `61da075` (tema de Office también en la copia de la cuenta). Antes: `f808dea` (Office con tema fijo, no sigue a Windows; CI todo verde). Antes: `8e382fe` (mando DS4 original: luz, reconexión, ocultar el real). Antes: `0ac3698` (la versión nueva reemplaza a la vieja abierta). Antes: `7151fdb` (Office blindado; CI todo verde). Antes: `45fa36b` (nombre Aether Toolbox + botón Cerrar), `504dab3` (segundo plano siempre activo + bandeja oscura). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
 - "Centro Aether (WPF)" en `7970b64`: ✅ verde.
