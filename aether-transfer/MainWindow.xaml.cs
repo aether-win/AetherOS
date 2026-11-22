@@ -270,6 +270,17 @@ public partial class MainWindow : Window
             return;
         }
 
+        // Muchos servidores (p. ej. el FTP de la PS4) no piden usuario/contraseña:
+        // si el usuario está vacío, se conecta de forma anónima.
+        if (string.IsNullOrWhiteSpace(info.Usuario))
+        {
+            info.Usuario = "anonymous";
+            if (string.IsNullOrEmpty(info.Password))
+            {
+                info.Password = "anonymous@aether";
+            }
+        }
+
         BtnConectar.IsEnabled = false;
         await DesconectarInterno();
 
