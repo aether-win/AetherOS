@@ -365,6 +365,18 @@ se endureció `Install-AetherApps.ps1` (Windhawk cli) contra rutas nulas.
 
 ## 7. Centro nativo en WinUI 3 (en construcción) — sesión 2026-11-20 (tarde)
 
+> ### ⚠️ AVISO CRÍTICO (2026-11-21): WinUI 3 no arranca en la laptop de Daniel
+> En la sesión del 2026-11-21 se descubrió que una app **WinUI 3 unpackaged + self-contained**
+> (la misma arquitectura de este Centro) **crashea al arrancar** en la laptop de Daniel
+> (`combase.dll` 0x802B000A, `XamlParseException` irreproducible, compila pero no abre). Se
+> intentó de todo (framework-dependent, self-contained, reescribir el XAML) y **no se pudo
+> arreglar**; se migró esa app (Aether Transfer) a **WPF** y abrió a la primera.
+> **Es casi seguro que este Centro WinUI 3 tampoco abra en su laptop.**
+> **Acción recomendada: migrar el Centro a WPF** (como se hizo Aether Transfer: conservar la
+> lógica/servicios, reescribir solo la UI). Ver **TRASPASO-AETHER.md, Parte C** (todo el
+> diagnóstico y el método de migración). El alcance de los mandos sigue siendo solo
+> **PS4 (DualShock 4) → mando Xbox** + que funcionen los mandos Xbox.
+
 El usuario pidió rehacer el Centro en **WinUI 3 / Windows App SDK** (los mockups) porque la
 versión en PowerShell se ve mal, abre lento, deja una ventana de PowerShell, pide permisos y
 cambia de modo lento. Arquitectura elegida: app WinUI 3 **unpackaged + self-contained** (.exe
@@ -403,3 +415,28 @@ sin UAC por acción), y la interfaz nativa **llama a la lógica PowerShell ya pr
   y los accesos directos la disparan con un `.vbs` (sin consola). La bandeja (automatización en
   segundo plano) sigue oculta; su "Abrir" usa el mismo lanzador (Show-AetherCentro). Respaldo a
   la ventana WPF si el exe nativo no está.
+
+## 8. Aether Transfer — migrado a WPF y funcional (sesión 2026-11-21, segunda cuenta)
+
+**Hecho:** El cliente FTP **Aether Transfer** (`aether-transfer/`) se **migró de WinUI 3 a WPF
+.NET 8** y **ya funciona probado con la PS4 real de Daniel** (conectar, listar, subir, borrar,
+navegar). Compila en verde: workflow **"Aether Transfer (WPF)"** → un solo `.exe` self-contained.
+
+- [x] Migración WinUI 3 → WPF (la app abre; WinUI no abría).
+- [x] Un solo panel FTP, arrastrar/soltar Explorador↔FTP, conexiones guardadas (1 clic),
+      navegación `‹ ›`, tema oscuro total (incl. barra de título y tooltips), motor FTP
+      más sólido/rápido, conexión anónima para PS4.
+- [ ] Pendiente: probar SFTP real + archivos grandes; subir carpetas por arrastre; (opcional)
+      reintroducir Sincronizar; **compilar el .exe final (Regla 38, requiere autorización).**
+
+Detalle completo, decisiones y lecciones: **AETHER-TRANSFER.md** y **TRASPASO-AETHER.md Parte C**.
+
+### 👉 SIGUIENTE PASO EXACTO (al retomar)
+1. **Preguntar a Daniel** si congela Aether Transfer para pasar a Centro (ver preguntas
+   pendientes al final de TRASPASO-AETHER.md).
+2. **Migrar el Centro (`centro/`) de WinUI 3 a WPF**, igual que se hizo Aether Transfer:
+   conservar `Services/` y la lógica; reescribir solo la UI (App.xaml tema oscuro global,
+   MainWindow, páginas). Cambiar `centro.yml` y la parte de Centro en `aether-app.yml` de
+   MSBuild/WinUI a `dotnet publish` WPF self-contained. Motivo: el Centro WinUI 3 casi seguro
+   **no abre** en la laptop de Daniel (ver aviso crítico en la sección 7).
+3. Alcance de mandos del Centro: **solo PS4 (DualShock 4) → Xbox** + mandos Xbox. Nada más.

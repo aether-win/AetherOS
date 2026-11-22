@@ -152,3 +152,165 @@ El usuario tiene poco límite de uso esta semana. Prioridad: **una primera versi
 
 Nota: los dos mods `.wh.cpp` no se pudieron compilar en Windows todavía; el usuario debe
 probarlos en Windhawk.
+
+---
+
+# Parte C — Lo que se hizo en la segunda cuenta (sesión 2026-11-21)
+
+> Esta sesión trabajó **solo en Aether Transfer** (el cliente FTP). No se tocó el playbook
+> del sistema operativo. El gran resultado: **Aether Transfer se migró de WinUI 3 a WPF**
+> porque WinUI 3 no arrancaba en la laptop de Daniel. Léelo entero antes de tocar Centro,
+> porque Centro tiene el mismo problema.
+
+## C.1 La saga del crash de WinUI 3 (y por qué se abandonó WinUI)
+Al probar el Aether Transfer compilado (WinUI 3 unpackaged + self-contained) en la laptop real
+de Daniel (HP-Dharius, Windows 11 build 26100), la app **crasheaba al arrancar** con
+`combase.dll`, excepción `0x80004005` (E_FAIL), **hash de volcado idéntico** en cada intento.
+
+Diagnóstico paso a paso (todos estos commits son de ESTA sesión):
+- `f7d6fdf` — probar framework-dependent (depender del Windows App Runtime). **No lo arregló.**
+- `5249b31` / `edf3da4` — self-contained completo del runtime WinUI con MSBuild `/t:Publish`.
+  Lección: **`dotnet publish` NO puede generar los recursos PRI de WinUI** (falla en la tarea
+  `ExpandPriContent`); por eso WinUI usa MSBuild. **No lo arregló** (mismo crash).
+- `0248107`, `85a2f08`, `07747cc` — se le puso a la app un **`Main` propio** (constante
+  `DISABLE_XAML_GENERATED_MAIN`) que registra la excepción real a un `aether-crash.log` (en el
+  escritorio, junto al exe y en `%TEMP%`), con migas de pan por paso del arranque.
+- `cd84c4c`, `9ef9d9c` — build en Debug + activar `DebugSettings` (tracing de recursos/bindings)
+  para sacar el HRESULT. Resultado: **`XamlParseException` en `MainWindow.InitializeComponent()`**,
+  HRESULT **`0x802B000A`** (facilidad XAML/DirectUI). WinUI 3 **no da número de línea ni en Debug**.
+- `6b98cc5` (quitar MenuBar), `b6e2783` (quitar `x:Bind` sobre `x:String`), `8126d14` (convertir
+  TODOS los `x:Bind` de plantillas a `Binding`), `0085099` (reescribir `MainWindow.xaml` con
+  patrones "a prueba de balas"): **ninguno** arregló el crash. El XAML compila pero falla al
+  cargarse en runtime de forma irreproducible y sin pista de qué elemento.
+
+**Conclusión:** WinUI 3 unpackaged es inviable en la máquina de Daniel. Daniel se cansó y
+preguntó si se podía usar otro framework. Se le ofreció **WPF** (vía pregunta de opción
+múltiple) y lo aprobó.
+
+## C.2 Migración a WPF (lo que funcionó)
+- `3783e2b` — **migrar la capa visual de WinUI 3 a WPF (.NET 8).** La app **abrió perfecto** a la
+  primera. Confirmado: el problema era 100% WinUI, no la máquina ni el código.
+  - Se **conservó intacto todo el backend** (es agnóstico de UI): `Protocols/` (FluentFTP +
+    SSH.NET), `TransferEngine/`, `Security/` (DPAPI), `Settings/`, `Connections/`, `Models/`.
+  - Solo se reescribió: `.csproj` (UseWPF, net8.0-windows, self-contained single-file),
+    `App.xaml/.cs` (tema oscuro global), `MainWindow.xaml/.cs`, y los diálogos (`Views/`:
+    `DialogoSitios`, `DialogoConfig`, `DialogoSync`, `InputBox`).
+  - CI nuevo: `.github/workflows/aether-transfer.yml` ahora usa
+    `dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true`
+    → **un solo `.exe`** como artefacto `Aether-Transfer-<sha>`. (WPF **sí** publica con
+    `dotnet publish`, a diferencia de WinUI.)
+
+## C.3 Mejoras pedidas por Daniel y aplicadas (en orden)
+- `f24935e` — **Conexión anónima**: si el usuario va vacío, conecta como `anonymous` (el FTP de
+  la PS4, puerto 2121, no pide usuario/contraseña). Antes daba "UserName can't be empty".
+  + tema oscuro inicial de scrollbars/menús/combos.
+- `c7e6dd5` — **Arrastrar y soltar**, **barra de título oscura** (API `DwmSetWindowAttribute`,
+  archivo `Tema.cs`), **registro de operaciones** (borrar/renombrar/crear), y rediseño.
+- `4ef4e92` — **rediseño grande**: un solo panel (ver C.4), casilla de conexiones guardadas,
+  navegación con historial, un solo botón Conectar, sin datos predeterminados, Subir con
+  selector, Descargar a la carpeta Descargas, motor FTP más sólido y rápido.
+- `ac85a21` — fix de compilación (faltaba `using AetherTransfer.TransferEngine`).
+- `d629dcd` — **tooltips oscuros** (eran lo blanco que seguía saliendo) y quitar el botón de
+  subir-nivel (redundante con atrás/adelante y la fila `..`).
+
+## C.4 TODAS las decisiones que dio Daniel en esta sesión (con el motivo)
+- **Solo le importa que el FTP de la PS4 funcione** (IP, puerto 2121, sin usuario) → se hizo la
+  conexión anónima el default cuando el usuario va vacío.
+- **Cambiar de WinUI a WPF** (aprobado explícitamente) → porque WinUI no abría y se cansó de los
+  parches. WPF es el framework de escritorio más estable de .NET.
+- **Un solo panel, solo carpetas FTP** → quitó el panel local ("almacenamiento interno") porque
+  *"todo se puede arrastrar directamente desde el explorador nativo y viceversa"*. Las dos
+  flechas del medio (subir/bajar entre paneles) se eliminaron porque "no hacen nada".
+- **Nada blanco**: todo lo que abra (confirmar eliminar, combos, menús, barra de título,
+  tooltips) debe ir con el tema oscuro de la app. (El **selector de archivos de "Subir" es el
+  cuadro nativo de Windows** y NO se puede tematizar; se le explicó.)
+- **El registro debe bajar solo** (auto-scroll) cuando pasa algo, para no arrastrar el mouse.
+- **Casilla de conexiones guardadas** para reconectar con un clic → se añadió el combo
+  "Guardadas"; además **cada conexión exitosa se guarda sola** (dedup por host+puerto+usuario).
+- **Botones atrás/adelante tipo `‹ ›`** con historial; **quitar** el de subir-nivel.
+- **Sin datos predeterminados** al abrir (antes había `192.168.1.10` y puerto `21` de ejemplo).
+- **Un solo botón de conexión** (había "Conectar" en la barra y "Conexión rápida" duplicados).
+- **Buena velocidad** de transferencia y **conexión más sólida**; y que **no diga "Error de
+  conexión" si ya está conectado**.
+- Arrastrar **desde** el FTP **hacia afuera**: se acepta que primero descarga a temporal (en
+  archivos grandes se pausa un momento); se le dijo y lo aceptó, con la cola/Descargar como
+  alternativa para archivos grandes.
+
+Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
+- **Centro**: a Daniel solo le importa que el **mando de PS4 (DualShock 4) funcione como mando de
+  Xbox** y que los mandos de Xbox funcionen. Nintendo, giroscopio, touchpad, luces y vibración
+  están **fuera**.
+- **FortiGate / evasión de firewalls: NO** (se acordó no agregarlo).
+- **Regla 38**: **no compilar el .exe final** hasta autorización expresa de Daniel. Los builds de
+  CI (validación) sí están permitidos. Aún **no** se ha compilado ningún ejecutable final.
+
+## C.5 Problemas encontrados y cómo se resolvieron
+- *WinUI combase 0x802B000A* → migrar a WPF (único arreglo real).
+- *`dotnet publish` no genera PRI de WinUI* → en WinUI había que usar MSBuild; en WPF ya no
+  importa (WPF publica bien con `dotnet publish`).
+- *WPF no tiene `Spacing` en `StackPanel` ni `Padding` en `Grid`* → se usan `Margin`.
+- *Controles WPF salen claros por defecto* → **tema oscuro completo en `App.xaml`** con
+  `ControlTemplate` propios: TextBox, PasswordBox, Button (+ `BtnPlano`), ComboBox (plantilla
+  completa con Popup), ComboBoxItem, ListView/ListViewItem, ListBox, **ScrollBar**,
+  **ContextMenu/MenuItem/Separator**, **ToolTip**. Barra de título por `Tema.cs` (DWM).
+- *Crash de build por `using` faltante* → agregado.
+
+## C.6 Lecciones técnicas nuevas (que la próxima cuenta DEBE saber)
+1. **Aether Transfer ahora es WPF (.NET 8), NO WinUI 3.** No volver a WinUI: crashea unpackaged
+   en la máquina de Daniel (`combase` 0x802B000A, irreproducible, sin línea).
+2. **⚠️ Centro sigue en WinUI 3** (`centro/`, ver sección 7 del plan). **Es casi seguro que
+   crashea igual** en la laptop de Daniel. **Siguiente trabajo recomendado: migrar Centro a WPF**
+   exactamente como se hizo Aether Transfer (conservar la lógica, reescribir solo la UI).
+3. CI de Aether Transfer: `dotnet publish ... --self-contained true -p:PublishSingleFile=true`
+   → un `.exe` que **abre sin instalar nada** (ni Windows App Runtime). Artefacto
+   `Aether-Transfer-<sha>`, ~68 MB comprimido.
+4. **Los artefactos de Actions no se descargan desde el entorno de Claude** (el proxy bloquea el
+   host de blobs). Daniel los baja desde la página de Actions → "Artifacts".
+5. Para **ver el error real de un XAML de WinUI** en Release (si algún día hace falta): WinUI no
+   da línea; hay que poner `Main` propio con try/catch que escriba la excepción a archivo, y aun
+   así el HRESULT `0x802B000A` no dice el elemento. (En WPF esto ya no es problema: da excepciones
+   claras.)
+6. Tema oscuro WPF: definir estilos **globales en `App.xaml`** (aplican a toda la app y a los
+   diálogos). La barra de título se oscurece con `DwmSetWindowAttribute` (ver `Tema.cs`,
+   `Tema.BarraOscura(window)` enganchado en `SourceInitialized`).
+7. El **selector "Abrir archivo" de Windows (OpenFileDialog) es nativo y claro**; no se puede
+   tematizar. No es un bug de la app.
+
+## C.7 Qué quedó a medias / sin terminar
+- **Centro NO migrado** a WPF todavía (sigue en WinUI 3 → crasheará). Es el siguiente paso.
+- Aether Transfer: **subir carpetas por arrastre** no está (solo archivos sueltos).
+- Arrastrar-hacia-afuera de archivos grandes **descarga a temporal primero** (pausa la UI un
+  momento); mejorable con streaming de archivo virtual (COM `IDataObject`/`CFSTR_FILECONTENTS`),
+  pendiente y de riesgo medio.
+- **Pruebas**: probado con la PS4 de Daniel (conectar, listar, subir, borrar, navegar). Falta
+  probar **SFTP** real y archivos grandes/velocidad sostenida.
+- El **.exe final** sigue bloqueado por la Regla 38 (no compilado).
+
+---
+
+## Estado de entrega (al cierre de esta sesión, 2026-11-21)
+
+**Último commit:** `d629dcd` — *fix(aether-transfer): tooltips oscuros y quitar boton subir-nivel*
+(rama `main`, repo `aether-win/AetherOS`, subido y confirmado).
+
+**GitHub Actions:**
+- **Aether Transfer (WPF):** ✅ verde en `d629dcd` (artefacto `Aether-Transfer-d629dcd…`, un `.exe`).
+- **Test** (Pester): ✅ verde (último en `3783e2b`).
+- **Lint YAML:** ✅ verde (último en `3783e2b`).
+- **Build Playbook** y **Lint PowerShell:** no se re-ejecutaron esta sesión (solo se tocó
+  `aether-transfer/`, que tiene su propio workflow con filtro de rutas). **Último estado conocido:
+  TODO EN VERDE** (ver Parte B.3 / plan sección 4). No se tocó ningún `.ps1` ni el playbook.
+- El workflow viejo **"Aether Transfer (WinUI 3)"** quedó obsoleto; ahora el activo es
+  **"Aether Transfer (WPF)"**.
+
+## Preguntas pendientes para Daniel (responder al retomar)
+1. ¿**Aether Transfer** ya está lo bastante bien para **congelarlo** y pasar a **migrar Centro a
+   WPF**? (Centro en WinUI 3 casi seguro no abrirá en tu laptop, igual que pasó aquí.)
+2. **Centro**: ¿se mantiene el alcance de solo **PS4 (DualShock 4) → mando Xbox** + que funcionen
+   los mandos Xbox? (Nintendo, giroscopio, touchpad, vibración fuera.)
+3. Arrastrar archivos **grandes** desde el FTP hacia el Explorador: ¿lo dejamos como está (se
+   descarga primero, con la guía de usar "Descargar" para los grandes) o invierto tiempo en el
+   streaming de archivo virtual para que no se pause?
+4. ¿Necesitas **subir carpetas enteras** por arrastre (hoy solo archivos sueltos)?
+5. ¿Quieres probar **SFTP** (p. ej. un servidor SSH) además del FTP de la PS4, para validar esa
+   ruta antes de dar por cerrado Aether Transfer?
