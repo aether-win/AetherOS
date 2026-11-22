@@ -2,17 +2,17 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
+using System.Windows.Media;
 
 namespace CentroAether.Pages;
 
 /// <summary>
 /// Software Center: catálogo curado de apps confiables instalables con winget.
 /// </summary>
-public sealed partial class SoftwarePage : Page
+public sealed partial class SoftwarePage : PaginaBase
 {
     private bool _ocupado;
 
@@ -63,8 +63,8 @@ public sealed partial class SoftwarePage : Page
         Grid.SetColumn(icono, 0);
         grid.Children.Add(icono);
 
-        var textos = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = app.Nombre, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
+        textos.Children.Add(new TextBlock { Text = app.Nombre, FontWeight = FontWeights.SemiBold });
         textos.Children.Add(new TextBlock
         {
             Text = app.Descripcion,

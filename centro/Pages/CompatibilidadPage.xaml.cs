@@ -1,13 +1,13 @@
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
+using System.Windows.Media;
 
 namespace CentroAether.Pages;
 
 /// <summary>Compatibility Database: estado de apps/funciones tras los ajustes de Aether.</summary>
-public sealed partial class CompatibilidadPage : Page
+public sealed partial class CompatibilidadPage : PaginaBase
 {
     public CompatibilidadPage()
     {
@@ -42,8 +42,8 @@ public sealed partial class CompatibilidadPage : Page
         Grid.SetColumn(icono, 0);
         grid.Children.Add(icono);
 
-        var textos = new StackPanel { Spacing = 2 };
-        textos.Children.Add(new TextBlock { Text = c.Nombre, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        var textos = new Pila { Spacing = 2 };
+        textos.Children.Add(new TextBlock { Text = c.Nombre, FontWeight = FontWeights.SemiBold });
         textos.Children.Add(new TextBlock
         {
             Text = c.Nota,

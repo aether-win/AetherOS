@@ -2,12 +2,13 @@ using System;
 using System.Threading.Tasks;
 using CentroAether;
 using CentroAether.Services;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
 
 namespace CentroAether.Pages;
 
-public sealed partial class ModosPage : Page
+public sealed partial class ModosPage : PaginaBase
 {
     public ModosPage()
     {
@@ -42,9 +43,9 @@ public sealed partial class ModosPage : Page
         };
     }
 
-    private async void Trabajo_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => await Aplicar("Trabajo");
-    private async void Gaming_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => await Aplicar("Gaming");
-    private async void Bateria_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => await Aplicar("Bateria");
+    private async void Trabajo_Click(object sender, RoutedEventArgs e) => await Aplicar("Trabajo");
+    private async void Gaming_Click(object sender, RoutedEventArgs e) => await Aplicar("Gaming");
+    private async void Bateria_Click(object sender, RoutedEventArgs e) => await Aplicar("Bateria");
 
     private async Task Aplicar(string modo)
     {
@@ -74,6 +75,6 @@ public sealed partial class ModosPage : Page
         Estado.IsOpen = true;
     }
 
-    private void VistaPreviaOverlay_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    private void VistaPreviaOverlay_Click(object sender, RoutedEventArgs e)
         => VentanaOverlayModo.Mostrar(_modoActual);
 }

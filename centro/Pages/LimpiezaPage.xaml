@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<c:PaginaBase
     x:Class="CentroAether.Pages.LimpiezaPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer Padding="32,24,32,24">
-        <StackPanel Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <FontIcon Glyph="&#xE75C;" FontSize="28" />
-                <StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="32,24,32,24">
+        <c:Pila Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+            <c:Pila Orientation="Horizontal" Spacing="12">
+                <c:FontIcon Glyph="&#xE75C;" FontSize="28" />
+                <c:Pila>
                     <TextBlock Text="Limpieza" Style="{StaticResource TitleTextBlockStyle}" />
                     <TextBlock Text="Libera espacio sin tocar tus archivos."
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                </StackPanel>
-            </StackPanel>
+                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                </c:Pila>
+            </c:Pila>
 
-            <Border Background="{ThemeResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="18">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Spacing="2">
+                    <c:Pila Grid.Column="0" Spacing="2">
                         <TextBlock Text="Limpiar temporales y papelera" FontWeight="SemiBold" FontSize="15" />
                         <TextBlock Text="Borra archivos temporales y vacia la papelera. Nunca toca Descargas, Escritorio ni Documentos."
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-                    </StackPanel>
+                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    </c:Pila>
                     <Button x:Name="BtnLimpiar" Grid.Column="1" VerticalAlignment="Center"
                             Content="Limpiar ahora" Style="{StaticResource AccentButtonStyle}" Click="Limpiar_Click" />
                 </Grid>
             </Border>
 
             <Button x:Name="BtnAlmacen" HorizontalAlignment="Stretch" Height="46" Click="Almacen_Click">
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <FontIcon Glyph="&#xEDA2;" /><TextBlock Text="Abrir Almacenamiento de Windows" />
-                </StackPanel>
+                <c:Pila Orientation="Horizontal" Spacing="10">
+                    <c:FontIcon Glyph="&#xEDA2;" /><TextBlock Text="Abrir Almacenamiento de Windows" />
+                </c:Pila>
             </Button>
 
-            <InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
-        </StackPanel>
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+        </c:Pila>
     </ScrollViewer>
-</Page>
+</c:PaginaBase>

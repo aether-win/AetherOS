@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
+using System.Windows.Media;
 
 namespace CentroAether.Pages;
 
@@ -13,7 +13,7 @@ namespace CentroAether.Pages;
 /// Plugin System (v1): lista plugins declarados por manifiesto JSON. Cada plugin
 /// solo puede abrir una URL o ruta (sin ejecución de comandos arbitrarios).
 /// </summary>
-public sealed partial class PluginsPage : Page
+public sealed partial class PluginsPage : PaginaBase
 {
     public PluginsPage()
     {
@@ -47,8 +47,8 @@ public sealed partial class PluginsPage : Page
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-        var textos = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = p.Nombre, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
+        textos.Children.Add(new TextBlock { Text = p.Nombre, FontWeight = FontWeights.SemiBold });
         if (!string.IsNullOrWhiteSpace(p.Descripcion))
         {
             textos.Children.Add(new TextBlock
@@ -65,7 +65,7 @@ public sealed partial class PluginsPage : Page
         if (!string.IsNullOrWhiteSpace(p.Abrir))
         {
             var btn = new Button { Content = "Abrir", VerticalAlignment = VerticalAlignment.Center };
-            btn.Click += async (_, _) => await Abrir(p);
+            btn.Click += (_, _) => Abrir(p);
             Grid.SetColumn(btn, 1);
             grid.Children.Add(btn);
         }
@@ -81,13 +81,13 @@ public sealed partial class PluginsPage : Page
         };
     }
 
-    private async System.Threading.Tasks.Task Abrir(PluginInfo p)
+    private void Abrir(PluginInfo p)
     {
         try
         {
             if (p.Abrir.Contains("://", StringComparison.Ordinal))
             {
-                await Windows.System.Launcher.LaunchUriAsync(new Uri(p.Abrir));
+                Sistema.Abrir(p.Abrir);
             }
             else
             {

@@ -27,17 +27,12 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Setup MSBuild (para el Centro)
-        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2.0.0
-
-      - name: Compilar el Centro Aether (WinUI 3) y meterlo en el paquete
+      - name: Compilar el Centro Aether (WPF) y meterlo en el paquete
         shell: pwsh
         working-directory: centro
         run: |
           $ErrorActionPreference = 'Stop'
-          msbuild CentroAether.csproj /t:Restore /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64
-          if ($LASTEXITCODE -ne 0) { throw "restore del Centro falló ($LASTEXITCODE)" }
-          msbuild CentroAether.csproj /t:Publish /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:SelfContained=true /p:WindowsPackageType=None /p:WindowsAppSDKSelfContained=true /p:PublishDir=publish\
+          dotnet publish CentroAether.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
           if ($LASTEXITCODE -ne 0) { throw "publish del Centro falló ($LASTEXITCODE)" }
           $destino = '..\playbook\Executables\AtlasModules\Aether\Centro\app'
           New-Item -ItemType Directory -Path $destino -Force | Out-Null

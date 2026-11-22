@@ -3,9 +3,10 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Threading;
+using System.Windows.Controls;
+using CentroAether.Controles;
 
 namespace CentroAether.Pages;
 
@@ -14,7 +15,7 @@ namespace CentroAether.Pages;
 /// (GetSystemTimes y GlobalMemoryStatusEx), sin dependencias externas. La GPU y
 /// las temperaturas se añadirán en una fase posterior.
 /// </summary>
-public sealed partial class MonitorPage : Page
+public sealed partial class MonitorPage : PaginaBase
 {
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
     private ulong _prevIdle, _prevKernel, _prevUser;

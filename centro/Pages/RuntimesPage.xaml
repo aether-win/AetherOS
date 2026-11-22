@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<c:PaginaBase
     x:Class="CentroAether.Pages.RuntimesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer>
-        <StackPanel Padding="32,28,32,28" Spacing="18" MaxWidth="760" HorizontalAlignment="Left">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <c:Pila Padding="32,28,32,28" Spacing="18" MaxWidth="760" HorizontalAlignment="Left">
 
-            <StackPanel Spacing="2">
+            <c:Pila Spacing="2">
                 <TextBlock Text="Runtimes" Style="{StaticResource TitleTextBlockStyle}" />
                 <TextBlock Text="Componentes que los juegos y programas necesitan. Se instalan desde los paquetes oficiales de Microsoft."
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-            </StackPanel>
+                           Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+            </c:Pila>
 
             <Button x:Name="BtnRefrescar" Click="Refrescar_Click" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <FontIcon Glyph="&#xE72C;" FontSize="16" />
+                <c:Pila Orientation="Horizontal" Spacing="8">
+                    <c:FontIcon Glyph="&#xE72C;" FontSize="16" />
                     <TextBlock Text="Volver a comprobar" />
-                </StackPanel>
+                </c:Pila>
             </Button>
 
-            <InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
 
-            <StackPanel x:Name="Contenedor" Spacing="12" />
-        </StackPanel>
+            <c:Pila x:Name="Contenedor" Spacing="12" />
+        </c:Pila>
     </ScrollViewer>
-</Page>
+</c:PaginaBase>

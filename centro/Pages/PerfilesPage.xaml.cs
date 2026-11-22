@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
+using System.Windows.Media;
 
 namespace CentroAether.Pages;
 
@@ -12,7 +12,7 @@ namespace CentroAether.Pages;
 /// Aether Profiles: CRUD de perfiles que asocian una app a un modo. Se guardan en
 /// ProgramData\Aether\perfiles.json. La aplicación automática llega con Background Intelligence.
 /// </summary>
-public sealed partial class PerfilesPage : Page
+public sealed partial class PerfilesPage : PaginaBase
 {
     private List<PerfilApp> _perfiles = new();
     private bool _cargando;
@@ -63,8 +63,8 @@ public sealed partial class PerfilesPage : Page
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-        var textos = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = p.App, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
+        textos.Children.Add(new TextBlock { Text = p.App, FontWeight = FontWeights.SemiBold });
         string detalle = $"Modo {p.Modo}";
         if (!string.IsNullOrEmpty(p.Proceso))
         {

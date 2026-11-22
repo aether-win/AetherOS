@@ -1,76 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<c:PaginaBase
     x:Class="CentroAether.Pages.OficinaPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer>
-        <StackPanel Padding="32,28,32,28" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <c:Pila Padding="32,28,32,28" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
 
-            <StackPanel Spacing="2">
+            <c:Pila Spacing="2">
                 <TextBlock Text="Oficina" Style="{StaticResource TitleTextBlockStyle}" />
                 <TextBlock Text="Protección de Office y comodidad para trabajar."
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-            </StackPanel>
+                           Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+            </c:Pila>
 
-            <InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
 
             <!-- Office detectado -->
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="18,14,18,14">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <FontIcon Glyph="&#xE8A5;" FontSize="20" VerticalAlignment="Center" />
+                <c:Pila Orientation="Horizontal" Spacing="12">
+                    <c:FontIcon Glyph="&#xE8A5;" FontSize="20" VerticalAlignment="Center" />
                     <TextBlock x:Name="TxtOffice" Text="Comprobando Office…"
                                VerticalAlignment="Center" />
-                </StackPanel>
+                </c:Pila>
             </Border>
 
             <!-- Macros -->
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="18,14,18,14">
                 <Grid>
-                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                    <c:Pila VerticalAlignment="Center" Spacing="2">
                         <TextBlock Text="Seguridad de macros" Style="{StaticResource BodyStrongTextBlockStyle}" />
                         <TextBlock x:Name="TxtMacros" Text="…" FontSize="13"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-                    </StackPanel>
+                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    </c:Pila>
                     <Button x:Name="BtnMacros" Content="Proteger macros" HorizontalAlignment="Right"
                             VerticalAlignment="Center" Click="Macros_Click" />
                 </Grid>
             </Border>
 
             <!-- Transparencias -->
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="18,14,18,14">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <FontIcon Glyph="&#xE73E;" FontSize="18" VerticalAlignment="Top" Margin="0,2,0,0"
-                              Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
-                    <StackPanel Spacing="2">
+                <c:Pila Orientation="Horizontal" Spacing="12">
+                    <c:FontIcon Glyph="&#xE73E;" FontSize="18" VerticalAlignment="Top" Margin="0,2,0,0"
+                              Foreground="{StaticResource SystemFillColorSuccessBrush}" />
+                    <c:Pila Spacing="2">
                         <TextBlock Text="Texto siempre visible en Office" Style="{StaticResource BodyStrongTextBlockStyle}" />
                         <TextBlock Text="Las transparencias de los mods se desactivan en Word, Excel, PowerPoint, Outlook, OneNote y Access para que el texto nunca se vea invisible."
                                    FontSize="13" TextWrapping="Wrap"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    </StackPanel>
-                </StackPanel>
+                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                    </c:Pila>
+                </c:Pila>
             </Border>
 
             <!-- Modo enfocado -->
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="18,14,18,14">
                 <Grid>
-                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                    <c:Pila VerticalAlignment="Center" Spacing="2">
                         <TextBlock Text="Modo enfocado" Style="{StaticResource BodyStrongTextBlockStyle}" />
                         <TextBlock Text="Silencia notificaciones para concentrarte mientras trabajas."
-                                   FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-                    </StackPanel>
+                                   FontSize="13" Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    </c:Pila>
                     <Button Content="Abrir ajustes" HorizontalAlignment="Right"
                             VerticalAlignment="Center" Click="Enfocado_Click" />
                 </Grid>
             </Border>
-        </StackPanel>
+        </c:Pila>
     </ScrollViewer>
-</Page>
+</c:PaginaBase>

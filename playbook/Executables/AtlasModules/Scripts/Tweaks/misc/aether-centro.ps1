@@ -1,7 +1,7 @@
 ﻿# Companion de aether-centro.psd1: deja listo el Centro Aether.
 #  - Bandeja (automatizacion en segundo plano: modo bateria automatico, atajos, etc.):
 #    corre al iniciar sesion, OCULTA, con un .vbs (sin ventana de PowerShell).
-#  - Interfaz: si esta el Centro NATIVO (WinUI 3, CentroAether.exe), los accesos directos
+#  - Interfaz: si esta el Centro NATIVO (WPF, CentroAether.exe), los accesos directos
 #    lo abren mediante una tarea programada con privilegios altos -> SIN pedir permisos (UAC)
 #    y sin consola. Si no esta el exe nativo, se usa la ventana clasica como respaldo.
 $ErrorActionPreference = 'Stop'

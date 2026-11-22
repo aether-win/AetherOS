@@ -1,8 +1,8 @@
 using System;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
 
 namespace CentroAether.Pages;
 
@@ -10,7 +10,7 @@ namespace CentroAether.Pages;
 /// Office Protection: detecta Office, protege la seguridad de macros y da acceso
 /// al modo enfocado. No desactiva funciones de Office.
 /// </summary>
-public sealed partial class OficinaPage : Page
+public sealed partial class OficinaPage : PaginaBase
 {
     public OficinaPage()
     {
@@ -49,11 +49,11 @@ public sealed partial class OficinaPage : Page
         Refrescar();
     }
 
-    private async void Enfocado_Click(object sender, RoutedEventArgs e)
+    private void Enfocado_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:quiethours"));
+            Sistema.Abrir("ms-settings:quiethours");
         }
         catch
         {

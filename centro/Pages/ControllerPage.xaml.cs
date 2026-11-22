@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Threading;
+using System.Windows.Controls;
+using CentroAether.Controles;
+using System.Windows.Media;
 using Windows.Gaming.Input;
 
 namespace CentroAether.Pages;
@@ -15,7 +16,7 @@ namespace CentroAether.Pages;
 /// Aether Controller (base): detecta mandos conectados vía Windows.Gaming.Input.
 /// El motor de mapeo (emulación Xbox 360, perfiles) basado en DS4Windows llegará después.
 /// </summary>
-public sealed partial class ControllerPage : Page
+public sealed partial class ControllerPage : PaginaBase
 {
     private bool _ocupado;
     private bool _cargando;
@@ -123,7 +124,7 @@ public sealed partial class ControllerPage : Page
         }
     }
 
-    private void Ajuste_Changed(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    private void Ajuste_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         if (!_listo || _cargando)
         {
@@ -244,7 +245,7 @@ public sealed partial class ControllerPage : Page
 
     private Border CrearTarjeta(MandoInfo m)
     {
-        var sp = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
+        var sp = new Pila { Orientation = Orientation.Horizontal, Spacing = 12 };
         sp.Children.Add(new FontIcon
         {
             Glyph = "",
@@ -252,8 +253,8 @@ public sealed partial class ControllerPage : Page
             VerticalAlignment = VerticalAlignment.Center,
         });
 
-        var textos = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = m.Nombre, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
+        textos.Children.Add(new TextBlock { Text = m.Nombre, FontWeight = FontWeights.SemiBold });
         textos.Children.Add(new TextBlock
         {
             Text = $"{m.Marca} · {m.Protocolo}",

@@ -1,11 +1,11 @@
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
 
 namespace CentroAether.Pages;
 
-public sealed partial class InicioPage : Page
+public sealed partial class InicioPage : PaginaBase
 {
     public InicioPage()
     {

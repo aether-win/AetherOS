@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<c:PaginaBase
     x:Class="CentroAether.Pages.ModosPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer Padding="32,24,32,24">
-        <StackPanel Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="32,24,32,24">
+        <c:Pila Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
 
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <FontIcon Glyph="&#xE7FC;" FontSize="28" />
-                <StackPanel>
+            <c:Pila Orientation="Horizontal" Spacing="12">
+                <c:FontIcon Glyph="&#xE7FC;" FontSize="28" />
+                <c:Pila>
                     <TextBlock Text="Modos" Style="{StaticResource TitleTextBlockStyle}" />
                     <TextBlock Text="Configura el comportamiento del sistema segun tu uso."
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                </StackPanel>
-            </StackPanel>
+                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                </c:Pila>
+            </c:Pila>
 
-            <Border Background="{ThemeResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="18">
-                <StackPanel Orientation="Horizontal" Spacing="14">
-                    <FontIcon Glyph="&#xE7F4;" FontSize="24" />
-                    <StackPanel>
+                <c:Pila Orientation="Horizontal" Spacing="14">
+                    <c:FontIcon Glyph="&#xE7F4;" FontSize="24" />
+                    <c:Pila>
                         <TextBlock x:Name="TxtModoActual" Text="Modo actual: ..."
                                    FontWeight="SemiBold" FontSize="16" />
                         <TextBlock x:Name="TxtModoDesc" Text=""
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    </StackPanel>
-                </StackPanel>
+                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                    </c:Pila>
+                </c:Pila>
             </Border>
 
-            <Grid ColumnSpacing="12">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -38,36 +39,36 @@
                 </Grid.ColumnDefinitions>
                 <Button x:Name="BtnTrabajo" Grid.Column="0" HorizontalAlignment="Stretch"
                         Height="56" Click="Trabajo_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <FontIcon Glyph="&#xE7F8;" /><TextBlock Text="Modo Trabajo" />
-                    </StackPanel>
+                    <c:Pila Orientation="Horizontal" Spacing="10">
+                        <c:FontIcon Glyph="&#xE7F8;" /><TextBlock Text="Modo Trabajo" />
+                    </c:Pila>
                 </Button>
-                <Button x:Name="BtnGaming" Grid.Column="1" HorizontalAlignment="Stretch"
+                <Button x:Name="BtnGaming" Grid.Column="1" HorizontalAlignment="Stretch" Margin="12,0"
                         Height="56" Style="{StaticResource AccentButtonStyle}" Click="Gaming_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <FontIcon Glyph="&#xE7FC;" /><TextBlock Text="Modo Gaming" />
-                    </StackPanel>
+                    <c:Pila Orientation="Horizontal" Spacing="10">
+                        <c:FontIcon Glyph="&#xE7FC;" /><TextBlock Text="Modo Gaming" />
+                    </c:Pila>
                 </Button>
                 <Button x:Name="BtnBateria" Grid.Column="2" HorizontalAlignment="Stretch"
                         Height="56" Click="Bateria_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <FontIcon Glyph="&#xE83E;" /><TextBlock Text="Modo Bateria" />
-                    </StackPanel>
+                    <c:Pila Orientation="Horizontal" Spacing="10">
+                        <c:FontIcon Glyph="&#xE83E;" /><TextBlock Text="Modo Bateria" />
+                    </c:Pila>
                 </Button>
             </Grid>
 
-            <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextFillColorSecondaryBrush}"
                        Text="Trabajo: todo activo y con todas las animaciones de Windows 11. Gaming (solo con cargador): maximo rendimiento y animaciones reducidas. Bateria: eficiente, se activa solo al nivel que elijas." />
 
             <Button Click="VistaPreviaOverlay_Click" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <FontIcon Glyph="&#xE7B3;" FontSize="16" />
+                <c:Pila Orientation="Horizontal" Spacing="8">
+                    <c:FontIcon Glyph="&#xE7B3;" FontSize="16" />
                     <TextBlock Text="Ver animación del modo actual" />
-                </StackPanel>
+                </c:Pila>
             </Button>
 
-            <InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
 
-        </StackPanel>
+        </c:Pila>
     </ScrollViewer>
-</Page>
+</c:PaginaBase>

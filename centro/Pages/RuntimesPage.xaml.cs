@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
+using System.Windows.Media;
 
 namespace CentroAether.Pages;
 
@@ -11,7 +11,7 @@ namespace CentroAether.Pages;
 /// Runtime Manager: detecta VC++, .NET, DirectX, WebView2 y Python, y permite
 /// instalar los que falten usando los paquetes oficiales de Microsoft (winget).
 /// </summary>
-public sealed partial class RuntimesPage : Page
+public sealed partial class RuntimesPage : PaginaBase
 {
     private bool _ocupado;
 
@@ -43,7 +43,7 @@ public sealed partial class RuntimesPage : Page
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-        var textos = new StackPanel { Spacing = 3, VerticalAlignment = VerticalAlignment.Center };
+        var textos = new Pila { Spacing = 3, VerticalAlignment = VerticalAlignment.Center };
         textos.Children.Add(new TextBlock
         {
             Text = rt.Nombre,
@@ -59,7 +59,7 @@ public sealed partial class RuntimesPage : Page
         Grid.SetColumn(textos, 0);
         grid.Children.Add(textos);
 
-        var accion = new StackPanel
+        var accion = new Pila
         {
             Orientation = Orientation.Horizontal,
             Spacing = 10,

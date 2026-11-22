@@ -1,29 +1,32 @@
 using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
+using CentroAether.Controles;
 using CentroAether.Models;
 using CentroAether.Pages;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Animation;
 
 namespace CentroAether;
 
-public sealed partial class MainWindow : Window
+public partial class MainWindow : Window
 {
+    private PaginaBase? _actual;
+
     public MainWindow()
     {
-        this.InitializeComponent();
-        this.Title = "Centro Aether";
-        this.ExtendsContentIntoTitleBar = false;
-        if (this.AppWindow?.Presenter is Microsoft.UI.Windowing.OverlappedPresenter)
-        {
-            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1160, 780));
-        }
-
+        InitializeComponent();
+        Tema.BarraOscura(this);
         ConstruirMenu();
 
-        // Al cerrar el Centro, detener el motor del controlador si quedó activo.
-        this.Closed += (_, _) => Services.MotorControlador.Detener();
+        Loaded += (_, _) => SeleccionarPrimero();
+
+        // Al cerrar el Centro, detener el motor del controlador y la página activa.
+        Closed += (_, _) =>
+        {
+            _actual?.Salir();
+            MotorControlador.Detener();
+        };
     }
 
     /// <summary>
@@ -33,46 +36,52 @@ public sealed partial class MainWindow : Window
     private void ConstruirMenu()
     {
         string? categoriaActual = null;
+        var estiloItem = (Style)FindResource("ItemMenu");
+        var estiloEncabezado = (Style)FindResource("EncabezadoMenu");
 
         foreach (Modulo m in RegistroModulos.Todos)
         {
             if (!string.IsNullOrEmpty(m.Categoria) && m.Categoria != categoriaActual)
             {
                 categoriaActual = m.Categoria;
-                Nav.MenuItems.Add(new NavigationViewItemHeader { Content = categoriaActual });
+                Nav.Items.Add(new ListBoxItem
+                {
+                    Style = estiloEncabezado,
+                    Content = new TextBlock { Text = categoriaActual, FontSize = 12, FontWeight = FontWeights.SemiBold },
+                });
             }
 
-            var item = new NavigationViewItem
-            {
-                Content = m.Nombre,
-                Tag = m.Id,
-                Icon = new FontIcon { Glyph = m.Glyph },
-            };
+            var fila = new Pila { Orientation = Orientation.Horizontal, Spacing = 12 };
+            fila.Children.Add(new FontIcon { Glyph = m.Glyph, FontSize = 16 });
+            fila.Children.Add(new TextBlock { Text = m.Nombre, VerticalAlignment = VerticalAlignment.Center });
 
+            var item = new ListBoxItem { Style = estiloItem, Content = fila, Tag = m.Id };
             if (!m.Disponible)
             {
-                ToolTipService.SetToolTip(item, "Próximamente");
+                item.ToolTip = "Próximamente";
                 item.Opacity = 0.75;
             }
-
-            Nav.MenuItems.Add(item);
+            Nav.Items.Add(item);
         }
     }
 
-    private void Nav_Loaded(object sender, RoutedEventArgs e)
+    private void SeleccionarPrimero()
     {
-        if (Nav.MenuItems.Count > 0)
+        foreach (object o in Nav.Items)
         {
-            Nav.SelectedItem = Nav.MenuItems[0];
-            Navegar("inicio");
+            if (o is ListBoxItem li && li.Tag is string)
+            {
+                Nav.SelectedItem = li;   // dispara Nav_SelectionChanged → Navegar
+                return;
+            }
         }
     }
 
-    private void Nav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+    private void Nav_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (args.SelectedItem is NavigationViewItem item && item.Tag is string tag)
+        if (Nav.SelectedItem is ListBoxItem item && item.Tag is string id)
         {
-            Navegar(tag);
+            Navegar(id);
         }
     }
 
@@ -84,14 +93,33 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        Type pagina = m.Pagina ?? typeof(ProximamentePage);
+        Type tipo = m.Pagina ?? typeof(ProximamentePage);
         object parametro = m.Pagina is null ? m : id;
 
-        // Las páginas "Próximamente" comparten tipo, así que siempre navegamos
-        // para que el contenido del módulo seleccionado se actualice.
-        if (ContentFrame.CurrentSourcePageType != pagina || pagina == typeof(ProximamentePage))
+        PaginaBase pagina;
+        try
         {
-            ContentFrame.Navigate(pagina, parametro, new DrillInNavigationTransitionInfo());
+            pagina = (PaginaBase)Activator.CreateInstance(tipo)!;
         }
+        catch (Exception ex)
+        {
+            App.Registrar($"Abrir la sección {m.Nombre}", ex);
+            Contenido.Content = new TextBlock
+            {
+                Text = $"No se pudo abrir «{m.Nombre}»: {ex.GetBaseException().Message}",
+                Margin = new Thickness(32),
+                TextWrapping = TextWrapping.Wrap,
+            };
+            return;
+        }
+
+        _actual?.Salir();
+        _actual = pagina;
+        Contenido.Content = pagina;
+        pagina.Entrar(parametro);
+
+        // Transición suave al cambiar de sección.
+        var aparecer = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(180));
+        pagina.BeginAnimation(OpacityProperty, aparecer);
     }
 }

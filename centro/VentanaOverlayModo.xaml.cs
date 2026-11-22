@@ -1,47 +1,39 @@
 using System;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Windows.Graphics;
-using Windows.UI;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Threading;
 
 namespace CentroAether;
 
 /// <summary>
-/// Overlay nativo de 470×260 que aparece al activar un modo (Gaming, Trabajo o
-/// Batería). Cada modo tiene su color, icono y texto. Sin bordes, siempre al
-/// frente, fuera del Alt-Tab, con fundido y auto-cierre.
+/// Overlay de 470×260 que aparece al activar un modo (Gaming, Trabajo o Batería).
+/// Cada modo tiene su color, icono y texto. Sin bordes, siempre al frente, fuera de
+/// la barra de tareas, sin robar el foco, con fundido y auto-cierre a los 3 segundos.
 /// </summary>
-public sealed partial class VentanaOverlayModo : Window
+public partial class VentanaOverlayModo : Window
 {
-    private const int Ancho = 470;
-    private const int Alto = 260;
-
     private readonly DispatcherTimer _autoCierre = new() { Interval = TimeSpan.FromSeconds(3) };
-    private Storyboard _fadeIn = null!;
-    private Storyboard _fadeOut = null!;
 
     public VentanaOverlayModo(string modo, string? detalle = null)
     {
-        this.InitializeComponent();
+        InitializeComponent();
         Aplicar(modo, detalle);
-
-        _fadeIn = (Storyboard)Raiz.Resources["FadeIn"];
-        _fadeOut = (Storyboard)Raiz.Resources["FadeOut"];
-        _fadeOut.Completed += (_, _) => this.Close();
-
-        ConfigurarVentana();
+        Posicionar();
 
         _autoCierre.Tick += (_, _) =>
         {
             _autoCierre.Stop();
-            _fadeOut.Begin();
+            var fuera = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(400));
+            fuera.Completed += (_, _) => Close();
+            Raiz.BeginAnimation(OpacityProperty, fuera);
         };
 
-        Raiz.Loaded += (_, _) =>
+        Loaded += (_, _) =>
         {
-            _fadeIn.Begin();
+            Raiz.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(280)));
+            AnimarBarra();
             _autoCierre.Start();
         };
     }
@@ -63,46 +55,34 @@ public sealed partial class VentanaOverlayModo : Window
         var brocha = new SolidColorBrush(color);
         Marco.BorderBrush = brocha;
         CajaIcono.Background = brocha;
-        Barra.Foreground = brocha;
+        Barra.Background = brocha;
         Franja.Background = brocha;
     }
 
-    private void ConfigurarVentana()
+    private void Posicionar()
     {
-        if (AppWindow.Presenter is OverlappedPresenter pres)
-        {
-            pres.SetBorderAndTitleBar(false, false);
-            pres.IsAlwaysOnTop = true;
-            pres.IsResizable = false;
-            pres.IsMaximizable = false;
-            pres.IsMinimizable = false;
-        }
-
-        AppWindow.IsShownInSwitchers = false;
-        AppWindow.Resize(new SizeInt32(Ancho, Alto));
-
-        DisplayArea area = DisplayArea.GetFromWindowId(AppWindow.Id, DisplayAreaFallback.Primary);
-        if (area is not null)
-        {
-            int x = area.WorkArea.X + ((area.WorkArea.Width - Ancho) / 2);
-            int y = area.WorkArea.Y + 72;
-            AppWindow.Move(new PointInt32(x, y));
-        }
+        Rect area = SystemParameters.WorkArea;
+        Left = area.Left + ((area.Width - Width) / 2);
+        Top = area.Top + 72;
     }
 
-    private static Color Hex(string hex)
+    private void AnimarBarra()
     {
-        hex = hex.TrimStart('#');
-        byte r = Convert.ToByte(hex.Substring(0, 2), 16);
-        byte g = Convert.ToByte(hex.Substring(2, 2), 16);
-        byte b = Convert.ToByte(hex.Substring(4, 2), 16);
-        return Color.FromArgb(255, r, g, b);
+        double ancho = Carril.ActualWidth > 0 ? Carril.ActualWidth : 300;
+        var deslizar = new DoubleAnimation(-Barra.Width, ancho, TimeSpan.FromMilliseconds(1100))
+        {
+            RepeatBehavior = RepeatBehavior.Forever,
+            EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut },
+        };
+        Barra.BeginAnimation(Canvas.LeftProperty, deslizar);
     }
+
+    private static Color Hex(string hex) => (Color)ColorConverter.ConvertFromString(hex);
 
     /// <summary>Crea, posiciona y muestra el overlay del modo indicado.</summary>
     public static void Mostrar(string modo, string? detalle = null)
     {
         var overlay = new VentanaOverlayModo(modo, detalle);
-        overlay.Activate();
+        overlay.Show();
     }
 }

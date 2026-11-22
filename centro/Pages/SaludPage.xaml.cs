@@ -1,11 +1,11 @@
 using System;
 using CentroAether.Services;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows.Controls;
+using CentroAether.Controles;
 
 namespace CentroAether.Pages;
 
-public sealed partial class SaludPage : Page
+public sealed partial class SaludPage : PaginaBase
 {
     public SaludPage()
     {

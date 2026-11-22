@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
+using System.Windows.Media;
 
 namespace CentroAether.Pages;
 
@@ -13,7 +13,7 @@ namespace CentroAether.Pages;
 /// Game Library (base): detecta juegos de Steam y permite lanzarlos. Opcionalmente
 /// activa el Modo Gaming y muestra el overlay al iniciar un juego.
 /// </summary>
-public sealed partial class BibliotecaPage : Page
+public sealed partial class BibliotecaPage : PaginaBase
 {
     public BibliotecaPage()
     {
@@ -58,8 +58,8 @@ public sealed partial class BibliotecaPage : Page
         Grid.SetColumn(icono, 0);
         grid.Children.Add(icono);
 
-        var textos = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = j.Nombre, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
+        textos.Children.Add(new TextBlock { Text = j.Nombre, FontWeight = FontWeights.SemiBold });
         textos.Children.Add(new TextBlock
         {
             Text = j.Tienda,
@@ -100,7 +100,7 @@ public sealed partial class BibliotecaPage : Page
 
         try
         {
-            await Windows.System.Launcher.LaunchUriAsync(new Uri($"steam://rungameid/{j.AppId}"));
+            Sistema.Abrir($"steam://rungameid/{j.AppId}");
             Estado.Severity = InfoBarSeverity.Success;
             Estado.Message = $"Iniciando {j.Nombre}…";
         }

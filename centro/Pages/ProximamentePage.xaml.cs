@@ -1,6 +1,6 @@
 using CentroAether.Models;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using System.Windows.Controls;
+using CentroAether.Controles;
 
 namespace CentroAether.Pages;
 
@@ -9,7 +9,7 @@ namespace CentroAether.Pages;
 /// Muestra el nombre, la descripción y la lista de funciones planeadas que
 /// vienen del <see cref="Modulo"/> recibido como parámetro de navegación.
 /// </summary>
-public sealed partial class ProximamentePage : Page
+public sealed partial class ProximamentePage : PaginaBase
 {
     public ProximamentePage()
     {

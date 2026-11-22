@@ -1,12 +1,12 @@
 using System;
 using CentroAether.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Windows.Storage.Pickers;
+using System.Windows;
+using System.Windows.Controls;
+using CentroAether.Controles;
 
 namespace CentroAether.Pages;
 
-public sealed partial class RespaldoPage : Page
+public sealed partial class RespaldoPage : PaginaBase
 {
     private string? _destino;
 
@@ -17,19 +17,16 @@ public sealed partial class RespaldoPage : Page
 
     private async void Carpeta_Click(object sender, RoutedEventArgs e)
     {
-        var picker = new FolderPicker();
-        picker.FileTypeFilter.Add("*");
-
-        if (App.MainWindow is not null)
+        // Selector de carpetas nativo de .NET 8 (WPF); reemplaza al FolderPicker de WinRT.
+        var dialogo = new Microsoft.Win32.OpenFolderDialog
         {
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-        }
+            Title = "Elige dónde guardar el respaldo",
+            Multiselect = false,
+        };
 
-        var carpeta = await picker.PickSingleFolderAsync();
-        if (carpeta is not null)
+        if (dialogo.ShowDialog(Window.GetWindow(this)) == true && !string.IsNullOrEmpty(dialogo.FolderName))
         {
-            _destino = carpeta.Path;
+            _destino = dialogo.FolderName;
             TxtDestino.Text = _destino;
             BtnRespaldar.IsEnabled = true;
             await Aether.ConfigurarRespaldo(_destino);
