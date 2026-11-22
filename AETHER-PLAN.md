@@ -464,6 +464,21 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
       * `centro.yml` y `aether-app.yml`: `dotnet publish -r win-x64 --self-contained -p:PublishSingleFile=true`
         (ya no MSBuild ni Windows App SDK). El instalador sigue copiando a
         `AtlasModules\Aether\Centro\app\CentroAether.exe` (misma ruta, el tweak `aether-centro` no cambia).
+- [x] **Rediseño completo de la interfaz** (pedido de Daniel 21-nov 21:57: "mucho mejor, más ordenado,
+      muy hermoso"), commit `833c5f1`, compila en verde sin advertencias. Estilo Configuración de
+      Windows 11 con la paleta Aether:
+      * Componentes en `centro/Controles/Diseno.cs`: `Encabezado` (ícono en caja con degradado, título,
+        subtítulo y acción a la derecha), `FilaAjuste` (ícono, título, descripción, control a la derecha y
+        `Debajo` opcional), `Ui.Mosaico`, `Ui.Insignia`, `Ui.Seccion`, colores por modo (`Ui.ColorModo`:
+        Trabajo morado #7A5AF8, Gaming azul #2F8CFF, Batería verde #2FA86A). Estilos `TarjetaStyle`,
+        `FilaAjusteStyle`, `MosaicoStyle`, `SeccionTextBlockStyle` en App.xaml.
+      * Todas las secciones: mismo margen (36,30), ancho máximo 1000 centrado, encabezado igual, grupos
+        con títulos de sección.
+      * Menú lateral con marca ("Aether / Centro de control"), categorías en mayúsculas y pie con el
+        modo actual y su color (se refresca al cambiar de modo).
+      * Inicio tipo panel: portada con degradado (modo y batería), cambio de modo en un clic y 8 accesos
+        rápidos que abren la sección (`MainWindow.IrA(id)`).
+      * Modos: 3 tarjetas grandes con color, puntos clave e insignia "Activo".
 - [ ] **Prueba de Daniel en la laptop de pruebas**: bajar `Centro-Aether-<sha>` de Actions, abrir
       `CentroAether.exe` (pide administrador), recorrer las secciones. Si algo falla, mandar el
       `CentroAether-aether-crash.log` del Escritorio.
@@ -472,7 +487,7 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
       `misc/aether-office-macros` (macros sin bloqueo, VBAWarnings=1 por directiva). Ver TRASPASO D.3.
 
 ### 👉 SIGUIENTE PASO EXACTO (al retomar)
-1. Esperar la prueba de Daniel del Centro WPF en su laptop de pruebas y corregir lo que reporte.
+1. Esperar la prueba de Daniel del Centro WPF rediseñado (artefacto de `833c5f1`) y corregir lo que reporte.
 2. Resolver la contradicción de macros de la sección Oficina (pregunta en TRASPASO D.3).
 3. Después: pendientes del Centro (sección 7: inicio/bienvenida/tema) y la pasada de limpieza
    (Borrado parte 2) del plan.

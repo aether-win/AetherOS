@@ -329,8 +329,16 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
   ajusta: todas las páginas usan `HorizontalScrollBarVisibility="Disabled"`.
 - WPF de .NET 8 trae `Microsoft.Win32.OpenFolderDialog` (selector de carpetas nativo).
 
+- **Rediseño de la interfaz del Centro** (pedido de Daniel, 21:57): commit `833c5f1`. Componentes
+  `Encabezado` / `FilaAjuste` / mosaicos en `centro/Controles/Diseno.cs`; detalle en el plan, sección 9.
+  Para nuevas secciones: usar siempre esos componentes para que todo se vea igual.
+- Los artefactos de Actions **no se pueden descargar** desde el entorno de Claude (probado otra vez
+  hoy: el proxy bloquea `*.blob.core.windows.net`). Daniel los baja él mismo desde la página de la
+  ejecución → Artifacts.
+
 ## D.4 Estado de entrega (2026-11-21, noche)
-- Último commit de código: `c06f888` (*feat(centro): migrar el Centro Aether de WinUI 3 a WPF*).
+- Último commit de código: `833c5f1` (rediseño de la interfaz del Centro). Antes: `c06f888` (migración a WPF).
+- "Centro Aether (WPF)" en `833c5f1`: ✅ verde, sin advertencias.
 - GitHub Actions en `c06f888`: **TODO EN VERDE** ✅ — Centro Aether (WPF), Build Playbook, Lint
   PowerShell, Lint YAML y Test (Pester PS7 + Windows PowerShell 5.1). Sin ejecuciones con ❌.
 - El workflow viejo "Centro Aether (WinUI 3)" ahora se llama **"Centro Aether (WPF)"**.
