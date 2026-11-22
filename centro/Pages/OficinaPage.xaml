@@ -16,12 +16,23 @@
             <c:FilaAjuste x:Name="FilaBlindaje" Glyph="&#xE83D;" Titulo="Office a salvo de los mods" Descripcion="…">
                 <Button x:Name="BtnBlindar" Content="Proteger ahora" Style="{StaticResource AccentButtonStyle}" Click="Blindar_Click" />
             </c:FilaAjuste>
+            <c:FilaAjuste x:Name="FilaTema" Glyph="&#xE790;" Titulo="Office no cambia con el tema de Windows" Descripcion="…">
+                <c:Pila Orientation="Horizontal" Spacing="10">
+                    <ComboBox x:Name="CmbTema" Width="190" SelectionChanged="Tema_Changed" />
+                </c:Pila>
+            </c:FilaAjuste>
             <c:FilaAjuste x:Name="FilaMacros" Glyph="&#xE943;" Titulo="Macros y archivos de otra PC" Descripcion="…">
                 <Button x:Name="BtnMacros" Content="Aplicar" Style="{StaticResource AccentButtonStyle}" Click="Macros_Click" />
             </c:FilaAjuste>
             <c:FilaAjuste Glyph="&#xE785;" Titulo="Desbloquear archivos de otra PC"
                           Descripcion="Elige una carpeta (por ejemplo la de la red o Descargas) y Aether quita el bloqueo de todos los Word, Excel y PowerPoint que tenga adentro, también en subcarpetas.">
                 <Button x:Name="BtnDesbloquear" Content="Elegir carpeta…" Click="Desbloquear_Click" />
+            </c:FilaAjuste>
+
+            <TextBlock Text="Si el texto se sigue viendo raro" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE7F4;" Titulo="Compatibilidad gráfica"
+                          Descripcion="Office dibuja sin la aceleración de la gráfica. Úsalo si el texto se ve lavado, borroso o con colores raros aun con lo de arriba (algunas gráficas AMD/Intel). Cierra y abre Office después.">
+                <c:ToggleSwitch x:Name="SwGraficos" Toggled="Graficos_Toggled" />
             </c:FilaAjuste>
 
             <TextBlock Text="Concentración" Style="{StaticResource SeccionTextBlockStyle}" />

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,9 +13,15 @@ namespace CentroAether.Pages;
 /// </summary>
 public sealed partial class OficinaPage : PaginaBase
 {
+    private bool _cargando;
+
     public OficinaPage()
     {
         InitializeComponent();
+        foreach ((_, string nombre) in OficinaServicio.TemasSeguros)
+        {
+            CmbTema.Items.Add(nombre);
+        }
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -46,6 +53,18 @@ public sealed partial class OficinaPage : PaginaBase
             FilaBlindaje.Accion = BtnBlindar;
         }
 
+        // Tema fijo (no sigue a Windows ni recolorea documentos)
+        _cargando = true;
+        int tema = OficinaServicio.TemaOffice();
+        int idx = Array.FindIndex(OficinaServicio.TemasSeguros, t => t.Valor == tema);
+        CmbTema.SelectedIndex = idx;
+        SwGraficos.IsOn = OficinaServicio.SinAceleracion();
+        _cargando = false;
+        FilaTema.Descripcion = idx >= 0
+            ? "Office tiene un tema fijo: no cambia cuando Windows pasa a claro u oscuro y nunca recolorea tus documentos. Aether Toolbox lo vigila."
+            : "Office sigue el modo de color de Windows: en oscuro usa el tema Negro y Word RECOLOREA el documento (texto lavado o claro). Elige un tema fijo.";
+        FilaTema.ColorIcono = idx >= 0 ? Ui.Recurso("SystemFillColorSuccessBrush") : Ui.Recurso("SystemFillColorCautionBrush");
+
         // Macros
         if (OficinaServicio.MacrosSinBloqueo())
         {
@@ -57,6 +76,34 @@ public sealed partial class OficinaPage : PaginaBase
             FilaMacros.Descripcion = "Office puede bloquear tus macros o abrir en Vista protegida los archivos que vienen de otra PC. Aplica los ajustes de Aether.";
             FilaMacros.Accion = BtnMacros;
         }
+    }
+
+    private void Tema_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (_cargando || CmbTema.SelectedIndex < 0)
+        {
+            return;
+        }
+        int valor = OficinaServicio.TemasSeguros[CmbTema.SelectedIndex].Valor;
+        bool ok = OficinaServicio.FijarTema(valor);
+        Aviso(ok
+            ? "Tema de Office fijado. Cierra Word, Excel y PowerPoint por completo y vuelve a abrirlos."
+            : "No se pudo cambiar el tema de Office.",
+            ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning);
+        Refrescar();
+    }
+
+    private void Graficos_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_cargando)
+        {
+            return;
+        }
+        bool ok = OficinaServicio.FijarSinAceleracion(SwGraficos.IsOn);
+        Aviso(ok
+            ? "Listo. Cierra Office por completo y vuelve a abrirlo para que tome el cambio."
+            : "No se pudo cambiar la compatibilidad gráfica.",
+            ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning);
     }
 
     private async void Blindar_Click(object sender, RoutedEventArgs e)

@@ -225,6 +225,86 @@ public static class OficinaServicio
         }
     }
 
+    // ── 4. Office no cambia con el tema de Windows (claro/oscuro) ────────────────────
+    // "UI Theme" (HKCU\Software\Microsoft\Office\16.0\Common): 0 Colorido, 3 Gris oscuro,
+    // 4 Negro, 5 Blanco, 6 Usar la del sistema. Con 6 Office sigue a Windows (oscuro = Negro), y
+    // en Negro Word y Outlook RECOLOREAN el documento: texto lavado o claro. Aether lo deja fijo
+    // en un tema que nunca toca el documento (Colorido, Blanco o Gris oscuro).
+
+    private const string ClaveComun = @"Software\Microsoft\Office\16.0\Common";
+
+    public static readonly (int Valor, string Nombre)[] TemasSeguros =
+    {
+        (0, "Colorido (recomendado)"), (5, "Blanco"), (3, "Gris oscuro"),
+    };
+
+    /// <summary>Tema actual de Office, o -1 si no está definido (= sigue al sistema).</summary>
+    public static int TemaOffice()
+    {
+        try
+        {
+            using RegistryKey? k = Hkcu.OpenSubKey(ClaveComun);
+            return k?.GetValue("UI Theme") is int v ? v : -1;
+        }
+        catch
+        {
+            return -1;
+        }
+    }
+
+    /// <summary>True si Office tiene un tema fijo que no cambia con Windows ni recolorea documentos.</summary>
+    public static bool TemaProtegido() => TemasSeguros.Any(t => t.Valor == TemaOffice());
+
+    public static bool FijarTema(int valor)
+    {
+        if (!TemasSeguros.Any(t => t.Valor == valor))
+        {
+            valor = 0;
+        }
+        try
+        {
+            using RegistryKey k = Hkcu.CreateSubKey(ClaveComun);
+            k.SetValue("UI Theme", valor, RegistryValueKind.DWord);
+            k.SetValue("PendingUITheme", valor, RegistryValueKind.DWord);
+            return TemaProtegido();
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    // ── 5. Compatibilidad gráfica (sin aceleración por hardware) ─────────────────────
+
+    private const string ClaveGraficos = @"Software\Microsoft\Office\16.0\Common\Graphics";
+
+    public static bool SinAceleracion()
+    {
+        try
+        {
+            using RegistryKey? k = Hkcu.OpenSubKey(ClaveGraficos);
+            return k?.GetValue("DisableHardwareAcceleration") is int v && v == 1;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public static bool FijarSinAceleracion(bool activar)
+    {
+        try
+        {
+            using RegistryKey k = Hkcu.CreateSubKey(ClaveGraficos);
+            k.SetValue("DisableHardwareAcceleration", activar ? 1 : 0, RegistryValueKind.DWord);
+            return SinAceleracion() == activar;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     // ── 3. Desbloquear archivos de otra PC ───────────────────────────────────────────
 
     private static readonly string[] ExtensionesOffice =

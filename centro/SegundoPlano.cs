@@ -85,15 +85,21 @@ public static class SegundoPlano
     {
         bool reparado = await Task.Run(() =>
         {
-            if (!OficinaServicio.WindhawkInstalado() || OficinaServicio.OfficeBlindado())
+            bool algo = false;
+            // Tema fijo: si Office volvió a "usar el del sistema" o a Negro, se repone (Colorido).
+            if (!OficinaServicio.TemaProtegido())
             {
-                return false;
+                algo |= OficinaServicio.FijarTema(0);
             }
-            return OficinaServicio.BlindarOffice();
+            if (OficinaServicio.WindhawkInstalado() && !OficinaServicio.OfficeBlindado())
+            {
+                algo |= OficinaServicio.BlindarOffice();
+            }
+            return algo;
         });
         if (reparado)
         {
-            Notificar("Office quedó protegido: ningún mod de Windhawk puede alterarlo. Si Word o Excel estaban abiertos, ciérralos y ábrelos de nuevo.");
+            Notificar("Office quedó protegido: ni los mods ni el modo claro/oscuro de Windows lo alteran. Si Word o Excel estaban abiertos, ciérralos y ábrelos de nuevo.");
         }
     }
 
