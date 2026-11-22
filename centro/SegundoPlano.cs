@@ -53,6 +53,8 @@ public static class SegundoPlano
         _ = Task.Run(async () =>
         {
             await Task.Delay(TimeSpan.FromSeconds(45));
+            // Guardián (parte del usuario): repone los ajustes de Aether de esta cuenta si algo los quitó.
+            await Aether.Ejecutar("$g = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules\\Aether\\Guardian\\Guardian-Aether.ps1'; if (Test-Path -LiteralPath $g) { & $g -Usuario }");
             string r = (await Aether.Ejecutar("(@(Invoke-AetherAutoReparacion) -join '; ')")).Trim();
             if (r.Length > 0 && !r.StartsWith("ERROR", StringComparison.OrdinalIgnoreCase))
             {

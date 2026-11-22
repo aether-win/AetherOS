@@ -116,6 +116,30 @@ foreach ($destino in @(
     }
 }
 
+# --- Guardián de Aether: que nada se quite con un reinicio, Windows Update o una red nueva ---
+$guardian = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules\Aether\Guardian\Guardian-Aether.ps1'
+try {
+    $accionG = New-ScheduledTaskAction -Execute $powershell `
+        -Argument "-NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$guardian`" -Sistema"
+    $alArrancar = New-ScheduledTaskTrigger -AtStartup
+    $alArrancar.Delay = 'PT1M'
+    $diario = New-ScheduledTaskTrigger -Daily -At '12:17'
+    $claseEvento = Get-CimClass -ClassName MSFT_TaskEventTrigger -Namespace 'Root/Microsoft/Windows/TaskScheduler'
+    $alConectar = New-CimInstance -CimClass $claseEvento -ClientOnly
+    $alConectar.Enabled = $true
+    $alConectar.Subscription = '<QueryList><Query Id="0" Path="Microsoft-Windows-NetworkProfile/Operational"><Select Path="Microsoft-Windows-NetworkProfile/Operational">*[System[EventID=10000]]</Select></Query></QueryList>'
+    $alConectar.Delay = 'PT20S'
+    $ajustesG = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable `
+        -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 15)
+    $principalG = New-ScheduledTaskPrincipal -UserId 'S-1-5-18' -LogonType ServiceAccount -RunLevel Highest
+    Register-ScheduledTask -TaskPath '\Aether\' -TaskName 'Guardian' -Action $accionG `
+        -Trigger @($alArrancar, $diario, $alConectar) -Settings $ajustesG -Principal $principalG -Force | Out-Null
+    Write-AtlasLog -Message 'Guardián de Aether registrado (al arrancar, al conectarse a una red y cada día).'
+}
+catch {
+    Write-AtlasLog -Level Warning -Message "No se pudo registrar el Guardián de Aether: $($_.Exception.Message)" -ErrorRecord $_
+}
+
 # --- Aether Transfer (cliente FTP para la PS4 y servidores) -----------------------------
 $transfer = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules\Aether\Transfer\AetherTransfer.exe'
 if (Test-Path -LiteralPath $transfer -PathType Leaf) {
