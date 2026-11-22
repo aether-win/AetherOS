@@ -380,6 +380,13 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
   `-Usuario` al iniciar sesión (HKCU). No repone el tema de Office ni tweaks con Option no elegida.
   Registro `%ProgramData%\Aether\guardian.log`.
 
+- **22-nov 15:12 — 3.0 en la laptop (Daniel)**: Glass desde la bienvenida tardaba muchísimo (Windhawk compila
+  los mods `local@`), los interruptores fallaban mientras tanto, ViGEmBus no se instaló. `94164dd`+`8f0557a`:
+  ViGEmBus/HidHide incluidos en el paquete (`AtlasModules\Aether\Drivers`, bajados en CI con firma) e
+  instalados con argumentos según tipo + tiempo límite; mutex `Global\AetherWindhawk` + progreso
+  (`%ProgramData%\Aether\windhawk-progreso.txt`) + "Ver registro"; bienvenida por pasos con tarjetas;
+  reinstalación diferencial (`AtlasOS\Install\tweak-huellas.json`, solo tweaks de equipo en Upgrade/Reapply).
+
 ## D.4b Estado anterior (2026-11-21, noche)
 - Último commit de código: `87aca2a` (instalador: componentes y drivers de mandos solo si faltan) y `61da075` (tema de Office también en la copia de la cuenta). Antes: `f808dea` (Office con tema fijo, no sigue a Windows; CI todo verde). Antes: `8e382fe` (mando DS4 original: luz, reconexión, ocultar el real). Antes: `0ac3698` (la versión nueva reemplaza a la vieja abierta). Antes: `7151fdb` (Office blindado; CI todo verde). Antes: `45fa36b` (nombre Aether Toolbox + botón Cerrar), `504dab3` (segundo plano siempre activo + bandeja oscura). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
 - "Centro Aether (WPF)" en `7970b64`: ✅ verde.
