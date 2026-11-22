@@ -601,5 +601,6 @@ organización/propietario registrados, NO el nombre de red de la PC (rompería l
 - [~] **Compilación final AETHER OS 2.0** (artefacto `AETHER-OS-2.0`, `AETHER OS 2.0.exe`). Pruebas en hardware pendientes.
 - [~] **Aether OS 3.0** (`3915bbb`): autoreparación al iniciar sesión (drivers de mandos, Windhawk 2.0, mods
       de Wind-Aether), toggles de mods verificados, Transfer de una sola ventana. Falta prueba en hardware.
+- [x] **Guardián de Aether** (`f6f3179`): los ajustes se reponen solos tras reinicio, Windows Update o red nueva.
 - Fuera de alcance honesto (documentar): instalador Rust (GPUI) rediseñado por completo; medir FPS/latencia DPC
   (requiere hardware real).
