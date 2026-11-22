@@ -245,6 +245,85 @@ function Get-AetherModo {
     return [string](Get-AetherAjuste -Nombre 'Modo' -PorDefecto 'Trabajo')
 }
 
+# --- Intensidad del Modo Gaming (Gaming / Gaming Extremo / Máximo Rendimiento) -----------
+# Cada extra es reversible: antes de aplicarlo se guarda el valor que había y al salir de
+# Gaming se pone de vuelta. Descripción, beneficio, justificación y riesgo de cada uno en
+# docs/aether/optimizaciones-gaming.md (y en la sección Modos de Aether Toolbox).
+$script:AetherSubUsb = '2a737441-1930-4402-8d77-b2bebba308a3'
+$script:AetherUsbSuspension = '48e6b7a6-50f5-4782-a5d4-53bb8f07e226'   # USBSELECTIVESUSPEND
+$script:AetherSubPcie = '501a4d13-42af-4429-9fd1-a8218c268e20'
+$script:AetherPcieAspm = 'ee12f906-d277-404b-b6da-e5fa1a576df5'         # ASPM
+$script:AetherIdleOff = '5d76a2ca-e8c0-402f-a133-2158492d58ad'          # IDLEDISABLE
+$script:AetherClaveThrottling = 'HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling'
+
+function Save-AetherExtraEnergia {
+    param([string]$Clave, [string]$Sub, [string]$Ajuste)
+    if ([string](Get-AetherAjuste -Nombre "Extra$Clave" -PorDefecto '') -ne '') { return }
+    $valores = Get-AetherValorEnergia -Sub $Sub -Ajuste $Ajuste
+    if ($null -ne $valores) { Set-AetherAjuste -Nombre "Extra$Clave" -Valor "$($valores[0]),$($valores[1])" }
+}
+
+function Set-AetherNivelGaming {
+    <# Aplica los extras del nivel elegido encima del Modo Gaming. #>
+    param([ValidateSet('Gaming', 'Extremo', 'Maximo')][string]$Nivel)
+    if ($Nivel -eq 'Gaming') { return }
+
+    # Extremo y Máximo: menos latencia de USB y PCIe, sin indexado ni recorte de energía a apps.
+    Save-AetherExtraEnergia -Clave 'Usb' -Sub $script:AetherSubUsb -Ajuste $script:AetherUsbSuspension
+    Set-AetherValorEnergia -Sub $script:AetherSubUsb -Ajuste $script:AetherUsbSuspension -Ac 0
+    Save-AetherExtraEnergia -Clave 'Pcie' -Sub $script:AetherSubPcie -Ajuste $script:AetherPcieAspm
+    Set-AetherValorEnergia -Sub $script:AetherSubPcie -Ajuste $script:AetherPcieAspm -Ac 0
+
+    $busqueda = Get-Service -Name 'WSearch' -ErrorAction SilentlyContinue
+    if ($busqueda -and $busqueda.Status -eq 'Running') {
+        Set-AetherAjuste -Nombre 'ExtraBusqueda' -Valor 1
+        Stop-Service -Name 'WSearch' -Force -ErrorAction SilentlyContinue
+    }
+
+    if ([string](Get-AetherAjuste -Nombre 'ExtraThrottling' -PorDefecto '') -eq '') {
+        $antes = (Get-ItemProperty -LiteralPath $script:AetherClaveThrottling -Name 'PowerThrottlingOff' -ErrorAction SilentlyContinue).PowerThrottlingOff
+        Set-AetherAjuste -Nombre 'ExtraThrottling' -Valor $(if ($null -eq $antes) { 'ninguno' } else { [string]$antes })
+    }
+    if (-not (Test-Path -LiteralPath $script:AetherClaveThrottling)) { New-Item -Path $script:AetherClaveThrottling -Force | Out-Null }
+    Set-ItemProperty -LiteralPath $script:AetherClaveThrottling -Name 'PowerThrottlingOff' -Value 1 -Type DWord
+
+    if ($Nivel -eq 'Maximo') {
+        # Máximo: la CPU no entra en reposo (menos latencia, MÁS CALOR) y turbo agresivo siempre.
+        Save-AetherExtraEnergia -Clave 'Idle' -Sub $script:AetherSubProcesador -Ajuste $script:AetherIdleOff
+        Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherIdleOff -Ac 1
+        Set-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $script:AetherTurbo -Ac 2
+    }
+    Set-AetherAjuste -Nombre 'NivelAplicado' -Valor $Nivel
+}
+
+function Restore-AetherNivelGaming {
+    <# Deshace los extras de Gaming Extremo / Máximo Rendimiento (valores guardados). #>
+    foreach ($e in @(
+            @{ Clave = 'Usb'; Sub = $script:AetherSubUsb; Ajuste = $script:AetherUsbSuspension }
+            @{ Clave = 'Pcie'; Sub = $script:AetherSubPcie; Ajuste = $script:AetherPcieAspm }
+            @{ Clave = 'Idle'; Sub = $script:AetherSubProcesador; Ajuste = $script:AetherIdleOff }
+        )) {
+        $guardado = [string](Get-AetherAjuste -Nombre "Extra$($e.Clave)" -PorDefecto '')
+        if ($guardado -match '^(\d+),(\d+)$') {
+            Set-AetherValorEnergia -Sub $e.Sub -Ajuste $e.Ajuste -Ac $Matches[1] -Dc $Matches[2]
+        }
+        Set-AetherAjuste -Nombre "Extra$($e.Clave)" -Valor ''
+    }
+    if ((Get-AetherAjuste -Nombre 'ExtraBusqueda' -PorDefecto 0) -eq 1) {
+        Start-Service -Name 'WSearch' -ErrorAction SilentlyContinue
+        Set-AetherAjuste -Nombre 'ExtraBusqueda' -Valor 0
+    }
+    $throttling = [string](Get-AetherAjuste -Nombre 'ExtraThrottling' -PorDefecto '')
+    if ($throttling -eq 'ninguno') {
+        Remove-ItemProperty -LiteralPath $script:AetherClaveThrottling -Name 'PowerThrottlingOff' -ErrorAction SilentlyContinue
+    }
+    elseif ($throttling -match '^\d+$') {
+        Set-ItemProperty -LiteralPath $script:AetherClaveThrottling -Name 'PowerThrottlingOff' -Value ([int]$throttling) -Type DWord
+    }
+    Set-AetherAjuste -Nombre 'ExtraThrottling' -Valor ''
+    Set-AetherAjuste -Nombre 'NivelAplicado' -Valor 'Gaming'
+}
+
 function Set-AetherModo {
     <#
         Cambia a Trabajo, Gaming o Bateria. Devuelve un objeto con Ok y Mensaje.
@@ -263,6 +342,8 @@ function Set-AetherModo {
     [void](Initialize-AetherPlanEnergia)
     Save-AetherEnergiaOriginal
     if ($anterior -eq 'Gaming' -and $Modo -ne 'Gaming') { Set-AetherPausaModsGaming -Pausar $false }
+    # Los extras de Gaming Extremo / Máximo se deshacen al salir (o antes de re-aplicar Gaming).
+    if ($anterior -eq 'Gaming') { Restore-AetherNivelGaming }
     if ($anterior -eq 'Bateria' -and $Modo -ne 'Bateria') {
         [void](Set-AetherPerfilWind -Perfil ([string](Get-AetherAjuste -Nombre 'PerfilWind' -PorDefecto 'ninguno')) -Temporal)
     }
@@ -298,7 +379,14 @@ function Set-AetherModo {
             Set-AetherAppsSegundoPlano -Permitidas $false
             Set-AetherAnimaciones -Completas $false
             Set-AetherPausaModsGaming -Pausar $true
-            $mensaje = 'Modo Gaming activo. ¿El ventilador está conectado?'
+            $nivel = [string](Get-AetherAjuste -Nombre 'NivelGaming' -PorDefecto 'Gaming')
+            if ($nivel -notin @('Gaming', 'Extremo', 'Maximo')) { $nivel = 'Gaming' }
+            Set-AetherNivelGaming -Nivel $nivel
+            $mensaje = switch ($nivel) {
+                'Extremo' { 'Modo Gaming Extremo activo. ¿El ventilador está conectado?' }
+                'Maximo' { 'Modo Máximo Rendimiento activo: la laptop se calentará más. Usa el ventilador.' }
+                default { 'Modo Gaming activo. ¿El ventilador está conectado?' }
+            }
         }
         'Bateria' {
             # Eficiente: con batería la CPU baja el techo y apaga el turbo; enchufada queda normal.

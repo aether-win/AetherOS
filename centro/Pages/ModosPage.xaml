@@ -21,6 +21,16 @@
 
             <UniformGrid x:Name="GridModos" Columns="3" Margin="0,4,-12,-12" />
 
+            <TextBlock Text="Intensidad del Modo Gaming" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste x:Name="FilaNivel" Glyph="&#xE945;" Titulo="Nivel de rendimiento al jugar" Descripcion="…">
+                <ComboBox x:Name="CmbNivel" Width="210" SelectionChanged="Nivel_Changed">
+                    <ComboBoxItem Content="Gaming" />
+                    <ComboBoxItem Content="Gaming Extremo" />
+                    <ComboBoxItem Content="Máximo Rendimiento" />
+                </ComboBox>
+            </c:FilaAjuste>
+            <c:Pila x:Name="ListaOptimizaciones" Spacing="8" />
+
             <TextBlock Text="Cómo funciona" Style="{StaticResource SeccionTextBlockStyle}" />
             <c:FilaAjuste Glyph="&#xE945;" Titulo="Cambio siempre a mano"
                           Descripcion="Trabajo y Gaming solo cambian cuando tú lo eliges, desde aquí, la bandeja o los atajos Ctrl+Alt+T / Ctrl+Alt+G / Ctrl+Alt+B." />

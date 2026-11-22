@@ -205,6 +205,33 @@ public static class Aether
 
     public static Task<string> ModoActual() => Task.FromResult(ModoGuardado());
 
+    /// <summary>Intensidad del Modo Gaming: "Gaming", "Extremo" o "Maximo" (ajuste NivelGaming).</summary>
+    public static string NivelGaming
+    {
+        get
+        {
+            try
+            {
+                using Microsoft.Win32.RegistryKey? k = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\AetherOS\Centro");
+                string v = (k?.GetValue("NivelGaming") as string ?? "Gaming").Trim();
+                return v is "Extremo" or "Maximo" ? v : "Gaming";
+            }
+            catch
+            {
+                return "Gaming";
+            }
+        }
+        set
+        {
+            try
+            {
+                using Microsoft.Win32.RegistryKey k = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\AetherOS\Centro");
+                k.SetValue("NivelGaming", value, Microsoft.Win32.RegistryValueKind.String);
+            }
+            catch { /* sin permisos */ }
+        }
+    }
+
     /// <summary>
     /// Modo actual leído directo del registro (HKCU\Software\AetherOS\Centro, valor "Modo"), igual
     /// que Get-AetherModo pero al instante y sin abrir PowerShell: así el segundo plano puede

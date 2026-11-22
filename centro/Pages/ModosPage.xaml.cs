@@ -28,11 +28,79 @@ public sealed partial class ModosPage : PaginaBase
         InitializeComponent();
     }
 
+    private bool _cargandoNivel;
+    private static readonly string[] Niveles = { "Gaming", "Extremo", "Maximo" };
+
+    // Cada optimización: (nivel mínimo, nombre, beneficio, justificación, riesgo). Todas reversibles.
+    private static readonly (int Nivel, string Nombre, string Beneficio, string Porque, string Riesgo)[] Optimizaciones =
+    {
+        (0, "CPU al 100% sin estacionar núcleos (EPP 0)", "Frecuencia estable, sin bajones al jugar.", "El procesador no baja de velocidad ni apaga núcleos en mitad de la partida.", "Bajo: más consumo; solo con cargador."),
+        (0, "Modo de energía \"Mejor rendimiento\" y temporizador 0,5 ms", "Respuesta y ritmo de fotogramas más parejos.", "Windows despierta los hilos del juego con más precisión.", "Bajo."),
+        (0, "Sin notificaciones, sin apps en segundo plano, mods pesados en pausa", "Menos interrupciones y menos uso de CPU/RAM.", "Libera recursos que el juego aprovecha.", "Ninguno: se restaura al salir."),
+        (1, "Sin suspensión selectiva USB", "Mando, ratón y teclado sin retrasos al \"despertar\".", "Windows no duerme los puertos USB entre pulsaciones.", "Bajo: algo más de consumo."),
+        (1, "Sin ahorro de energía PCI Express (ASPM)", "Menos latencia de la gráfica y el SSD.", "El enlace PCIe no entra en reposo.", "Bajo: algo más de consumo y calor."),
+        (1, "Búsqueda de Windows en pausa", "Sin picos de disco/CPU del indexado mientras juegas.", "El indexador se detiene y vuelve al salir de Gaming.", "Ninguno: la búsqueda vuelve al salir."),
+        (1, "Sin recorte de energía a las apps (Power Throttling)", "El juego nunca queda en \"modo eficiente\".", "Windows no limita procesos que cree en segundo plano.", "Bajo."),
+        (2, "CPU sin estados de reposo + turbo agresivo siempre", "La menor latencia posible.", "El procesador nunca entra en reposo profundo.", "MEDIO: bastante más calor; úsalo con ventilador."),
+    };
+
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
         Construir();
+        _cargandoNivel = true;
+        CmbNivel.SelectedIndex = Math.Max(0, Array.IndexOf(Niveles, Aether.NivelGaming));
+        _cargandoNivel = false;
+        PintarNivel();
         await RefrescarModo();
+    }
+
+    private void PintarNivel()
+    {
+        int nivel = Math.Max(0, CmbNivel.SelectedIndex);
+        FilaNivel.Descripcion = nivel switch
+        {
+            1 => "Gaming Extremo: Gaming + menos latencia de USB y PCIe, sin indexado ni recorte de energía. Todo se deshace al salir de Gaming.",
+            2 => "Máximo Rendimiento: Extremo + CPU sin reposo y turbo agresivo. Calienta bastante más: úsalo con ventilador.",
+            _ => "Gaming: máximo rendimiento del procesador, sin distracciones. Lo recomendado para el día a día.",
+        };
+        ListaOptimizaciones.Children.Clear();
+        foreach (var o in Optimizaciones)
+        {
+            bool incluida = o.Nivel <= nivel;
+            ListaOptimizaciones.Children.Add(new FilaAjuste
+            {
+                Glyph = incluida ? "\uE73E" : "\uE711",
+                ColorIcono = Ui.Recurso(incluida ? "SystemFillColorSuccessBrush" : "TextFillColorTertiaryBrush"),
+                Titulo = o.Nombre,
+                Descripcion = $"{o.Beneficio} Por qué: {o.Porque}",
+                Nota = $"Riesgo: {o.Riesgo} · Reversible al salir de Gaming",
+                ColorNota = Ui.Recurso(o.Riesgo.StartsWith("MEDIO") ? "SystemFillColorCautionBrush" : "TextFillColorTertiaryBrush"),
+                Opacity = incluida ? 1.0 : 0.55,
+                MinHeight = 0,
+            });
+        }
+    }
+
+    private async void Nivel_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (_cargandoNivel || CmbNivel.SelectedIndex < 0)
+        {
+            return;
+        }
+        Aether.NivelGaming = Niveles[CmbNivel.SelectedIndex];
+        PintarNivel();
+        if (string.Equals(Ui.NombreModo(_modoActual), "Gaming", StringComparison.OrdinalIgnoreCase))
+        {
+            // Ya estás en Gaming: re-aplicar con el nuevo nivel (deshace el anterior primero).
+            await Aplicar("Gaming");
+        }
+        else
+        {
+            Estado.Severity = InfoBarSeverity.Success;
+            Estado.Message = "Nivel guardado: se usará la próxima vez que actives el Modo Gaming.";
+            Estado.IsOpen = true;
+        }
     }
 
     private async Task RefrescarModo()
