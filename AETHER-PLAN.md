@@ -479,6 +479,15 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
       * Inicio tipo panel: portada con degradado (modo y batería), cambio de modo en un clic y 8 accesos
         rápidos que abren la sección (`MainWindow.IrA(id)`).
       * Modos: 3 tarjetas grandes con color, puntos clave e insignia "Activo".
+- [x] **Primera prueba de Daniel (21-nov 22:25, captura):** el Centro WPF **abre bien** (WPF funciona en su
+      equipo). Pidió la animación de modos **centrada en la pantalla** y más bonita → commit `7970b64`:
+      tarjeta redondeada con degradado y resplandor del color del modo, zoom suave al entrar, barra que se
+      llena en los 3 s, ya no se amontonan avisos. También: los puntos de las tarjetas de Modos se cortaban
+      (Pila horizontal no ajusta texto → se usa Grid) y, sin Aether OS instalado, Modos/Inicio decían
+      "Modo Trabajo activo" (falso) → ahora avisan que Aether no está instalado.
+- [ ] Animación también al cambiar de modo desde la **bandeja** o los **atajos Ctrl+Alt+T/G/B** (parte
+      PowerShell, nunca la tuvo). Ofrecido a Daniel, sin respuesta aún.
+- [ ] Aviso general + botones desactivados cuando Aether OS no está instalado (ofrecido, sin respuesta).
 - [ ] **Prueba de Daniel en la laptop de pruebas**: bajar `Centro-Aether-<sha>` de Actions, abrir
       `CentroAether.exe` (pide administrador), recorrer las secciones. Si algo falla, mandar el
       `CentroAether-aether-crash.log` del Escritorio.
@@ -487,7 +496,7 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
       `misc/aether-office-macros` (macros sin bloqueo, VBAWarnings=1 por directiva). Ver TRASPASO D.3.
 
 ### 👉 SIGUIENTE PASO EXACTO (al retomar)
-1. Esperar la prueba de Daniel del Centro WPF rediseñado (artefacto de `833c5f1`) y corregir lo que reporte.
+1. Esperar la prueba de Daniel del Centro WPF (artefacto de `7970b64`) y corregir lo que reporte.
 2. Resolver la contradicción de macros de la sección Oficina (pregunta en TRASPASO D.3).
 3. Después: pendientes del Centro (sección 7: inicio/bienvenida/tema) y la pasada de limpieza
    (Borrado parte 2) del plan.
