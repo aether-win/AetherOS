@@ -361,7 +361,7 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
 - **22-nov 04:10 — DECISIÓN de Daniel: el Aether Toolbox nuevo NO lleva ninguna función de la versión de
   PowerShell** (unidades de red, respaldo ampliado, perfiles Wind-Aether, herramientas). `9726758` revierte
   `23d6abe`. No volver a portarlas. La versión de PowerShell solo queda como respaldo oculto (bandeja:
-  Batería al 30 %). Compilación final: artefacto **AETHER-OS-2.0** con `AETHER OS 2.0.exe`.
+  Batería al 30 %). Compilación final: artefacto **AETHER-OS-2.0** con `AETHER OS 2.0.exe` — run 45011729121, artefacto 14750297449 (296 MB), verificado que lleva AetherToolbox.exe y AetherTransfer.exe. CI todo verde.
 
 ## D.4b Estado anterior (2026-11-21, noche)
 - Último commit de código: `87aca2a` (instalador: componentes y drivers de mandos solo si faltan) y `61da075` (tema de Office también en la copia de la cuenta). Antes: `f808dea` (Office con tema fijo, no sigue a Windows; CI todo verde). Antes: `8e382fe` (mando DS4 original: luz, reconexión, ocultar el real). Antes: `0ac3698` (la versión nueva reemplaza a la vieja abierta). Antes: `7151fdb` (Office blindado; CI todo verde). Antes: `45fa36b` (nombre Aether Toolbox + botón Cerrar), `504dab3` (segundo plano siempre activo + bandeja oscura). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
