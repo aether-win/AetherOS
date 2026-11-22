@@ -20,9 +20,6 @@
                     <ControlTemplate TargetType="RadioButton">
                         <Border x:Name="Caja" CornerRadius="14" Padding="16,16,16,14" BorderThickness="1.5"
                                 BorderBrush="#2A4466" Background="#14223A">
-                            <Border.Effect>
-                                <DropShadowEffect x:Name="Brillo" Color="#2F8CFF" BlurRadius="0" ShadowDepth="0" Opacity="0" />
-                            </Border.Effect>
                             <StackPanel>
                                 <Grid Margin="0,0,0,10">
                                     <Border Width="42" Height="42" CornerRadius="11" HorizontalAlignment="Left"
@@ -48,8 +45,11 @@
                                 <Setter TargetName="Caja" Property="BorderBrush" Value="#2F8CFF" />
                                 <Setter TargetName="Caja" Property="Background" Value="#16305A" />
                                 <Setter TargetName="Marca" Property="Visibility" Value="Visible" />
-                                <Setter TargetName="Brillo" Property="BlurRadius" Value="22" />
-                                <Setter TargetName="Brillo" Property="Opacity" Value="0.55" />
+                                <Setter TargetName="Caja" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#2F8CFF" BlurRadius="22" ShadowDepth="0" Opacity="0.55" />
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.4" />
