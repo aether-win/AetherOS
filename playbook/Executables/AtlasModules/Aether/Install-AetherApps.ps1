@@ -231,7 +231,18 @@ if ($apps -contains 'app-steam') {
 
 if ($apps -contains 'wind-aether') {
     Titulo 'Wind-Aether (Windhawk)'
-    $windhawkOk = Install-ConWinget -Id 'RamenSoftware.Windhawk'
+    # Primero Windhawk 2.0 (con windhawk-cli: Aether Toolbox controla los mods solo);
+    # si no se puede, la 1.x estable por winget (los mods se importan a mano).
+    $windhawkOk = $false
+    $centroPs1 = Join-Path $carpetaAether 'Centro\Aether.Centro.ps1'
+    if (Test-Path -LiteralPath $centroPs1) {
+        . $centroPs1
+        if (Install-AetherWindhawkCli) { $windhawkOk = $true; Ok 'Windhawk 2.0 instalado (con control desde Aether Toolbox)' }
+    }
+    if (-not $windhawkOk) {
+        Aviso 'No se pudo instalar Windhawk 2.0; se instala la versión estable.'
+        $windhawkOk = Install-ConWinget -Id 'RamenSoftware.Windhawk'
+    }
     if (-not $windhawkOk) {
         # Respaldo: en una PC nueva winget a veces no está listo. Se baja el instalador
         # oficial de Windhawk y se instala en silencio (NSIS /S).

@@ -63,7 +63,16 @@ public sealed partial class WindPage : PaginaBase
         Estado.Severity = InfoBarSeverity.Informational;
         Estado.Message = "Instalando Windhawk...";
         Estado.IsOpen = true;
-        await Aether.Ejecutar("winget install --id RamenSoftware.Windhawk --exact --accept-package-agreements --accept-source-agreements --disable-interactivity");
+        string cli = (await Aether.Ejecutar("$c = Install-AetherWindhawkCli; if ($c) { 'CLI' } else { 'NO' }")).Trim();
+        if (!cli.Contains("CLI"))
+        {
+            await Aether.Ejecutar("winget install --id RamenSoftware.Windhawk --exact --accept-package-agreements --accept-source-agreements --disable-interactivity");
+        }
+        else
+        {
+            // Mods de Wind-Aether importados (desactivados) para poder activarlos desde aquí.
+            await Aether.Ejecutar("$m = Join-Path $script:AetherCarpeta 'Wind-Aether\\Wind-Aether-mods.json'; & (Get-AetherWindhawkCli) data import $m --yes");
+        }
         AvisoWindhawk.IsOpen = !Aether.WindhawkInstalado();
         Estado.Severity = InfoBarSeverity.Success;
         Estado.Message = Aether.WindhawkInstalado() ? "Windhawk instalado." : "Revisa la instalacion de Windhawk.";

@@ -194,6 +194,37 @@ function Get-AetherWindhawkCli {
     return $null
 }
 
+function Install-AetherWindhawkCli {
+    <#
+        Instala Windhawk 2.0 (trae windhawk-cli.exe, necesario para que Aether Toolbox active
+        los perfiles Wind-Aether solo). Baja el instalador OFICIAL de las versiones de
+        github.com/ramensoftware/windhawk, exige firma digital válida y lo instala en silencio.
+        Devuelve la ruta de windhawk-cli.exe o $null (entonces se usa la 1.x estable).
+    #>
+    $cli = Get-AetherWindhawkCli
+    if ($cli) { return $cli }
+    $setup = Join-Path $env:TEMP ('windhawk2-' + [guid]::NewGuid().ToString('N') + '.exe')
+    try {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        $versiones = Invoke-RestMethod -Uri 'https://api.github.com/repos/ramensoftware/windhawk/releases?per_page=30' `
+            -Headers @{ 'User-Agent' = 'AetherOS' } -UseBasicParsing -ErrorAction Stop
+        $version = @($versiones | Where-Object { $_.tag_name -match '^v?2\.' -and -not $_.draft }) |
+            Sort-Object { [datetime]$_.published_at } -Descending | Select-Object -First 1
+        if (-not $version) { return $null }
+        $activo = @($version.assets | Where-Object { $_.name -match '(?i)setup.*\.exe$' }) | Select-Object -First 1
+        if (-not $activo) { return $null }
+        Invoke-WebRequest -Uri $activo.browser_download_url -OutFile $setup -UseBasicParsing -ErrorAction Stop
+        $firma = Get-AuthenticodeSignature -LiteralPath $setup
+        if ($firma.Status -ne 'Valid') { return $null }
+        $p = Start-Process -FilePath $setup -ArgumentList '/S' -PassThru -Wait
+        if ($p.ExitCode -ne 0) { return $null }
+        for ($i = 0; $i -lt 10 -and -not (Get-AetherWindhawkCli); $i++) { Start-Sleep -Seconds 2 }
+        return (Get-AetherWindhawkCli)
+    }
+    catch { return $null }
+    finally { Remove-Item -LiteralPath $setup -Force -ErrorAction SilentlyContinue }
+}
+
 function Get-AetherPerfilesWind {
     $ruta = Join-Path $script:AetherCarpeta 'Wind-Aether\Wind-Aether-perfiles.json'
     if (-not (Test-Path -LiteralPath $ruta)) { return $null }
