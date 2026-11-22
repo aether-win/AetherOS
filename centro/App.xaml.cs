@@ -20,6 +20,14 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        // El acceso directo apunta al .exe real. Si se abrió sin privilegios, se relanza
+        // elevado con la tarea programada de Aether (sin UAC) o, si no existe, pidiendo permiso.
+        if (!EsAdministrador() && RelanzarElevado(e.Args))
+        {
+            Shutdown();
+            return;
+        }
+
         // Una sola copia del Centro: si ya está en segundo plano, se le pide que muestre su
         // ventana y esta copia se cierra.
         _unico = new Mutex(true, NombreMutex, out bool soyElPrimero);
@@ -126,6 +134,52 @@ public partial class App : Application
         menu.GradientStops.Add(new System.Windows.Media.GradientStop(System.Windows.Media.Color.FromArgb(0xA0, 0x0E, 0x21, 0x40), 0));
         menu.GradientStops.Add(new System.Windows.Media.GradientStop(System.Windows.Media.Color.FromArgb(0x80, 0x0A, 0x16, 0x28), 1));
         Resources["MenuFondoBrush"] = menu;
+    }
+
+    private static bool EsAdministrador()
+    {
+        using var id = System.Security.Principal.WindowsIdentity.GetCurrent();
+        return new System.Security.Principal.WindowsPrincipal(id)
+            .IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+    }
+
+    private static bool RelanzarElevado(string[] args)
+    {
+        bool fondo = args.Any(a => a.Equals("--segundo-plano", StringComparison.OrdinalIgnoreCase));
+        try
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo("schtasks.exe")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            psi.ArgumentList.Add("/run");
+            psi.ArgumentList.Add("/tn");
+            psi.ArgumentList.Add(fondo ? @"\Aether\Toolbox segundo plano" : @"\Aether\Toolbox");
+            using var p = System.Diagnostics.Process.Start(psi);
+            if (p is not null && p.WaitForExit(10000) && p.ExitCode == 0)
+            {
+                return true;
+            }
+        }
+        catch { /* sin tarea: se pide permiso */ }
+
+        try
+        {
+            string exe = Environment.ProcessPath ?? "";
+            var psi = new System.Diagnostics.ProcessStartInfo(exe)
+            {
+                UseShellExecute = true,
+                Verb = "runas",
+                Arguments = string.Join(" ", args.Select(a => "\"" + a.Replace("\"", "") + "\"")),
+            };
+            System.Diagnostics.Process.Start(psi);
+            return true;
+        }
+        catch
+        {
+            return false; // el usuario canceló: se sigue sin privilegios (funciones limitadas)
+        }
     }
 
     /// <summary>Muestra (o crea) la ventana del Centro y la trae al frente.</summary>

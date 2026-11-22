@@ -82,7 +82,13 @@ Else
 End If
 "@, (New-Object Text.UTF8Encoding($false)))
 $accesoArgs = "`"$vbsAbrir`""
-if ($usarNativo) { $accesoIcono = "$exeNativo,0" }
+if ($usarNativo) {
+    # El acceso directo apunta al ejecutable REAL de Aether Toolbox. El propio exe se
+    # relanza con privilegios mediante la tarea \Aether\Toolbox (sin UAC).
+    $accesoTarget = $exeNativo
+    $accesoArgs = ''
+    $accesoIcono = "$exeNativo,0"
+}
 
 # Accesos viejos con el nombre anterior ("Centro Aether").
 foreach ($viejo in @(
@@ -100,7 +106,7 @@ foreach ($destino in @(
         $acceso = $shell.CreateShortcut($destino)
         $acceso.TargetPath = $accesoTarget
         $acceso.Arguments = $accesoArgs
-        $acceso.WorkingDirectory = $carpeta
+        $acceso.WorkingDirectory = $(if ($usarNativo) { Split-Path $exeNativo } else { $carpeta })
         $acceso.IconLocation = $accesoIcono
         $acceso.Description = 'Aether Toolbox: modos, mandos, red, respaldo, limpieza y mas.'
         $acceso.Save()

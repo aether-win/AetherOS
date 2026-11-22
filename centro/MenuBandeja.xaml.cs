@@ -137,6 +137,16 @@ public partial class MenuBandeja : Window
         Contenido.Children.Add(Opcion("\uE80F", Ui.Hex("#4FC3F7"), "Abrir Aether Toolbox", false,
             () => ((App)Application.Current).MostrarCentro()));
 
+        // Aether Transfer (FTP para la PS4 y servidores), si está instalado. Se abre con explorer.exe
+        // para que corra SIN privilegios y se pueda arrastrar archivos desde el Explorador.
+        string transfer = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+            "AtlasModules", "Aether", "Transfer", "AetherTransfer.exe");
+        if (System.IO.File.Exists(transfer))
+        {
+            Contenido.Children.Add(Opcion("\uE896", Ui.Hex("#5BD69A"), "Abrir Aether Transfer (FTP)", false,
+                () => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + transfer + "\""); } catch { /* no se pudo abrir */ } }));
+        }
+
         Contenido.Children.Add(Separador());
 
         // Cerrar TODO: ventana, bandeja, atajos y mando emulado (p. ej. para borrar o actualizar
