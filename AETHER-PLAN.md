@@ -503,6 +503,29 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
         vigilante **invisible** (sin ícono ni atajos); sus avisos muestran el ícono solo 7 s. El aviso de
         batería al 30% ahora es oscuro. Sin el exe nativo funciona como antes (respaldo).
       * Errores del Centro: notificación de Windows en vez de MessageBox blanco.
+- [x] **Nombre: "Aether Toolbox"** (decisión de Daniel, 21-nov 22:57; ya figuraba en AUDITORIA-FASE1). Commit
+      `45fa36b`: nombre visible en ventana, menú, avisos, accesos directos (`Aether Toolbox.lnk`, se borran los
+      viejos `Centro Aether.lnk`), tareas `\Aether\Toolbox` y `\Aether\Toolbox segundo plano` (se quitan las
+      viejas `Centro*`), exe `AetherToolbox.exe`, artefacto de CI `Aether-Toolbox-<sha>`, workflow
+      "Aether Toolbox (WPF)", log `AetherToolbox-error.log`. **Por dentro no cambia**: carpeta `centro/`,
+      namespace `CentroAether`, `AtlasModules\Aether\Centro\`, Mutex `Local\CentroAetherApp`.
+- [x] Menú de la bandeja: **"Cerrar Aether Toolbox"** al final (cierra ventana, bandeja, atajos y mando; Daniel no
+      podía borrar la carpeta porque seguía abierto).
+- [x] **Office blindado** (pedido de Daniel 22:55: "que ningún mod de Windhawk o cualquier cosa los altere"),
+      commit `7151fdb`, CI verde:
+      * Office va en la **exclusión GLOBAL de Windhawk** (`HKLM\SOFTWARE\Windhawk\Engine\Settings`, valor
+        `Exclude`): WINWORD, EXCEL, POWERPNT, OUTLOOK, olk, ONENOTE, ONENOTEM, MSACCESS, MSPUB, VISIO, WINPROJ.
+        Según la wiki de Windhawk, un proceso excluido ahí queda **totalmente** fuera de Windhawk.
+      * También en el paquete `Wind-Aether-mods.json` (`appSettings.engine.exclude`, ambas copias ahora iguales).
+      * Aether Toolbox lo **vigila** (al iniciar y cada 10 min) y lo repone + reinicia el servicio Windhawk.
+      * Formato del valor `Exclude`: se respeta el que haya (texto con "|", saltos de línea o REG_MULTI_SZ); si
+        está vacío se usa "|". **Verificar en la prueba real** que Windhawk muestre la lista en
+        Configuración > Avanzado > Lista de exclusión de procesos.
+      * Sección Oficina rehecha: estado del blindaje, macros sin bloqueo (mismas directivas que
+        `misc/aether-office-macros`), **Desbloquear archivos de otra PC** (quita Zone.Identifier por carpeta).
+        Se quitó "Proteger macros" (contradecía al instalador).
+      * Causa del Word "lavado" de Daniel (captura 22:53, laptop sin Aether): casi seguro el mod "Ventanas
+        translúcidas" de su Windhawk original (sin las exclusiones de Office de la versión Aether).
 - [ ] Aviso general + botones desactivados cuando Aether OS no está instalado (ofrecido, sin respuesta).
 - [ ] **Prueba de Daniel en la laptop de pruebas**: bajar `Centro-Aether-<sha>` de Actions, abrir
       `CentroAether.exe` (pide administrador), recorrer las secciones. Si algo falla, mandar el
@@ -512,7 +535,8 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
       `misc/aether-office-macros` (macros sin bloqueo, VBAWarnings=1 por directiva). Ver TRASPASO D.3.
 
 ### 👉 SIGUIENTE PASO EXACTO (al retomar)
-1. Esperar la prueba de Daniel del Centro WPF (artefacto de `7970b64`) y corregir lo que reporte.
+1. Esperar la prueba de Daniel de Aether Toolbox (artefacto `Aether-Toolbox-7151fdb…`): bandeja, Cerrar, Oficina
+   (que "Proteger ahora" arregle su Word) y corregir lo que reporte.
 2. Resolver la contradicción de macros de la sección Oficina (pregunta en TRASPASO D.3).
 3. Después: pendientes del Centro (sección 7: inicio/bienvenida/tema) y la pasada de limpieza
    (Borrado parte 2) del plan.

@@ -337,7 +337,7 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
   ejecución → Artifacts.
 
 ## D.4 Estado de entrega (2026-11-21, noche)
-- Último commit de código: `504dab3` (segundo plano siempre activo + bandeja oscura; CI todo verde). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
+- Último commit de código: `7151fdb` (Office blindado; CI todo verde). Antes: `45fa36b` (nombre Aether Toolbox + botón Cerrar), `504dab3` (segundo plano siempre activo + bandeja oscura). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
 - "Centro Aether (WPF)" en `7970b64`: ✅ verde.
 - **Confirmado por Daniel con captura: el Centro WPF abre en su equipo.**
 - GitHub Actions en `c06f888`: **TODO EN VERDE** ✅ — Centro Aether (WPF), Build Playbook, Lint
@@ -350,13 +350,16 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
   Hecho en `504dab3` (ver plan sección 9). Lección: el menú de WinForms (ContextMenuStrip) sale blanco →
   el menú es una ventana WPF propia (`MenuBandeja`); el NotifyIcon de WinForms solo pone el ícono.
 
+- **Nombre oficial de la app de control: "Aether Toolbox"** (antes "Centro Aether"). Daniel lo recalcó el
+  21-nov 22:57: usar SIEMPRE "Aether Toolbox" en todo lo visible. Internamente sigue `centro/`/`CentroAether`.
+- **Office blindado** (21-nov 22:55): Office no debe ser alterado por ningún mod de Windhawk ni nada más.
+  Hecho con la exclusión global de Windhawk + guardia en Aether Toolbox (ver plan sección 9).
+- La pregunta de "Proteger macros" quedó resuelta: se quitó y la sección Oficina se rehízo.
+
 ## D.3 Preguntas abiertas para Daniel
 0. (Hecho en `504dab3`: animación en bandeja y atajos.) ¿Aviso general + botones desactivados cuando Aether
    OS no está instalado?
-1. **Sección Oficina del Centro:** tiene un botón "Proteger macros" que pone las macros de Office en
-   "deshabilitadas con aviso". Eso **choca** con lo que pediste para el instalador (Excel con macros
-   VBA sin bloqueo; tweak `misc/aether-office-macros`). ¿Lo quito, o lo cambio por un botón
-   "Desbloquear archivo de otra PC" (Unblock-File, que ya estaba pendiente en el plan)?
+1. ~~Botón "Proteger macros"~~ — resuelto: quitado; Oficina rehecha con blindaje y desbloqueo.
 
 ## Preguntas pendientes para Daniel (sesión anterior; 1 y 2 ya respondidas en D.1)
 1. ¿**Aether Transfer** ya está lo bastante bien para **congelarlo** y pasar a **migrar Centro a
