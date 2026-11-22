@@ -70,9 +70,14 @@ namespace Aether {
 '@
     }
 
+    # Si está el Centro nativo (CentroAether.exe), ÉL es el ícono de la bandeja, el menú y los
+    # atajos (siempre en segundo plano). Esta bandeja queda solo como vigilante invisible
+    # (batería automática, temporizador, unidades de red, colores de Wind-Aether, respaldo).
+    $script:HayNativo = Test-Path -LiteralPath (Join-Path $PSScriptRoot 'app\CentroAether.exe') -PathType Leaf
+
     $script:IconoBandeja = New-Object System.Windows.Forms.NotifyIcon
     $script:IconoBandeja.Icon = New-Object System.Drawing.Icon($script:Icono)
-    $script:IconoBandeja.Visible = $true
+    $script:IconoBandeja.Visible = -not $script:HayNativo
     $menu = New-Object System.Windows.Forms.ContextMenuStrip
     $script:ItemsModo = @{}
     foreach ($nombre in @('Trabajo', 'Gaming', 'Bateria')) {
@@ -89,11 +94,14 @@ namespace Aether {
     $script:IconoBandeja.ContextMenuStrip = $menu
     $script:IconoBandeja.add_DoubleClick({ Show-AetherCentro })
 
-    # Atajos: Ctrl (2) + Alt (1); T = 0x54, G = 0x47, B = 0x42.
+    # Atajos: Ctrl (2) + Alt (1); T = 0x54, G = 0x47, B = 0x42. Con el Centro nativo los
+    # registra él (y muestra la animación del modo); aquí no, para no quitárselos.
     $script:Atajos = New-Object Aether.Atajos
-    [void]$script:Atajos.Registrar(1, 3, 0x54)
-    [void]$script:Atajos.Registrar(2, 3, 0x47)
-    [void]$script:Atajos.Registrar(3, 3, 0x42)
+    if (-not $script:HayNativo) {
+        [void]$script:Atajos.Registrar(1, 3, 0x54)
+        [void]$script:Atajos.Registrar(2, 3, 0x47)
+        [void]$script:Atajos.Registrar(3, 3, 0x42)
+    }
     $script:Atajos.add_Pulsado({
             param($origen, $id)
             [void]$origen
@@ -126,6 +134,19 @@ namespace Aether {
 
 function Show-AetherGlobo {
     param([string]$Texto, [string]$Tipo = 'Info')
+    if ($script:HayNativo -and -not $script:IconoBandeja.Visible) {
+        # El ícono visible es el del Centro nativo: este se muestra solo un momento para el aviso.
+        $script:IconoBandeja.Visible = $true
+        $ocultar = New-Object System.Windows.Forms.Timer
+        $ocultar.Interval = 7000
+        $ocultar.add_Tick({
+                param($origen)
+                $origen.Stop()
+                $origen.Dispose()
+                $script:IconoBandeja.Visible = $false
+            })
+        $ocultar.Start()
+    }
     $script:IconoBandeja.ShowBalloonTip(5000, 'Aether OS', $Texto, $Tipo)
 }
 
@@ -223,24 +244,39 @@ function Invoke-AetherVigilante {
 function Confirm-AetherCambioBateria {
     # Aviso de 10 segundos con Cancelar. Devuelve $true si no se canceló.
     param([int]$Porcentaje)
+    # Ventana oscura sin borde (tema Aether: nada blanco).
+    $fondo = [System.Drawing.Color]::FromArgb(15, 32, 54)
     $forma = New-Object System.Windows.Forms.Form
     $forma.Text = 'Aether OS'
-    $forma.Size = New-Object System.Drawing.Size(420, 170)
+    $forma.Size = New-Object System.Drawing.Size(440, 170)
     $forma.StartPosition = 'CenterScreen'
     $forma.TopMost = $true
-    $forma.FormBorderStyle = 'FixedDialog'
-    $forma.MaximizeBox = $false
-    $forma.MinimizeBox = $false
+    $forma.FormBorderStyle = 'None'
+    $forma.ShowInTaskbar = $false
+    $forma.BackColor = $fondo
+    $forma.ForeColor = [System.Drawing.Color]::FromArgb(230, 238, 248)
     $forma.Icon = New-Object System.Drawing.Icon($script:Icono)
+    $titulo = New-Object System.Windows.Forms.Label
+    $titulo.AutoSize = $true
+    $titulo.Text = 'Aether OS · Modo Batería'
+    $titulo.Font = New-Object System.Drawing.Font('Segoe UI Semibold', 12)
+    $titulo.ForeColor = [System.Drawing.Color]::FromArgb(79, 195, 247)
+    $titulo.Location = New-Object System.Drawing.Point(20, 16)
+    $forma.Controls.Add($titulo)
     $etiqueta = New-Object System.Windows.Forms.Label
     $etiqueta.AutoSize = $false
-    $etiqueta.Size = New-Object System.Drawing.Size(380, 60)
-    $etiqueta.Location = New-Object System.Drawing.Point(15, 15)
+    $etiqueta.Size = New-Object System.Drawing.Size(400, 50)
+    $etiqueta.Location = New-Object System.Drawing.Point(20, 52)
+    $etiqueta.Font = New-Object System.Drawing.Font('Segoe UI', 10)
     $forma.Controls.Add($etiqueta)
     $cancelar = New-Object System.Windows.Forms.Button
     $cancelar.Text = 'Cancelar'
-    $cancelar.Size = New-Object System.Drawing.Size(100, 30)
-    $cancelar.Location = New-Object System.Drawing.Point(290, 85)
+    $cancelar.Size = New-Object System.Drawing.Size(110, 34)
+    $cancelar.Location = New-Object System.Drawing.Point(310, 116)
+    $cancelar.FlatStyle = 'Flat'
+    $cancelar.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(36, 69, 107)
+    $cancelar.BackColor = [System.Drawing.Color]::FromArgb(22, 48, 79)
+    $cancelar.ForeColor = [System.Drawing.Color]::FromArgb(230, 238, 248)
     $cancelar.DialogResult = 'Cancel'
     $forma.Controls.Add($cancelar)
     $forma.CancelButton = $cancelar

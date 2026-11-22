@@ -51,6 +51,13 @@ if ($usarNativo) {
     $tarea = New-ScheduledTask -Action $accion -Principal $principal -Settings $ajustes
     Register-ScheduledTask -TaskName 'Centro' -TaskPath '\Aether\' -InputObject $tarea -Force | Out-Null
 
+    # Segundo plano SIEMPRE activo: al iniciar sesion, el Centro arranca solo en la bandeja
+    # (menu de modos y mando, atajos Ctrl+Alt+T/G/B), con privilegios altos y sin UAC.
+    $accionFondo = New-ScheduledTaskAction -Execute $exeNativo -Argument '--segundo-plano' -WorkingDirectory (Split-Path $exeNativo)
+    $disparador = New-ScheduledTaskTrigger -AtLogOn
+    $tareaFondo = New-ScheduledTask -Action $accionFondo -Principal $principal -Settings $ajustes -Trigger $disparador
+    Register-ScheduledTask -TaskName 'Centro segundo plano' -TaskPath '\Aether\' -InputObject $tareaFondo -Force | Out-Null
+
     # .vbs que dispara la tarea sin consola (schtasks es un programa de consola).
     $vbsAbrir = Join-Path $carpeta 'Abrir-Centro.vbs'
     [IO.File]::WriteAllText($vbsAbrir, @"

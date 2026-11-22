@@ -40,6 +40,34 @@ public static class Aether
 
     public static Task<string> CambiarModo(string modo) => Ejecutar($"Set-AetherModo -Modo {modo}");
 
+    /// <summary>
+    /// Cambia de modo y dice si se aplicó y por qué no (p. ej. "Conecta el cargador para usar
+    /// el Modo Gaming"), en vez de dar por bueno cualquier resultado.
+    /// </summary>
+    public static async Task<(bool Ok, string Mensaje)> CambiarModoDetallado(string modo)
+    {
+        if (!Disponible)
+        {
+            return (false, "Aether OS no está instalado en este equipo, así que no se puede cambiar de modo.");
+        }
+        string salida = await Ejecutar(
+            $"$r = Set-AetherModo -Modo {modo}; if ($r.Ok) {{ 'OK|' + $r.Mensaje }} else {{ 'NO|' + $r.Mensaje }}");
+        foreach (string linea in salida.Split('\n'))
+        {
+            string l = linea.Trim();
+            if (l.StartsWith("OK|", StringComparison.Ordinal))
+            {
+                return (true, l[3..]);
+            }
+            if (l.StartsWith("NO|", StringComparison.Ordinal))
+            {
+                return (false, l[3..]);
+            }
+        }
+        string error = salida.Trim();
+        return (false, string.IsNullOrEmpty(error) ? "No se pudo cambiar de modo." : error);
+    }
+
     private static string CarpetaAether =>
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "AtlasModules", "Aether");
 
@@ -175,12 +203,29 @@ public static class Aether
         return CorrerPowerShell($"& '{script.Replace("'", "''")}'");
     }
 
-    public static async Task<string> ModoActual()
+    public static Task<string> ModoActual() => Task.FromResult(ModoGuardado());
+
+    /// <summary>
+    /// Modo actual leído directo del registro (HKCU\Software\AetherOS\Centro, valor "Modo"), igual
+    /// que Get-AetherModo pero al instante y sin abrir PowerShell: así el segundo plano puede
+    /// vigilarlo cada pocos segundos sin gastar recursos.
+    /// </summary>
+    public static string ModoGuardado()
     {
-        if (!Disponible) return "Trabajo";
-        string salida = await Ejecutar("Get-AetherModo");
-        string texto = salida.Trim();
-        return string.IsNullOrEmpty(texto) ? "Trabajo" : texto;
+        if (!Disponible)
+        {
+            return "Trabajo";
+        }
+        try
+        {
+            using Microsoft.Win32.RegistryKey? k = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\AetherOS\Centro");
+            string texto = (k?.GetValue("Modo") as string ?? "").Trim();
+            return string.IsNullOrEmpty(texto) ? "Trabajo" : texto;
+        }
+        catch
+        {
+            return "Trabajo";
+        }
     }
 
     private static async Task<string> CorrerPowerShell(string script)

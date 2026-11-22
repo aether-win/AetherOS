@@ -77,9 +77,7 @@ public static class InteligenciaFondo
                 if (_perfilActivo != p.App)
                 {
                     _perfilActivo = p.App;
-                    _ = Aether.CambiarModo(p.Modo);
-                    // El overlay del modo correspondiente (Gaming, Trabajo o Batería).
-                    VentanaOverlayModo.Mostrar(p.Modo, p.App);
+                    _ = AplicarModo(p.Modo, p.App);
 
                     // Mando virtual del perfil: crear el dispositivo solo si hace falta.
                     if (!string.IsNullOrEmpty(p.MandoVirtual) && !MotorControlador.Activo)
@@ -104,6 +102,21 @@ public static class InteligenciaFondo
             _mandoAuto = false;
         }
         _perfilActivo = null;   // no revertimos el modo
+    }
+
+    private static async System.Threading.Tasks.Task AplicarModo(string modo, string app)
+    {
+        (bool ok, string mensaje) = await Aether.CambiarModoDetallado(modo);
+        if (ok)
+        {
+            // El overlay del modo correspondiente (Gaming, Trabajo o Batería).
+            VentanaOverlayModo.Mostrar(modo, app);
+        }
+        else
+        {
+            SegundoPlano.Notificar(mensaje);
+        }
+        SegundoPlano.ModoCambiado(Aether.ModoGuardado());
     }
 
     private static HashSet<string> ProcesosEnEjecucion()

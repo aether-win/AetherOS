@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using CentroAether.Services;
@@ -10,8 +12,27 @@ namespace CentroAether;
 
 public partial class App : Application
 {
+    private const string NombreMutex = @"Local\CentroAetherApp";
+    private const string NombreSenal = @"Local\CentroAetherMostrar";
+
+    private Mutex? _unico;
+    private EventWaitHandle? _senal;
+
     protected override void OnStartup(StartupEventArgs e)
     {
+        // Una sola copia del Centro: si ya está en segundo plano, se le pide que muestre su
+        // ventana y esta copia se cierra.
+        _unico = new Mutex(true, NombreMutex, out bool soyElPrimero);
+        if (!soyElPrimero)
+        {
+            try { EventWaitHandle.OpenExisting(NombreSenal).Set(); } catch { /* la otra copia está cerrando */ }
+            Shutdown();
+            return;
+        }
+        _senal = new EventWaitHandle(false, EventResetMode.AutoReset, NombreSenal);
+        ThreadPool.RegisterWaitForSingleObject(_senal,
+            (_, _) => Dispatcher.BeginInvoke(new Action(MostrarCentro)), null, Timeout.Infinite, false);
+
         // Si algo falla, queda escrito en CentroAether-aether-crash.log (Escritorio, %TEMP%
         // y junto al .exe) para poder ver la causa real, en vez de que la app solo se cierre.
         AppDomain.CurrentDomain.UnhandledException += (_, a) =>
@@ -20,12 +41,36 @@ public partial class App : Application
 
         base.OnStartup(e);
 
-        var ventana = new MainWindow();
-        MainWindow = ventana;
-        ventana.Show();
+        // Segundo plano SIEMPRE activo: ícono en la bandeja, atajos y vigilancia del modo.
+        SegundoPlano.Iniciar();
+
+        // Al iniciar sesión se abre con --segundo-plano (solo la bandeja, sin ventana).
+        bool soloSegundoPlano = e.Args.Any(a => a.Equals("--segundo-plano", StringComparison.OrdinalIgnoreCase));
+        if (!soloSegundoPlano)
+        {
+            MostrarCentro();
+        }
 
         // Background Intelligence: solo si el usuario lo activó (apagado por defecto).
         InteligenciaFondo.Refrescar();
+    }
+
+    /// <summary>Muestra (o crea) la ventana del Centro y la trae al frente.</summary>
+    public void MostrarCentro()
+    {
+        if (MainWindow is not CentroAether.MainWindow ventana)
+        {
+            ventana = new CentroAether.MainWindow();
+            MainWindow = ventana;
+        }
+        ventana.MostrarDesdeSegundoPlano();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        SegundoPlano.Detener();
+        MotorControlador.Detener();
+        base.OnExit(e);
     }
 
     private void AlFallarInterfaz(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -33,14 +78,8 @@ public partial class App : Application
         Registrar("Interfaz", e.Exception);
         // Un error en un botón no debe cerrar todo el Centro: se avisa y se sigue.
         e.Handled = true;
-        try
-        {
-            MessageBox.Show(
-                "Algo falló en el Centro Aether, pero puedes seguir usándolo.\n\n" + e.Exception.Message +
-                "\n\nEl detalle quedó en el Escritorio (CentroAether-aether-crash.log).",
-                "Centro Aether", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-        catch { /* sin ventana disponible */ }
+        // Aviso por notificación de Windows (nada de cuadros blancos).
+        SegundoPlano.Notificar("Algo falló, pero el Centro sigue funcionando. El detalle quedó en el Escritorio (CentroAether-aether-crash.log).");
     }
 
     private static readonly object Candado = new();

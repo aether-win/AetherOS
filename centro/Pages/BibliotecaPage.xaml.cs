@@ -64,8 +64,16 @@ public sealed partial class BibliotecaPage : PaginaBase
     {
         if (ModoAlJugar.IsOn)
         {
-            await Aether.CambiarModo("Gaming");
-            VentanaOverlayModo.Mostrar("Gaming", j.Nombre);
+            (bool ok, string mensaje) = await Aether.CambiarModoDetallado("Gaming");
+            if (ok)
+            {
+                VentanaOverlayModo.Mostrar("Gaming", j.Nombre);
+            }
+            else
+            {
+                SegundoPlano.Notificar(mensaje);
+            }
+            SegundoPlano.ModoCambiado(Aether.ModoGuardado());
         }
 
         try

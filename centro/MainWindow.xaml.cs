@@ -27,12 +27,37 @@ public partial class MainWindow : Window
             _ = ActualizarModoMenu();
         };
 
-        // Al cerrar el Centro, detener el motor del controlador y la página activa.
-        Closed += (_, _) =>
+        // Cerrar la ventana solo la oculta: el Centro sigue en segundo plano (bandeja, atajos,
+        // mando y modos). El mando emulado NO se apaga al cerrar.
+        Closing += (_, e) =>
         {
+            e.Cancel = true;
             _actual?.Salir();
-            MotorControlador.Detener();
+            _actual = null;
+            Hide();
         };
+    }
+
+    /// <summary>Muestra la ventana (desde la bandeja, el acceso directo o una segunda copia).</summary>
+    public void MostrarDesdeSegundoPlano()
+    {
+        bool estabaOculta = !IsVisible;
+        Show();
+        if (WindowState == WindowState.Minimized)
+        {
+            WindowState = WindowState.Normal;
+        }
+        Activate();
+        Topmost = true;    // truco para traerla al frente aunque otra app tenga el foco
+        Topmost = false;
+        Focus();
+
+        // Al volver de estar oculta, recargar la sección que estaba abierta.
+        if (estabaOculta && _actual is null && Nav.SelectedItem is ListBoxItem li && li.Tag is string id)
+        {
+            Navegar(id);
+        }
+        _ = ActualizarModoMenu();
     }
 
     /// <summary>

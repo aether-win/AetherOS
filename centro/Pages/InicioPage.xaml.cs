@@ -94,13 +94,13 @@ public sealed partial class InicioPage : PaginaBase
         GridModos.IsEnabled = false;
         Aviso($"Cargando modo {Ui.NombreModo(modo)}…", InfoBarSeverity.Informational);
 
-        string salida = await Aether.CambiarModo(modo);
+        (bool ok, string mensaje) = await Aether.CambiarModoDetallado(modo);
 
         GridModos.IsEnabled = true;
         _ocupado = false;
-        if (salida.StartsWith("ERROR", StringComparison.OrdinalIgnoreCase))
+        if (!ok)
         {
-            Aviso("No se pudo cambiar de modo.", InfoBarSeverity.Error);
+            Aviso(mensaje, InfoBarSeverity.Warning);
         }
         else
         {
@@ -108,7 +108,7 @@ public sealed partial class InicioPage : PaginaBase
             VentanaOverlayModo.Mostrar(modo);
         }
         await RefrescarResumen();
-        RefrescarModoMenu();
+        SegundoPlano.ModoCambiado(Aether.ModoGuardado());
     }
 
     private async void Oscuro_Click(object sender, RoutedEventArgs e)

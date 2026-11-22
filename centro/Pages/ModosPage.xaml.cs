@@ -142,16 +142,17 @@ public sealed partial class ModosPage : PaginaBase
         Estado.Message = $"Cargando modo {Ui.NombreModo(modo)}…";
         Estado.IsOpen = true;
 
-        string salida = await Aether.CambiarModo(modo);
+        (bool ok, string mensaje) = await Aether.CambiarModoDetallado(modo);
 
         await RefrescarModo();
         GridModos.IsEnabled = true;
         _ocupado = false;
 
-        if (salida.StartsWith("ERROR", StringComparison.OrdinalIgnoreCase))
+        if (!ok)
         {
-            Estado.Severity = InfoBarSeverity.Error;
-            Estado.Message = "No se pudo cambiar de modo.";
+            // P. ej. "Conecta el cargador para usar el Modo Gaming."
+            Estado.Severity = InfoBarSeverity.Warning;
+            Estado.Message = mensaje;
         }
         else
         {
@@ -161,7 +162,7 @@ public sealed partial class ModosPage : PaginaBase
             VentanaOverlayModo.Mostrar(modo);
         }
         Estado.IsOpen = true;
-        RefrescarModoMenu();
+        SegundoPlano.ModoCambiado(_modoActual);
     }
 
     private void VistaPreviaOverlay_Click(object sender, RoutedEventArgs e)
