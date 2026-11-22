@@ -87,7 +87,7 @@ public sealed partial class OficinaPage : PaginaBase
         int valor = OficinaServicio.TemasSeguros[CmbTema.SelectedIndex].Valor;
         bool ok = OficinaServicio.FijarTema(valor);
         Aviso(ok
-            ? "Tema de Office fijado. Cierra Word, Excel y PowerPoint por completo y vuelve a abrirlos."
+            ? "Tema de Office fijado (también en la copia de tu cuenta). Cierra TODAS las apps de Office (Word, Excel, PowerPoint, Outlook) y vuelve a abrirlas."
             : "No se pudo cambiar el tema de Office.",
             ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning);
         Refrescar();

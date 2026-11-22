@@ -238,7 +238,7 @@ public static class OficinaServicio
         (0, "Colorido (recomendado)"), (5, "Blanco"), (3, "Gris oscuro"),
     };
 
-    /// <summary>Tema actual de Office, o -1 si no está definido (= sigue al sistema).</summary>
+    /// <summary>Tema actual de Office (valor local "UI Theme"), o -1 si no está definido (= sigue al sistema).</summary>
     public static int TemaOffice()
     {
         try
@@ -252,8 +252,29 @@ public static class OficinaServicio
         }
     }
 
-    /// <summary>True si Office tiene un tema fijo que no cambia con Windows ni recolorea documentos.</summary>
-    public static bool TemaProtegido() => TemasSeguros.Any(t => t.Valor == TemaOffice());
+    /// <summary>
+    /// True si Office tiene un tema fijo seguro (no Negro ni "del sistema") en el valor local Y en
+    /// la copia de la cuenta (Roaming\...\Settings\1186\{0…0}\Data). Office recarga esa copia
+    /// al iniciar y pisa el valor local: si solo se cambia el local, vuelve al tema Negro.
+    /// </summary>
+    public static bool TemaProtegido()
+    {
+        if (!TemasSeguros.Any(t => t.Valor == TemaOffice()))
+        {
+            return false;
+        }
+        foreach ((RegistryKey clave, int valor) in CopiasDeCuenta())
+        {
+            using (clave)
+            {
+                if (!TemasSeguros.Any(t => t.Valor == valor))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     public static bool FijarTema(int valor)
     {
@@ -263,14 +284,113 @@ public static class OficinaServicio
         }
         try
         {
-            using RegistryKey k = Hkcu.CreateSubKey(ClaveComun);
-            k.SetValue("UI Theme", valor, RegistryValueKind.DWord);
-            k.SetValue("PendingUITheme", valor, RegistryValueKind.DWord);
+            using (RegistryKey k = Hkcu.CreateSubKey(ClaveComun))
+            {
+                k.SetValue("UI Theme", valor, RegistryValueKind.DWord);
+                k.SetValue("PendingUITheme", valor, RegistryValueKind.DWord);
+            }
+
+            // La copia de la cuenta (la que Office recarga al iniciar), en todas las cuentas.
+            foreach ((RegistryKey clave, _) in CopiasDeCuenta(escribible: true))
+            {
+                using (clave)
+                {
+                    if (clave.GetValueKind("Data") == RegistryValueKind.Binary)
+                    {
+                        clave.SetValue("Data", BitConverter.GetBytes(valor), RegistryValueKind.Binary);
+                    }
+                    else
+                    {
+                        clave.SetValue("Data", valor, RegistryValueKind.DWord);
+                    }
+                }
+            }
+
+            // Directiva de usuario: refuerzo para que Office no lo cambie por su cuenta.
+            using (RegistryKey p = Hkcu.CreateSubKey(@"Software\Policies\Microsoft\Office\16.0\Common"))
+            {
+                p.SetValue("UI Theme", valor, RegistryValueKind.DWord);
+            }
             return TemaProtegido();
         }
         catch
         {
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Busca la copia del tema de cada cuenta de Office: claves "1186\{00000000-…}" con valor
+    /// "Data" bajo HKCU\Software\Microsoft\Office\16.0\Common\Roaming (la ruta cambia según la
+    /// cuenta e instalación, por eso se recorre). Devuelve la clave abierta y el tema guardado.
+    /// </summary>
+    private static List<(RegistryKey Clave, int Valor)> CopiasDeCuenta(bool escribible = false)
+    {
+        var lista = new List<(RegistryKey, int)>();
+        try
+        {
+            using RegistryKey? raiz = Hkcu.OpenSubKey(ClaveComun + @"\Roaming");
+            if (raiz is not null)
+            {
+                Recorrer(raiz, ClaveComun + @"\Roaming", 0, escribible, lista);
+            }
+        }
+        catch { /* sin copias */ }
+        return lista;
+    }
+
+    private static void Recorrer(RegistryKey clave, string ruta, int nivel, bool escribible, List<(RegistryKey, int)> lista)
+    {
+        if (nivel > 6)
+        {
+            return;
+        }
+        foreach (string nombre in clave.GetSubKeyNames())
+        {
+            string sub = ruta + "\\" + nombre;
+            try
+            {
+                if (nombre == "1186")
+                {
+                    using RegistryKey? k1186 = Hkcu.OpenSubKey(sub);
+                    if (k1186 is null)
+                    {
+                        continue;
+                    }
+                    foreach (string hijo in k1186.GetSubKeyNames())
+                    {
+                        if (!hijo.StartsWith("{00000000-0000-0000-0000-000000000000}", StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+                        RegistryKey? dato = Hkcu.OpenSubKey(sub + "\\" + hijo, escribible);
+                        object? v = dato?.GetValue("Data");
+                        int? tema = v switch
+                        {
+                            int i => i,
+                            byte[] b when b.Length >= 4 => BitConverter.ToInt32(b, 0),
+                            _ => null,
+                        };
+                        if (dato is not null && tema is not null)
+                        {
+                            lista.Add((dato, tema.Value));
+                        }
+                        else
+                        {
+                            dato?.Dispose();
+                        }
+                    }
+                }
+                else
+                {
+                    using RegistryKey? hijoClave = Hkcu.OpenSubKey(sub);
+                    if (hijoClave is not null)
+                    {
+                        Recorrer(hijoClave, sub, nivel + 1, escribible, lista);
+                    }
+                }
+            }
+            catch { /* clave sin acceso */ }
         }
     }
 
