@@ -336,7 +336,15 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
   hoy: el proxy bloquea `*.blob.core.windows.net`). Daniel los baja él mismo desde la página de la
   ejecución → Artifacts.
 
-## D.4 Estado de entrega (2026-11-21, noche)
+## D.4 Estado de entrega (2026-11-22)
+- **Directiva 2.0, pasos 1–5 hechos y en verde**: `a22bf87` (servicio de mandos, indicador, temporizador BT,
+  interruptor general), `38fb088` (perfiles inteligentes), `faebeef` (Mica), `b8e84bf` (niveles Gaming).
+  Paso 6: `72dfff3` + `91fe4b4` versión 2.0.0 y RegisteredOwner "Aether" (la plantilla de errores debe decir
+  "Atlas vX for Windows …": lo exige un test). Instalador candidato 2.0 lanzado con `aether-app.yml`.
+- Pendiente: prueba de Daniel en la VM (lista en `docs/aether/prueba-vm-2.0.md`) → compilación final.
+  Word con colores invertidos: Daniel lo revisará tras instalar Aether limpio.
+
+## D.4b Estado anterior (2026-11-21, noche)
 - Último commit de código: `87aca2a` (instalador: componentes y drivers de mandos solo si faltan) y `61da075` (tema de Office también en la copia de la cuenta). Antes: `f808dea` (Office con tema fijo, no sigue a Windows; CI todo verde). Antes: `8e382fe` (mando DS4 original: luz, reconexión, ocultar el real). Antes: `0ac3698` (la versión nueva reemplaza a la vieja abierta). Antes: `7151fdb` (Office blindado; CI todo verde). Antes: `45fa36b` (nombre Aether Toolbox + botón Cerrar), `504dab3` (segundo plano siempre activo + bandeja oscura). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
 - "Centro Aether (WPF)" en `7970b64`: ✅ verde.
 - **Confirmado por Daniel con captura: el Centro WPF abre en su equipo.**

@@ -579,17 +579,20 @@ organización/propietario registrados, NO el nombre de red de la PC (rompería l
       Toolbox cambia valor local + PendingUITheme + todas las copias de cuenta + directiva; guardia cada 2 min.
       **Falta confirmar con Daniel** (cerrar todas las apps de Office y reabrir). Plan B si la cuenta lo vuelve a
       pisar: casilla "Deshabilitar modo oscuro" (clave de registro aún no identificada; investigar con Procmon).
-- [~] **Paso 1 Mandos**: hecho `87aca2a` instalador instala ViGEmBus/HidHide solo si faltan (con firma).
-      Falta: indicador 🟢 MANDO CONECTADO (bandeja + Toolbox, tiempo real, USB/Bluetooth), servicio de mandos por
-      eventos, registro `%ProgramData%\Aether\mandos.log` (incl. resultado de la luz), temporizador de apagado del
-      mando Bluetooth (IOCTL_BTH_DISCONNECT_DEVICE, como DS4Windows), interruptor general de mandos.
-- [ ] **Paso 2 Perfiles**: selector de procesos, editar/borrar/pausar, mando predeterminado y restaurar al cerrar el
-      juego, sonidos distintos DS4/Xbox (desactivables, solo si el cambio se verificó).
+- [x] **Paso 1 Mandos** (`87aca2a`, `a22bf87`): ViGEmBus/HidHide solo si faltan (con firma); servicio de mandos por
+      eventos; indicador 🟢 MANDO CONECTADO (bandeja + Toolbox, USB/Bluetooth); registro
+      `%ProgramData%\Aether\mandos.log` (incl. resultado de la luz); temporizador de apagado Bluetooth; interruptor
+      general. **Sin probar en hardware**: luz del DS4 original, desconexión Bluetooth.
+- [x] **Paso 2 Perfiles** (`38fb088`): selector de procesos, editar/borrar/pausar, mando predeterminado y
+      restaurar al cerrar el juego, sonidos distintos DS4/Xbox (desactivables, solo tras cambio verificado).
 - [x] **Paso 3 Dependencias** (`87aca2a`): VC++ x64/x86, DirectX, .NET Desktop 8, .NET 3.5 (DISM), .NET 4.8
       verificado; solo lo que falta, verificado después. Corre siempre al primer inicio de sesión.
-- [ ] **Paso 4 Visual**: Mica/Acrylic real de Windows 11 en Aether Toolbox (respaldo Windows 10).
-- [ ] **Paso 5 Gaming**: perfiles Equilibrado / Gaming / Gaming Extremo / Máximo Rendimiento con restauración.
-- [ ] **Paso 6**: versión 2.0 (Set-AtlasVersion), nombre "Aether OS 2.0", organización registrada "Aether",
-      compilación `aether-app.yml`, verificación del paquete y lista de pruebas en VM para Daniel.
+- [x] **Paso 4 Visual** (`faebeef`): Mica real de Windows 11 (build ≥ 22621) en Aether Toolbox; fondo sólido
+      oscuro en versiones anteriores. **Sin probar en hardware.**
+- [x] **Paso 5 Gaming** (`b8e84bf`): Equilibrado / Gaming / Gaming Extremo / Máximo Rendimiento, cada ajuste con
+      beneficio/porqué/riesgo, reversible al salir de Gaming (`docs/aether/optimizaciones-gaming.md`).
+- [~] **Paso 6** (`72dfff3`, `91fe4b4`): versión 2.0.0 (playbook.conf "Aether OS v2.0.0", 0.6.0 añadido a
+      UpgradableFrom, custom.yml, Cargo, Toolbox 2.0.0), RegisteredOwner "Aether". CI verde. Instalador candidato
+      lanzado con `aether-app.yml`. **Falta: prueba de Daniel en la VM y después la compilación final.**
 - Fuera de alcance honesto (documentar): instalador Rust (GPUI) rediseñado por completo; medir FPS/latencia DPC
   (requiere hardware real).
