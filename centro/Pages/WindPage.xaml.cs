@@ -18,28 +18,9 @@ public sealed partial class WindPage : PaginaBase
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        bool cli = Aether.WindhawkInstalado();
-        AvisoWindhawk.IsOpen = !cli;
-        AvisoWindhawk.Message = VentanaBienvenida.RutaWindhawk() is null
-            ? "Windhawk todavía no está instalado. Wind-Aether usa Windhawk para aplicar los mods."
-            : "Tu Windhawk no permite que Aether Toolbox controle los mods (le falta windhawk-cli, que trae Windhawk 2.0). Pulsa Instalar para actualizarlo.";
-        FilaPerfil.IsEnabled = cli;
+        AvisoWindhawk.IsOpen = !Aether.WindhawkInstalado();
 
         _cargando = true;
-        string perfil = "ninguno";
-        try
-        {
-            using var k = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\AetherOS\Centro");
-            perfil = k?.GetValue("PerfilWind") as string ?? "ninguno";
-        }
-        catch { /* sin ajuste */ }
-        foreach (object o in CmbPerfil.Items)
-        {
-            if (o is ComboBoxItem it && (it.Tag as string) == perfil)
-            {
-                CmbPerfil.SelectedItem = it;
-            }
-        }
         List<ModWind> mods = Aether.ListaMods();
         ListaMods.ItemsSource = mods;
         _cargando = false;
@@ -61,25 +42,6 @@ public sealed partial class WindPage : PaginaBase
             }
         }
         TxtConteo.Text = $"{activos} de {mods.Count} activos";
-    }
-
-    private async void Perfil_Changed(object sender, SelectionChangedEventArgs e)
-    {
-        if (_cargando || CmbPerfil.SelectedItem is not ComboBoxItem it || it.Tag is not string perfil)
-        {
-            return;
-        }
-        Estado.Severity = InfoBarSeverity.Informational;
-        Estado.Message = "Aplicando el perfil...";
-        Estado.IsOpen = true;
-        string r = (await Aether.Ejecutar($"Set-AetherPerfilWind -Perfil {perfil}")).Trim();
-        _cargando = true;
-        ListaMods.ItemsSource = Aether.ListaMods();
-        _cargando = false;
-        ActualizarConteo();
-        Estado.Severity = r == "Perfil aplicado." ? InfoBarSeverity.Success : InfoBarSeverity.Warning;
-        Estado.Message = string.IsNullOrEmpty(r) ? "Perfil aplicado." : r;
-        Estado.IsOpen = true;
     }
 
     private async void Mod_Toggled(object sender, RoutedEventArgs e)
@@ -115,15 +77,5 @@ public sealed partial class WindPage : PaginaBase
         Estado.Severity = InfoBarSeverity.Success;
         Estado.Message = Aether.WindhawkInstalado() ? "Windhawk instalado." : "Revisa la instalacion de Windhawk.";
         Estado.IsOpen = true;
-    }
-
-    private void AbrirWindhawk_Click(object sender, RoutedEventArgs e)
-    {
-        if (!Herramientas.AbrirWindhawk())
-        {
-            Estado.Severity = InfoBarSeverity.Warning;
-            Estado.Message = "Windhawk no está instalado.";
-            Estado.IsOpen = true;
-        }
     }
 }

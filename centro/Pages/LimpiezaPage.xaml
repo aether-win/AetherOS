@@ -19,17 +19,6 @@
                           Descripcion="Mira qué ocupa espacio en tu disco y usa el Sensor de almacenamiento.">
                 <Button x:Name="BtnAlmacen" Content="Abrir" Click="Almacen_Click" />
             </c:FilaAjuste>
-            <c:FilaAjuste Glyph="&#xE7B8;" Titulo="Limpieza de Windows"
-                          Descripcion="Temporales del sistema, descargas viejas de Windows Update y caché de Optimización de distribución. No toca tus archivos.">
-                <Button x:Name="BtnLimpiezaWindows" Content="Limpiar" Click="LimpiezaWindows_Click" />
-            </c:FilaAjuste>
-            <c:FilaAjuste Glyph="&#xEDA2;" Titulo="¿Qué ocupa espacio?"
-                          Descripcion="Mide tus carpetas principales, Windows Update y los juegos de Steam.">
-                <c:FilaAjuste.Debajo>
-                    <TextBlock x:Name="TxtEspacio" FontFamily="Cascadia Mono, Consolas" FontSize="13" Margin="0,8,0,0" TextWrapping="Wrap" />
-                </c:FilaAjuste.Debajo>
-                <Button x:Name="BtnQueOcupa" Content="Medir" Click="QueOcupa_Click" />
-            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

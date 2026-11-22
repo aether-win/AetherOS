@@ -215,9 +215,6 @@ Invoke-AetherRedPaso 'uso compartido sin contraseña' {
     Set-ItemProperty -LiteralPath $lsa -Name 'forceguest' -Value 0 -Type DWord   # cuentas locales con su propio usuario
     Set-ItemProperty -LiteralPath (Join-Path $serviciosRoot 'LanmanServer\Parameters') -Name 'RestrictNullSessAccess' -Value 0 -Type DWord
     Write-AtlasLog -Message 'Red Aether: uso compartido protegido con contraseña desactivado.'
-    # Las unidades de red conectadas desde Aether Toolbox (con privilegios) también se ven en el
-    # Explorador y en Excel, y al revés.
-    Set-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name 'EnableLinkedConnections' -Value 1 -Type DWord
 }
 
 Write-AtlasLog -Message 'Red Aether: red de trabajo aplicada.'
