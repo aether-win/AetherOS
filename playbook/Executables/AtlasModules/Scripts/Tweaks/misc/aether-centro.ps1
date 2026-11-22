@@ -43,7 +43,8 @@ $accesoTarget = $wscript
 $accesoArgs = ""
 $accesoIcono = "$icono,0"
 
-if ($usarNativo) {
+# Las tareas se registran SIEMPRE (no dependen de que el exe ya este copiado en este momento).
+& {
     # Tarea programada que abre el Centro nativo con privilegios altos (sin UAC).
     $accion = New-ScheduledTaskAction -Execute $exeNativo -WorkingDirectory (Split-Path $exeNativo)
     $principal = New-ScheduledTaskPrincipal -GroupId 'S-1-5-32-545' -RunLevel Highest
@@ -62,31 +63,26 @@ if ($usarNativo) {
     $tareaFondo = New-ScheduledTask -Action $accionFondo -Principal $principal -Settings $ajustes -Trigger $disparador
     Register-ScheduledTask -TaskName 'Toolbox segundo plano' -TaskPath '\Aether\' -InputObject $tareaFondo -Force | Out-Null
 
-    # .vbs que dispara la tarea sin consola (schtasks es un programa de consola).
-    $vbsAbrir = Join-Path $carpeta 'Abrir-Centro.vbs'
-    [IO.File]::WriteAllText($vbsAbrir, @"
-' Abre Aether Toolbox mediante su tarea programada (sin ventana ni UAC).
-Dim shell
-Set shell = CreateObject("WScript.Shell")
-Dim rc
-rc = shell.Run("schtasks /run /tn ""\Aether\Toolbox""", 0, True)
-' Si la tarea no existe o falla, se abre el exe directo (Windows pedira permiso).
-If rc <> 0 Then shell.Run """$exeNativo""", 1, False
-"@, (New-Object Text.UTF8Encoding($false)))
-    $accesoArgs = "`"$vbsAbrir`""
-    $accesoIcono = "$exeNativo,0"
 }
-else {
-    # Respaldo: la ventana clasica (WPF) sin consola.
-    $vbsAbrir = Join-Path $carpeta 'Abrir-Centro.vbs'
-    [IO.File]::WriteAllText($vbsAbrir, @"
-' Abre Aether Toolbox clasico sin ventana de PowerShell.
-Dim shell
+
+# --- Lanzador unico: decide al abrir, no al instalar --------------------------------------
+# Si AetherToolbox.exe existe se abre SIEMPRE el nuevo (tarea sin UAC; si la tarea falta,
+# el exe directo). La ventana clasica solo si el exe no esta.
+$vbsAbrir = Join-Path $carpeta 'Abrir-Centro.vbs'
+[IO.File]::WriteAllText($vbsAbrir, @"
+' Abre Aether Toolbox (nuevo) o, si no esta, la version clasica.
+Dim shell, fso, rc
 Set shell = CreateObject("WScript.Shell")
-shell.Run "$powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""$centro""", 0, False
+Set fso = CreateObject("Scripting.FileSystemObject")
+If fso.FileExists("$exeNativo") Then
+    rc = shell.Run("schtasks /run /tn ""\Aether\Toolbox""", 0, True)
+    If rc <> 0 Then shell.Run """$exeNativo""", 1, False
+Else
+    shell.Run "$powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""$centro""", 0, False
+End If
 "@, (New-Object Text.UTF8Encoding($false)))
-    $accesoArgs = "`"$vbsAbrir`""
-}
+$accesoArgs = "`"$vbsAbrir`""
+if ($usarNativo) { $accesoIcono = "$exeNativo,0" }
 
 # Accesos viejos con el nombre anterior ("Centro Aether").
 foreach ($viejo in @(

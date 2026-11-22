@@ -119,6 +119,9 @@ namespace Aether {
     $reloj.add_Tick({ Invoke-AetherVigilante })
     $reloj.Start()
     Update-AetherBandeja
+    if ($script:HayNativo -and -not (Get-Process -Name 'AetherToolbox' -ErrorAction SilentlyContinue)) {
+        Start-Process -FilePath (Join-Path ([Environment]::SystemDirectory) 'schtasks.exe') -ArgumentList @('/run', '/tn', '"\Aether\Toolbox segundo plano"') -WindowStyle Hidden
+    }
     # Con Aether Toolbox (nativo) la bienvenida la muestra él, oscura y completa.
     if (-not $script:HayNativo -and (Get-AetherAjuste -Nombre 'BienvenidaVista' -PorDefecto 0) -ne 1) {
         Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script:EsteScript`"", '-Bienvenida')
@@ -408,6 +411,15 @@ if ($Bienvenida) {
         })
     [void]$ventanaB.ShowDialog()
     exit 0
+}
+
+# Si Aether Toolbox (nuevo) esta instalado, se abre ese y la ventana clasica nunca aparece.
+if (-not $Bandeja -and -not $Bienvenida -and (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'app\AetherToolbox.exe') -PathType Leaf)) {
+    $vbsNuevo = Join-Path $PSScriptRoot 'Abrir-Centro.vbs'
+    if (Test-Path -LiteralPath $vbsNuevo) {
+        Start-Process -FilePath (Join-Path ([Environment]::SystemDirectory) 'wscript.exe') -ArgumentList @("`"$vbsNuevo`"")
+        exit 0
+    }
 }
 
 # =========================================================================================
