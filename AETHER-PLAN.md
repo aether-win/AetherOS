@@ -485,8 +485,24 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
       llena en los 3 s, ya no se amontonan avisos. También: los puntos de las tarjetas de Modos se cortaban
       (Pila horizontal no ajusta texto → se usa Grid) y, sin Aether OS instalado, Modos/Inicio decían
       "Modo Trabajo activo" (falso) → ahora avisan que Aether no está instalado.
-- [ ] Animación también al cambiar de modo desde la **bandeja** o los **atajos Ctrl+Alt+T/G/B** (parte
-      PowerShell, nunca la tuvo). Ofrecido a Daniel, sin respuesta aún.
+- [x] **Segundo plano SIEMPRE activo** (pedido de Daniel 21-nov 22:32, obligatorio), commit `504dab3`,
+      todo CI en verde (Centro, Build Playbook, Lint PowerShell, Test):
+      * `SegundoPlano.cs`: ícono en la bandeja (NotifyIcon; clic = abrir, clic derecho = menú), atajos
+        Ctrl+Alt+T/G/B **con animación**, vigía del modo cada 2 s leyendo el registro
+        (HKCU\Software\AetherOS\Centro\Modo): si cambia por Batería automática o perfiles, animación.
+      * `MenuBandeja.xaml`: menú **WPF oscuro** (nada blanco): Modo de uso (Trabajo/Gaming/Batería) y
+        Mando (Apagado / Xbox 360 / PS4-DualShock 4, vía `MotorControlador`), más "Abrir Centro".
+      * Cerrar la ventana la **oculta** (no apaga el mando emulado). Una sola copia (Mutex
+        `Local\CentroAetherApp` + evento `Local\CentroAetherMostrar`): abrirlo de nuevo muestra la ventana.
+        `--segundo-plano` arranca solo en la bandeja.
+      * `Aether.CambiarModoDetallado`: devuelve Ok/Mensaje reales de Set-AetherModo (antes Gaming sin
+        cargador decía "activo"). `Aether.ModoActual` ahora lee el registro (instantáneo, sin PowerShell).
+      * Instalador (`misc/aether-centro.ps1`): tarea nueva `\Aether\Centro segundo plano` al iniciar sesión
+        (Users, privilegios altos, sin UAC).
+      * Bandeja PowerShell (`Centro-Aether.ps1 -Bandeja`): si existe `app\CentroAether.exe` queda como
+        vigilante **invisible** (sin ícono ni atajos); sus avisos muestran el ícono solo 7 s. El aviso de
+        batería al 30% ahora es oscuro. Sin el exe nativo funciona como antes (respaldo).
+      * Errores del Centro: notificación de Windows en vez de MessageBox blanco.
 - [ ] Aviso general + botones desactivados cuando Aether OS no está instalado (ofrecido, sin respuesta).
 - [ ] **Prueba de Daniel en la laptop de pruebas**: bajar `Centro-Aether-<sha>` de Actions, abrir
       `CentroAether.exe` (pide administrador), recorrer las secciones. Si algo falla, mandar el

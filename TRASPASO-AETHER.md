@@ -337,7 +337,7 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
   ejecución → Artifacts.
 
 ## D.4 Estado de entrega (2026-11-21, noche)
-- Último commit de código: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
+- Último commit de código: `504dab3` (segundo plano siempre activo + bandeja oscura; CI todo verde). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
 - "Centro Aether (WPF)" en `7970b64`: ✅ verde.
 - **Confirmado por Daniel con captura: el Centro WPF abre en su equipo.**
 - GitHub Actions en `c06f888`: **TODO EN VERDE** ✅ — Centro Aether (WPF), Build Playbook, Lint
@@ -345,9 +345,14 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
 - El workflow viejo "Centro Aether (WinUI 3)" ahora se llama **"Centro Aether (WPF)"**.
 - Ningún .exe final compilado (Regla 38). El artefacto de CI es solo para la prueba de Daniel.
 
+- **Decisión de Daniel (21-nov 22:32): el Centro debe estar SIEMPRE activo en segundo plano**, con menú de
+  bandeja para cambiar el modo de uso y el mando (Xbox / PS4 real). **Nada blanco** en nada que abra.
+  Hecho en `504dab3` (ver plan sección 9). Lección: el menú de WinForms (ContextMenuStrip) sale blanco →
+  el menú es una ventana WPF propia (`MenuBandeja`); el NotifyIcon de WinForms solo pone el ícono.
+
 ## D.3 Preguntas abiertas para Daniel
-0. ¿Agregar la animación de modos también a la bandeja y a los atajos Ctrl+Alt+T/G/B? ¿Aviso + botones
-   desactivados cuando Aether OS no está instalado?
+0. (Hecho en `504dab3`: animación en bandeja y atajos.) ¿Aviso general + botones desactivados cuando Aether
+   OS no está instalado?
 1. **Sección Oficina del Centro:** tiene un botón "Proteger macros" que pone las macros de Office en
    "deshabilitadas con aviso". Eso **choca** con lo que pediste para el instalador (Excel con macros
    VBA sin bloqueo; tweak `misc/aether-office-macros`). ¿Lo quito, o lo cambio por un botón
