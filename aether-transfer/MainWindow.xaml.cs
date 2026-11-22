@@ -28,9 +28,12 @@ public partial class MainWindow : Window
     private string _rutaLocal = "";
     private string _rutaRemota = "/";
 
+    private System.Windows.Point _inicioArrastre;
+
     public MainWindow()
     {
         InitializeComponent();
+        Tema.BarraOscura(this);
 
         LocalLista.ItemsSource = _local;
         RemotoLista.ItemsSource = _remoto;
@@ -470,6 +473,7 @@ public partial class MainWindow : Window
         try
         {
             Directory.CreateDirectory(Path.Combine(_rutaLocal, nombre));
+            Log($"Carpeta creada en el equipo: {nombre}");
             CargarLocal(_rutaLocal);
         }
         catch (Exception ex) { Log($"Error al crear carpeta: {ex.Message}"); }
@@ -497,6 +501,7 @@ public partial class MainWindow : Window
             {
                 File.Move(item.Ruta, destino);
             }
+            Log($"Renombrado en el equipo: {item.Nombre} → {nuevo}");
             CargarLocal(_rutaLocal);
         }
         catch (Exception ex) { Log($"Error al renombrar: {ex.Message}"); }
@@ -522,6 +527,7 @@ public partial class MainWindow : Window
             {
                 File.Delete(item.Ruta);
             }
+            Log($"Eliminado del equipo: {item.Nombre}");
             CargarLocal(_rutaLocal);
         }
         catch (Exception ex) { Log($"Error al eliminar: {ex.Message}"); }
@@ -541,6 +547,7 @@ public partial class MainWindow : Window
         try
         {
             await _servidor.CrearCarpetaAsync(UnirPosix(_rutaRemota, nombre));
+            Log($"Carpeta creada en el servidor: {nombre}");
             await CargarRemoto(_rutaRemota);
         }
         catch (Exception ex) { Log($"Error al crear carpeta remota: {ex.Message}"); }
@@ -560,6 +567,7 @@ public partial class MainWindow : Window
         try
         {
             await _servidor.RenombrarAsync(item.Ruta, UnirPosix(_rutaRemota, nuevo));
+            Log($"Renombrado en el servidor: {item.Nombre} → {nuevo}");
             await CargarRemoto(_rutaRemota);
         }
         catch (Exception ex) { Log($"Error al renombrar: {ex.Message}"); }
@@ -578,6 +586,7 @@ public partial class MainWindow : Window
         try
         {
             await _servidor.EliminarAsync(item.Ruta, item.EsCarpeta);
+            Log($"Eliminado del servidor: {item.Ruta}");
             await CargarRemoto(_rutaRemota);
         }
         catch (Exception ex) { Log($"Error al eliminar: {ex.Message}"); }
@@ -593,6 +602,159 @@ public partial class MainWindow : Window
         MessageBoxResult r = MessageBox.Show(this, mensaje, "Confirmar",
             MessageBoxButton.YesNo, MessageBoxImage.Question);
         return Task.FromResult(r == MessageBoxResult.Yes);
+    }
+
+    // ── Arrastrar y soltar ───────────────────────────────────────────────────
+
+    private void DragSobreArchivos(object sender, DragEventArgs e)
+    {
+        e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+        e.Handled = true;
+    }
+
+    // Soltar en el panel REMOTO = subir al servidor.
+    private void RemotoDrop(object sender, DragEventArgs e)
+    {
+        if (_servidor is null || !_servidor.Conectado)
+        {
+            Log("Conéctate primero para subir archivos.");
+            return;
+        }
+        if (e.Data.GetData(DataFormats.FileDrop) is not string[] rutas)
+        {
+            return;
+        }
+        int n = 0;
+        foreach (string ruta in rutas)
+        {
+            if (File.Exists(ruta))
+            {
+                var fi = new FileInfo(ruta);
+                _gestor.Encolar(new TransferItem
+                {
+                    Nombre = fi.Name,
+                    RutaLocal = ruta,
+                    RutaRemota = UnirPosix(_rutaRemota, fi.Name),
+                    Subida = true,
+                    Tamano = fi.Length,
+                });
+                n++;
+            }
+            else if (Directory.Exists(ruta))
+            {
+                Log($"Las carpetas aún no se suben por arrastre: {Path.GetFileName(ruta)}");
+            }
+        }
+        if (n > 0)
+        {
+            Log($"Arrastre: {n} archivo(s) en cola para subir.");
+        }
+    }
+
+    // Soltar en el panel LOCAL = copiar al equipo (desde Explorador o temporal de arrastre).
+    private void LocalDrop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetData(DataFormats.FileDrop) is not string[] rutas)
+        {
+            return;
+        }
+        int n = 0;
+        foreach (string ruta in rutas)
+        {
+            try
+            {
+                if (File.Exists(ruta))
+                {
+                    string destino = Path.Combine(_rutaLocal, Path.GetFileName(ruta));
+                    if (!string.Equals(Path.GetFullPath(ruta), Path.GetFullPath(destino), StringComparison.OrdinalIgnoreCase))
+                    {
+                        File.Copy(ruta, destino, true);
+                        n++;
+                    }
+                }
+            }
+            catch (Exception ex) { Log($"Error al copiar {Path.GetFileName(ruta)}: {ex.Message}"); }
+        }
+        if (n > 0)
+        {
+            Log($"Copiado(s) al equipo: {n} archivo(s).");
+            CargarLocal(_rutaLocal);
+        }
+    }
+
+    // Iniciar arrastre desde el panel LOCAL (rutas reales -> sirve para subir o para el Explorador).
+    private void Local_MouseDown(object sender, MouseButtonEventArgs e) => _inicioArrastre = e.GetPosition(null);
+
+    private void Local_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (e.LeftButton != MouseButtonState.Pressed || !SuperaUmbral(e))
+        {
+            return;
+        }
+        string[] archivos = LocalLista.SelectedItems.OfType<ElementoRemoto>()
+            .Where(x => !x.EsCarpeta && x.Nombre != "..")
+            .Select(x => x.Ruta).Where(File.Exists).ToArray();
+        if (archivos.Length == 0)
+        {
+            return;
+        }
+        try { DragDrop.DoDragDrop(LocalLista, new DataObject(DataFormats.FileDrop, archivos), DragDropEffects.Copy); }
+        catch { /* arrastre cancelado */ }
+    }
+
+    // Iniciar arrastre desde el panel REMOTO: descarga a temporal y entrega como archivo real
+    // (así se puede soltar tanto en el Explorador de Windows como en el panel local).
+    private void Remoto_MouseDown(object sender, MouseButtonEventArgs e) => _inicioArrastre = e.GetPosition(null);
+
+    private void Remoto_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (e.LeftButton != MouseButtonState.Pressed || !SuperaUmbral(e))
+        {
+            return;
+        }
+        if (_servidor is null || !_servidor.Conectado)
+        {
+            return;
+        }
+        var archivos = RemotoLista.SelectedItems.OfType<ElementoRemoto>()
+            .Where(x => !x.EsCarpeta && x.Nombre != "..").ToList();
+        if (archivos.Count == 0)
+        {
+            return;
+        }
+
+        string temp = Path.Combine(Path.GetTempPath(), "AetherTransfer");
+        var rutas = new System.Collections.Generic.List<string>();
+        Mouse.OverrideCursor = Cursors.Wait;
+        try
+        {
+            Directory.CreateDirectory(temp);
+            IServidorRemoto srv = _servidor;
+            foreach (ElementoRemoto f in archivos)
+            {
+                string destino = Path.Combine(temp, f.Nombre);
+                Log($"Preparando para arrastrar: {f.Nombre}…");
+                Task.Run(() => srv.DescargarAsync(f.Ruta, destino)).GetAwaiter().GetResult();
+                rutas.Add(destino);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log($"Error al preparar el arrastre: {ex.Message}");
+            Mouse.OverrideCursor = null;
+            return;
+        }
+        Mouse.OverrideCursor = null;
+
+        try { DragDrop.DoDragDrop(RemotoLista, new DataObject(DataFormats.FileDrop, rutas.ToArray()), DragDropEffects.Copy); }
+        catch { /* arrastre cancelado */ }
+    }
+
+    private bool SuperaUmbral(MouseEventArgs e)
+    {
+        Vector d = _inicioArrastre - e.GetPosition(null);
+        return System.Math.Abs(d.X) >= SystemParameters.MinimumHorizontalDragDistance
+            || System.Math.Abs(d.Y) >= SystemParameters.MinimumVerticalDragDistance;
     }
 
     // ── Utilidades de rutas POSIX ────────────────────────────────────────────

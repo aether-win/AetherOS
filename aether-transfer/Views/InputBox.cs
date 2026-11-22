@@ -63,6 +63,7 @@ public static class InputBox
 
         ventana.Content = raiz;
         caja.Focus();
+        Tema.BarraOscura(ventana);
 
         return ventana.ShowDialog() == true ? resultado : null;
     }

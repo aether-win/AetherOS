@@ -210,21 +210,51 @@
                 </Setter>
             </Style>
 
-            <!-- ====== Menú contextual oscuro ====== -->
+            <!-- ====== Menú contextual totalmente oscuro ====== -->
             <Style TargetType="ContextMenu">
-                <Setter Property="Background" Value="#0F2036" />
-                <Setter Property="BorderBrush" Value="#1E3A5C" />
-                <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="Foreground" Value="#E6EEF8" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContextMenu">
+                            <Border Background="#0F2036" BorderBrush="#24456B" BorderThickness="1" CornerRadius="8" Padding="4">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="2" Opacity="0.5" />
+                                </Border.Effect>
+                                <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
             <Style TargetType="MenuItem">
                 <Setter Property="Foreground" Value="#E6EEF8" />
                 <Setter Property="Background" Value="Transparent" />
-                <Setter Property="Padding" Value="8,4" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuItem">
+                            <Border x:Name="b" Background="{TemplateBinding Background}" CornerRadius="5" Padding="12,7" Margin="1">
+                                <ContentPresenter ContentSource="Header" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsHighlighted" Value="True">
+                                    <Setter TargetName="b" Property="Background" Value="#1E6BFF" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Foreground" Value="#6B7B90" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
-            <Style TargetType="Separator">
-                <Setter Property="Background" Value="#1E3A5C" />
-                <Setter Property="Margin" Value="4,3" />
+            <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Separator">
+                            <Border Height="1" Background="#24456B" Margin="8,4" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <!-- ====== Elemento de ComboBox oscuro ====== -->

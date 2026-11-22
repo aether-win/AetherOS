@@ -19,6 +19,7 @@ public partial class DialogoSitios : Window
     public DialogoSitios()
     {
         InitializeComponent();
+        Tema.BarraOscura(this);
         foreach (SitioGuardado s in AlmacenSitios.Cargar())
         {
             _sitios.Add(s);

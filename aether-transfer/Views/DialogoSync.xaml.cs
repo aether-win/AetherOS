@@ -37,6 +37,7 @@ public partial class DialogoSync : Window
     public DialogoSync(IReadOnlyList<ElementoRemoto> locales, IReadOnlyList<ElementoRemoto> remotos)
     {
         InitializeComponent();
+        Tema.BarraOscura(this);
 
         var loc = locales.Where(x => !x.EsCarpeta && x.Nombre != "..").ToDictionary(x => x.Nombre, x => x);
         var rem = remotos.Where(x => !x.EsCarpeta && x.Nombre != "..").ToDictionary(x => x.Nombre, x => x);

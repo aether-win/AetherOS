@@ -8,6 +8,7 @@ public partial class DialogoConfig : Window
     public DialogoConfig()
     {
         InitializeComponent();
+        Tema.BarraOscura(this);
         ConfigApp.Datos d = ConfigApp.Actual;
         CLimite.Text = d.LimiteVelocidadKBps.ToString();
         CTimeout.Text = d.TimeoutSegundos.ToString();
