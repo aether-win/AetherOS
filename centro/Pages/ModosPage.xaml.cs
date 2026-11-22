@@ -16,11 +16,11 @@ public sealed partial class ModosPage : PaginaBase
     private static readonly (string id, string titulo, string desc, string[] puntos)[] Modos =
     {
         ("Trabajo", "Trabajo", "Equilibrado para el día a día.",
-            new[] { "Todo activo y notificaciones", "Animaciones completas de Windows 11", "Turbo del procesador disponible" }),
+            new[] { "Todo activo y notificaciones", "Turbo del procesador disponible", "Wi-Fi a máximo rendimiento con cargador", "Modo Juego de Windows listo" }),
         ("Gaming", "Gaming", "Máximo rendimiento para jugar.",
-            new[] { "Solo con el cargador conectado", "Sin estacionar núcleos ni segundo plano", "No molestar y mods pesados en pausa" }),
+            new[] { "Solo con el cargador conectado", "Sin estacionar núcleos ni segundo plano", "Libera la RAM en espera al entrar", "Modo Juego y prioridad alta de GPU para juegos" }),
         ("Bateria", "Batería", "Eficiente para durar más.",
-            new[] { "Ahorro de batería de Windows", "Procesador eficiente, sin turbo" }),
+            new[] { "Ahorro de batería de Windows", "Procesador eficiente, sin turbo", "Wi-Fi en ahorro medio" }),
     };
 
     public ModosPage()
@@ -36,7 +36,10 @@ public sealed partial class ModosPage : PaginaBase
     {
         (0, "CPU al 100% sin estacionar núcleos (EPP 0)", "Frecuencia estable, sin bajones al jugar.", "El procesador no baja de velocidad ni apaga núcleos en mitad de la partida.", "Bajo: más consumo; solo con cargador."),
         (0, "Modo de energía \"Mejor rendimiento\" y temporizador 0,5 ms", "Respuesta y ritmo de fotogramas más parejos.", "Windows despierta los hilos del juego con más precisión.", "Bajo."),
-        (0, "Sin notificaciones, sin apps en segundo plano, mods pesados en pausa", "Menos interrupciones y menos uso de CPU/RAM.", "Libera recursos que el juego aprovecha.", "Ninguno: se restaura al salir."),
+        (0, "Sin notificaciones ni apps en segundo plano", "Menos interrupciones y menos uso de CPU/RAM.", "Libera recursos que el juego aprovecha.", "Ninguno: se restaura al salir."),
+        (0, "Memoria en espera liberada al entrar", "El juego encuentra RAM libre al instante.", "Se vacía la caché vieja de Windows (como RAMMap de Microsoft).", "Ninguno: Windows la vuelve a llenar sola."),
+        (0, "Modo Juego de Windows y prioridad MMCSS \"Games\" (GPU 8, alta)", "Fotogramas más estables con otras apps abiertas.", "Windows da preferencia de CPU y GPU al juego en primer plano.", "Ninguno."),
+        (0, "Wi-Fi a máximo rendimiento", "Menos ping y sin cortes de la red inalámbrica.", "La tarjeta Wi-Fi no entra en ahorro de energía.", "Bajo: algo más de consumo con cargador."),
         (1, "Sin suspensión selectiva USB", "Mando, ratón y teclado sin retrasos al \"despertar\".", "Windows no duerme los puertos USB entre pulsaciones.", "Bajo: algo más de consumo."),
         (1, "Sin ahorro de energía PCI Express (ASPM)", "Menos latencia de la gráfica y el SSD.", "El enlace PCIe no entra en reposo.", "Bajo: algo más de consumo y calor."),
         (1, "Búsqueda de Windows en pausa", "Sin picos de disco/CPU del indexado mientras juegas.", "El indexador se detiene y vuelve al salir de Gaming.", "Ninguno: la búsqueda vuelve al salir."),

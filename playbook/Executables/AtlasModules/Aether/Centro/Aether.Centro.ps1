@@ -455,6 +455,79 @@ function Restore-AetherNivelGaming {
     Set-AetherAjuste -Nombre 'NivelAplicado' -Valor 'Gaming'
 }
 
+# --- Optimizaciones reales de cada modo (todas medibles y reversibles) -------------------
+$script:AetherSubWifi = '19cbb8fa-5279-450e-9fac-8a3d5fedd0c1'          # Adaptador inalámbrico
+$script:AetherWifiAhorro = '12bbebe6-58d6-4636-95bb-3217ef867c1a'       # 0 = máximo rendimiento, 2 = ahorro medio
+
+function Set-AetherModoJuego {
+    # Modo Juego de Windows (prioriza el juego en CPU/GPU) y prioridades MMCSS de la tarea "Games".
+    param([bool]$Activo)
+    $gb = 'HKCU:\Software\Microsoft\GameBar'
+    if (-not (Test-Path -LiteralPath $gb)) { New-Item -Path $gb -Force | Out-Null }
+    Set-ItemProperty -LiteralPath $gb -Name 'AutoGameModeEnabled' -Value ([int]$Activo) -Type DWord
+    Set-ItemProperty -LiteralPath $gb -Name 'AllowAutoGameMode' -Value ([int]$Activo) -Type DWord
+    if ($Activo) {
+        $tarea = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games'
+        if (-not (Test-Path -LiteralPath $tarea)) { New-Item -Path $tarea -Force | Out-Null }
+        Set-ItemProperty -LiteralPath $tarea -Name 'GPU Priority' -Value 8 -Type DWord
+        Set-ItemProperty -LiteralPath $tarea -Name 'Priority' -Value 6 -Type DWord
+        Set-ItemProperty -LiteralPath $tarea -Name 'Scheduling Category' -Value 'High' -Type String
+        Set-ItemProperty -LiteralPath $tarea -Name 'SFIO Priority' -Value 'High' -Type String
+    }
+}
+
+function Clear-AetherMemoriaEnEspera {
+    # Libera la memoria "en espera" (caché vieja) para que el juego tenga RAM libre de inmediato.
+    # Igual que el botón "Empty Standby List" de las herramientas de Microsoft (RAMMap).
+    if (-not ('AetherMemoria' -as [type])) {
+        Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class AetherMemoria {
+    [StructLayout(LayoutKind.Sequential)] struct LUID { public uint Low; public int High; }
+    [StructLayout(LayoutKind.Sequential)] struct TOKEN_PRIVILEGES { public uint Count; public LUID Luid; public uint Attr; }
+    [DllImport("advapi32.dll", SetLastError = true)] static extern bool OpenProcessToken(IntPtr p, uint a, out IntPtr t);
+    [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)] static extern bool LookupPrivilegeValue(string s, string n, out LUID l);
+    [DllImport("advapi32.dll", SetLastError = true)] static extern bool AdjustTokenPrivileges(IntPtr t, bool d, ref TOKEN_PRIVILEGES n, uint l, IntPtr p, IntPtr r);
+    [DllImport("kernel32.dll")] static extern IntPtr GetCurrentProcess();
+    [DllImport("ntdll.dll")] static extern int NtSetSystemInformation(int clase, ref int info, int largo);
+    public static int Vaciar() {
+        IntPtr token;
+        if (!OpenProcessToken(GetCurrentProcess(), 0x28, out token)) return -1;
+        LUID luid;
+        if (!LookupPrivilegeValue(null, "SeProfileSingleProcessPrivilege", out luid)) return -2;
+        var tp = new TOKEN_PRIVILEGES { Count = 1, Luid = luid, Attr = 2 };
+        AdjustTokenPrivileges(token, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero);
+        int orden = 4; // MemoryPurgeStandbyList
+        return NtSetSystemInformation(80, ref orden, 4); // SystemMemoryListInformation
+    }
+}
+'@
+    }
+    return ([AetherMemoria]::Vaciar() -eq 0)
+}
+
+function Test-AetherModoAplicado {
+    # Lee de vuelta los valores reales del plan de energía y cuenta cuántos coinciden con el modo.
+    param([string]$Modo)
+    $esperado = switch ($Modo) {
+        'Gaming' { @{ ($script:AetherProcMin) = @(100, $null); ($script:AetherEpp) = @(0, $null); ($script:AetherProcMax) = @(100, $null) } }
+        'Trabajo' { @{ ($script:AetherProcMin) = @(10, 5); ($script:AetherEpp) = @(50, 60); ($script:AetherProcMax) = @(100, 100) } }
+        default { @{ ($script:AetherProcMax) = @($null, 80); ($script:AetherTurbo) = @($null, 0); ($script:AetherEpp) = @($null, 80) } }
+    }
+    $ok = 0; $total = 0
+    foreach ($k in $esperado.Keys) {
+        $real = Get-AetherValorEnergia -Sub $script:AetherSubProcesador -Ajuste $k
+        if (-not $real) { continue }
+        for ($i = 0; $i -lt 2; $i++) {
+            if ($null -eq $esperado[$k][$i]) { continue }
+            $total++
+            if ($real[$i] -eq $esperado[$k][$i]) { $ok++ }
+        }
+    }
+    return [pscustomobject]@{ Ok = $ok; Total = $total }
+}
+
 function Set-AetherModo {
     <#
         Cambia a Trabajo, Gaming o Bateria. Devuelve un objeto con Ok y Mensaje.
@@ -489,6 +562,9 @@ function Set-AetherModo {
             Set-AetherNotificaciones -Activas $true
             Set-AetherAppsSegundoPlano -Permitidas $true
             Set-AetherAnimaciones -Completas $true
+            Set-AetherModoJuego -Activo $true
+            # Wi-Fi: rendimiento máximo con cargador (sin cortes en llamadas y carpetas de red).
+            Set-AetherValorEnergia -Sub $script:AetherSubWifi -Ajuste $script:AetherWifiAhorro -Ac 0 -Dc 1
             $mensaje = 'Modo Trabajo activo.'
         }
         'Gaming' {
@@ -505,6 +581,9 @@ function Set-AetherModo {
             Set-AetherNotificaciones -Activas $false
             Set-AetherAppsSegundoPlano -Permitidas $false
             Set-AetherAnimaciones -Completas $false
+            Set-AetherModoJuego -Activo $true
+            Set-AetherValorEnergia -Sub $script:AetherSubWifi -Ajuste $script:AetherWifiAhorro -Ac 0
+            $ramLiberada = Clear-AetherMemoriaEnEspera
             $nivel = [string](Get-AetherAjuste -Nombre 'NivelGaming' -PorDefecto 'Gaming')
             if ($nivel -notin @('Gaming', 'Extremo', 'Maximo')) { $nivel = 'Gaming' }
             Set-AetherNivelGaming -Nivel $nivel
@@ -525,10 +604,16 @@ function Set-AetherModo {
             Set-AetherModoEnergiaWindows -Modo Eficiencia
             Set-AetherAppsSegundoPlano -Permitidas $false
             Set-AetherAnimaciones -Completas $true
+            Set-AetherValorEnergia -Sub $script:AetherSubWifi -Ajuste $script:AetherWifiAhorro -Dc 2
             $mensaje = 'Modo Batería activo.'
         }
     }
     & powercfg.exe /setactive SCHEME_CURRENT 2>&1 | Out-Null
+
+    # Comprobación real: se leen de vuelta los valores del plan de energía.
+    $v = Test-AetherModoAplicado -Modo $Modo
+    if ($v.Total -gt 0) { $mensaje += " Verificado: $($v.Ok) de $($v.Total) ajustes del procesador aplicados." }
+    if ($Modo -eq 'Gaming' -and $ramLiberada) { $mensaje += ' Memoria en espera liberada.' }
 
     Set-AetherAjuste -Nombre 'Modo' -Valor $Modo
     if ($Automatico) {

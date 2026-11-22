@@ -123,6 +123,22 @@ public static class InteligenciaFondo
             SegundoPlano.ModoCambiado(Aether.ModoGuardado());
         }
 
+        // Prioridad alta al juego del perfil (Windows le da antes la CPU que a lo demás).
+        try
+        {
+            foreach (Process pr in Process.GetProcessesByName(Limpio(p.Proceso)))
+            {
+                using (pr)
+                {
+                    if (pr.PriorityClass is ProcessPriorityClass.Normal or ProcessPriorityClass.BelowNormal)
+                    {
+                        pr.PriorityClass = ProcessPriorityClass.High;
+                    }
+                }
+            }
+        }
+        catch { /* proceso protegido (anti-cheat): se deja como está */ }
+
         TipoVirtual? mando = ControlMandos.DesdeTexto(p.MandoVirtual);
         if (mando is not null && ConfigCentro.MandosActivos)
         {
