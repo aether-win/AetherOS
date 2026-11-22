@@ -1,22 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using CentroAether;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace CentroAether.Services;
 
 /// <summary>
-/// Background Intelligence: vigila los procesos en ejecución y, cuando aparece uno
-/// que tiene un perfil, aplica su modo una sola vez (y muestra el overlay si es
-/// Gaming). No revierte el modo al cerrar: respeta la elección del usuario.
-/// Opt-in: solo corre si ConfigCentro.InteligenciaActiva está activa.
+/// Perfiles automáticos (opt-in: ConfigCentro.InteligenciaActiva). Cada 3 segundos mira qué
+/// procesos corren (funciona aunque el juego se abra desde Steam, Rockstar u otro launcher,
+/// porque se busca el proceso real, p. ej. GTA5.exe):
+///  - Al aparecer el proceso de un perfil ACTIVO: guarda el modo y el mando que había, aplica
+///    el modo del perfil (si tiene) y su mando (verificado y con sonido).
+///  - Si hay varios juegos con perfil abiertos a la vez, manda el que está más arriba en la lista.
+///  - Al cerrarse el juego: vuelve al modo que había antes y deja el mando en el predeterminado.
 /// </summary>
 public static class InteligenciaFondo
 {
     private static DispatcherTimer? _timer;
-    private static string? _perfilActivo;
-    private static bool _mandoAuto;
+    private static PerfilApp? _perfilActivo;
+    private static string? _modoAntes;
+    private static bool _ocupado;
 
     public static void Iniciar()
     {
@@ -24,8 +29,8 @@ public static class InteligenciaFondo
         {
             return;
         }
-        _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(8) };
-        _timer.Tick += (_, _) => Revisar();
+        _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
+        _timer.Tick += async (_, _) => await Revisar();
         _timer.Start();
     }
 
@@ -34,6 +39,7 @@ public static class InteligenciaFondo
         _timer?.Stop();
         _timer = null;
         _perfilActivo = null;
+        _modoAntes = null;
     }
 
     /// <summary>Arranca o detiene según la configuración actual.</summary>
@@ -49,74 +55,106 @@ public static class InteligenciaFondo
         }
     }
 
-    private static void Revisar()
+    /// <summary>Nombre del perfil que está aplicado ahora (para mostrarlo en Perfiles).</summary>
+    public static string? PerfilAplicado => _perfilActivo?.App;
+
+    private static string Limpio(string proceso)
     {
-        List<PerfilApp> perfiles = PerfilesServicio.Cargar();
-        if (perfiles.Count == 0)
-        {
-            _perfilActivo = null;
-            return;
-        }
-
-        HashSet<string> procesos = ProcesosEnEjecucion();
-
-        foreach (PerfilApp p in perfiles)
-        {
-            string proc = p.Proceso.Trim();
-            if (proc.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-            {
-                proc = proc[..^4];
-            }
-            if (string.IsNullOrEmpty(proc))
-            {
-                continue;
-            }
-
-            if (procesos.Contains(proc))
-            {
-                if (_perfilActivo != p.App)
-                {
-                    _perfilActivo = p.App;
-                    _ = AplicarModo(p.Modo, p.App);
-
-                    // Mando virtual del perfil: crear el dispositivo solo si hace falta.
-                    if (ConfigCentro.MandosActivos && !string.IsNullOrEmpty(p.MandoVirtual) && !MotorControlador.Activo)
-                    {
-                        MotorControlador.Objetivo = p.MandoVirtual == "DualShock4"
-                            ? TipoVirtual.DualShock4
-                            : TipoVirtual.Xbox360;
-                        if (MotorControlador.ConflictoActivo() is null && MotorControlador.Iniciar())
-                        {
-                            _mandoAuto = true;
-                        }
-                    }
-                }
-                return;   // un perfil activo a la vez
-            }
-        }
-
-        // Ningún juego con perfil corriendo: liberar el mando virtual si lo iniciamos nosotros.
-        if (_mandoAuto && MotorControlador.Activo)
-        {
-            MotorControlador.Detener();
-            _mandoAuto = false;
-        }
-        _perfilActivo = null;   // no revertimos el modo
+        string p = proceso.Trim();
+        return p.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ? p[..^4] : p;
     }
 
-    private static async System.Threading.Tasks.Task AplicarModo(string modo, string app)
+    private static async Task Revisar()
     {
-        (bool ok, string mensaje) = await Aether.CambiarModoDetallado(modo);
-        if (ok)
+        if (_ocupado)
         {
-            // El overlay del modo correspondiente (Gaming, Trabajo o Batería).
-            VentanaOverlayModo.Mostrar(modo, app);
+            return;
         }
-        else
+        _ocupado = true;
+        try
         {
-            SegundoPlano.Notificar(mensaje);
+            List<PerfilApp> perfiles = PerfilesServicio.Cargar()
+                .Where(p => p.Activo && !string.IsNullOrWhiteSpace(p.Proceso))
+                .ToList();
+            HashSet<string> procesos = await Task.Run(ProcesosEnEjecucion);
+
+            // El primero de la lista que esté corriendo gana (evita conflictos entre perfiles).
+            PerfilApp? enCurso = perfiles.FirstOrDefault(p => procesos.Contains(Limpio(p.Proceso)));
+
+            if (enCurso is not null && !string.Equals(enCurso.App, _perfilActivo?.App, StringComparison.OrdinalIgnoreCase))
+            {
+                if (_perfilActivo is null)
+                {
+                    _modoAntes = Aether.Disponible ? Aether.ModoGuardado() : null;
+                }
+                _perfilActivo = enCurso;
+                await Aplicar(enCurso);
+            }
+            else if (enCurso is null && _perfilActivo is not null)
+            {
+                await Restaurar(_perfilActivo);
+                _perfilActivo = null;
+                _modoAntes = null;
+            }
         }
-        SegundoPlano.ModoCambiado(Aether.ModoGuardado());
+        catch (Exception ex)
+        {
+            ServicioMandos.Registrar("Perfiles automáticos: " + ex.Message);
+        }
+        finally
+        {
+            _ocupado = false;
+        }
+    }
+
+    private static async Task Aplicar(PerfilApp p)
+    {
+        if (!string.IsNullOrEmpty(p.Modo) && Aether.Disponible)
+        {
+            (bool ok, string mensaje) = await Aether.CambiarModoDetallado(p.Modo);
+            if (ok)
+            {
+                VentanaOverlayModo.Mostrar(p.Modo, p.App);
+            }
+            else
+            {
+                SegundoPlano.Notificar(mensaje);
+            }
+            SegundoPlano.ModoCambiado(Aether.ModoGuardado());
+        }
+
+        TipoVirtual? mando = ControlMandos.DesdeTexto(p.MandoVirtual);
+        if (mando is not null && ConfigCentro.MandosActivos)
+        {
+            (bool ok, string mensaje) = await Task.Run(() => ControlMandos.Cambiar(mando));
+            SegundoPlano.Notificar($"{p.App}: {mensaje}");
+            ServicioMandos.Registrar($"Perfil «{p.App}» ({p.Proceso}): mando → {(ok ? "aplicado" : "no aplicado")}.");
+            SegundoPlano.ActualizarIndicador();
+        }
+    }
+
+    private static async Task Restaurar(PerfilApp p)
+    {
+        // Modo: volver al que había antes del juego.
+        if (!string.IsNullOrEmpty(p.Modo) && !string.IsNullOrEmpty(_modoAntes) && Aether.Disponible
+            && !string.Equals(_modoAntes, Aether.ModoGuardado(), StringComparison.OrdinalIgnoreCase))
+        {
+            (bool ok, _) = await Aether.CambiarModoDetallado(_modoAntes);
+            if (ok)
+            {
+                VentanaOverlayModo.Mostrar(_modoAntes, $"{p.App} se cerró");
+            }
+            SegundoPlano.ModoCambiado(Aether.ModoGuardado());
+        }
+
+        // Mando: volver al predeterminado (si el perfil lo había cambiado).
+        if (!string.IsNullOrEmpty(p.MandoVirtual) && ConfigCentro.MandosActivos)
+        {
+            TipoVirtual? predeterminado = ControlMandos.DesdeTexto(ConfigCentro.MandoPredeterminado);
+            (_, string mensaje) = await Task.Run(() => ControlMandos.Cambiar(predeterminado));
+            SegundoPlano.Notificar($"{p.App} se cerró: {mensaje}");
+            SegundoPlano.ActualizarIndicador();
+        }
     }
 
     private static HashSet<string> ProcesosEnEjecucion()

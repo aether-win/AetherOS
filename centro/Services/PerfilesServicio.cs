@@ -5,13 +5,15 @@ using System.Text.Json;
 
 namespace CentroAether.Services;
 
-/// <summary>Un perfil que asocia una app/juego a un modo de rendimiento.</summary>
+/// <summary>Un perfil que asocia una app/juego a un modo de rendimiento y/o a un mando.</summary>
 public sealed class PerfilApp
 {
     public string App { get; set; } = "";
     public string Proceso { get; set; } = "";   // nombre del .exe para la detección automática
-    public string Modo { get; set; } = "Gaming";
+    public string Ruta { get; set; } = "";      // ruta del .exe (informativa)
+    public string Modo { get; set; } = "Gaming"; // "Gaming", "Trabajo", "Bateria" o "" (no cambiar)
     public string MandoVirtual { get; set; } = "";   // "", "Xbox360" o "DualShock4"
+    public bool Activo { get; set; } = true;          // pausar un perfil sin borrarlo
 }
 
 /// <summary>

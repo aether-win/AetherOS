@@ -198,6 +198,41 @@
                 </Setter>
             </Style>
 
+            <!-- ====== Casilla (CheckBox) oscura ====== -->
+            <Style TargetType="CheckBox">
+                <Setter Property="Foreground" Value="#E6EEF8" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="CheckBox">
+                            <StackPanel Orientation="Horizontal" Background="Transparent">
+                                <Border x:Name="Caja" Width="18" Height="18" CornerRadius="4" BorderThickness="1"
+                                        BorderBrush="#6F87A3" Background="#0A1726" VerticalAlignment="Center">
+                                    <TextBlock x:Name="Marca" Text="&#xE73E;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets"
+                                               FontSize="11" Foreground="White" HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" Visibility="Collapsed" />
+                                </Border>
+                                <ContentPresenter Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Caja" Property="Background" Value="#2F8CFF" />
+                                    <Setter TargetName="Caja" Property="BorderBrush" Value="#2F8CFF" />
+                                    <Setter TargetName="Marca" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Caja" Property="BorderBrush" Value="#9DB2CC" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.45" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <!-- ====== Cuadro de texto (Tag = texto de ayuda cuando está vacío) ====== -->
             <Style TargetType="TextBox">
                 <Setter Property="Background" Value="{StaticResource CampoBrush}" />

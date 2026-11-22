@@ -179,51 +179,12 @@ public static class SegundoPlano
     // ── Mando ────────────────────────────────────────────────────────────────────
 
     /// <summary>null = apagar la emulación; si no, emular ese mando (Xbox 360 o PS4).</summary>
-    public static void CambiarMando(TipoVirtual? destino)
+    public static async Task CambiarMando(TipoVirtual? destino)
     {
-        if (!ConfigCentro.MandosActivos)
-        {
-            Notificar("Los mandos de Aether están desactivados. Actívalos en Aether Toolbox › Control.");
-            return;
-        }
-        if (destino is null)
-        {
-            if (MotorControlador.Activo)
-            {
-                MotorControlador.Detener();
-                Notificar("Emulación de mando apagada.");
-            }
-            return;
-        }
-
-        if (!MotorControlador.ViGEmDisponible())
-        {
-            Notificar("Falta el driver ViGEmBus. Instálalo en Aether Toolbox › Control.");
-            return;
-        }
-        if (MotorControlador.Activo && MotorControlador.Objetivo == destino)
-        {
-            return;
-        }
-        string? conflicto = MotorControlador.ConflictoActivo();
-        if (conflicto is not null)
-        {
-            Notificar($"{conflicto} está abierto. Ciérralo para evitar entrada doble.");
-            return;
-        }
-
-        if (MotorControlador.Activo)
-        {
-            MotorControlador.Detener();
-        }
-        MotorControlador.Objetivo = destino.Value;
-        bool ok = MotorControlador.Iniciar();
-        string nombre = destino == TipoVirtual.DualShock4 ? "mando de PS4 (DualShock 4)" : "mando de Xbox 360";
-        string oculto = !ok ? ""
-            : MotorControlador.MandoRealOculto ? " El original quedó oculto: los juegos solo ven el emulado."
-            : HidHideServicio.Disponible ? ""
-            : " Instala HidHide (Aether Toolbox › Control) para ocultar el original.";
-        Notificar(ok ? $"Tu mando ahora funciona como {nombre}.{oculto}" : "No se pudo iniciar la emulación del mando.");
+        // Fuera del hilo de la ventana: iniciar el mando virtual y HidHide tarda un momento.
+        (bool _, string mensaje) = await Task.Run(() => ControlMandos.Cambiar(destino));
+        Notificar(mensaje);
+        ActualizarIndicador();
     }
 
     // ── Menú y avisos ────────────────────────────────────────────────────────────

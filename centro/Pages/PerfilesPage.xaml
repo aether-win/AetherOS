@@ -7,15 +7,30 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
-            <c:Encabezado Glyph="&#xE748;" ColorIcono="#7A5AF8" Titulo="Perfiles" Subtitulo="Asocia una app o juego a un modo y, si quieres, a un mando virtual." />
+            <c:Encabezado Glyph="&#xE748;" ColorIcono="#7A5AF8" Titulo="Perfiles"
+                          Subtitulo="Cada juego o app con su modo y su mando. Se aplican solos al abrirlo (también desde Steam u otro launcher)." />
             <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <c:FilaAjuste Glyph="&#xE945;" Titulo="Aplicar perfiles automáticamente"
-                          Descripcion="Vigila los procesos y aplica el modo al abrir una app con perfil (no revierte al cerrarla).">
+            <c:FilaAjuste x:Name="FilaAuto" Glyph="&#xE945;" Titulo="Aplicar perfiles automáticamente"
+                          Descripcion="Al abrir un juego con perfil se aplica su modo y su mando; al cerrarlo vuelve todo como estaba.">
                 <c:ToggleSwitch x:Name="TglInteligencia" Toggled="Inteligencia_Toggled" />
             </c:FilaAjuste>
 
-            <TextBlock Text="Nuevo perfil" Style="{StaticResource SeccionTextBlockStyle}" />
+            <TextBlock Text="Al cerrar el juego" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE7FC;" Titulo="Mando predeterminado"
+                          Descripcion="El mando vuelve a esto al cerrar un juego que lo había cambiado.">
+                <ComboBox x:Name="CmbPredeterminado" Width="200" SelectionChanged="Predeterminado_Changed">
+                    <ComboBoxItem Content="Mando normal" />
+                    <ComboBoxItem Content="Xbox 360" />
+                    <ComboBoxItem Content="PS4 (DualShock 4)" />
+                </ComboBox>
+            </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xE767;" Titulo="Sonido al cambiar de mando"
+                          Descripcion="Un sonido distinto para Xbox, para PS4 y para mando normal. Solo suena si el cambio se comprobó.">
+                <c:ToggleSwitch x:Name="TglSonidos" Toggled="Sonidos_Toggled" />
+            </c:FilaAjuste>
+
+            <TextBlock x:Name="TxtTituloForm" Text="Nuevo perfil" Style="{StaticResource SeccionTextBlockStyle}" />
             <Border Style="{StaticResource TarjetaStyle}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -26,45 +41,55 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <c:Pila Grid.Row="0" Grid.Column="0" Spacing="6" Margin="0,0,8,14">
+                    <Button Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,0,0,16" Click="ElegirProceso_Click">
+                        <c:Pila Orientation="Horizontal" Spacing="8">
+                            <c:FontIcon Glyph="&#xE71D;" FontSize="14" />
+                            <TextBlock Text="Elegir de los programas abiertos…" />
+                        </c:Pila>
+                    </Button>
+                    <c:Pila Grid.Row="1" Grid.Column="0" Spacing="6" Margin="0,0,8,14">
                         <TextBlock Text="App o juego" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
                         <TextBox x:Name="TxtApp" Tag="Ej.: GTA V" />
                     </c:Pila>
-                    <c:Pila Grid.Row="0" Grid.Column="1" Spacing="6" Margin="8,0,0,14">
-                        <TextBlock Text="Proceso (para detectarlo solo)" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                    <c:Pila Grid.Row="1" Grid.Column="1" Spacing="6" Margin="8,0,0,14">
+                        <TextBlock Text="Proceso (se detecta solo)" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
                         <TextBox x:Name="TxtProceso" Tag="Ej.: GTA5.exe" />
                     </c:Pila>
-                    <c:Pila Grid.Row="1" Grid.Column="0" Spacing="6" Margin="0,0,8,16">
+                    <c:Pila Grid.Row="2" Grid.Column="0" Spacing="6" Margin="0,0,8,16">
                         <TextBlock Text="Modo" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                        <ComboBox x:Name="CmbModo" HorizontalAlignment="Stretch" SelectedIndex="0">
+                        <ComboBox x:Name="CmbModo" HorizontalAlignment="Stretch" SelectedIndex="1">
+                            <ComboBoxItem Content="No cambiar" />
                             <ComboBoxItem Content="Gaming" />
                             <ComboBoxItem Content="Trabajo" />
-                            <ComboBoxItem Content="Bateria" />
+                            <ComboBoxItem Content="Batería" />
                         </ComboBox>
                     </c:Pila>
-                    <c:Pila Grid.Row="1" Grid.Column="1" Spacing="6" Margin="8,0,0,16">
-                        <TextBlock Text="Mando virtual" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                    <c:Pila Grid.Row="2" Grid.Column="1" Spacing="6" Margin="8,0,0,16">
+                        <TextBlock Text="Mando" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
                         <ComboBox x:Name="CmbMando" HorizontalAlignment="Stretch" SelectedIndex="0">
-                            <ComboBoxItem Content="Ninguno" />
-                            <ComboBoxItem Content="Xbox 360" />
-                            <ComboBoxItem Content="DualShock 4" />
+                            <ComboBoxItem Content="No cambiar" />
+                            <ComboBoxItem Content="Xbox 360 / XInput" />
+                            <ComboBoxItem Content="PS4 (DualShock 4)" />
                         </ComboBox>
                     </c:Pila>
-                    <Button x:Name="BtnAgregar" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right"
-                            Style="{StaticResource AccentButtonStyle}" Click="Agregar_Click">
-                        <c:Pila Orientation="Horizontal" Spacing="8">
-                            <c:FontIcon Glyph="&#xE710;" FontSize="13" />
-                            <TextBlock Text="Agregar perfil" />
-                        </c:Pila>
-                    </Button>
+                    <c:Pila Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                        <Button x:Name="BtnCancelar" Content="Cancelar" Visibility="Collapsed" Click="Cancelar_Click" />
+                        <Button x:Name="BtnAgregar" Style="{StaticResource AccentButtonStyle}" Click="Agregar_Click">
+                            <c:Pila Orientation="Horizontal" Spacing="8">
+                                <c:FontIcon x:Name="IcoAgregar" Glyph="&#xE710;" FontSize="13" />
+                                <TextBlock x:Name="TxtAgregar" Text="Agregar perfil" />
+                            </c:Pila>
+                        </Button>
+                    </c:Pila>
                 </Grid>
             </Border>
 
-            <TextBlock Text="Perfiles guardados" Style="{StaticResource SeccionTextBlockStyle}" />
+            <TextBlock Text="Perfiles guardados (el de más arriba manda si hay dos abiertos)" Style="{StaticResource SeccionTextBlockStyle}" />
             <c:Pila x:Name="Contenedor" Spacing="8" />
             <c:FilaAjuste x:Name="TxtVacio" Glyph="&#xE946;" Titulo="Aún no hay perfiles"
-                          Descripcion="Agrega el primero arriba." Visibility="Collapsed" />
+                          Descripcion="Abre tu juego, pulsa «Elegir de los programas abiertos…» y agrégalo." Visibility="Collapsed" />
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>
