@@ -40,9 +40,9 @@ function Get-AtlasAppxRemovalDefinition {
         [pscustomobject]@{ Name = 'SpotifyAB.SpotifyMusic*';                      Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.549981C3F5F10*';                     Option = $null;                 IgnoreErrors = $false }
         [pscustomobject]@{ Name = 'Microsoft.XboxApp*';                           Option = $null;                 IgnoreErrors = $false }
-        # Aether: se quitan Xbox y Game Bar; los drivers de mandos y Xbox Identity Provider se quedan.
+        # Aether: se quita la app Xbox; Game Bar (ms-gamebar, la usan los juegos), los drivers de
+        # mandos y Xbox Identity Provider se quedan.
         [pscustomobject]@{ Name = 'Microsoft.GamingApp*';                         Option = $null;                 IgnoreErrors = $true }
-        [pscustomobject]@{ Name = 'Microsoft.XboxGamingOverlay*';                 Option = $null;                 IgnoreErrors = $true }
         [pscustomobject]@{ Name = 'Microsoft.XboxSpeechToTextOverlay*';           Option = $null;                 IgnoreErrors = $true }
         [pscustomobject]@{ Name = '7EE7776C.LinkedInforWindows*';                 Option = $null;                 IgnoreErrors = $true }
         [pscustomobject]@{ Name = 'microsoft.windowscommunicationsapps*';          Option = $null;                 IgnoreErrors = $false }

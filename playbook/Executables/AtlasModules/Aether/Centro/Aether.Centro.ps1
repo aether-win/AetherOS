@@ -318,6 +318,17 @@ function Invoke-AetherAutoReparacion {
     if ($enCurso.Count) { Write-AetherAutoLog 'El instalador de apps del primer inicio sigue trabajando; se reintenta en el próximo inicio de sesión.'; return @() }
     $lineas = @()
     $lineas += Install-AetherDriversMando
+    # Game Bar se queda: si faltara (instalaciones anteriores la quitaban), se repone desde la Store
+    # para que los juegos no muestren el aviso de 'ms-gamebar'.
+    if (-not (Get-AppxPackage -Name Microsoft.XboxGamingOverlay -ErrorAction SilentlyContinue)) {
+        $winget = Get-Command winget.exe -ErrorAction SilentlyContinue
+        if ($winget) {
+            & $winget.Source install --exact --id 9NZKPSTSNW4P --source msstore --accept-package-agreements --accept-source-agreements --disable-interactivity --silent *> $null
+            $ok = [bool](Get-AppxPackage -Name Microsoft.XboxGamingOverlay -ErrorAction SilentlyContinue)
+            Write-AetherAutoLog "Game Bar (ms-gamebar): reinstalación -> $ok"
+            if ($ok) { $lineas += 'Game Bar repuesta' }
+        }
+    }
     if (-not (Get-AetherWindhawkCli)) {
         if (Install-AetherWindhawkCli) { $lineas += 'Windhawk 2.0 instalado' }
         else { $lineas += 'Windhawk 2.0 NO se pudo instalar' }

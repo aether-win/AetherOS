@@ -661,7 +661,6 @@ Describe 'AppX removal policy' {
             'MicrosoftWindows.Client.WebExperience*'
             'Microsoft.WidgetsPlatformRuntime*'
             'Microsoft.GamingApp*'
-            'Microsoft.XboxGamingOverlay*'
             'Microsoft.XboxSpeechToTextOverlay*'
             '7EE7776C.LinkedInforWindows*'
         )

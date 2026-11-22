@@ -17,6 +17,7 @@
                 # Aether: red de trabajo automática (Reparar-Red-Aether sin preguntas).
                 'aether-red'
                 'aether-prioridad-red'
+                'aether-bluetooth'
             )
         }
         @{

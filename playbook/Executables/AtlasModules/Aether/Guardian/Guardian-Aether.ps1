@@ -90,6 +90,11 @@ if ($Sistema) {
         try { & $red; Write-Guardian 'Red de trabajo revisada y aplicada.' }
         catch { Write-Guardian "Red: $($_.Exception.Message)" }
     }
+    $bt = Join-Path $tweaks 'networking\aether-bluetooth.ps1'
+    if (Test-Path -LiteralPath $bt) {
+        try { & $bt; Write-Guardian 'Bluetooth revisado y aplicado.' }
+        catch { Write-Guardian "Bluetooth: $($_.Exception.Message)" }
+    }
     $n = Repair-AetherRegistro -Raices @('HKLM')
     Write-Guardian "Sistema: $n ajustes repuestos."
 }
