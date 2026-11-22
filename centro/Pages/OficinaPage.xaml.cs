@@ -26,12 +26,12 @@ public sealed partial class OficinaPage : PaginaBase
     private void Refrescar()
     {
         bool office = OficinaServicio.OfficeInstalado();
-        TxtOffice.Text = office
+        FilaOffice.Descripcion = office
             ? "Microsoft Office detectado en este equipo."
             : "No se detectó Microsoft Office. Las protecciones se aplicarán si lo instalas.";
 
         bool protegidas = OficinaServicio.MacrosProtegidas();
-        TxtMacros.Text = protegidas
+        FilaMacros.Descripcion = protegidas
             ? "Protegidas: las macros se bloquean con aviso antes de ejecutarse."
             : "Las macros podrían ejecutarse sin aviso. Recomendado protegerlas.";
         BtnMacros.IsEnabled = !protegidas;

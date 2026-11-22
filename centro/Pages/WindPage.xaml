@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <Grid Margin="32,24,32,16">
+    <Grid Margin="36,30,36,20" MaxWidth="1000">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -13,14 +13,12 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <c:Pila Grid.Row="0" Orientation="Horizontal" Spacing="12" Margin="0,0,0,14">
-            <c:FontIcon Glyph="&#xE790;" FontSize="28" />
-            <c:Pila>
-                <TextBlock Text="Wind-Aether" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBlock Text="Activa o desactiva cada mod visual. Empiezan todos apagados."
-                           Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-            </c:Pila>
-        </c:Pila>
+        <c:Encabezado Grid.Row="0" Glyph="&#xE790;" ColorIcono="#E879F9" Titulo="Wind-Aether"
+                      Subtitulo="Activa o desactiva cada mod visual de Windhawk. Empiezan todos apagados." Margin="0,0,0,14">
+            <Border CornerRadius="14" Padding="14,6" Background="#3A1F4A" BorderBrush="#E879F9" BorderThickness="1">
+                <TextBlock x:Name="TxtConteo" Text="…" FontWeight="SemiBold" />
+            </Border>
+        </c:Encabezado>
 
         <c:InfoBar x:Name="AvisoWindhawk" Grid.Row="1" IsOpen="False" IsClosable="False" Margin="0,0,0,14"
                    Severity="Warning"
@@ -30,23 +28,27 @@
             </c:InfoBar.ActionButton>
         </c:InfoBar>
 
-        <Border Grid.Row="2" Background="{StaticResource LayerFillColorDefaultBrush}"
-                BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1" CornerRadius="8">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="6">
+        <Border Grid.Row="2" Background="#0F2036" BorderBrush="#1C3756" BorderThickness="1" CornerRadius="12">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="4,6">
                 <ItemsControl x:Name="ListaMods">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="8,6">
+                            <Border BorderBrush="#16304F" BorderThickness="0,0,0,1" Padding="14,12">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Nombre}" VerticalAlignment="Center"
-                                           TextWrapping="Wrap" Margin="0,0,12,0" />
-                                <c:ToggleSwitch Grid.Column="1" IsOn="{Binding Activo, Mode=TwoWay}"
-                                                Toggled="Mod_Toggled" Tag="{Binding Id}" />
+                                <Border Width="34" Height="34" CornerRadius="9" Background="#16304F" Margin="0,0,14,0">
+                                    <c:FontIcon Glyph="&#xE790;" FontSize="15" Foreground="#E879F9" HorizontalAlignment="Center" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Text="{Binding Nombre}" VerticalAlignment="Center"
+                                           TextWrapping="Wrap" Margin="0,0,12,0" FontSize="14" />
+                                <c:ToggleSwitch Grid.Column="2" IsOn="{Binding Activo, Mode=TwoWay}"
+                                                Toggled="Mod_Toggled" Tag="{Binding Id}" VerticalAlignment="Center" />
                             </Grid>
+                            </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

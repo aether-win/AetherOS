@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace CentroAether.Controles;
@@ -25,6 +26,12 @@ public class PaginaBase : UserControl
     protected virtual void OnNavigatedFrom(NavigationEventArgs e)
     {
     }
+
+    /// <summary>Abre otra sección del Centro (accesos rápidos, enlaces entre secciones).</summary>
+    protected void IrA(string id) => (Window.GetWindow(this) as MainWindow)?.IrA(id);
+
+    /// <summary>Refresca el modo que muestra el menú lateral después de cambiarlo.</summary>
+    protected void RefrescarModoMenu() => _ = (Window.GetWindow(this) as MainWindow)?.ActualizarModoMenu();
 
     internal void Entrar(object? parametro) => OnNavigatedTo(new NavigationEventArgs(parametro));
 

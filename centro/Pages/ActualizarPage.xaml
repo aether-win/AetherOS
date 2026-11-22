@@ -5,56 +5,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="32,24,32,24">
-        <c:Pila Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE895;" Titulo="Actualizaciones" Subtitulo="Controla Windows Update y mantén al día tus programas." />
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <c:Pila Orientation="Horizontal" Spacing="12">
-                <c:FontIcon Glyph="&#xE895;" FontSize="28" />
-                <c:Pila>
-                    <TextBlock Text="Actualizaciones" Style="{StaticResource TitleTextBlockStyle}" />
-                    <TextBlock Text="Controla Windows Update y actualiza tus programas."
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                </c:Pila>
-            </c:Pila>
+            <TextBlock Text="Windows" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE769;" Titulo="Mantener Windows Update en pausa"
+                          Descripcion="Aether deja Windows sin actualizarse solo. Apaga esto cuando quieras actualizar y vuelve a encenderlo después.">
+                <c:ToggleSwitch x:Name="SwPausa" OnContent="En pausa" OffContent="Activo" Toggled="SwPausa_Toggled" />
+            </c:FilaAjuste>
 
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <c:Pila Grid.Column="0" Spacing="2">
-                        <TextBlock Text="Mantener Windows Update en pausa" FontWeight="SemiBold" FontSize="15" />
-                        <TextBlock Text="Aether deja Windows sin actualizarse solo. Apaga esto para actualizar."
-                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-                    </c:Pila>
-                    <c:ToggleSwitch x:Name="SwPausa" Grid.Column="1" VerticalAlignment="Center"
-                                  OnContent="En pausa" OffContent="Activo" Toggled="SwPausa_Toggled" />
-                </Grid>
-            </Border>
-
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <c:Pila Grid.Column="0" Spacing="2">
-                        <TextBlock Text="Actualizar mis programas" FontWeight="SemiBold" FontSize="15" />
-                        <TextBlock Text="Busca una version mas nueva de los programas instalados (Chrome, apps, etc.) y los actualiza."
-                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-                    </c:Pila>
-                    <Button x:Name="BtnApps" Grid.Column="1" VerticalAlignment="Center"
-                            Content="Actualizar" Click="BtnApps_Click" />
-                </Grid>
-            </Border>
-
-            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
-
+            <TextBlock Text="Programas" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE896;" Titulo="Actualizar mis programas"
+                          Descripcion="Busca versiones nuevas de los programas instalados (navegadores, apps, etc.) y las instala.">
+                <Button x:Name="BtnApps" Content="Actualizar" Style="{StaticResource AccentButtonStyle}" Click="BtnApps_Click" />
+            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

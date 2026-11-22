@@ -6,72 +6,23 @@
     xmlns:c="clr-namespace:CentroAether.Controles">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <c:Pila Padding="32,28,32,28" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE8A5;" ColorIcono="#F2B33D" Titulo="Oficina" Subtitulo="Office, macros y comodidad para trabajar." />
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <c:Pila Spacing="2">
-                <TextBlock Text="Oficina" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBlock Text="Protección de Office y comodidad para trabajar."
-                           Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-            </c:Pila>
+            <TextBlock Text="Microsoft Office" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste x:Name="FilaOffice" Glyph="&#xE8A5;" Titulo="Office en este equipo" Descripcion="Comprobando…" />
+            <c:FilaAjuste x:Name="FilaMacros" Glyph="&#xE72E;" Titulo="Seguridad de macros" Descripcion="…">
+                <Button x:Name="BtnMacros" Content="Proteger macros" Click="Macros_Click" />
+            </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xE73E;" ColorIcono="{StaticResource SystemFillColorSuccessBrush}" Titulo="Texto siempre visible en Office"
+                          Descripcion="Las transparencias de los mods se desactivan en Word, Excel, PowerPoint, Outlook, OneNote y Access para que el texto nunca se vea invisible." />
 
-            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
-
-            <!-- Office detectado -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18,14,18,14">
-                <c:Pila Orientation="Horizontal" Spacing="12">
-                    <c:FontIcon Glyph="&#xE8A5;" FontSize="20" VerticalAlignment="Center" />
-                    <TextBlock x:Name="TxtOffice" Text="Comprobando Office…"
-                               VerticalAlignment="Center" />
-                </c:Pila>
-            </Border>
-
-            <!-- Macros -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18,14,18,14">
-                <Grid>
-                    <c:Pila VerticalAlignment="Center" Spacing="2">
-                        <TextBlock Text="Seguridad de macros" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                        <TextBlock x:Name="TxtMacros" Text="…" FontSize="13"
-                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-                    </c:Pila>
-                    <Button x:Name="BtnMacros" Content="Proteger macros" HorizontalAlignment="Right"
-                            VerticalAlignment="Center" Click="Macros_Click" />
-                </Grid>
-            </Border>
-
-            <!-- Transparencias -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18,14,18,14">
-                <c:Pila Orientation="Horizontal" Spacing="12">
-                    <c:FontIcon Glyph="&#xE73E;" FontSize="18" VerticalAlignment="Top" Margin="0,2,0,0"
-                              Foreground="{StaticResource SystemFillColorSuccessBrush}" />
-                    <c:Pila Spacing="2">
-                        <TextBlock Text="Texto siempre visible en Office" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                        <TextBlock Text="Las transparencias de los mods se desactivan en Word, Excel, PowerPoint, Outlook, OneNote y Access para que el texto nunca se vea invisible."
-                                   FontSize="13" TextWrapping="Wrap"
-                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                    </c:Pila>
-                </c:Pila>
-            </Border>
-
-            <!-- Modo enfocado -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18,14,18,14">
-                <Grid>
-                    <c:Pila VerticalAlignment="Center" Spacing="2">
-                        <TextBlock Text="Modo enfocado" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                        <TextBlock Text="Silencia notificaciones para concentrarte mientras trabajas."
-                                   FontSize="13" Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-                    </c:Pila>
-                    <Button Content="Abrir ajustes" HorizontalAlignment="Right"
-                            VerticalAlignment="Center" Click="Enfocado_Click" />
-                </Grid>
-            </Border>
+            <TextBlock Text="Concentración" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE708;" Titulo="Modo enfocado"
+                          Descripcion="Silencia las notificaciones para concentrarte mientras trabajas.">
+                <Button Content="Abrir ajustes" Click="Enfocado_Click" />
+            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

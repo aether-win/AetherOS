@@ -5,70 +5,27 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="32,24,32,24">
-        <c:Pila Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <c:Pila Padding="36,30,36,36" Spacing="12" MaxWidth="1000">
 
-            <c:Pila Orientation="Horizontal" Spacing="12">
-                <c:FontIcon Glyph="&#xE7FC;" FontSize="28" />
-                <c:Pila>
-                    <TextBlock Text="Modos" Style="{StaticResource TitleTextBlockStyle}" />
-                    <TextBlock Text="Configura el comportamiento del sistema segun tu uso."
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                </c:Pila>
-            </c:Pila>
-
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <c:Pila Orientation="Horizontal" Spacing="14">
-                    <c:FontIcon Glyph="&#xE7F4;" FontSize="24" />
-                    <c:Pila>
-                        <TextBlock x:Name="TxtModoActual" Text="Modo actual: ..."
-                                   FontWeight="SemiBold" FontSize="16" />
-                        <TextBlock x:Name="TxtModoDesc" Text=""
-                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                    </c:Pila>
-                </c:Pila>
-            </Border>
-
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Button x:Name="BtnTrabajo" Grid.Column="0" HorizontalAlignment="Stretch"
-                        Height="56" Click="Trabajo_Click">
-                    <c:Pila Orientation="Horizontal" Spacing="10">
-                        <c:FontIcon Glyph="&#xE7F8;" /><TextBlock Text="Modo Trabajo" />
+            <c:Encabezado Glyph="&#xE7FC;" Titulo="Modos" Subtitulo="Elige cómo se comporta tu equipo según lo que estés haciendo.">
+                <Button Click="VistaPreviaOverlay_Click">
+                    <c:Pila Orientation="Horizontal" Spacing="8">
+                        <c:FontIcon Glyph="&#xE7B3;" FontSize="14" />
+                        <TextBlock Text="Ver animación" />
                     </c:Pila>
                 </Button>
-                <Button x:Name="BtnGaming" Grid.Column="1" HorizontalAlignment="Stretch" Margin="12,0"
-                        Height="56" Style="{StaticResource AccentButtonStyle}" Click="Gaming_Click">
-                    <c:Pila Orientation="Horizontal" Spacing="10">
-                        <c:FontIcon Glyph="&#xE7FC;" /><TextBlock Text="Modo Gaming" />
-                    </c:Pila>
-                </Button>
-                <Button x:Name="BtnBateria" Grid.Column="2" HorizontalAlignment="Stretch"
-                        Height="56" Click="Bateria_Click">
-                    <c:Pila Orientation="Horizontal" Spacing="10">
-                        <c:FontIcon Glyph="&#xE83E;" /><TextBlock Text="Modo Bateria" />
-                    </c:Pila>
-                </Button>
-            </Grid>
-
-            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                       Text="Trabajo: todo activo y con todas las animaciones de Windows 11. Gaming (solo con cargador): maximo rendimiento y animaciones reducidas. Bateria: eficiente, se activa solo al nivel que elijas." />
-
-            <Button Click="VistaPreviaOverlay_Click" HorizontalAlignment="Left">
-                <c:Pila Orientation="Horizontal" Spacing="8">
-                    <c:FontIcon Glyph="&#xE7B3;" FontSize="16" />
-                    <TextBlock Text="Ver animación del modo actual" />
-                </c:Pila>
-            </Button>
+            </c:Encabezado>
 
             <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
 
+            <UniformGrid x:Name="GridModos" Columns="3" Margin="0,4,-12,-12" />
+
+            <TextBlock Text="Cómo funciona" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE945;" Titulo="Cambio siempre a mano"
+                          Descripcion="Trabajo y Gaming solo cambian cuando tú lo eliges, desde aquí, la bandeja o los atajos Ctrl+Alt+T / Ctrl+Alt+G / Ctrl+Alt+B." />
+            <c:FilaAjuste Glyph="&#xE83E;" Titulo="Batería automática"
+                          Descripcion="El Modo Batería se activa solo al llegar al nivel que elijas (sección Batería) y vuelve al modo anterior al conectar el cargador." />
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

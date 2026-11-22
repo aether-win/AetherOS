@@ -45,7 +45,7 @@ public sealed partial class MonitorPage : PaginaBase
             return;
         }
         string modo = await Aether.ModoActual();
-        TxtModo.Text = $"Modo activo: {modo}";
+        TxtModo.Text = $"Modo {Ui.NombreModo(modo)}";
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)

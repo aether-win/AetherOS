@@ -25,7 +25,17 @@ public sealed partial class BateriaPage : PaginaBase
         _cargando = true;
 
         string carga = await Aether.Bateria();
-        TxtCarga.Text = carga == "SIN" ? "Esta PC no tiene bateria." : $"Carga actual: {carga}%";
+        carga = carga.Trim();
+        if (carga == "SIN" || !int.TryParse(carga, out int nivel))
+        {
+            TxtCarga.Text = "Esta PC no tiene batería.";
+            BarraCarga.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            TxtCarga.Text = $"{nivel}% de carga";
+            BarraCarga.Value = nivel;
+        }
 
         string auto = await Aether.LeerAjuste("BateriaAuto", "1");
         SwAuto.IsOn = auto.Trim() != "0";

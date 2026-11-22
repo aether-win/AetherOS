@@ -5,27 +5,28 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="32,24,32,24">
-        <c:Pila Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
-            <c:Pila Orientation="Horizontal" Spacing="12">
-                <c:FontIcon Glyph="&#xE95E;" FontSize="28" />
-                <c:Pila>
-                    <TextBlock Text="Salud" Style="{StaticResource TitleTextBlockStyle}" />
-                    <TextBlock Text="Estado de la bateria de tu laptop."
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                </c:Pila>
-            </c:Pila>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE95E;" ColorIcono="#F0565C" Titulo="Salud" Subtitulo="Estado de la batería de tu laptop." />
 
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="20">
-                <c:Pila Spacing="10">
-                    <TextBlock x:Name="TxtSalud" FontSize="30" FontWeight="SemiBold" Text="..." />
-                    <TextBlock x:Name="TxtDetalle" Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                               TextWrapping="Wrap" Text="" />
-                    <ProgressBar x:Name="BarSalud" Minimum="0" Maximum="100" Value="0" Height="8" />
-                </c:Pila>
+            <Border Style="{StaticResource TarjetaStyle}" Padding="24,22">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <c:FontIcon Glyph="&#xE95E;" FontSize="44" Foreground="#F0565C" Margin="0,0,20,0" />
+                    <c:Pila Grid.Column="1" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock x:Name="TxtSalud" FontSize="30" FontWeight="SemiBold" Text="…" />
+                        <ProgressBar x:Name="BarSalud" Minimum="0" Maximum="100" Value="0" Height="8" Foreground="#3FBF7F" />
+                        <TextBlock x:Name="TxtDetalle" Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Text="" />
+                    </c:Pila>
+                </Grid>
             </Border>
+
+            <TextBlock Text="Consejo" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE82F;" Titulo="Cuida la batería"
+                          Descripcion="Si casi siempre usas la laptop conectada, activa en el BIOS de HP el límite de carga al 80%. Alarga mucho la vida de la batería." />
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

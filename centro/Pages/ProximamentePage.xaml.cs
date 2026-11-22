@@ -21,9 +21,9 @@ public sealed partial class ProximamentePage : PaginaBase
         base.OnNavigatedTo(e);
         if (e.Parameter is Modulo m)
         {
-            TxtNombre.Text = m.Nombre;
-            TxtDescripcion.Text = m.Descripcion;
-            IconoModulo.Glyph = m.Glyph;
+            Cabecera.Titulo = m.Nombre;
+            Cabecera.Subtitulo = m.Descripcion;
+            Cabecera.Glyph = m.Glyph;
             ListaCaracteristicas.ItemsSource = m.Caracteristicas;
         }
     }

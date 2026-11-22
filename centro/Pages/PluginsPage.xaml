@@ -6,44 +6,31 @@
     xmlns:c="clr-namespace:CentroAether.Controles">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <c:Pila Padding="32,28,32,28" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xEA86;" ColorIcono="#E879F9" Titulo="Plugins" Subtitulo="Extensiones del Centro. Cada plugin es un archivo .json en tu carpeta de plugins.">
+                <c:Pila Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="BtnCarpeta" Click="Carpeta_Click">
+                        <c:Pila Orientation="Horizontal" Spacing="8">
+                            <c:FontIcon Glyph="&#xE8B7;" FontSize="14" />
+                            <TextBlock Text="Abrir carpeta" />
+                        </c:Pila>
+                    </Button>
+                    <Button x:Name="BtnRefrescar" Click="Refrescar_Click">
+                        <c:FontIcon Glyph="&#xE72C;" FontSize="14" />
+                    </Button>
+                </c:Pila>
+            </c:Encabezado>
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <c:Pila Spacing="2">
-                <TextBlock Text="Plugins" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBlock Text="Extensiones que amplían el Centro. Cada plugin es un archivo .json en tu carpeta de plugins."
-                           Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-            </c:Pila>
+            <c:Pila x:Name="Contenedor" Spacing="8" Margin="0,8,0,0" />
 
-            <c:Pila Orientation="Horizontal" Spacing="10">
-                <Button x:Name="BtnCarpeta" Click="Carpeta_Click">
-                    <c:Pila Orientation="Horizontal" Spacing="8">
-                        <c:FontIcon Glyph="&#xE8B7;" FontSize="16" />
-                        <TextBlock Text="Abrir carpeta de plugins" />
-                    </c:Pila>
-                </Button>
-                <Button x:Name="BtnRefrescar" Click="Refrescar_Click">
-                    <c:Pila Orientation="Horizontal" Spacing="8">
-                        <c:FontIcon Glyph="&#xE72C;" FontSize="16" />
-                        <TextBlock Text="Actualizar" />
-                    </c:Pila>
-                </Button>
-            </c:Pila>
-
-            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
-
-            <c:Pila x:Name="Contenedor" Spacing="10" />
-
-            <Border x:Name="Vacio" Visibility="Collapsed"
-                    Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <c:Pila Spacing="8">
+            <Border x:Name="Vacio" Visibility="Collapsed" Style="{StaticResource TarjetaStyle}" Margin="0,8,0,0">
+                <c:Pila Spacing="10">
                     <TextBlock Text="Aún no hay plugins" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                    <TextBlock TextWrapping="Wrap" FontSize="13"
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                               Text="Para crear uno, coloca un archivo .json en la carpeta de plugins con este formato:" />
-                    <Border Background="{StaticResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="12">
-                        <TextBlock x:Name="TxtEjemplo" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" />
+                    <TextBlock TextWrapping="Wrap" FontSize="13" Foreground="{StaticResource TextFillColorSecondaryBrush}"
+                               Text="Para crear uno, guarda un archivo .json en la carpeta de plugins con este formato:" />
+                    <Border Background="#0A1726" BorderBrush="#1C3756" BorderThickness="1" CornerRadius="8" Padding="14,12">
+                        <TextBlock x:Name="TxtEjemplo" FontFamily="Cascadia Mono, Consolas" FontSize="12.5" TextWrapping="Wrap" />
                     </Border>
                 </c:Pila>
             </Border>

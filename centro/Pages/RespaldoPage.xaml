@@ -5,38 +5,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="32,24,32,24">
-        <c:Pila Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
-            <c:Pila Orientation="Horizontal" Spacing="12">
-                <c:FontIcon Glyph="&#xE8C8;" FontSize="28" />
-                <c:Pila>
-                    <TextBlock Text="Respaldo" Style="{StaticResource TitleTextBlockStyle}" />
-                    <TextBlock Text="Copia tus archivos importantes a una carpeta o disco."
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                </c:Pila>
-            </c:Pila>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE8C8;" ColorIcono="#F2B33D" Titulo="Respaldo" Subtitulo="Copia tus archivos importantes a una carpeta o disco." />
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <c:Pila Spacing="12">
-                    <TextBlock Text="1. Elige donde guardar el respaldo" FontWeight="SemiBold" FontSize="15" />
-                    <c:Pila Orientation="Horizontal" Spacing="10">
-                        <Button x:Name="BtnCarpeta" Content="Elegir carpeta..." Click="Carpeta_Click" />
-                        <TextBlock x:Name="TxtDestino" VerticalAlignment="Center"
-                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="Sin carpeta elegida." />
-                    </c:Pila>
-                </c:Pila>
-            </Border>
+            <TextBlock Text="1. Destino" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste x:Name="FilaDestino" Glyph="&#xE8B7;" Titulo="Dónde guardar el respaldo"
+                          Descripcion="Sin carpeta elegida.">
+                <Button x:Name="BtnCarpeta" Content="Elegir carpeta…" Click="Carpeta_Click" />
+            </c:FilaAjuste>
 
-            <Button x:Name="BtnRespaldar" HorizontalAlignment="Stretch" Height="50"
-                    Style="{StaticResource AccentButtonStyle}" Click="Respaldar_Click" IsEnabled="False">
-                <c:Pila Orientation="Horizontal" Spacing="10">
-                    <c:FontIcon Glyph="&#xE8C8;" /><TextBlock Text="Hacer respaldo ahora" />
-                </c:Pila>
-            </Button>
-
-            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+            <TextBlock Text="2. Respaldar" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE898;" Titulo="Hacer respaldo ahora"
+                          Descripcion="Copia ahora tus archivos al destino elegido. Puede tardar según cuántos archivos tengas.">
+                <Button x:Name="BtnRespaldar" Content="Respaldar" Style="{StaticResource AccentButtonStyle}"
+                        Click="Respaldar_Click" IsEnabled="False" />
+            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

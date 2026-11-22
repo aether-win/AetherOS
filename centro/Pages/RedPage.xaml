@@ -5,48 +5,33 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="32,24,32,24">
-        <c:Pila Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE839;" ColorIcono="#22D3EE" Titulo="Red y carpetas compartidas" Subtitulo="Diagnostica, repara y administra la red de este equipo.">
+                <Border CornerRadius="14" Padding="14,6" Background="#123A4A" BorderBrush="#22D3EE" BorderThickness="1">
+                    <c:Pila Orientation="Horizontal" Spacing="8">
+                        <c:FontIcon Glyph="&#xE977;" FontSize="14" />
+                        <TextBlock x:Name="TxtEquipo" Text="…" FontWeight="SemiBold" />
+                    </c:Pila>
+                </Border>
+            </c:Encabezado>
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <c:Pila Orientation="Horizontal" Spacing="12">
-                <c:FontIcon Glyph="&#xE839;" FontSize="28" />
-                <c:Pila>
-                    <TextBlock Text="Red y carpetas compartidas" Style="{StaticResource TitleTextBlockStyle}" />
-                    <TextBlock Text="Diagnostica, repara y administra la red de este equipo."
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                </c:Pila>
-            </c:Pila>
+            <TextBlock Text="Reparación" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE90F;" Titulo="Diagnosticar y reparar la red"
+                          Descripcion="Revisa y arregla uso compartido, impresión, detección de equipos y conexión. Resuelve el error 0x80070035.">
+                <Button x:Name="BtnReparar" Content="Reparar" Style="{StaticResource AccentButtonStyle}" Click="Reparar_Click" />
+            </c:FilaAjuste>
 
-            <Button x:Name="BtnReparar" HorizontalAlignment="Stretch" Height="52"
-                    Style="{StaticResource AccentButtonStyle}" Click="Reparar_Click">
-                <c:Pila Orientation="Horizontal" Spacing="10">
-                    <c:FontIcon Glyph="&#xE90F;" /><TextBlock Text="Diagnosticar y reparar la red" />
-                </c:Pila>
-            </Button>
-
-            <Button x:Name="BtnPrivada" HorizontalAlignment="Stretch" Height="48" Click="Privada_Click">
-                <c:Pila Orientation="Horizontal" Spacing="10">
-                    <c:FontIcon Glyph="&#xE72E;" /><TextBlock Text="Hacer privada la red conectada (para compartir carpetas)" />
-                </c:Pila>
-            </Button>
-
-            <Button x:Name="BtnCompartir" HorizontalAlignment="Stretch" Height="48" Click="Compartir_Click">
-                <c:Pila Orientation="Horizontal" Spacing="10">
-                    <c:FontIcon Glyph="&#xE713;" /><TextBlock Text="Abrir opciones de uso compartido" />
-                </c:Pila>
-            </Button>
-
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="16">
-                <c:Pila Orientation="Horizontal" Spacing="12">
-                    <c:FontIcon Glyph="&#xE946;" VerticalAlignment="Center" />
-                    <TextBlock x:Name="TxtEquipo" VerticalAlignment="Center" Text="Este equipo: ..." />
-                </c:Pila>
-            </Border>
-
-            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
-
+            <TextBlock Text="Compartir" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE72E;" Titulo="Hacer privada la red conectada"
+                          Descripcion="Necesario para compartir carpetas e impresoras con otras PC de tu red.">
+                <Button x:Name="BtnPrivada" Content="Hacer privada" Click="Privada_Click" />
+            </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xE713;" Titulo="Opciones de uso compartido"
+                          Descripcion="Abre la configuración avanzada de uso compartido de Windows.">
+                <Button x:Name="BtnCompartir" Content="Abrir" Click="Compartir_Click" />
+            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

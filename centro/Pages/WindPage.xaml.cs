@@ -24,6 +24,24 @@ public sealed partial class WindPage : PaginaBase
         List<ModWind> mods = Aether.ListaMods();
         ListaMods.ItemsSource = mods;
         _cargando = false;
+        ActualizarConteo();
+    }
+
+    private void ActualizarConteo()
+    {
+        if (ListaMods.ItemsSource is not List<ModWind> mods)
+        {
+            return;
+        }
+        int activos = 0;
+        foreach (ModWind m in mods)
+        {
+            if (m.Activo)
+            {
+                activos++;
+            }
+        }
+        TxtConteo.Text = $"{activos} de {mods.Count} activos";
     }
 
     private async void Mod_Toggled(object sender, RoutedEventArgs e)
@@ -33,6 +51,7 @@ public sealed partial class WindPage : PaginaBase
         {
             bool activo = sw.IsOn;
             await Aether.ActivarMod(id, activo);
+            ActualizarConteo();
             Estado.Severity = InfoBarSeverity.Success;
             Estado.Message = activo ? "Mod activado." : "Mod desactivado.";
             Estado.IsOpen = true;

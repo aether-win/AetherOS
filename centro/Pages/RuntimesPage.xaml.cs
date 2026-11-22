@@ -37,68 +37,27 @@ public sealed partial class RuntimesPage : PaginaBase
         }
     }
 
-    private Border CrearTarjeta(RuntimeInfo rt)
+    private FilaAjuste CrearTarjeta(RuntimeInfo rt)
     {
-        var grid = new Grid();
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-        var textos = new Pila { Spacing = 3, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock
-        {
-            Text = rt.Nombre,
-            Style = (Style)Application.Current.Resources["BodyStrongTextBlockStyle"],
-        });
-        textos.Children.Add(new TextBlock
-        {
-            Text = rt.Descripcion,
-            FontSize = 13,
-            TextWrapping = TextWrapping.Wrap,
-            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-        });
-        Grid.SetColumn(textos, 0);
-        grid.Children.Add(textos);
-
-        var accion = new Pila
-        {
-            Orientation = Orientation.Horizontal,
-            Spacing = 10,
-            VerticalAlignment = VerticalAlignment.Center,
-        };
-
+        object accion;
         if (rt.Instalado)
         {
-            accion.Children.Add(new FontIcon
-            {
-                Glyph = "",
-                FontSize = 16,
-                Foreground = (Brush)Application.Current.Resources["SystemFillColorSuccessBrush"],
-            });
-            accion.Children.Add(new TextBlock
-            {
-                Text = rt.Version == "instalado" ? "Instalado" : $"v{rt.Version}",
-                VerticalAlignment = VerticalAlignment.Center,
-                Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-            });
+            accion = Ui.Insignia(rt.Version == "instalado" ? "Instalado" : $"v{rt.Version}", Ui.Hex("#3FBF7F"));
         }
         else
         {
-            var btn = new Button { Content = "Instalar" };
+            var btn = new Button { Content = "Instalar", Style = (Style)Application.Current.Resources["AccentButtonStyle"] };
             btn.Click += async (_, _) => await Instalar(rt, btn);
-            accion.Children.Add(btn);
+            accion = btn;
         }
 
-        Grid.SetColumn(accion, 1);
-        grid.Children.Add(accion);
-
-        return new Border
+        return new FilaAjuste
         {
-            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
-            BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(8),
-            Padding = new Thickness(18, 14, 18, 14),
-            Child = grid,
+            Glyph = rt.Instalado ? "\uE73E" : "\uE896",
+            ColorIcono = rt.Instalado ? Ui.Recurso("SystemFillColorSuccessBrush") : null,
+            Titulo = rt.Nombre,
+            Descripcion = rt.Descripcion,
+            Accion = accion,
         };
     }
 

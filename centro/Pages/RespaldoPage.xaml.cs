@@ -27,7 +27,7 @@ public sealed partial class RespaldoPage : PaginaBase
         if (dialogo.ShowDialog(Window.GetWindow(this)) == true && !string.IsNullOrEmpty(dialogo.FolderName))
         {
             _destino = dialogo.FolderName;
-            TxtDestino.Text = _destino;
+            FilaDestino.Descripcion = _destino;
             BtnRespaldar.IsEnabled = true;
             await Aether.ConfigurarRespaldo(_destino);
         }

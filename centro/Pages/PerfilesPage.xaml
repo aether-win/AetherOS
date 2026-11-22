@@ -6,70 +6,65 @@
     xmlns:c="clr-namespace:CentroAether.Controles">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <c:Pila Padding="32,28,32,28" Spacing="18" MaxWidth="760" HorizontalAlignment="Left">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE748;" ColorIcono="#7A5AF8" Titulo="Perfiles" Subtitulo="Asocia una app o juego a un modo y, si quieres, a un mando virtual." />
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <c:Pila Spacing="2">
-                <TextBlock Text="Perfiles" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBlock Text="Asocia una app o juego a un modo. Con el segundo plano activado, el modo se aplica solo al abrir la app."
-                           Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-            </c:Pila>
+            <c:FilaAjuste Glyph="&#xE945;" Titulo="Aplicar perfiles automáticamente"
+                          Descripcion="Vigila los procesos y aplica el modo al abrir una app con perfil (no revierte al cerrarla).">
+                <c:ToggleSwitch x:Name="TglInteligencia" Toggled="Inteligencia_Toggled" />
+            </c:FilaAjuste>
 
-            <!-- Background Intelligence -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18,12,18,12">
+            <TextBlock Text="Nuevo perfil" Style="{StaticResource SeccionTextBlockStyle}" />
+            <Border Style="{StaticResource TarjetaStyle}">
                 <Grid>
-                    <c:Pila VerticalAlignment="Center" Spacing="2">
-                        <TextBlock Text="Aplicar perfiles automáticamente" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                        <TextBlock Text="Vigila los procesos y aplica el modo al abrir una app con perfil (no revierte al cerrar)."
-                                   FontSize="12" Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <c:Pila Grid.Row="0" Grid.Column="0" Spacing="6" Margin="0,0,8,14">
+                        <TextBlock Text="App o juego" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                        <TextBox x:Name="TxtApp" Tag="Ej.: GTA V" />
                     </c:Pila>
-                    <c:ToggleSwitch x:Name="TglInteligencia" HorizontalAlignment="Right"
-                                  Toggled="Inteligencia_Toggled" />
+                    <c:Pila Grid.Row="0" Grid.Column="1" Spacing="6" Margin="8,0,0,14">
+                        <TextBlock Text="Proceso (para detectarlo solo)" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                        <TextBox x:Name="TxtProceso" Tag="Ej.: GTA5.exe" />
+                    </c:Pila>
+                    <c:Pila Grid.Row="1" Grid.Column="0" Spacing="6" Margin="0,0,8,16">
+                        <TextBlock Text="Modo" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                        <ComboBox x:Name="CmbModo" HorizontalAlignment="Stretch" SelectedIndex="0">
+                            <ComboBoxItem Content="Gaming" />
+                            <ComboBoxItem Content="Trabajo" />
+                            <ComboBoxItem Content="Bateria" />
+                        </ComboBox>
+                    </c:Pila>
+                    <c:Pila Grid.Row="1" Grid.Column="1" Spacing="6" Margin="8,0,0,16">
+                        <TextBlock Text="Mando virtual" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                        <ComboBox x:Name="CmbMando" HorizontalAlignment="Stretch" SelectedIndex="0">
+                            <ComboBoxItem Content="Ninguno" />
+                            <ComboBoxItem Content="Xbox 360" />
+                            <ComboBoxItem Content="DualShock 4" />
+                        </ComboBox>
+                    </c:Pila>
+                    <Button x:Name="BtnAgregar" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right"
+                            Style="{StaticResource AccentButtonStyle}" Click="Agregar_Click">
+                        <c:Pila Orientation="Horizontal" Spacing="8">
+                            <c:FontIcon Glyph="&#xE710;" FontSize="13" />
+                            <TextBlock Text="Agregar perfil" />
+                        </c:Pila>
+                    </Button>
                 </Grid>
             </Border>
 
-            <!-- Alta -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <c:Pila Spacing="12">
-                    <TextBlock Text="Nuevo perfil" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                    <TextBox x:Name="TxtApp" Tag="Nombre de la app o juego" />
-                    <TextBox x:Name="TxtProceso" Tag="Proceso para autodetección (ej. cs2.exe)" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <c:Pila Grid.Column="0" Spacing="6" Margin="0,0,6,0">
-                            <TextBlock Text="Modo" />
-                            <ComboBox x:Name="CmbModo" HorizontalAlignment="Stretch" SelectedIndex="0">
-                                <ComboBoxItem Content="Gaming" />
-                                <ComboBoxItem Content="Trabajo" />
-                                <ComboBoxItem Content="Bateria" />
-                            </ComboBox>
-                        </c:Pila>
-                        <c:Pila Grid.Column="1" Spacing="6" Margin="6,0,0,0">
-                            <TextBlock Text="Mando virtual" />
-                            <ComboBox x:Name="CmbMando" HorizontalAlignment="Stretch" SelectedIndex="0">
-                                <ComboBoxItem Content="Ninguno" />
-                                <ComboBoxItem Content="Xbox 360" />
-                                <ComboBoxItem Content="DualShock 4" />
-                            </ComboBox>
-                        </c:Pila>
-                    </Grid>
-                    <Button x:Name="BtnAgregar" Content="Agregar" HorizontalAlignment="Right"
-                            Style="{StaticResource AccentButtonStyle}" Click="Agregar_Click" />
-                </c:Pila>
-            </Border>
-
-            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
-
-            <TextBlock Text="Perfiles guardados" Style="{StaticResource BodyStrongTextBlockStyle}" />
-            <c:Pila x:Name="Contenedor" Spacing="10" />
-            <TextBlock x:Name="TxtVacio" Text="Aún no hay perfiles. Agrega el primero arriba."
-                       Foreground="{StaticResource TextFillColorTertiaryBrush}" Visibility="Collapsed" />
+            <TextBlock Text="Perfiles guardados" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:Pila x:Name="Contenedor" Spacing="8" />
+            <c:FilaAjuste x:Name="TxtVacio" Glyph="&#xE946;" Titulo="Aún no hay perfiles"
+                          Descripcion="Agrega el primero arriba." Visibility="Collapsed" />
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

@@ -19,9 +19,9 @@
             <SolidColorBrush x:Key="TextFillColorPrimaryBrush"          Color="#E6EEF8" />
             <SolidColorBrush x:Key="TextFillColorSecondaryBrush"        Color="#9DB2CC" />
             <SolidColorBrush x:Key="TextFillColorTertiaryBrush"         Color="#6F87A3" />
-            <SolidColorBrush x:Key="LayerFillColorDefaultBrush"         Color="#0F2036" />
+            <SolidColorBrush x:Key="LayerFillColorDefaultBrush"         Color="#0B1A2E" />
             <SolidColorBrush x:Key="CardBackgroundFillColorDefaultBrush" Color="#0F2036" />
-            <SolidColorBrush x:Key="CardStrokeColorDefaultBrush"        Color="#1E3A5C" />
+            <SolidColorBrush x:Key="CardStrokeColorDefaultBrush"        Color="#1C3756" />
             <SolidColorBrush x:Key="AccentFillColorDefaultBrush"        Color="#2F8CFF" />
             <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush"  Color="#FFFFFF" />
             <SolidColorBrush x:Key="AccentTextFillColorPrimaryBrush"    Color="#4FC3F7" />
@@ -31,9 +31,71 @@
             <SolidColorBrush x:Key="SystemFillColorAttentionBrush"      Color="#4FC3F7" />
             <SolidColorBrush x:Key="SystemFillColorAttentionBackgroundBrush" Color="#163A5C" />
 
+            <SolidColorBrush x:Key="IconoFondoBrush"     Color="#16304F" />
+            <SolidColorBrush x:Key="TarjetaHoverBrush"   Color="#13294A" />
+
+            <!-- ====== Diseño: tarjetas, filas de ajuste, mosaicos y títulos de sección ====== -->
+            <Style x:Key="TarjetaStyle" TargetType="Border">
+                <Setter Property="Background" Value="#0F2036" />
+                <Setter Property="BorderBrush" Value="#1C3756" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="Padding" Value="20,18" />
+            </Style>
+            <Style x:Key="FilaAjusteStyle" TargetType="c:FilaAjuste">
+                <Setter Property="Background" Value="#0F2036" />
+                <Setter Property="BorderBrush" Value="#1C3756" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="Padding" Value="16,14" />
+                <Setter Property="MinHeight" Value="68" />
+            </Style>
+            <Style x:Key="SeccionTextBlockStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="#E6EEF8" />
+                <Setter Property="Margin" Value="2,14,0,2" />
+            </Style>
+            <Style x:Key="MosaicoStyle" TargetType="Button">
+                <Setter Property="Background" Value="#0F2036" />
+                <Setter Property="BorderBrush" Value="#1C3756" />
+                <Setter Property="Foreground" Value="#E6EEF8" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="18,16" />
+                <Setter Property="Margin" Value="0,0,12,12" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Top" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="b" Background="{TemplateBinding Background}" CornerRadius="12"
+                                    Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="b" Property="Background" Value="#13294A" />
+                                    <Setter TargetName="b" Property="BorderBrush" Value="#2F8CFF" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="b" Property="Opacity" Value="0.85" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="b" Property="Opacity" Value="0.5" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <!-- ====== Estilos de texto (mismos nombres que en WinUI) ====== -->
             <Style x:Key="TitleTextBlockStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontSize" Value="26" />
                 <Setter Property="FontWeight" Value="SemiBold" />
             </Style>
             <Style x:Key="SubtitleTextBlockStyle" TargetType="TextBlock">

@@ -6,123 +6,85 @@
     xmlns:c="clr-namespace:CentroAether.Controles">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <c:Pila Padding="32,28,32,28" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE7FC;" Titulo="Control" Subtitulo="Usa tu mando de PS4 (DualShock 4) como un mando de Xbox.">
+                <Button x:Name="BtnRefrescar" Click="Refrescar_Click">
+                    <c:Pila Orientation="Horizontal" Spacing="8">
+                        <c:FontIcon Glyph="&#xE72C;" FontSize="14" />
+                        <TextBlock Text="Buscar mandos" />
+                    </c:Pila>
+                </Button>
+            </c:Encabezado>
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <c:Pila Spacing="2">
-                <TextBlock Text="Control" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBlock Text="Aether Controller: mandos conectados a tu equipo."
-                           Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-            </c:Pila>
+            <TextBlock Text="Mandos conectados" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:Pila x:Name="Contenedor" Spacing="8" />
+            <c:FilaAjuste x:Name="Vacio" Glyph="&#xE7FC;" Titulo="No hay mandos conectados"
+                          Descripcion="Conecta un mando por USB o Bluetooth y pulsa Buscar mandos." Visibility="Collapsed" />
 
-            <Button x:Name="BtnRefrescar" Click="Refrescar_Click" HorizontalAlignment="Left">
-                <c:Pila Orientation="Horizontal" Spacing="8">
-                    <c:FontIcon Glyph="&#xE72C;" FontSize="16" />
-                    <TextBlock Text="Volver a buscar mandos" />
-                </c:Pila>
-            </Button>
-
-            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
-
-            <c:Pila x:Name="Contenedor" Spacing="10" />
-
-            <c:Pila x:Name="Vacio" Spacing="6" Visibility="Collapsed"
-                        HorizontalAlignment="Center" Padding="0,16,0,0">
-                <c:FontIcon Glyph="&#xE7FC;" FontSize="32"
-                          Foreground="{StaticResource TextFillColorTertiaryBrush}" />
-                <TextBlock Text="No hay mandos conectados" Style="{StaticResource BodyStrongTextBlockStyle}"
-                           HorizontalAlignment="Center" />
-                <TextBlock Text="Conecta un mando por USB o Bluetooth y vuelve a buscar."
-                           Foreground="{StaticResource TextFillColorSecondaryBrush}" TextAlignment="Center" />
-            </c:Pila>
-
-            <!-- Diagnóstico en vivo -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <c:Pila Spacing="10">
+            <TextBlock Text="Convertir mando" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste x:Name="FilaEmular" Glyph="&#xE7FC;" Titulo="Emulación de mando Xbox 360" Descripcion="…">
+                <c:ToggleSwitch x:Name="TglEmular" Toggled="Emular_Toggled" />
+            </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xE8AB;" Titulo="Convertir a" Descripcion="Tipo de mando virtual que verán los juegos.">
+                <ComboBox x:Name="CmbObjetivo" Width="170" SelectionChanged="Objetivo_Changed">
+                    <ComboBoxItem Content="Xbox 360" />
+                    <ComboBoxItem Content="DualShock 4" />
+                </ComboBox>
+            </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xE9E9;" Titulo="Sticks" Descripcion="Zona muerta y sensibilidad de los sticks.">
+                <c:FilaAjuste.Debajo>
                     <Grid>
-                        <c:Pila VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="Probar mando en vivo" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                            <TextBlock Text="Pulsa botones y mueve los sticks para ver sus índices y valores (sirve para afinar el mapeo)."
-                                       FontSize="12" TextWrapping="Wrap"
-                                       Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <c:Pila Spacing="6" Margin="0,0,14,0">
+                            <Grid>
+                                <TextBlock Text="Zona muerta" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                                <TextBlock x:Name="TxtDeadzone" Text="10%" HorizontalAlignment="Right" FontSize="12.5" FontWeight="SemiBold" />
+                            </Grid>
+                            <Slider x:Name="SldDeadzone" Minimum="0" Maximum="40" TickFrequency="1" IsSnapToTickEnabled="True"
+                                    ValueChanged="Ajuste_Changed" />
                         </c:Pila>
-                        <c:ToggleSwitch x:Name="TglDiag" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                      Toggled="Diag_Toggled" />
+                        <c:Pila Grid.Column="1" Spacing="6" Margin="14,0,0,0">
+                            <Grid>
+                                <TextBlock Text="Sensibilidad" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                                <TextBlock x:Name="TxtSens" Text="100%" HorizontalAlignment="Right" FontSize="12.5" FontWeight="SemiBold" />
+                            </Grid>
+                            <Slider x:Name="SldSens" Minimum="50" Maximum="200" TickFrequency="5" IsSnapToTickEnabled="True"
+                                    ValueChanged="Ajuste_Changed" />
+                        </c:Pila>
                     </Grid>
-                    <Border x:Name="CajaDiag" Visibility="Collapsed"
-                            Background="{StaticResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="12">
-                        <TextBlock x:Name="TxtDiag" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap"
+                </c:FilaAjuste.Debajo>
+            </c:FilaAjuste>
+            <c:FilaAjuste x:Name="PanelRequisitos" Glyph="&#xE7BA;" ColorIcono="{StaticResource SystemFillColorCautionBrush}"
+                          Titulo="Faltan drivers" Visibility="Collapsed"
+                          Descripcion="ViGEmBus crea el mando virtual. HidHide oculta el mando original para evitar entrada doble.">
+                <c:Pila Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="BtnVigem" Content="Instalar ViGEmBus" Style="{StaticResource AccentButtonStyle}" Click="Vigem_Click" />
+                    <Button x:Name="BtnHidHide" Content="Instalar HidHide" Click="HidHide_Click" />
+                </c:Pila>
+            </c:FilaAjuste>
+
+            <TextBlock Text="Diagnóstico" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE9D9;" Titulo="Probar mando en vivo"
+                          Descripcion="Pulsa botones y mueve los sticks para ver sus índices y valores.">
+                <c:ToggleSwitch x:Name="TglDiag" Toggled="Diag_Toggled" />
+                <c:FilaAjuste.Debajo>
+                    <Border x:Name="CajaDiag" Visibility="Collapsed" Background="#0A1726" BorderBrush="#1C3756"
+                            BorderThickness="1" CornerRadius="8" Padding="14,12">
+                        <TextBlock x:Name="TxtDiag" FontFamily="Cascadia Mono, Consolas" FontSize="12.5" TextWrapping="Wrap"
                                    Text="Esperando lectura…" />
                     </Border>
-                </c:Pila>
-            </Border>
+                </c:FilaAjuste.Debajo>
+            </c:FilaAjuste>
 
-            <!-- Emulación Xbox 360 (motor nativo) -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <c:Pila Spacing="12">
-                    <Grid>
-                        <c:Pila VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="Emulación de mando Xbox 360" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                            <TextBlock x:Name="TxtMotor" Text="…" FontSize="13" TextWrapping="Wrap"
-                                       Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                        </c:Pila>
-                        <c:ToggleSwitch x:Name="TglEmular" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                      Toggled="Emular_Toggled" />
-                    </Grid>
-
-                    <c:Pila Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                        <TextBlock Text="Convertir a:" VerticalAlignment="Center"
-                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                        <ComboBox x:Name="CmbObjetivo" MinWidth="160" SelectionChanged="Objetivo_Changed">
-                            <ComboBoxItem Content="Xbox 360" />
-                            <ComboBoxItem Content="DualShock 4" />
-                        </ComboBox>
-                    </c:Pila>
-
-                    <c:Pila Spacing="4">
-                        <Grid>
-                            <TextBlock Text="Zona muerta de sticks" FontSize="13"
-                                       Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                            <TextBlock x:Name="TxtDeadzone" Text="10%" HorizontalAlignment="Right" FontSize="13" />
-                        </Grid>
-                        <Slider x:Name="SldDeadzone" Minimum="0" Maximum="40" TickFrequency="1" IsSnapToTickEnabled="True"
-                                ValueChanged="Ajuste_Changed" />
-                        <Grid>
-                            <TextBlock Text="Sensibilidad" FontSize="13"
-                                       Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                            <TextBlock x:Name="TxtSens" Text="100%" HorizontalAlignment="Right" FontSize="13" />
-                        </Grid>
-                        <Slider x:Name="SldSens" Minimum="50" Maximum="200" TickFrequency="5" IsSnapToTickEnabled="True"
-                                ValueChanged="Ajuste_Changed" />
-                    </c:Pila>
-
-                    <c:Pila x:Name="PanelRequisitos" Orientation="Horizontal" Spacing="10" Visibility="Collapsed">
-                        <Button x:Name="BtnVigem" Content="Instalar ViGEmBus" Click="Vigem_Click" />
-                        <Button x:Name="BtnHidHide" Content="Instalar HidHide" Click="HidHide_Click" />
-                    </c:Pila>
-
-                    <TextBlock FontSize="12" TextWrapping="Wrap"
-                               Foreground="{StaticResource TextFillColorTertiaryBrush}"
-                               Text="Soporta DualShock 4 (PS4) leído por HID y mandos Xbox. Instala HidHide para ocultar el mando original y evitar la entrada doble. Basado en la tecnología de DS4Windows (GPLv3)." />
-                </c:Pila>
-            </Border>
-
-            <!-- Alternativa completa -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <c:Pila Spacing="8">
-                    <TextBlock Text="¿Necesitas mapeo avanzado ya?" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                    <TextBlock TextWrapping="Wrap" FontSize="13"
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                               Text="Mientras se amplía el motor nativo (perfiles por juego, giroscopio, luces), puedes usar DS4Windows para el set completo de funciones." />
-                    <Button x:Name="BtnDs4" Content="Instalar DS4Windows"
-                            Click="Ds4_Click" HorizontalAlignment="Left" />
-                </c:Pila>
-            </Border>
+            <TextBlock Text="Alternativa" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE896;" Titulo="DS4Windows"
+                          Descripcion="Si necesitas mapeo avanzado ya, DS4Windows tiene el set completo de funciones. Basado en su tecnología (GPLv3).">
+                <Button x:Name="BtnDs4" Content="Instalar" Click="Ds4_Click" />
+            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

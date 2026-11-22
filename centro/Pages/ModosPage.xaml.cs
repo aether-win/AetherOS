@@ -1,25 +1,37 @@
 using System;
 using System.Threading.Tasks;
-using CentroAether;
-using CentroAether.Services;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using CentroAether.Controles;
+using CentroAether.Services;
 
 namespace CentroAether.Pages;
 
 public sealed partial class ModosPage : PaginaBase
 {
+    private string _modoActual = "";
+    private bool _ocupado;
+
+    private static readonly (string id, string titulo, string desc, string[] puntos)[] Modos =
+    {
+        ("Trabajo", "Trabajo", "Equilibrado para el día a día.",
+            new[] { "Todo activo y notificaciones", "Animaciones completas de Windows 11", "Turbo del procesador disponible" }),
+        ("Gaming", "Gaming", "Máximo rendimiento para jugar.",
+            new[] { "Solo con el cargador conectado", "Sin estacionar núcleos ni segundo plano", "No molestar y mods pesados en pausa" }),
+        ("Bateria", "Batería", "Eficiente para durar más.",
+            new[] { "Ahorro de batería de Windows", "Procesador eficiente, sin turbo", "Wind-Aether en versión ligera" }),
+    };
+
     public ModosPage()
     {
-        this.InitializeComponent();
+        InitializeComponent();
     }
-
-    private string _modoActual = "Gaming";
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
+        Construir();
         await RefrescarModo();
     }
 
@@ -27,38 +39,100 @@ public sealed partial class ModosPage : PaginaBase
     {
         if (!Aether.Disponible)
         {
-            TxtModoActual.Text = "Centro no instalado";
-            TxtModoDesc.Text = "No se encontro Aether.Centro.ps1 en este equipo.";
+            Estado.Severity = InfoBarSeverity.Warning;
+            Estado.Message = "No se encontró Aether.Centro.ps1 en este equipo.";
+            Estado.IsOpen = true;
             return;
         }
-
-        string modo = await Aether.ModoActual();
-        _modoActual = modo;
-        TxtModoActual.Text = $"Modo actual: {modo}";
-        TxtModoDesc.Text = modo switch
-        {
-            "Gaming" => "Perfil optimizado para maximo rendimiento.",
-            "Bateria" => "Perfil eficiente para durar mas con bateria.",
-            _ => "Perfil equilibrado para el dia a dia.",
-        };
+        _modoActual = await Aether.ModoActual();
+        Construir();
     }
 
-    private async void Trabajo_Click(object sender, RoutedEventArgs e) => await Aplicar("Trabajo");
-    private async void Gaming_Click(object sender, RoutedEventArgs e) => await Aplicar("Gaming");
-    private async void Bateria_Click(object sender, RoutedEventArgs e) => await Aplicar("Bateria");
+    private void Construir()
+    {
+        GridModos.Children.Clear();
+        foreach (var m in Modos)
+        {
+            GridModos.Children.Add(CrearTarjeta(m.id, m.titulo, m.desc, m.puntos));
+        }
+    }
+
+    private Button CrearTarjeta(string id, string titulo, string desc, string[] puntos)
+    {
+        bool activo = string.Equals(Ui.NombreModo(_modoActual), Ui.NombreModo(id), StringComparison.OrdinalIgnoreCase);
+        Color color = Ui.ColorModo(id);
+
+        var cabecera = new Grid();
+        cabecera.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        cabecera.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        cabecera.Children.Add(Ui.CajaIcono(Ui.GlyphModo(id), color, 52, 24));
+        if (activo)
+        {
+            Border insignia = Ui.Insignia("Activo", color);
+            insignia.HorizontalAlignment = HorizontalAlignment.Right;
+            insignia.VerticalAlignment = VerticalAlignment.Top;
+            Grid.SetColumn(insignia, 1);
+            cabecera.Children.Add(insignia);
+        }
+
+        var contenido = new Pila { Spacing = 12 };
+        contenido.Children.Add(cabecera);
+        var textos = new Pila { Spacing = 2 };
+        textos.Children.Add(new TextBlock { Text = titulo, FontSize = 20, FontWeight = FontWeights.SemiBold });
+        textos.Children.Add(new TextBlock { Text = desc, FontSize = 13, TextWrapping = TextWrapping.Wrap, Foreground = Ui.Recurso("TextFillColorSecondaryBrush") });
+        contenido.Children.Add(textos);
+
+        var lista = new Pila { Spacing = 6, Margin = new Thickness(0, 4, 0, 0) };
+        foreach (string p in puntos)
+        {
+            var fila = new Pila { Orientation = Orientation.Horizontal, Spacing = 8 };
+            fila.Children.Add(new FontIcon { Glyph = "", FontSize = 12, Foreground = new SolidColorBrush(color) });
+            fila.Children.Add(new TextBlock { Text = p, FontSize = 12.5, TextWrapping = TextWrapping.Wrap, Foreground = Ui.Recurso("TextFillColorSecondaryBrush") });
+            lista.Children.Add(fila);
+        }
+        contenido.Children.Add(lista);
+        contenido.Children.Add(new TextBlock
+        {
+            Text = activo ? "Este es tu modo actual" : "Clic para activar",
+            FontSize = 12.5,
+            FontWeight = FontWeights.SemiBold,
+            Margin = new Thickness(0, 6, 0, 0),
+            Foreground = activo ? new SolidColorBrush(color) : Ui.Recurso("AccentTextFillColorPrimaryBrush"),
+        });
+
+        var b = new Button
+        {
+            Content = contenido,
+            Style = (Style)FindResource("MosaicoStyle"),
+            Padding = new Thickness(20, 20, 20, 18),
+        };
+        if (activo)
+        {
+            b.BorderBrush = new SolidColorBrush(color);
+            b.BorderThickness = new Thickness(2);
+        }
+        b.Click += async (_, _) => await Aplicar(id);
+        return b;
+    }
 
     private async Task Aplicar(string modo)
     {
-        // "Cargando modo": se bloquean los botones y se avisa hasta que quede estable.
-        BtnTrabajo.IsEnabled = BtnGaming.IsEnabled = BtnBateria.IsEnabled = false;
+        if (_ocupado)
+        {
+            return;
+        }
+        // "Cargando modo": se bloquean las tarjetas y se avisa hasta que quede estable.
+        _ocupado = true;
+        GridModos.IsEnabled = false;
         Estado.Severity = InfoBarSeverity.Informational;
-        Estado.Message = $"Cargando modo {modo}...";
+        Estado.Message = $"Cargando modo {Ui.NombreModo(modo)}…";
         Estado.IsOpen = true;
 
         string salida = await Aether.CambiarModo(modo);
 
         await RefrescarModo();
-        BtnTrabajo.IsEnabled = BtnGaming.IsEnabled = BtnBateria.IsEnabled = true;
+        GridModos.IsEnabled = true;
+        _ocupado = false;
 
         if (salida.StartsWith("ERROR", StringComparison.OrdinalIgnoreCase))
         {
@@ -68,13 +142,14 @@ public sealed partial class ModosPage : PaginaBase
         else
         {
             Estado.Severity = InfoBarSeverity.Success;
-            Estado.Message = $"Modo {modo} activo.";
+            Estado.Message = $"Modo {Ui.NombreModo(modo)} activo.";
             // Cada modo muestra su propio overlay (Gaming, Trabajo o Batería).
             VentanaOverlayModo.Mostrar(modo);
         }
         Estado.IsOpen = true;
+        RefrescarModoMenu();
     }
 
     private void VistaPreviaOverlay_Click(object sender, RoutedEventArgs e)
-        => VentanaOverlayModo.Mostrar(_modoActual);
+        => VentanaOverlayModo.Mostrar(string.IsNullOrEmpty(_modoActual) ? "Trabajo" : _modoActual);
 }

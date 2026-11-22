@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:c="clr-namespace:CentroAether.Controles"
         Title="Centro Aether"
-        Width="1160" Height="780" MinWidth="820" MinHeight="560"
+        Width="1220" Height="820" MinWidth="900" MinHeight="600"
         WindowStartupLocation="CenterScreen"
         Icon="Assets/aether.ico"
         Background="{StaticResource FondoVentanaBrush}"
@@ -19,13 +19,13 @@
             <Setter Property="Foreground" Value="#E6EEF8" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-            <Setter Property="Margin" Value="6,1" />
+            <Setter Property="Margin" Value="10,1" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <Border x:Name="b" Background="Transparent" CornerRadius="6" Height="38">
+                        <Border x:Name="b" Background="Transparent" CornerRadius="8" Height="40">
                             <Grid>
-                                <Border x:Name="Marca" Width="3" Height="16" CornerRadius="2" Background="#2F8CFF"
+                                <Border x:Name="Marca" Width="3" Height="18" CornerRadius="2" Background="#4FC3F7"
                                         HorizontalAlignment="Left" Visibility="Collapsed" />
                                 <ContentPresenter Margin="14,0,8,0" VerticalAlignment="Center" />
                             </Grid>
@@ -52,7 +52,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <ContentPresenter Margin="20,14,8,4" />
+                        <ContentPresenter Margin="24,16,8,6" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -61,18 +61,57 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="264" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Menú lateral -->
-        <Border Grid.Column="0" Background="{StaticResource FondoMenuBrush}"
-                BorderBrush="{StaticResource LineaBrush}" BorderThickness="0,0,1,0">
+        <Border Grid.Column="0" BorderBrush="{StaticResource LineaBrush}" BorderThickness="0,0,1,0">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#0E2140" Offset="0" />
+                    <GradientStop Color="#0B1A2E" Offset="0.35" />
+                    <GradientStop Color="#0A1628" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
             <DockPanel>
-                <c:Pila DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" Padding="20,18,12,10">
-                    <Image Source="Assets/aether.ico" Width="26" Height="26" />
-                    <TextBlock Text="Aether" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                </c:Pila>
+                <!-- Marca -->
+                <Grid DockPanel.Dock="Top" Margin="22,22,16,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="42" Height="42" CornerRadius="12" Margin="0,0,12,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#4FC3F7" Offset="0" />
+                                <GradientStop Color="#2F8CFF" Offset="1" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Image Source="Assets/aether.ico" Width="28" Height="28" />
+                    </Border>
+                    <c:Pila Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Aether" FontSize="20" FontWeight="SemiBold" />
+                        <TextBlock Text="Centro de control" FontSize="12" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                    </c:Pila>
+                </Grid>
+
+                <!-- Pie: modo actual -->
+                <Border DockPanel.Dock="Bottom" Margin="14,8,14,16" Padding="14,12" CornerRadius="10"
+                        Background="#0F2036" BorderBrush="#1C3756" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Ellipse x:Name="PuntoModo" Width="10" Height="10" Fill="#6F87A3" Margin="0,0,12,0" VerticalAlignment="Center" />
+                        <c:Pila Grid.Column="1">
+                            <TextBlock Text="Modo actual" FontSize="11.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                            <TextBlock x:Name="TxtModoMenu" Text="…" FontSize="14" FontWeight="SemiBold" />
+                        </c:Pila>
+                    </Grid>
+                </Border>
+
                 <ListBox x:Name="Nav" Background="Transparent" BorderThickness="0"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          ScrollViewer.VerticalScrollBarVisibility="Auto"

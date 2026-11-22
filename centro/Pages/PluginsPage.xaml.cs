@@ -41,43 +41,21 @@ public sealed partial class PluginsPage : PaginaBase
         }
     }
 
-    private Border CrearTarjeta(PluginInfo p)
+    private FilaAjuste CrearTarjeta(PluginInfo p)
     {
-        var grid = new Grid();
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = p.Nombre, FontWeight = FontWeights.SemiBold });
-        if (!string.IsNullOrWhiteSpace(p.Descripcion))
-        {
-            textos.Children.Add(new TextBlock
-            {
-                Text = p.Descripcion,
-                FontSize = 13,
-                TextWrapping = TextWrapping.Wrap,
-                Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-            });
-        }
-        Grid.SetColumn(textos, 0);
-        grid.Children.Add(textos);
-
+        Button? btn = null;
         if (!string.IsNullOrWhiteSpace(p.Abrir))
         {
-            var btn = new Button { Content = "Abrir", VerticalAlignment = VerticalAlignment.Center };
+            btn = new Button { Content = "Abrir" };
             btn.Click += (_, _) => Abrir(p);
-            Grid.SetColumn(btn, 1);
-            grid.Children.Add(btn);
         }
 
-        return new Border
+        return new FilaAjuste
         {
-            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
-            BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(8),
-            Padding = new Thickness(16, 12, 16, 12),
-            Child = grid,
+            Glyph = "\uEA86",
+            Titulo = p.Nombre,
+            Descripcion = p.Descripcion ?? "",
+            Accion = btn,
         };
     }
 

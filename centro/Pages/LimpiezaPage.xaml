@@ -5,42 +5,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="32,24,32,24">
-        <c:Pila Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
-            <c:Pila Orientation="Horizontal" Spacing="12">
-                <c:FontIcon Glyph="&#xE75C;" FontSize="28" />
-                <c:Pila>
-                    <TextBlock Text="Limpieza" Style="{StaticResource TitleTextBlockStyle}" />
-                    <TextBlock Text="Libera espacio sin tocar tus archivos."
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                </c:Pila>
-            </c:Pila>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE75C;" ColorIcono="#3FBF7F" Titulo="Smart Boost" Subtitulo="Libera espacio y recursos sin tocar tus archivos." />
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <c:Pila Grid.Column="0" Spacing="2">
-                        <TextBlock Text="Limpiar temporales y papelera" FontWeight="SemiBold" FontSize="15" />
-                        <TextBlock Text="Borra archivos temporales y vacia la papelera. Nunca toca Descargas, Escritorio ni Documentos."
-                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-                    </c:Pila>
-                    <Button x:Name="BtnLimpiar" Grid.Column="1" VerticalAlignment="Center"
-                            Content="Limpiar ahora" Style="{StaticResource AccentButtonStyle}" Click="Limpiar_Click" />
-                </Grid>
-            </Border>
-
-            <Button x:Name="BtnAlmacen" HorizontalAlignment="Stretch" Height="46" Click="Almacen_Click">
-                <c:Pila Orientation="Horizontal" Spacing="10">
-                    <c:FontIcon Glyph="&#xEDA2;" /><TextBlock Text="Abrir Almacenamiento de Windows" />
-                </c:Pila>
-            </Button>
-
-            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+            <TextBlock Text="Limpieza" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE74D;" Titulo="Limpiar temporales y papelera"
+                          Descripcion="Borra archivos temporales y vacía la papelera. Nunca toca Descargas, Escritorio ni Documentos.">
+                <Button x:Name="BtnLimpiar" Content="Limpiar ahora" Style="{StaticResource AccentButtonStyle}" Click="Limpiar_Click" />
+            </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xEDA2;" Titulo="Almacenamiento de Windows"
+                          Descripcion="Mira qué ocupa espacio en tu disco y usa el Sensor de almacenamiento.">
+                <Button x:Name="BtnAlmacen" Content="Abrir" Click="Almacen_Click" />
+            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

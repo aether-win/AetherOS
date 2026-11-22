@@ -24,44 +24,15 @@ public sealed partial class CompatibilidadPage : PaginaBase
         }
     }
 
-    private Border CrearTarjeta(EntradaCompat c)
+    private FilaAjuste CrearTarjeta(EntradaCompat c)
     {
-        var grid = new Grid();
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-        var icono = new FontIcon
+        return new FilaAjuste
         {
-            Glyph = c.Ok ? "" : "",
-            FontSize = 18,
-            VerticalAlignment = VerticalAlignment.Top,
-            Margin = new Thickness(0, 2, 14, 0),
-            Foreground = (Brush)Application.Current.Resources[
-                c.Ok ? "SystemFillColorSuccessBrush" : "SystemFillColorCautionBrush"],
-        };
-        Grid.SetColumn(icono, 0);
-        grid.Children.Add(icono);
-
-        var textos = new Pila { Spacing = 2 };
-        textos.Children.Add(new TextBlock { Text = c.Nombre, FontWeight = FontWeights.SemiBold });
-        textos.Children.Add(new TextBlock
-        {
-            Text = c.Nota,
-            FontSize = 13,
-            TextWrapping = TextWrapping.Wrap,
-            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-        });
-        Grid.SetColumn(textos, 1);
-        grid.Children.Add(textos);
-
-        return new Border
-        {
-            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
-            BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(8),
-            Padding = new Thickness(16, 12, 16, 12),
-            Child = grid,
+            Glyph = c.Ok ? "\uE73E" : "\uE7BA",
+            ColorIcono = Ui.Recurso(c.Ok ? "SystemFillColorSuccessBrush" : "SystemFillColorCautionBrush"),
+            Titulo = c.Nombre,
+            Descripcion = c.Nota,
+            Accion = Ui.Insignia(c.Ok ? "Funciona" : "Con aviso", Ui.Hex(c.Ok ? "#3FBF7F" : "#F2B33D")),
         };
     }
 }

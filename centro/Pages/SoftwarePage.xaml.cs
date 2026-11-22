@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CentroAether.Services;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using CentroAether.Controles;
 using System.Windows.Media;
 
@@ -32,66 +33,28 @@ public sealed partial class SoftwarePage : PaginaBase
         Contenedor.Children.Clear();
         foreach (string categoria in CatalogoApps.Todas.Select(a => a.Categoria).Distinct())
         {
-            Contenedor.Children.Add(new TextBlock
-            {
-                Text = categoria,
-                Style = (Style)Application.Current.Resources["BodyStrongTextBlockStyle"],
-                Margin = new Thickness(2, 8, 0, 2),
-            });
-
+            Contenedor.Children.Add(Ui.Seccion(categoria));
+            var rejilla = new UniformGrid { Columns = 2, Margin = new Thickness(0, 0, -10, -10) };
             foreach (AppCatalogo app in CatalogoApps.Todas.Where(a => a.Categoria == categoria))
             {
-                Contenedor.Children.Add(CrearTarjeta(app));
+                rejilla.Children.Add(CrearTarjeta(app));
             }
+            Contenedor.Children.Add(rejilla);
         }
     }
 
-    private Border CrearTarjeta(AppCatalogo app)
+    private FilaAjuste CrearTarjeta(AppCatalogo app)
     {
-        var grid = new Grid();
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        var btn = new Button { Content = "Instalar" };
+        btn.Click += async (_, _) => await Instalar(app, btn);
 
-        var icono = new FontIcon
+        return new FilaAjuste
         {
             Glyph = app.Glyph,
-            FontSize = 22,
-            VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(0, 0, 14, 0),
-        };
-        Grid.SetColumn(icono, 0);
-        grid.Children.Add(icono);
-
-        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = app.Nombre, FontWeight = FontWeights.SemiBold });
-        textos.Children.Add(new TextBlock
-        {
-            Text = app.Descripcion,
-            FontSize = 13,
-            TextWrapping = TextWrapping.Wrap,
-            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-        });
-        Grid.SetColumn(textos, 1);
-        grid.Children.Add(textos);
-
-        var btn = new Button
-        {
-            Content = "Instalar",
-            VerticalAlignment = VerticalAlignment.Center,
-        };
-        btn.Click += async (_, _) => await Instalar(app, btn);
-        Grid.SetColumn(btn, 2);
-        grid.Children.Add(btn);
-
-        return new Border
-        {
-            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
-            BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(8),
-            Padding = new Thickness(16, 12, 16, 12),
-            Child = grid,
+            Titulo = app.Nombre,
+            Descripcion = app.Descripcion,
+            Accion = btn,
+            Margin = new Thickness(0, 0, 10, 10),
         };
     }
 

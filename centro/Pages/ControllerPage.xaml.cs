@@ -113,12 +113,12 @@ public sealed partial class ControllerPage : PaginaBase
 
         if (!vigem)
         {
-            TxtMotor.Text = "Falta el driver ViGEmBus. Instálalo para activar la emulación.";
+            FilaEmular.Descripcion = "Falta el driver ViGEmBus. Instálalo para activar la emulación.";
         }
         else
         {
             string sony = MotorControlador.HaySony() ? " Detecté un mando Sony (PS4/PS5)." : "";
-            TxtMotor.Text = MotorControlador.Activo
+            FilaEmular.Descripcion = MotorControlador.Activo
                 ? "Activa: tu mando se refleja como un Xbox 360 virtual." + sony
                 : "Lista para activar. Convierte tu mando en un Xbox 360 virtual." + sony;
         }
@@ -243,40 +243,16 @@ public sealed partial class ControllerPage : PaginaBase
         }
     }
 
-    private Border CrearTarjeta(MandoInfo m)
+    private FilaAjuste CrearTarjeta(MandoInfo m)
     {
-        var sp = new Pila { Orientation = Orientation.Horizontal, Spacing = 12 };
-        sp.Children.Add(new FontIcon
+        return new FilaAjuste
         {
-            Glyph = "",
-            FontSize = 20,
-            VerticalAlignment = VerticalAlignment.Center,
-        });
-
-        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = m.Nombre, FontWeight = FontWeights.SemiBold });
-        textos.Children.Add(new TextBlock
-        {
-            Text = $"{m.Marca} · {m.Protocolo}",
-            FontSize = 12,
-            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-        });
-        textos.Children.Add(new TextBlock
-        {
-            Text = m.EsGamepad ? "Conectado · compatible con emulación" : "Conectado",
-            FontSize = 12,
-            Foreground = (Brush)Application.Current.Resources["SystemFillColorSuccessBrush"],
-        });
-        sp.Children.Add(textos);
-
-        return new Border
-        {
-            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
-            BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(8),
-            Padding = new Thickness(16, 12, 16, 12),
-            Child = sp,
+            Glyph = "\uE7FC",
+            Titulo = m.Nombre,
+            Descripcion = $"{m.Marca} · {m.Protocolo}",
+            Nota = m.EsGamepad ? "Conectado · compatible con emulación" : "Conectado",
+            ColorNota = (Brush)Application.Current.Resources["SystemFillColorSuccessBrush"],
+            Accion = Ui.Insignia(m.EsGamepad ? "Listo" : "Conectado", Ui.Hex("#3FBF7F")),
         };
     }
 
@@ -297,7 +273,7 @@ public sealed partial class ControllerPage : PaginaBase
 
         bool ok = !salida.Contains("ERROR", StringComparison.OrdinalIgnoreCase);
         BtnDs4.IsEnabled = true;
-        BtnDs4.Content = ok ? "Listo" : "Reintentar";
+        BtnDs4.Content = ok ? "Instalado" : "Reintentar";
         Estado.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Warning;
         Estado.Message = ok ? "DS4Windows instalado o ya estaba al día." : "No se pudo instalar DS4Windows.";
         Estado.IsOpen = true;

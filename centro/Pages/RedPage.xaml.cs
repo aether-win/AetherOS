@@ -15,7 +15,7 @@ public sealed partial class RedPage : PaginaBase
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        TxtEquipo.Text = $"Este equipo: {Aether.NombreEquipo}";
+        TxtEquipo.Text = Aether.NombreEquipo;
     }
 
     private async void Reparar_Click(object sender, RoutedEventArgs e)

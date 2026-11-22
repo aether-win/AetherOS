@@ -1,6 +1,8 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using CentroAether.Controles;
 using CentroAether.Models;
@@ -19,7 +21,11 @@ public partial class MainWindow : Window
         Tema.BarraOscura(this);
         ConstruirMenu();
 
-        Loaded += (_, _) => SeleccionarPrimero();
+        Loaded += (_, _) =>
+        {
+            SeleccionarPrimero();
+            _ = ActualizarModoMenu();
+        };
 
         // Al cerrar el Centro, detener el motor del controlador y la página activa.
         Closed += (_, _) =>
@@ -47,13 +53,15 @@ public partial class MainWindow : Window
                 Nav.Items.Add(new ListBoxItem
                 {
                     Style = estiloEncabezado,
-                    Content = new TextBlock { Text = categoriaActual, FontSize = 12, FontWeight = FontWeights.SemiBold },
+                    Content = new TextBlock { Text = categoriaActual.ToUpperInvariant(), FontSize = 11, FontWeight = FontWeights.SemiBold },
                 });
             }
 
-            var fila = new Pila { Orientation = Orientation.Horizontal, Spacing = 12 };
-            fila.Children.Add(new FontIcon { Glyph = m.Glyph, FontSize = 16 });
-            fila.Children.Add(new TextBlock { Text = m.Nombre, VerticalAlignment = VerticalAlignment.Center });
+            var fila = new Pila { Orientation = Orientation.Horizontal, Spacing = 14 };
+            var icono = new FontIcon { Glyph = m.Glyph, FontSize = 16, Width = 20 };
+            icono.SetResourceReference(TextBlock.ForegroundProperty, "AccentTextFillColorPrimaryBrush");
+            fila.Children.Add(icono);
+            fila.Children.Add(new TextBlock { Text = m.Nombre, FontSize = 14, VerticalAlignment = VerticalAlignment.Center });
 
             var item = new ListBoxItem { Style = estiloItem, Content = fila, Tag = m.Id };
             if (!m.Disponible)
@@ -62,6 +70,40 @@ public partial class MainWindow : Window
                 item.Opacity = 0.75;
             }
             Nav.Items.Add(item);
+        }
+    }
+
+    /// <summary>Abre una sección desde otra (p. ej. los accesos rápidos de Inicio).</summary>
+    public void IrA(string id)
+    {
+        foreach (object o in Nav.Items)
+        {
+            if (o is ListBoxItem li && li.Tag as string == id)
+            {
+                Nav.SelectedItem = li;
+                li.BringIntoView();
+                return;
+            }
+        }
+    }
+
+    /// <summary>Refresca el modo que se muestra en el pie del menú (con su color).</summary>
+    public async Task ActualizarModoMenu()
+    {
+        if (!Aether.Disponible)
+        {
+            TxtModoMenu.Text = "Sin instalar";
+            return;
+        }
+        try
+        {
+            string modo = await Aether.ModoActual();
+            TxtModoMenu.Text = Ui.NombreModo(modo);
+            PuntoModo.Fill = new SolidColorBrush(Ui.ColorModo(modo));
+        }
+        catch
+        {
+            TxtModoMenu.Text = "—";
         }
     }
 

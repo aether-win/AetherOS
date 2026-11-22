@@ -41,52 +41,22 @@ public sealed partial class BibliotecaPage : PaginaBase
         }
     }
 
-    private Border CrearTarjeta(JuegoInfo j)
+    private FilaAjuste CrearTarjeta(JuegoInfo j)
     {
-        var grid = new Grid();
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-        var icono = new FontIcon
-        {
-            Glyph = "",
-            FontSize = 20,
-            VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(0, 0, 14, 0),
-        };
-        Grid.SetColumn(icono, 0);
-        grid.Children.Add(icono);
-
-        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = j.Nombre, FontWeight = FontWeights.SemiBold });
-        textos.Children.Add(new TextBlock
-        {
-            Text = j.Tienda,
-            FontSize = 12,
-            Foreground = (Brush)Application.Current.Resources["TextFillColorTertiaryBrush"],
-        });
-        Grid.SetColumn(textos, 1);
-        grid.Children.Add(textos);
-
         var btn = new Button
         {
-            Content = "Jugar",
             Style = (Style)Application.Current.Resources["AccentButtonStyle"],
-            VerticalAlignment = VerticalAlignment.Center,
+            Content = "Jugar",
         };
         btn.Click += async (_, _) => await Jugar(j);
-        Grid.SetColumn(btn, 2);
-        grid.Children.Add(btn);
 
-        return new Border
+        return new FilaAjuste
         {
-            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
-            BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(8),
-            Padding = new Thickness(16, 12, 16, 12),
-            Child = grid,
+            Glyph = "\uE7FC",
+            Titulo = j.Nombre,
+            Descripcion = j.Tienda,
+            Accion = btn,
+            Margin = new Thickness(0, 0, 10, 10),
         };
     }
 

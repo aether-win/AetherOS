@@ -6,87 +6,56 @@
     xmlns:c="clr-namespace:CentroAether.Controles">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <c:Pila Padding="32,28,32,28" Spacing="20" MaxWidth="720" HorizontalAlignment="Left">
+        <c:Pila Padding="36,30,36,36" Spacing="12" MaxWidth="1000">
 
-            <Grid>
-                <c:Pila Spacing="2" VerticalAlignment="Center">
-                    <TextBlock Text="Monitor" Style="{StaticResource TitleTextBlockStyle}" />
-                    <TextBlock Text="Uso del equipo en tiempo real"
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                </c:Pila>
-                <Border HorizontalAlignment="Right" VerticalAlignment="Center"
-                        Background="{StaticResource AccentFillColorDefaultBrush}"
-                        CornerRadius="14" Padding="14,6,14,6">
-                    <TextBlock x:Name="TxtModo" Text="Modo activo: …"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
+            <c:Encabezado Glyph="&#xE9D9;" ColorIcono="#7A5AF8" Titulo="Monitor" Subtitulo="Uso del equipo en tiempo real.">
+                <Border CornerRadius="14" Padding="14,6" Background="#1B3A63" BorderBrush="#2F8CFF" BorderThickness="1">
+                    <TextBlock x:Name="TxtModo" Text="Modo: …" FontWeight="SemiBold" />
                 </Border>
-            </Grid>
+            </c:Encabezado>
 
-            <!-- CPU -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="20,16,20,16">
-                <c:Pila Spacing="10">
-                    <Grid>
-                        <c:Pila Orientation="Horizontal" Spacing="10">
-                            <c:FontIcon Glyph="&#xE950;" FontSize="18"
-                                      Foreground="{StaticResource AccentTextFillColorPrimaryBrush}" />
-                            <TextBlock Text="Procesador (CPU)" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                        </c:Pila>
-                        <TextBlock x:Name="TxtCpu" Text="—" HorizontalAlignment="Right"
-                                   Style="{StaticResource SubtitleTextBlockStyle}" />
-                    </Grid>
-                    <ProgressBar x:Name="BarraCpu" Minimum="0" Maximum="100" Value="0" />
-                    <TextBlock x:Name="TxtCpuDetalle" Text=""
-                               FontSize="12" Foreground="{StaticResource TextFillColorTertiaryBrush}" />
-                </c:Pila>
-            </Border>
-
-            <!-- RAM -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="20,16,20,16">
-                <c:Pila Spacing="10">
-                    <Grid>
-                        <c:Pila Orientation="Horizontal" Spacing="10">
-                            <c:FontIcon Glyph="&#xEEA0;" FontSize="18"
-                                      Foreground="{StaticResource AccentTextFillColorPrimaryBrush}" />
-                            <TextBlock Text="Memoria (RAM)" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                        </c:Pila>
-                        <TextBlock x:Name="TxtRam" Text="—" HorizontalAlignment="Right"
-                                   Style="{StaticResource SubtitleTextBlockStyle}" />
-                    </Grid>
-                    <ProgressBar x:Name="BarraRam" Minimum="0" Maximum="100" Value="0" />
-                    <TextBlock x:Name="TxtRamDetalle" Text=""
-                               FontSize="12" Foreground="{StaticResource TextFillColorTertiaryBrush}" />
-                </c:Pila>
-            </Border>
-
-            <!-- Resumen -->
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="20,16,20,16">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <c:Pila Grid.Column="0" Spacing="2">
-                        <TextBlock Text="Encendido desde hace" FontSize="12"
-                                   Foreground="{StaticResource TextFillColorTertiaryBrush}" />
-                        <TextBlock x:Name="TxtUptime" Text="—" Style="{StaticResource BodyStrongTextBlockStyle}" />
+            <UniformGrid Columns="2" Margin="0,4,-12,-12">
+                <!-- CPU -->
+                <Border Style="{StaticResource TarjetaStyle}" Margin="0,0,12,12">
+                    <c:Pila Spacing="12">
+                        <Grid>
+                            <c:Pila Orientation="Horizontal" Spacing="10">
+                                <c:FontIcon Glyph="&#xE950;" FontSize="18" Foreground="{StaticResource AccentTextFillColorPrimaryBrush}" />
+                                <TextBlock Text="Procesador" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" />
+                            </c:Pila>
+                        </Grid>
+                        <TextBlock x:Name="TxtCpu" Text="—" FontSize="40" FontWeight="SemiBold" />
+                        <ProgressBar x:Name="BarraCpu" Minimum="0" Maximum="100" Value="0" Height="8" />
+                        <TextBlock x:Name="TxtCpuDetalle" Text="" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
                     </c:Pila>
-                    <c:Pila Grid.Column="1" Spacing="2" Margin="24,0,0,0">
-                        <TextBlock Text="Procesos activos" FontSize="12"
-                                   Foreground="{StaticResource TextFillColorTertiaryBrush}" />
-                        <TextBlock x:Name="TxtProcesos" Text="—" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                    </c:Pila>
-                </Grid>
-            </Border>
+                </Border>
 
-            <TextBlock Text="La temperatura y el uso de GPU se añadirán en una próxima fase."
-                       FontSize="12" Foreground="{StaticResource TextFillColorTertiaryBrush}" />
+                <!-- RAM -->
+                <Border Style="{StaticResource TarjetaStyle}" Margin="0,0,12,12">
+                    <c:Pila Spacing="12">
+                        <c:Pila Orientation="Horizontal" Spacing="10">
+                            <c:FontIcon Glyph="&#xEEA0;" FontSize="18" Foreground="{StaticResource AccentTextFillColorPrimaryBrush}" />
+                            <TextBlock Text="Memoria RAM" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" />
+                        </c:Pila>
+                        <TextBlock x:Name="TxtRam" Text="—" FontSize="40" FontWeight="SemiBold" />
+                        <ProgressBar x:Name="BarraRam" Minimum="0" Maximum="100" Value="0" Height="8" Foreground="#7A5AF8" />
+                        <TextBlock x:Name="TxtRamDetalle" Text="" FontSize="12.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                    </c:Pila>
+                </Border>
+
+                <!-- Encendido -->
+                <c:FilaAjuste Glyph="&#xE823;" Titulo="Encendido desde hace" Margin="0,0,12,12">
+                    <TextBlock x:Name="TxtUptime" Text="—" FontSize="16" FontWeight="SemiBold" />
+                </c:FilaAjuste>
+
+                <!-- Procesos -->
+                <c:FilaAjuste Glyph="&#xE9F9;" Titulo="Procesos activos" Margin="0,0,12,12">
+                    <TextBlock x:Name="TxtProcesos" Text="—" FontSize="16" FontWeight="SemiBold" />
+                </c:FilaAjuste>
+            </UniformGrid>
+
+            <TextBlock Text="La temperatura y el uso de la gráfica se añadirán en una próxima fase."
+                       FontSize="12.5" Margin="2,4,0,0" Foreground="{StaticResource TextFillColorTertiaryBrush}" />
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

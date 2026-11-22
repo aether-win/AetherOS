@@ -6,15 +6,9 @@
     xmlns:c="clr-namespace:CentroAether.Controles">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <c:Pila Padding="32,28,32,28" Spacing="14" MaxWidth="820" HorizontalAlignment="Left">
-
-            <c:Pila Spacing="2">
-                <TextBlock Text="Compatibilidad" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBlock Text="Cómo se comportan las apps y funciones de Windows con los ajustes de Aether."
-                           Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-            </c:Pila>
-
-            <c:Pila x:Name="Contenedor" Spacing="10" />
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE9D2;" ColorIcono="#3FBF7F" Titulo="Compatibilidad" Subtitulo="Cómo se comportan las apps y funciones de Windows con los ajustes de Aether." />
+            <c:Pila x:Name="Contenedor" Spacing="8" Margin="0,8,0,0" />
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

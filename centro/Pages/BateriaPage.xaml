@@ -5,69 +5,40 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:c="clr-namespace:CentroAether.Controles">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="32,24,32,24">
-        <c:Pila Spacing="18" MaxWidth="900" HorizontalAlignment="Left">
-            <c:Pila Orientation="Horizontal" Spacing="12">
-                <c:FontIcon Glyph="&#xE83E;" FontSize="28" />
-                <c:Pila>
-                    <TextBlock Text="Bateria" Style="{StaticResource TitleTextBlockStyle}" />
-                    <TextBlock Text="Carga actual y modo bateria automatico."
-                               Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                </c:Pila>
-            </c:Pila>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado Glyph="&#xE83E;" ColorIcono="#2FA86A" Titulo="Batería" Subtitulo="Carga actual y Modo Batería automático." />
+            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <c:Pila Orientation="Horizontal" Spacing="14">
-                    <c:FontIcon Glyph="&#xE83E;" FontSize="24" />
-                    <TextBlock x:Name="TxtCarga" VerticalAlignment="Center" FontSize="16"
-                               FontWeight="SemiBold" Text="Carga: ..." />
-                </c:Pila>
-            </Border>
-
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
-                <c:Pila Spacing="14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <c:Pila Grid.Column="0" Spacing="2">
-                            <TextBlock Text="Modo Bateria automatico" FontWeight="SemiBold" FontSize="15" />
-                            <TextBlock Text="Cambia solo al Modo Bateria cuando bajas del nivel elegido y no estas con cargador."
-                                       Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
-                        </c:Pila>
-                        <c:ToggleSwitch x:Name="SwAuto" Grid.Column="1" VerticalAlignment="Center" Toggled="Auto_Toggled" />
-                    </Grid>
-                    <c:Pila Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                        <TextBlock Text="Activar al llegar a" VerticalAlignment="Center" />
-                        <ComboBox x:Name="CmbUmbral" Width="80" SelectionChanged="Umbral_Changed" />
-                        <TextBlock Text="sin cargador." VerticalAlignment="Center" />
-                    </c:Pila>
-                </c:Pila>
-            </Border>
-
-            <Border Background="{StaticResource LayerFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="18">
+            <Border Style="{StaticResource TarjetaStyle}" Padding="24,20">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <c:Pila Grid.Column="0" Spacing="2">
-                        <TextBlock Text="Limitar turbo en Gaming" FontWeight="SemiBold" FontSize="15" />
-                        <TextBlock Text="En Modo Gaming, baja el turbo del procesador para darle mas energia a la grafica integrada."
-                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    <c:FontIcon Glyph="&#xE83F;" FontSize="44" Foreground="#3FBF7F" Margin="0,0,20,0" />
+                    <c:Pila Grid.Column="1" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock x:Name="TxtCarga" Text="…" FontSize="26" FontWeight="SemiBold" />
+                        <ProgressBar x:Name="BarraCarga" Minimum="0" Maximum="100" Value="0" Height="8" Foreground="#3FBF7F" />
                     </c:Pila>
-                    <c:ToggleSwitch x:Name="SwTurbo" Grid.Column="1" VerticalAlignment="Center" Toggled="Turbo_Toggled" />
                 </Grid>
             </Border>
 
-            <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" />
+            <TextBlock Text="Modo Batería" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE945;" Titulo="Modo Batería automático"
+                          Descripcion="Cambia solo al Modo Batería cuando bajas del nivel elegido y no estás con el cargador.">
+                <c:ToggleSwitch x:Name="SwAuto" Toggled="Auto_Toggled" />
+            </c:FilaAjuste>
+            <c:FilaAjuste Glyph="&#xE9E9;" Titulo="Activar al llegar a"
+                          Descripcion="Nivel de batería (sin cargador) en el que entra el Modo Batería.">
+                <ComboBox x:Name="CmbUmbral" Width="96" SelectionChanged="Umbral_Changed" />
+            </c:FilaAjuste>
+
+            <TextBlock Text="Rendimiento" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE7FC;" Titulo="Limitar turbo en Gaming"
+                          Descripcion="En Modo Gaming baja el turbo del procesador para darle más energía a la gráfica integrada.">
+                <c:ToggleSwitch x:Name="SwTurbo" Toggled="Turbo_Toggled" />
+            </c:FilaAjuste>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

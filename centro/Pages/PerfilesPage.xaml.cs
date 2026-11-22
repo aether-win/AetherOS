@@ -57,15 +57,9 @@ public sealed partial class PerfilesPage : PaginaBase
         }
     }
 
-    private Border CrearTarjeta(PerfilApp p)
+    private FilaAjuste CrearTarjeta(PerfilApp p)
     {
-        var grid = new Grid();
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-        var textos = new Pila { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        textos.Children.Add(new TextBlock { Text = p.App, FontWeight = FontWeights.SemiBold });
-        string detalle = $"Modo {p.Modo}";
+        string detalle = $"Modo {Ui.NombreModo(p.Modo)}";
         if (!string.IsNullOrEmpty(p.Proceso))
         {
             detalle += $" · {p.Proceso}";
@@ -74,33 +68,22 @@ public sealed partial class PerfilesPage : PaginaBase
         {
             detalle += p.MandoVirtual == "DualShock4" ? " · Mando: DualShock 4" : " · Mando: Xbox 360";
         }
-        textos.Children.Add(new TextBlock
-        {
-            Text = detalle,
-            FontSize = 13,
-            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-        });
-        Grid.SetColumn(textos, 0);
-        grid.Children.Add(textos);
 
-        var btn = new Button { Content = "Quitar", VerticalAlignment = VerticalAlignment.Center };
+        var btn = new Button { Content = "Quitar" };
         btn.Click += (_, _) =>
         {
             _perfiles.Remove(p);
             PerfilesServicio.Guardar(_perfiles);
             Pintar();
         };
-        Grid.SetColumn(btn, 1);
-        grid.Children.Add(btn);
 
-        return new Border
+        return new FilaAjuste
         {
-            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"],
-            BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"],
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(8),
-            Padding = new Thickness(16, 12, 16, 12),
-            Child = grid,
+            Glyph = Ui.GlyphModo(p.Modo),
+            ColorIcono = new SolidColorBrush(Ui.ColorModo(p.Modo)),
+            Titulo = p.App,
+            Descripcion = detalle,
+            Accion = btn,
         };
     }
 

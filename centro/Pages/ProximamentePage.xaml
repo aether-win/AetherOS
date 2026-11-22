@@ -6,53 +6,28 @@
     xmlns:c="clr-namespace:CentroAether.Controles">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <c:Pila Padding="32,28,32,28" Spacing="20" MaxWidth="640" HorizontalAlignment="Left">
-
-            <c:Pila Orientation="Horizontal" Spacing="16">
-                <Border Width="56" Height="56" CornerRadius="12"
-                        Background="{StaticResource AccentFillColorDefaultBrush}">
-                    <c:FontIcon x:Name="IconoModulo" Glyph="&#xE822;" FontSize="26"
-                              Foreground="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
+        <c:Pila Padding="36,30,36,36" Spacing="8" MaxWidth="1000">
+            <c:Encabezado x:Name="Cabecera" Titulo="Módulo">
+                <Border CornerRadius="14" Padding="14,6" Background="#163A5C" BorderBrush="#4FC3F7" BorderThickness="1">
+                    <TextBlock Text="Próximamente" FontWeight="SemiBold" Foreground="#4FC3F7" />
                 </Border>
-                <c:Pila VerticalAlignment="Center" Spacing="2">
-                    <TextBlock x:Name="TxtNombre" Text="Módulo"
-                               Style="{StaticResource TitleTextBlockStyle}" />
-                    <Border Background="{StaticResource SystemFillColorAttentionBackgroundBrush}"
-                            CornerRadius="4" Padding="8,2,8,2" HorizontalAlignment="Left">
-                        <TextBlock Text="Próximamente" FontSize="12" FontWeight="SemiBold"
-                                   Foreground="{StaticResource SystemFillColorAttentionBrush}" />
-                    </Border>
-                </c:Pila>
-            </c:Pila>
+            </c:Encabezado>
 
-            <TextBlock x:Name="TxtDescripcion" Text=""
-                       Style="{StaticResource BodyTextBlockStyle}"
-                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                       TextWrapping="Wrap" />
-
-            <Border Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1" CornerRadius="8" Padding="20,16,20,16">
-                <c:Pila Spacing="12">
-                    <TextBlock Text="Qué hará este módulo"
-                               Style="{StaticResource BodyStrongTextBlockStyle}" />
-                    <ItemsControl x:Name="ListaCaracteristicas">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <c:Pila Orientation="Horizontal" Spacing="10" Margin="0,3,0,3">
-                                    <c:FontIcon Glyph="&#xE73E;" FontSize="14"
-                                              Foreground="{StaticResource AccentTextFillColorPrimaryBrush}" />
-                                    <TextBlock Text="{Binding}" TextWrapping="Wrap"
-                                               Foreground="{StaticResource TextFillColorPrimaryBrush}" />
-                                </c:Pila>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </c:Pila>
+            <TextBlock Text="Qué hará este módulo" Style="{StaticResource SeccionTextBlockStyle}" />
+            <Border Style="{StaticResource TarjetaStyle}">
+                <ItemsControl x:Name="ListaCaracteristicas">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <c:Pila Orientation="Horizontal" Spacing="10" Margin="0,4">
+                                <c:FontIcon Glyph="&#xE73E;" FontSize="13" Foreground="{StaticResource AccentTextFillColorPrimaryBrush}" />
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                            </c:Pila>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Border>
 
-            <TextBlock Text="En desarrollo. Las funciones se irán activando por fases."
-                       FontSize="12"
+            <TextBlock Text="En desarrollo. Las funciones se irán activando por fases." FontSize="12.5" Margin="2,4,0,0"
                        Foreground="{StaticResource TextFillColorTertiaryBrush}" />
         </c:Pila>
     </ScrollViewer>
