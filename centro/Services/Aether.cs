@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 
 namespace CentroAether.Services;
 
-}
-
 /// <summary>
 /// Puente entre la interfaz nativa y la logica de Aether, que ya vive y esta probada en
 /// PowerShell (Aether.Centro.ps1). El Centro corre como administrador (ver app.manifest),
