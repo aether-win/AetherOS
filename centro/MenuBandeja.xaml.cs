@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -83,6 +84,44 @@ public partial class MenuBandeja : Window
 
         // Mando
         Contenido.Children.Add(Titulo("MANDO"));
+        if (!ConfigCentro.MandosActivos)
+        {
+            Contenido.Children.Add(Opcion("\uE7E8", Ui.Hex("#6F87A3"), "Activar los mandos de Aether", false, () =>
+            {
+                ConfigCentro.MandosActivos = true;
+                ServicioMandos.Iniciar();
+                SegundoPlano.ActualizarIndicador();
+            }));
+            Contenido.Children.Add(Separador());
+            Contenido.Children.Add(Opcion("\uE80F", Ui.Hex("#4FC3F7"), "Abrir Aether Toolbox", false,
+                () => ((App)Application.Current).MostrarCentro()));
+            Contenido.Children.Add(Separador());
+            Contenido.Children.Add(Opcion("\uE7E8", Ui.Hex("#F0565C"), "Cerrar Aether Toolbox", false,
+                () => Application.Current.Shutdown()));
+            return;
+        }
+        MandoConectado? fisico = ServicioMandos.Conectados.FirstOrDefault();
+        var estado = new Grid { Margin = new Thickness(12, 0, 8, 6) };
+        estado.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        estado.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        estado.Children.Add(new System.Windows.Shapes.Ellipse
+        {
+            Width = 9,
+            Height = 9,
+            Margin = new Thickness(0, 0, 10, 0),
+            VerticalAlignment = VerticalAlignment.Center,
+            Fill = new SolidColorBrush(Ui.Hex(fisico is null ? "#6F87A3" : "#3FBF7F")),
+        });
+        var txtEstado = new TextBlock
+        {
+            Text = fisico is null ? "Ningún mando conectado" : $"MANDO CONECTADO · {fisico.Nombre} · {fisico.TextoConexion}",
+            FontSize = 12,
+            TextWrapping = TextWrapping.Wrap,
+            Foreground = new SolidColorBrush(Ui.Hex(fisico is null ? "#9DB2CC" : "#7EE2B0")),
+        };
+        Grid.SetColumn(txtEstado, 1);
+        estado.Children.Add(txtEstado);
+        Contenido.Children.Add(estado);
         bool emulando = MotorControlador.Activo;
         Contenido.Children.Add(Opcion("", Ui.Hex("#6F87A3"), "Apagado (mando normal)", !emulando,
             () => SegundoPlano.CambiarMando(null)));

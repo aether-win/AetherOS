@@ -17,10 +17,16 @@
             </c:Encabezado>
             <c:InfoBar x:Name="Estado" IsOpen="False" IsClosable="True" Severity="Informational" Margin="0,0,0,4" />
 
+            <c:FilaAjuste Glyph="&#xE7E8;" Titulo="Mandos de Aether"
+                          Descripcion="Apágalo si no usas mandos: no corre nada de mandos (ni perfiles, ni sonidos, ni revisiones) y no toca ningún otro dispositivo.">
+                <c:ToggleSwitch x:Name="TglMandos" Toggled="Mandos_Toggled" />
+            </c:FilaAjuste>
+
+            <c:Pila x:Name="PanelMandos" Spacing="8">
             <TextBlock Text="Mandos conectados" Style="{StaticResource SeccionTextBlockStyle}" />
             <c:Pila x:Name="Contenedor" Spacing="8" />
-            <c:FilaAjuste x:Name="Vacio" Glyph="&#xE7FC;" Titulo="No hay mandos conectados"
-                          Descripcion="Conecta un mando por USB o Bluetooth y pulsa Buscar mandos." Visibility="Collapsed" />
+            <c:FilaAjuste x:Name="Vacio" Glyph="&#xE7FC;" ColorIcono="#6F87A3" Titulo="Ningún mando conectado"
+                          Descripcion="Conecta un mando por USB o Bluetooth: aparece aquí al instante, con un punto verde." Visibility="Collapsed" />
 
             <TextBlock Text="Convertir mando" Style="{StaticResource SeccionTextBlockStyle}" />
             <c:FilaAjuste x:Name="FilaEmular" Glyph="&#xE7FC;" Titulo="Emulación de mando Xbox 360" Descripcion="…">
@@ -67,7 +73,20 @@
                 </c:Pila>
             </c:FilaAjuste>
 
+            <TextBlock Text="Bluetooth" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE702;" Titulo="Apagar el mando Bluetooth sin uso"
+                          Descripcion="Apaga solo el mando (como hace una PS4) tras ese tiempo sin tocarlo, para ahorrar su batería. El Bluetooth del equipo sigue encendido.">
+                <c:Pila Orientation="Horizontal" Spacing="8">
+                    <TextBox x:Name="TxtMinutos" Width="70" Tag="min" Visibility="Collapsed" LostFocus="Minutos_LostFocus" />
+                    <ComboBox x:Name="CmbApagado" Width="150" SelectionChanged="Apagado_Changed" />
+                </c:Pila>
+            </c:FilaAjuste>
+
             <TextBlock Text="Diagnóstico" Style="{StaticResource SeccionTextBlockStyle}" />
+            <c:FilaAjuste Glyph="&#xE9F9;" Titulo="Registro de mandos"
+                          Descripcion="Conexiones, desconexiones, luz del mando y errores, con fecha y hora (mandos.log).">
+                <Button Content="Abrir registro" Click="Registro_Click" />
+            </c:FilaAjuste>
             <c:FilaAjuste Glyph="&#xE9D9;" Titulo="Probar mando en vivo"
                           Descripcion="Pulsa botones y mueve los sticks para ver sus índices y valores.">
                 <c:ToggleSwitch x:Name="TglDiag" Toggled="Diag_Toggled" />
@@ -85,6 +104,7 @@
                           Descripcion="Si necesitas mapeo avanzado ya, DS4Windows tiene el set completo de funciones. Basado en su tecnología (GPLv3).">
                 <Button x:Name="BtnDs4" Content="Instalar" Click="Ds4_Click" />
             </c:FilaAjuste>
+            </c:Pila>
         </c:Pila>
     </ScrollViewer>
 </c:PaginaBase>

@@ -12,6 +12,10 @@ public static class ConfigCentro
         public bool Inteligencia { get; set; }
         public double Deadzone { get; set; } = 0.10;      // 0..1 (zona muerta de sticks)
         public double Sensibilidad { get; set; } = 1.0;   // 0.5..2.0
+        public bool MandosActivos { get; set; } = true;   // interruptor general de mandos
+        public int ApagadoMandoMin { get; set; }          // 0 = nunca apagar el mando Bluetooth
+        public bool SonidosMandos { get; set; } = true;   // sonido al cambiar de mando
+        public string MandoPredeterminado { get; set; } = ""; // "", "Xbox360" o "DualShock4"
     }
 
     private static string Carpeta =>
@@ -76,5 +80,44 @@ public static class ConfigCentro
             d.Sensibilidad = value;
             Escribir(d);
         }
+    }
+
+    private static T Cambiar<T>(Func<Datos, T> leer, Action<Datos> escribir, bool guardar)
+    {
+        Datos d = Leer();
+        if (guardar)
+        {
+            escribir(d);
+            Escribir(d);
+        }
+        return leer(d);
+    }
+
+    /// <summary>Interruptor general de mandos (si está apagado, nada de mandos corre).</summary>
+    public static bool MandosActivos
+    {
+        get => Leer().MandosActivos;
+        set => Cambiar(d => d.MandosActivos, d => d.MandosActivos = value, true);
+    }
+
+    /// <summary>Minutos sin uso para apagar un mando Bluetooth (0 = nunca).</summary>
+    public static int ApagadoMandoMin
+    {
+        get => Math.Max(0, Leer().ApagadoMandoMin);
+        set => Cambiar(d => d.ApagadoMandoMin, d => d.ApagadoMandoMin = Math.Clamp(value, 0, 600), true);
+    }
+
+    /// <summary>Sonido de Windows al cambiar entre mando Xbox y PS4.</summary>
+    public static bool SonidosMandos
+    {
+        get => Leer().SonidosMandos;
+        set => Cambiar(d => d.SonidosMandos, d => d.SonidosMandos = value, true);
+    }
+
+    /// <summary>Mando al que se vuelve al cerrar un juego con perfil: "", "Xbox360" o "DualShock4".</summary>
+    public static string MandoPredeterminado
+    {
+        get => Leer().MandoPredeterminado ?? "";
+        set => Cambiar(d => d.MandoPredeterminado, d => d.MandoPredeterminado = value ?? "", true);
     }
 }

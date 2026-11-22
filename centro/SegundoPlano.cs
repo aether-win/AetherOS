@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,10 +26,11 @@ public static class SegundoPlano
     private static HwndSource? _atajos;
     private static readonly DispatcherTimer Vigia = new() { Interval = TimeSpan.FromSeconds(2) };
     private static readonly DispatcherTimer GuardiaOffice = new() { Interval = TimeSpan.FromMinutes(2) };
-    private static readonly DispatcherTimer LuzMandos = new() { Interval = TimeSpan.FromSeconds(3) };
+    private static System.Drawing.Icon? _iconoBase;
+    private static IntPtr _hIconActual = IntPtr.Zero;
     private static string _ultimoModo = "";
     private static bool _ocupado;
-    private static bool _luzOcupada;
+
 
     public static void Iniciar()
     {
@@ -37,23 +39,19 @@ public static class SegundoPlano
         // Si la vez anterior se cerró de golpe con el mando real oculto, volver a mostrarlo.
         _ = Task.Run(HidHideServicio.RestaurarPendientes);
 
-        // Barra de luz del DualShock 4 original al conectarlo (como en una PS4), aunque no se emule.
-        LuzMandos.Tick += async (_, _) =>
-        {
-            if (MotorControlador.Activo || _luzOcupada)
-            {
-                return;
-            }
-            _luzOcupada = true;
-            try { await Task.Run(LuzDs4.AsegurarEnConectados); }
-            catch { /* sin mando */ }
-            finally { _luzOcupada = false; }
-        };
-        LuzMandos.Start();
+        // Servicio de mandos (por eventos): indicador, luz del DS4, apagado por inactividad.
+        ServicioMandos.Cambio += () => Application.Current?.Dispatcher.BeginInvoke(new Action(ActualizarIndicador));
+        ServicioMandos.Conexion += (m, conectado) => Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
+            Notificar(conectado
+                ? $"🟢 MANDO CONECTADO — {m.Nombre} · {m.TextoConexion}"
+                : $"⚪ Mando desconectado — {m.Nombre}")));
+        ServicioMandos.Iniciar();
+        ActualizarIndicador();
 
+        _iconoBase = CargarIcono();
         _icono = new Forms.NotifyIcon
         {
-            Icon = CargarIcono(),
+            Icon = _iconoBase,
             Visible = true,
             Text = TextoIcono(),
         };
@@ -107,7 +105,7 @@ public static class SegundoPlano
     {
         Vigia.Stop();
         GuardiaOffice.Stop();
-        LuzMandos.Stop();
+        ServicioMandos.Detener();
         _atajos?.Dispose();
         if (_icono is not null)
         {
@@ -183,6 +181,11 @@ public static class SegundoPlano
     /// <summary>null = apagar la emulación; si no, emular ese mando (Xbox 360 o PS4).</summary>
     public static void CambiarMando(TipoVirtual? destino)
     {
+        if (!ConfigCentro.MandosActivos)
+        {
+            Notificar("Los mandos de Aether están desactivados. Actívalos en Aether Toolbox › Control.");
+            return;
+        }
         if (destino is null)
         {
             if (MotorControlador.Activo)
@@ -247,8 +250,72 @@ public static class SegundoPlano
         string texto = Aether.Disponible
             ? $"Aether OS · Modo {Controles.Ui.NombreModo(_ultimoModo)}"
             : "Aether Toolbox";
+        if (ServicioMandos.Activo)
+        {
+            MandoConectado? m = ServicioMandos.Conectados.FirstOrDefault();
+            texto += m is null ? "\nMando: desconectado" : $"\nMando: {m.Nombre} ({m.TextoConexion})";
+        }
         return texto.Length > 63 ? texto[..63] : texto;   // límite de Windows
     }
+
+    /// <summary>
+    /// Ícono de la bandeja con un punto: verde si hay un mando conectado, gris si no (solo con el
+    /// interruptor de mandos encendido). Se dibuja sobre el ícono de Aether.
+    /// </summary>
+    public static void ActualizarIndicador()
+    {
+        if (_icono is null || _iconoBase is null)
+        {
+            return;
+        }
+        try
+        {
+            System.Drawing.Icon nuevo;
+            IntPtr hNuevo = IntPtr.Zero;
+            if (!ServicioMandos.Activo)
+            {
+                nuevo = _iconoBase;
+            }
+            else
+            {
+                bool hay = ServicioMandos.Conectados.Count > 0;
+                int lado = Math.Max(_iconoBase.Width, 16);
+                using var bmp = new System.Drawing.Bitmap(lado, lado);
+                using (var g = System.Drawing.Graphics.FromImage(bmp))
+                {
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    g.DrawIcon(_iconoBase, new System.Drawing.Rectangle(0, 0, lado, lado));
+                    float d = lado * 0.46f;
+                    var zona = new System.Drawing.RectangleF(lado - d - 0.5f, lado - d - 0.5f, d, d);
+                    using var borde = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(255, 10, 21, 36));
+                    using var punto = new System.Drawing.SolidBrush(hay
+                        ? System.Drawing.Color.FromArgb(255, 63, 191, 127)
+                        : System.Drawing.Color.FromArgb(255, 120, 135, 155));
+                    g.FillEllipse(borde, zona);
+                    float m = d * 0.18f;
+                    g.FillEllipse(punto, zona.X + m, zona.Y + m, d - (2 * m), d - (2 * m));
+                }
+                hNuevo = bmp.GetHicon();
+                nuevo = System.Drawing.Icon.FromHandle(hNuevo);
+            }
+            _icono.Icon = nuevo;
+            _icono.Text = TextoIcono();
+            if (_hIconActual != IntPtr.Zero)
+            {
+                DestroyIcon(_hIconActual);
+            }
+            _hIconActual = hNuevo;
+        }
+        catch { /* el indicador nunca debe tumbar la bandeja */ }
+
+        if (Application.Current?.MainWindow is MainWindow v)
+        {
+            v.ActualizarMandoMenu();
+        }
+    }
+
+    [DllImport("user32.dll")]
+    private static extern bool DestroyIcon(IntPtr h);
 
     private static System.Drawing.Icon CargarIcono()
     {

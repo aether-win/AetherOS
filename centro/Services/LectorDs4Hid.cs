@@ -18,6 +18,9 @@ public sealed class LectorDs4Hid : IDisposable
 {
     public const int VendorSony = 0x054C;
     private static readonly int[] ProductosDs4 = { 0x05C4, 0x09CC, 0x0BA0 };
+    public static readonly int[] ProductosDualSense = { 0x0CE6, 0x0DF2 };
+
+    public static bool EsDs4(int pid) => Array.IndexOf(ProductosDs4, pid) >= 0;
 
     private HidDevice? _dev;
     private HidStream? _stream;
@@ -187,11 +190,15 @@ public static class LuzDs4
     private const byte FlagLuz = 0x02;      // cambiar color de la barra
     private const byte FlagParpadeo = 0x04; // y quitar parpadeo (luz fija)
 
+    /// <summary>Detalle del último intento (para el registro de mandos): vía usada y código de error de Windows.</summary>
+    public static string UltimoDetalle { get; private set; } = "";
+
     public static bool Enviar(string ruta, bool bluetooth, int largoSalida, byte r, byte g, byte b)
     {
         using SafeFileHandle h = CreateFileW(ruta, 0xC0000000, 0x00000003, IntPtr.Zero, 3, 0, IntPtr.Zero);
         if (h.IsInvalid)
         {
+            UltimoDetalle = $"no se pudo abrir el mando para escribir (error {Marshal.GetLastWin32Error()})";
             return false;
         }
 
@@ -210,12 +217,18 @@ public static class LuzDs4
 
             if (HidD_SetOutputReport(h, buf, buf.Length))
             {
+                UltimoDetalle = "Bluetooth: HidD_SetOutputReport 0x11 aceptado";
                 return true;
             }
+            int e1 = Marshal.GetLastWin32Error();
             // Respaldo: escribirlo por la vía normal con el largo que pide Windows.
             byte[] largo = new byte[Math.Max(buf.Length, largoSalida)];
             buf.CopyTo(largo, 0);
-            return WriteFile(h, largo, largo.Length, out _, IntPtr.Zero);
+            bool ok = WriteFile(h, largo, largo.Length, out _, IntPtr.Zero);
+            UltimoDetalle = ok
+                ? $"Bluetooth: WriteFile {largo.Length} bytes aceptado (SetOutputReport falló, error {e1})"
+                : $"Bluetooth: falló SetOutputReport (error {e1}) y WriteFile {largo.Length} bytes (error {Marshal.GetLastWin32Error()})";
+            return ok;
         }
         else
         {
@@ -226,33 +239,17 @@ public static class LuzDs4
             buf[6] = r;
             buf[7] = g;
             buf[8] = b;
-            return WriteFile(h, buf, buf.Length, out _, IntPtr.Zero)
-                   || HidD_SetOutputReport(h, buf, buf.Length);
-        }
-    }
-
-    // ── Mandos conectados sin emulación: encender su luz una vez al conectarse ─────────
-
-    private static readonly HashSet<string> Encendidos = new(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>Enciende la luz (azul jugador 1) de cada DualShock 4 recién conectado.</summary>
-    public static void AsegurarEnConectados()
-    {
-        List<HidDevice> mandos = LectorDs4Hid.Buscar();
-        var presentes = new HashSet<string>(mandos.Select(m => m.DevicePath), StringComparer.OrdinalIgnoreCase);
-        Encendidos.RemoveWhere(r => !presentes.Contains(r));
-        foreach (HidDevice m in mandos)
-        {
-            if (Encendidos.Contains(m.DevicePath))
+            if (WriteFile(h, buf, buf.Length, out _, IntPtr.Zero))
             {
-                continue;
+                UltimoDetalle = $"USB: WriteFile 0x05 de {buf.Length} bytes aceptado";
+                return true;
             }
-            int largo = 0;
-            try { largo = m.GetMaxOutputReportLength(); } catch { /* estándar */ }
-            if (Enviar(m.DevicePath, LectorDs4Hid.EsRutaBluetooth(m.DevicePath), largo, Jugador1.R, Jugador1.G, Jugador1.B))
-            {
-                Encendidos.Add(m.DevicePath);
-            }
+            int e1 = Marshal.GetLastWin32Error();
+            bool ok = HidD_SetOutputReport(h, buf, buf.Length);
+            UltimoDetalle = ok
+                ? $"USB: SetOutputReport aceptado (WriteFile falló, error {e1})"
+                : $"USB: falló WriteFile (error {e1}) y SetOutputReport (error {Marshal.GetLastWin32Error()})";
+            return ok;
         }
     }
 

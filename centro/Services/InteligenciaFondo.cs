@@ -80,7 +80,7 @@ public static class InteligenciaFondo
                     _ = AplicarModo(p.Modo, p.App);
 
                     // Mando virtual del perfil: crear el dispositivo solo si hace falta.
-                    if (!string.IsNullOrEmpty(p.MandoVirtual) && !MotorControlador.Activo)
+                    if (ConfigCentro.MandosActivos && !string.IsNullOrEmpty(p.MandoVirtual) && !MotorControlador.Activo)
                     {
                         MotorControlador.Objetivo = p.MandoVirtual == "DualShock4"
                             ? TipoVirtual.DualShock4

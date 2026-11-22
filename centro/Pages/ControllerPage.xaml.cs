@@ -32,6 +32,9 @@ public sealed partial class ControllerPage : PaginaBase
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
+        ServicioMandos.Cambio += AlCambiarMandos;
+        MotorControlador.EstadoCambiado += AlCambiarMandos;
+        PrepararAjustesMandos();
         Buscar();
         RefrescarMotor();
     }
@@ -40,6 +43,8 @@ public sealed partial class ControllerPage : PaginaBase
     {
         base.OnNavigatedFrom(e);
         _diag.Stop();
+        ServicioMandos.Cambio -= AlCambiarMandos;
+        MotorControlador.EstadoCambiado -= AlCambiarMandos;
     }
 
     private void Diag_Toggled(object sender, RoutedEventArgs e)
@@ -107,7 +112,7 @@ public sealed partial class ControllerPage : PaginaBase
         _cargando = false;
         _listo = true;
 
-        TglEmular.IsEnabled = vigem;
+        TglEmular.IsEnabled = vigem && ConfigCentro.MandosActivos;
         CmbObjetivo.IsEnabled = vigem && !MotorControlador.Activo;   // no cambiar destino en caliente
         bool hidhide = HidHideServicio.Disponible;
         PanelRequisitos.Visibility = vigem && hidhide ? Visibility.Collapsed : Visibility.Visible;
@@ -235,29 +240,160 @@ public sealed partial class ControllerPage : PaginaBase
         RefrescarMotor();
     }
 
-    private void Refrescar_Click(object sender, RoutedEventArgs e) => Buscar();
+    private void Refrescar_Click(object sender, RoutedEventArgs e)
+    {
+        ServicioMandos.Programar();
+        Buscar();
+    }
+
+    private static readonly (int Min, string Texto)[] OpcionesApagado =
+    {
+        (0, "Nunca"), (5, "5 minutos"), (10, "10 minutos"), (15, "15 minutos"), (20, "20 minutos"),
+        (30, "30 minutos"), (45, "45 minutos"), (60, "60 minutos"), (-1, "Personalizado…"),
+    };
+
+    private void PrepararAjustesMandos()
+    {
+        _cargando = true;
+        TglMandos.IsOn = ConfigCentro.MandosActivos;
+        PanelMandos.Visibility = TglMandos.IsOn ? Visibility.Visible : Visibility.Collapsed;
+        if (CmbApagado.Items.Count == 0)
+        {
+            foreach (var o in OpcionesApagado)
+            {
+                CmbApagado.Items.Add(o.Texto);
+            }
+        }
+        int min = ConfigCentro.ApagadoMandoMin;
+        int idx = Array.FindIndex(OpcionesApagado, o => o.Min == min);
+        CmbApagado.SelectedIndex = idx >= 0 ? idx : OpcionesApagado.Length - 1;
+        TxtMinutos.Visibility = idx >= 0 ? Visibility.Collapsed : Visibility.Visible;
+        TxtMinutos.Text = idx >= 0 ? "" : min.ToString();
+        _cargando = false;
+    }
+
+    private void Mandos_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_cargando)
+        {
+            return;
+        }
+        ConfigCentro.MandosActivos = TglMandos.IsOn;
+        if (TglMandos.IsOn)
+        {
+            ServicioMandos.Iniciar();
+            Aviso("Mandos de Aether activados.", InfoBarSeverity.Success);
+        }
+        else
+        {
+            MotorControlador.Detener();
+            ServicioMandos.Detener();
+            Aviso("Mandos de Aether desactivados: no corre nada de mandos.", InfoBarSeverity.Informational);
+        }
+        SegundoPlano.ActualizarIndicador();
+        PanelMandos.Visibility = TglMandos.IsOn ? Visibility.Visible : Visibility.Collapsed;
+        RefrescarMotor();
+        Buscar();
+    }
+
+    private void Apagado_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (_cargando || CmbApagado.SelectedIndex < 0)
+        {
+            return;
+        }
+        int min = OpcionesApagado[CmbApagado.SelectedIndex].Min;
+        if (min < 0)
+        {
+            TxtMinutos.Visibility = Visibility.Visible;
+            TxtMinutos.Focus();
+            return;
+        }
+        TxtMinutos.Visibility = Visibility.Collapsed;
+        GuardarApagado(min);
+    }
+
+    private void Minutos_LostFocus(object sender, RoutedEventArgs e)
+    {
+        if (int.TryParse(TxtMinutos.Text.Trim(), out int min) && min > 0)
+        {
+            GuardarApagado(Math.Min(min, 600));
+        }
+    }
+
+    private void GuardarApagado(int min)
+    {
+        ConfigCentro.ApagadoMandoMin = min;
+        ServicioMandos.AplicarTemporizador();
+        Aviso(min == 0 ? "El mando Bluetooth no se apagará solo." : $"El mando Bluetooth se apagará tras {min} min sin uso.",
+            InfoBarSeverity.Success);
+    }
+
+    private void Registro_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            string log = System.IO.Path.Combine(ServicioMandos.CarpetaLog, "mandos.log");
+            Sistema.Abrir(System.IO.File.Exists(log) ? log : ServicioMandos.CarpetaLog);
+        }
+        catch
+        {
+            Aviso("Todavía no hay registro de mandos.", InfoBarSeverity.Informational);
+        }
+    }
+
+    private void Aviso(string texto, InfoBarSeverity tipo)
+    {
+        Estado.Severity = tipo;
+        Estado.Message = texto;
+        Estado.IsOpen = true;
+    }
+
+    private void AlCambiarMandos() => Dispatcher.BeginInvoke(new Action(Buscar));
 
     private void Buscar()
     {
         Contenedor.Children.Clear();
-        List<MandoInfo> mandos = MandosServicio.Detectar();
-        Vacio.Visibility = mandos.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        foreach (MandoInfo m in mandos)
+        IReadOnlyList<MandoConectado> mandos = ServicioMandos.Conectados;
+        Vacio.Visibility = ServicioMandos.Activo && mandos.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        foreach (MandoConectado m in mandos)
         {
             Contenedor.Children.Add(CrearTarjeta(m));
         }
     }
 
-    private FilaAjuste CrearTarjeta(MandoInfo m)
+    private FilaAjuste CrearTarjeta(MandoConectado m)
     {
+        string tipo = m.Tipo switch
+        {
+            TipoMando.DualShock4 => "PlayStation 4",
+            TipoMando.DualSense => "PlayStation 5",
+            TipoMando.Xbox => "Xbox",
+            _ => "Genérico",
+        };
+        string emulando = MotorControlador.Activo
+            ? $" · funcionando como {(MotorControlador.Objetivo == TipoVirtual.DualShock4 ? "PS4" : "Xbox 360")}"
+              + (MotorControlador.MandoRealOculto ? " (original oculto)" : "")
+            : "";
+        var punto = new System.Windows.Shapes.Ellipse
+        {
+            Width = 10,
+            Height = 10,
+            Fill = Ui.Recurso("SystemFillColorSuccessBrush"),
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(0, 0, 8, 0),
+        };
+        var insignia = new Pila { Orientation = Orientation.Horizontal };
+        insignia.Children.Add(punto);
+        insignia.Children.Add(Ui.Insignia("MANDO CONECTADO", Ui.Hex("#3FBF7F")));
         return new FilaAjuste
         {
             Glyph = "\uE7FC",
             Titulo = m.Nombre,
-            Descripcion = $"{m.Marca} · {m.Protocolo}",
-            Nota = m.EsGamepad ? "Conectado · compatible con emulación" : "Conectado",
+            Descripcion = $"{tipo} · {m.TextoConexion} · conectado desde las {m.Desde:HH:mm}",
+            Nota = "Funcionando" + emulando,
             ColorNota = (Brush)Application.Current.Resources["SystemFillColorSuccessBrush"],
-            Accion = Ui.Insignia(m.EsGamepad ? "Listo" : "Conectado", Ui.Hex("#3FBF7F")),
+            Accion = insignia,
         };
     }
 

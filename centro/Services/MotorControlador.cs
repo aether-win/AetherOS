@@ -59,6 +59,20 @@ public static class MotorControlador
 
     public static bool Activo { get; private set; }
 
+    // Mandos estándar que aparecieron con el virtual (el Xbox 360 de ViGEm): no son reales.
+    private static readonly HashSet<string> _idsVirtuales = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>True si esa ruta HID es un mando virtual de Aether (no se muestra ni se lee).</summary>
+    public static bool EsRutaVirtual(string ruta) => _rutasVirtuales.Contains(ruta);
+
+    /// <summary>True si ese mando de Windows.Gaming.Input es el virtual de Aether.</summary>
+    public static bool EsIdVirtual(string id) => _idsVirtuales.Contains(id);
+
+    public static IReadOnlyCollection<string> RutasVirtuales => _rutasVirtuales;
+
+    /// <summary>Se dispara cuando la emulación se inicia o se detiene.</summary>
+    public static event Action? EstadoCambiado;
+
     /// <summary>True si el mando real quedó oculto (los juegos solo ven el virtual).</summary>
     public static bool MandoRealOculto => _rutaOculta is not null;
 
@@ -144,6 +158,7 @@ public static class MotorControlador
 
             // 1) Lo REAL primero (antes de crear el virtual, para no confundirlos).
             _gamepadsReales = new HashSet<string>(Gamepad.Gamepads.Select(IdGamepad).Where(i => i.Length > 0), StringComparer.OrdinalIgnoreCase);
+            var idsAntes = new HashSet<string>(RawGameController.RawGameControllers.Select(c => c.NonRoamableId ?? ""), StringComparer.OrdinalIgnoreCase);
             var sonyAntes = new HashSet<string>(LectorDs4Hid.Buscar().Select(d => d.DevicePath), StringComparer.OrdinalIgnoreCase);
             var lector = new LectorDs4Hid();
             if (lector.Abrir())
@@ -183,13 +198,22 @@ public static class MotorControlador
                 _x360.Connect();
             }
 
-            // 3) Anotar las rutas Sony que aparecieron con el virtual (esas son virtuales).
+            // 3) Anotar las rutas Sony y los mandos estándar que aparecieron con el virtual.
             Thread.Sleep(400);
             foreach (var d in LectorDs4Hid.Buscar())
             {
                 if (!sonyAntes.Contains(d.DevicePath))
                 {
                     _rutasVirtuales.Add(d.DevicePath);
+                }
+            }
+            _idsVirtuales.Clear();
+            foreach (RawGameController rc in RawGameController.RawGameControllers)
+            {
+                string id = rc.NonRoamableId ?? "";
+                if (id.Length > 0 && !idsAntes.Contains(id))
+                {
+                    _idsVirtuales.Add(id);
                 }
             }
 
@@ -203,6 +227,8 @@ public static class MotorControlador
             _cts = new CancellationTokenSource();
             _bucle = Task.Run(() => Bucle(_cts.Token));
             Activo = true;
+            ServicioMandos.Registrar($"Emulación iniciada como {(Objetivo == TipoVirtual.DualShock4 ? "DualShock 4" : "Xbox 360")}; mando real {(_ds4Lector is null ? "no encontrado por HID" : "abierto")}; oculto con HidHide: {(_rutaOculta is null ? "no" : "sí")}.");
+            EstadoCambiado?.Invoke();
             return true;
         }
         catch
@@ -231,6 +257,7 @@ public static class MotorControlador
 
     public static void Detener()
     {
+        bool estaba = Activo;
         Activo = false;
         try { _cts?.Cancel(); } catch { /* ignore */ }
         try { _bucle?.Wait(500); } catch { /* ignore */ }
@@ -254,6 +281,12 @@ public static class MotorControlador
         _x360 = null;
         _ds4 = null;
         _client = null;
+        _idsVirtuales.Clear();
+        if (estaba)
+        {
+            ServicioMandos.Registrar("Emulación detenida; el mando real vuelve a verse normal.");
+            EstadoCambiado?.Invoke();
+        }
     }
 
     private static void Bucle(CancellationToken ct)

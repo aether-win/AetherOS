@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ public partial class MainWindow : Window
         {
             SeleccionarPrimero();
             _ = ActualizarModoMenu();
+            ActualizarMandoMenu();
         };
 
         // Cerrar la ventana solo la oculta: el Centro sigue en segundo plano (bandeja, atajos,
@@ -111,6 +113,25 @@ public partial class MainWindow : Window
             }
         }
     }
+
+    /// <summary>Indicador del mando en el menú lateral (tiempo real, por eventos del servicio).</summary>
+    public void ActualizarMandoMenu()
+    {
+        if (!ServicioMandos.Activo)
+        {
+            PuntoMando.Fill = new SolidColorBrush(Ui.Hex("#3A4A60"));
+            TxtMandoTitulo.Text = "Mandos";
+            TxtMandoMenu.Text = "Desactivados";
+            return;
+        }
+        MandoConectado? m = ServicioMandos.Conectados.FirstOrDefault();
+        bool hay = m is not null;
+        PuntoMando.Fill = new SolidColorBrush(Ui.Hex(hay ? "#3FBF7F" : "#6F87A3"));
+        TxtMandoTitulo.Text = hay ? $"Mando conectado · {m!.TextoConexion}" : "Mando";
+        TxtMandoMenu.Text = hay ? m!.Nombre : "Desconectado";
+    }
+
+    private void CajaMando_Click(object sender, System.Windows.Input.MouseButtonEventArgs e) => IrA("control");
 
     /// <summary>Refresca el modo que se muestra en el pie del menú (con su color).</summary>
     public async Task ActualizarModoMenu()

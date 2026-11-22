@@ -96,8 +96,8 @@
                     </c:Pila>
                 </Grid>
 
-                <!-- Pie: modo actual -->
-                <Border DockPanel.Dock="Bottom" Margin="14,8,14,16" Padding="14,12" CornerRadius="10"
+                <!-- Pie: mando (indicador en tiempo real) y modo actual -->
+                <Border DockPanel.Dock="Bottom" Margin="14,0,14,16" Padding="14,12" CornerRadius="10"
                         Background="#0F2036" BorderBrush="#1C3756" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -108,6 +108,22 @@
                         <c:Pila Grid.Column="1">
                             <TextBlock Text="Modo actual" FontSize="11.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
                             <TextBlock x:Name="TxtModoMenu" Text="…" FontSize="14" FontWeight="SemiBold" />
+                        </c:Pila>
+                    </Grid>
+                </Border>
+
+                <Border x:Name="CajaMando" DockPanel.Dock="Bottom" Margin="14,8,14,8" Padding="14,12" CornerRadius="10"
+                        Background="#0F2036" BorderBrush="#1C3756" BorderThickness="1" Cursor="Hand"
+                        MouseLeftButtonUp="CajaMando_Click">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Ellipse x:Name="PuntoMando" Width="10" Height="10" Fill="#6F87A3" Margin="0,0,12,0" VerticalAlignment="Center" />
+                        <c:Pila Grid.Column="1">
+                            <TextBlock x:Name="TxtMandoTitulo" Text="Mando" FontSize="11.5" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                            <TextBlock x:Name="TxtMandoMenu" Text="Desconectado" FontSize="13.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
                         </c:Pila>
                     </Grid>
                 </Border>
