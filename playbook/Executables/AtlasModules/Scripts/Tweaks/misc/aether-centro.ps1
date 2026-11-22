@@ -68,7 +68,10 @@ if ($usarNativo) {
 ' Abre Aether Toolbox mediante su tarea programada (sin ventana ni UAC).
 Dim shell
 Set shell = CreateObject("WScript.Shell")
-shell.Run "schtasks /run /tn ""\Aether\Toolbox""", 0, False
+Dim rc
+rc = shell.Run("schtasks /run /tn ""\Aether\Toolbox""", 0, True)
+' Si la tarea no existe o falla, se abre el exe directo (Windows pedira permiso).
+If rc <> 0 Then shell.Run """$exeNativo""", 1, False
 "@, (New-Object Text.UTF8Encoding($false)))
     $accesoArgs = "`"$vbsAbrir`""
     $accesoIcono = "$exeNativo,0"
@@ -109,6 +112,31 @@ foreach ($destino in @(
     catch {
         Write-AtlasLog -Level Warning -Message "Aether Toolbox: no se pudo crear '$destino': $($_.Exception.Message)" -ErrorRecord $_
     }
+}
+
+# --- Aether Transfer (cliente FTP para la PS4 y servidores) -----------------------------
+$transfer = Join-Path ([Environment]::GetFolderPath('Windows')) 'AtlasModules\Aether\Transfer\AetherTransfer.exe'
+if (Test-Path -LiteralPath $transfer -PathType Leaf) {
+    foreach ($destino in @(
+            (Join-Path ([Environment]::GetFolderPath('CommonPrograms')) 'Aether Transfer.lnk'),
+            (Join-Path ([Environment]::GetFolderPath('CommonDesktopDirectory')) 'Aether Transfer.lnk')
+        )) {
+        try {
+            $acceso = $shell.CreateShortcut($destino)
+            $acceso.TargetPath = $transfer
+            $acceso.WorkingDirectory = Split-Path $transfer
+            $acceso.IconLocation = "$transfer,0"
+            $acceso.Description = 'Aether Transfer: cliente FTP/FTPS/SFTP (PS4 y servidores).'
+            $acceso.Save()
+        }
+        catch {
+            Write-AtlasLog -Level Warning -Message "Aether Transfer: no se pudo crear '$destino': $($_.Exception.Message)" -ErrorRecord $_
+        }
+    }
+    Write-AtlasLog -Message 'Aether Transfer listo (accesos directos creados).'
+}
+else {
+    Write-AtlasLog -Level Warning -Message "Aether Transfer no está en el paquete ('$transfer')."
 }
 
 Write-AtlasLog -Message "Aether Toolbox listo (interfaz $(if ($usarNativo) { 'nativa' } else { 'clasica' }), bandeja oculta)."

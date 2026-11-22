@@ -119,7 +119,8 @@ namespace Aether {
     $reloj.add_Tick({ Invoke-AetherVigilante })
     $reloj.Start()
     Update-AetherBandeja
-    if ((Get-AetherAjuste -Nombre 'BienvenidaVista' -PorDefecto 0) -ne 1) {
+    # Con Aether Toolbox (nativo) la bienvenida la muestra él, oscura y completa.
+    if (-not $script:HayNativo -and (Get-AetherAjuste -Nombre 'BienvenidaVista' -PorDefecto 0) -ne 1) {
         Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$script:EsteScript`"", '-Bienvenida')
     }
 
@@ -355,7 +356,7 @@ if ($Bienvenida) {
       <TextBlock x:Name="TxtWindNota" Foreground="#C7CBD1"/>
       <TextBlock Style="{StaticResource Seccion}" Text="Carpeta de red (opcional)"/>
       <TextBlock Foreground="#C7CBD1" Text="Por ejemplo \\192.168.1.10\SISTEMA EF RED. Queda fija como unidad Z: y lista para las macros de Excel."/>
-      <TextBox x:Name="TxtRuta" Padding="6" Margin="0,6,0,0"/>
+      <TextBox x:Name="TxtRuta" Padding="6" Margin="0,6,0,0" Background="#0A1726" Foreground="#F3F5F8" BorderBrush="#2A4466" CaretBrush="#F3F5F8"/>
       <TextBlock Style="{StaticResource Seccion}" Text="Respaldo"/>
       <CheckBox x:Name="ChkRespaldo" Content="Abrir Aether Toolbox en Respaldo al terminar"/>
       <TextBlock x:Name="TxtResultado" Foreground="#4FC3F7" Margin="0,12,0,0"/>

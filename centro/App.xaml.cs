@@ -64,6 +64,12 @@ public partial class App : Application
             MostrarCentro();
         }
 
+        // Primer inicio de sesión: asistente de bienvenida propio (oscuro), en vez del clásico.
+        if (CentroAether.Services.Aether.Disponible && !VentanaBienvenida.YaVista())
+        {
+            new VentanaBienvenida().Show();
+        }
+
         // Background Intelligence: solo si el usuario lo activó (apagado por defecto).
         InteligenciaFondo.Refrescar();
     }

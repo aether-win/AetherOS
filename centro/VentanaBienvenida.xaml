@@ -1,0 +1,104 @@
+<Window x:Class="CentroAether.VentanaBienvenida"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Bienvenido a Aether OS" Width="680" Height="720" MinWidth="560" MinHeight="520"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanResize"
+        Background="{DynamicResource FondoVentanaBrush}"
+        Foreground="{StaticResource TextFillColorPrimaryBrush}"
+        FontFamily="Segoe UI Variable Text, Segoe UI" FontSize="14" UseLayoutRounding="True">
+
+    <Window.Resources>
+        <Style x:Key="Seccion" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#4FC3F7" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+        <Style x:Key="Nota" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#AFC0D4" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+        </Style>
+        <Style x:Key="Bloque" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource TarjetaFondoBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="18,14" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+    </Window.Resources>
+
+    <DockPanel Margin="28,22,28,22">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+            <TextBlock Text="Bienvenido a Aether OS" FontSize="28" FontWeight="SemiBold" />
+            <TextBlock Style="{StaticResource Nota}" Text="Elige cómo quieres empezar. Todo se puede cambiar después en Aether Toolbox." />
+        </StackPanel>
+
+        <Grid DockPanel.Dock="Bottom" Margin="0,14,0,0">
+            <TextBlock x:Name="TxtResultado" Foreground="#4FC3F7" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,220,0" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="BtnSaltar" Content="Ahora no" Padding="18,9" Click="Saltar_Click" />
+                <Button x:Name="BtnListo" Content="Listo" Padding="22,9" Margin="10,0,0,0"
+                        Style="{StaticResource AccentButtonStyle}" Click="Listo_Click" />
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Border Style="{StaticResource Bloque}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Seccion}" Text="Modo de uso" />
+                        <WrapPanel>
+                            <RadioButton x:Name="RbTrabajo" GroupName="Modo" Content="Trabajo" IsChecked="True" />
+                            <RadioButton x:Name="RbGaming" GroupName="Modo" Content="Gaming (con cargador)" />
+                            <RadioButton x:Name="RbBateria" GroupName="Modo" Content="Batería" />
+                        </WrapPanel>
+                        <CheckBox x:Name="ChkAuto" Margin="0,8,0,0" IsChecked="True"
+                                  Content="Activar el Modo Batería solo al 30 % sin cargador" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Bloque}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Seccion}" Text="Tema de Windows" />
+                        <WrapPanel>
+                            <RadioButton x:Name="RbOscuro" GroupName="Tema" Content="Oscuro" IsChecked="True" />
+                            <RadioButton x:Name="RbClaro" GroupName="Tema" Content="Claro" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Bloque}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Seccion}" Text="Wind-Aether (aspecto de Windows con Windhawk)" />
+                        <WrapPanel>
+                            <RadioButton x:Name="RbGlass" GroupName="Wind" Content="Aether Glass" />
+                            <RadioButton x:Name="RbLimpio" GroupName="Wind" Content="Aether Limpio" />
+                            <RadioButton x:Name="RbNinguno" GroupName="Wind" Content="Ninguno" IsChecked="True" />
+                        </WrapPanel>
+                        <TextBlock x:Name="TxtWindNota" Style="{StaticResource Nota}" />
+                        <Button x:Name="BtnAbrirWindhawk" Content="Abrir Windhawk" HorizontalAlignment="Left"
+                                Margin="0,8,0,0" Padding="14,7" Visibility="Collapsed" Click="AbrirWindhawk_Click" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Bloque}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Seccion}" Text="Carpeta de red (opcional)" />
+                        <TextBlock Style="{StaticResource Nota}" Margin="0,0,0,8"
+                                   Text="Por ejemplo \\192.168.1.10\SISTEMA EF RED. Queda fija como unidad Z: y lista para las macros de Excel." />
+                        <TextBox x:Name="TxtRuta" Tag="\\IP-de-la-otra-PC\Carpeta" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Bloque}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Seccion}" Text="Respaldo" />
+                        <CheckBox x:Name="ChkRespaldo" Content="Abrir Aether Toolbox en Respaldo al terminar" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>

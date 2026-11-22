@@ -40,6 +40,19 @@ jobs:
           if (-not (Test-Path (Join-Path $destino 'AetherToolbox.exe'))) { throw 'No se copió AetherToolbox.exe al paquete.' }
           Write-Host "Aether Toolbox incluido en el paquete ($(@(Get-ChildItem $destino -Recurse -File).Count) archivos)."
 
+      - name: Compilar Aether Transfer (FTP) y meterlo en el paquete
+        shell: pwsh
+        working-directory: aether-transfer
+        run: |
+          $ErrorActionPreference = 'Stop'
+          dotnet publish AetherTransfer.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
+          if ($LASTEXITCODE -ne 0) { throw "publish de Aether Transfer falló ($LASTEXITCODE)" }
+          $destino = '..\playbook\Executables\AtlasModules\Aether\Transfer'
+          New-Item -ItemType Directory -Path $destino -Force | Out-Null
+          Copy-Item -Path 'publish\*' -Destination $destino -Recurse -Force
+          if (-not (Test-Path (Join-Path $destino 'AetherTransfer.exe'))) { throw 'No se copió AetherTransfer.exe al paquete.' }
+          Write-Host "Aether Transfer incluido en el paquete."
+
       - name: Armar el paquete de Aether OS
         shell: pwsh
         run: |
@@ -47,6 +60,12 @@ jobs:
           & .\tools\build\Build-Playbook.ps1 -ReplaceOldPlaybook -FileName 'Aether OS' -DontOpenPbLocation
           $apbx = Get-Item -LiteralPath 'playbook\Aether OS.apbx' -ErrorAction Stop
           & .\tools\build\Test-Apbx.ps1 -Path $apbx.FullName
+          # Aether: el paquete debe llevar Aether Toolbox y Aether Transfer (no solo la versión clásica).
+          $lista = & 7z l -slt -p'malte' $apbx.FullName 2>&1 | Out-String
+          foreach ($exe in 'AetherToolbox.exe', 'AetherTransfer.exe') {
+            if ($lista -notmatch [regex]::Escape($exe)) { throw "El paquete no contiene $exe." }
+          }
+          Write-Host 'Paquete verificado: AetherToolbox.exe y AetherTransfer.exe incluidos.'
           $version = ([xml](Get-Content -LiteralPath 'playbook\playbook.conf' -Raw)).Playbook.Version
           "ATLAS_EMBED_APBX=$($apbx.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "ATLAS_RC_ID=$version-rc.1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
