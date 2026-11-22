@@ -526,6 +526,9 @@ artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya 
         Se quitó "Proteger macros" (contradecía al instalador).
       * Causa del Word "lavado" de Daniel (captura 22:53, laptop sin Aether): casi seguro el mod "Ventanas
         translúcidas" de su Windhawk original (sin las exclusiones de Office de la versión Aether).
+- [x] Fix `0ac3698`: si hay otra versión abierta en segundo plano (otro .exe, p. ej. el viejo CentroAether.exe), la
+      nueva la cierra y toma su lugar. Antes la regla de "una sola copia" mostraba la ventana vieja (Daniel vio la
+      versión vieja a las 23:12 por esto).
 - [ ] Aviso general + botones desactivados cuando Aether OS no está instalado (ofrecido, sin respuesta).
 - [ ] **Prueba de Daniel en la laptop de pruebas**: bajar `Centro-Aether-<sha>` de Actions, abrir
       `CentroAether.exe` (pide administrador), recorrer las secciones. Si algo falla, mandar el
