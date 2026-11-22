@@ -594,5 +594,8 @@ organización/propietario registrados, NO el nombre de red de la PC (rompería l
 - [~] **Paso 6** (`72dfff3`, `91fe4b4`): versión 2.0.0 (playbook.conf "Aether OS v2.0.0", 0.6.0 añadido a
       UpgradableFrom, custom.yml, Cargo, Toolbox 2.0.0), RegisteredOwner "Aether". CI verde. Instalador candidato
       lanzado con `aether-app.yml`. **Falta: prueba de Daniel en la VM y después la compilación final.**
+- [~] **Correcciones tras la instalación real (22-nov)**: Aether Transfer en el instalador, bienvenida nativa
+      oscura, uso compartido sin contraseña (`e63e12d`, `1e8cc6a`). Sin compilar: Actions bloqueado por facturación.
+      Pendiente decidir Windhawk 2.0 (alfa, trae CLI) vs importar los mods a mano en Windhawk 1.x.
 - Fuera de alcance honesto (documentar): instalador Rust (GPUI) rediseñado por completo; medir FPS/latencia DPC
   (requiere hardware real).

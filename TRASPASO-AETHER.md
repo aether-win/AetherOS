@@ -344,6 +344,15 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
 - Pendiente: prueba de Daniel en la VM (lista en `docs/aether/prueba-vm-2.0.md`) → compilación final.
   Word con colores invertidos: Daniel lo revisará tras instalar Aether limpio.
 
+- **22-nov 02:53 — Daniel instaló el candidato 2.0 en su laptop y reportó**: (1) faltaba Aether Transfer
+  (FTP): nunca se había metido en el instalador → `e63e12d` lo compila y lo incluye, con accesos directos;
+  (2) la bienvenida era la vieja de PowerShell con barra y cuadro blancos → `e63e12d` bienvenida nativa
+  oscura en Aether Toolbox; (3) "Uso compartido protegido con contraseña" seguía activado → `1e8cc6a` lo
+  desactiva en `aether-red.ps1`. **GitHub Actions bloqueado por facturación** ("recent account payments
+  have failed or your spending limit needs to be increased"): esos commits NO están compilados ni probados
+  en CI. Wind-Aether: `windhawk-cli.exe` solo existe en Windhawk 2.0 (alfa); winget instala la 1.x estable,
+  así que los perfiles no se aplican solos — decisión pendiente de Daniel.
+
 ## D.4b Estado anterior (2026-11-21, noche)
 - Último commit de código: `87aca2a` (instalador: componentes y drivers de mandos solo si faltan) y `61da075` (tema de Office también en la copia de la cuenta). Antes: `f808dea` (Office con tema fijo, no sigue a Windows; CI todo verde). Antes: `8e382fe` (mando DS4 original: luz, reconexión, ocultar el real). Antes: `0ac3698` (la versión nueva reemplaza a la vieja abierta). Antes: `7151fdb` (Office blindado; CI todo verde). Antes: `45fa36b` (nombre Aether Toolbox + botón Cerrar), `504dab3` (segundo plano siempre activo + bandeja oscura). Antes: `7970b64` (animación de modos centrada y rediseñada). Antes: `833c5f1` (rediseño) y `c06f888` (migración a WPF).
 - "Centro Aether (WPF)" en `7970b64`: ✅ verde.
