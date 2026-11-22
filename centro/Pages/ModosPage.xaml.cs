@@ -85,9 +85,15 @@ public sealed partial class ModosPage : PaginaBase
         var lista = new Pila { Spacing = 6, Margin = new Thickness(0, 4, 0, 0) };
         foreach (string p in puntos)
         {
-            var fila = new Pila { Orientation = Orientation.Horizontal, Spacing = 8 };
-            fila.Children.Add(new FontIcon { Glyph = "", FontSize = 12, Foreground = new SolidColorBrush(color) });
-            fila.Children.Add(new TextBlock { Text = p, FontSize = 12.5, TextWrapping = TextWrapping.Wrap, Foreground = Ui.Recurso("TextFillColorSecondaryBrush") });
+            // Grid (no Pila horizontal) para que el texto largo baje de línea en vez de cortarse.
+            var fila = new Grid();
+            fila.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            fila.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            var check = new FontIcon { Glyph = "\uE73E", FontSize = 12, Foreground = new SolidColorBrush(color), VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 3, 8, 0) };
+            var texto = new TextBlock { Text = p, FontSize = 12.5, TextWrapping = TextWrapping.Wrap, Foreground = Ui.Recurso("TextFillColorSecondaryBrush") };
+            Grid.SetColumn(texto, 1);
+            fila.Children.Add(check);
+            fila.Children.Add(texto);
             lista.Children.Add(fila);
         }
         contenido.Children.Add(lista);
@@ -119,6 +125,14 @@ public sealed partial class ModosPage : PaginaBase
     {
         if (_ocupado)
         {
+            return;
+        }
+        if (!Aether.Disponible)
+        {
+            // Sin Aether OS instalado no hay modos que cambiar: no mostrar un "activo" falso.
+            Estado.Severity = InfoBarSeverity.Warning;
+            Estado.Message = "Aether OS no está instalado en este equipo, así que no se puede cambiar de modo. Puedes ver la animación con el botón de arriba.";
+            Estado.IsOpen = true;
             return;
         }
         // "Cargando modo": se bloquean las tarjetas y se avisa hasta que quede estable.

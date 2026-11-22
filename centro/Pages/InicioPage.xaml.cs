@@ -81,8 +81,13 @@ public sealed partial class InicioPage : PaginaBase
 
     private async Task CambiarModo(string modo)
     {
-        if (_ocupado || !Aether.Disponible)
+        if (_ocupado)
         {
+            return;
+        }
+        if (!Aether.Disponible)
+        {
+            Aviso("Aether OS no está instalado en este equipo, así que no se puede cambiar de modo.", InfoBarSeverity.Warning);
             return;
         }
         _ocupado = true;

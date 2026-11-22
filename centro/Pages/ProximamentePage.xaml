@@ -18,10 +18,15 @@
                 <ItemsControl x:Name="ListaCaracteristicas">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <c:Pila Orientation="Horizontal" Spacing="10" Margin="0,4">
-                                <c:FontIcon Glyph="&#xE73E;" FontSize="13" Foreground="{StaticResource AccentTextFillColorPrimaryBrush}" />
-                                <TextBlock Text="{Binding}" TextWrapping="Wrap" />
-                            </c:Pila>
+                            <Grid Margin="0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <c:FontIcon Glyph="&#xE73E;" FontSize="13" Margin="0,2,10,0" VerticalAlignment="Top"
+                                            Foreground="{StaticResource AccentTextFillColorPrimaryBrush}" />
+                                <TextBlock Grid.Column="1" Text="{Binding}" TextWrapping="Wrap" />
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
