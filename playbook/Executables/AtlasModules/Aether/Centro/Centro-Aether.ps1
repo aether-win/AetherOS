@@ -19,11 +19,41 @@ $script:Icono = Join-Path $PSScriptRoot 'aether.ico'
 $script:EsteScript = $PSCommandPath
 $script:NombresModo = @{ Trabajo = 'Trabajo'; Gaming = 'Gaming'; Bateria = 'Batería' }
 
+# Aviso oscuro (reemplaza a los MessageBox de Windows, que salen blancos).
+function Show-AetherAviso {
+    param([string]$Texto, [string]$Titulo = 'Aether OS')
+    Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
+    $v = New-Object System.Windows.Window
+    $v.Title = $Titulo; $v.Width = 440; $v.SizeToContent = 'Height'; $v.WindowStyle = 'None'
+    $v.ResizeMode = 'NoResize'; $v.WindowStartupLocation = 'CenterScreen'; $v.Topmost = $true
+    $v.AllowsTransparency = $true; $v.Background = [System.Windows.Media.Brushes]::Transparent
+    $borde = New-Object System.Windows.Controls.Border
+    $borde.Background = [System.Windows.Media.BrushConverter]::new().ConvertFrom('#0F1B2D')
+    $borde.BorderBrush = [System.Windows.Media.BrushConverter]::new().ConvertFrom('#2A4466')
+    $borde.BorderThickness = 1; $borde.CornerRadius = 12; $borde.Padding = 22
+    $pila = New-Object System.Windows.Controls.StackPanel
+    $t1 = New-Object System.Windows.Controls.TextBlock
+    $t1.Text = $Titulo; $t1.FontSize = 17; $t1.FontWeight = 'SemiBold'; $t1.FontFamily = 'Segoe UI'
+    $t1.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFrom('#4FC3F7')
+    $t2 = New-Object System.Windows.Controls.TextBlock
+    $t2.Text = $Texto; $t2.TextWrapping = 'Wrap'; $t2.FontSize = 14; $t2.FontFamily = 'Segoe UI'; $t2.Margin = '0,10,0,16'
+    $t2.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFrom('#E6EEF8')
+    $boton = New-Object System.Windows.Controls.Button
+    $boton.Content = 'Aceptar'; $boton.HorizontalAlignment = 'Right'; $boton.Padding = '18,7'; $boton.BorderThickness = 0
+    $boton.Background = [System.Windows.Media.BrushConverter]::new().ConvertFrom('#2F8CFF')
+    $boton.Foreground = [System.Windows.Media.Brushes]::White
+    $boton.add_Click({ $v.Close() })
+    [void]$pila.Children.Add($t1); [void]$pila.Children.Add($t2); [void]$pila.Children.Add($boton)
+    $borde.Child = $pila; $v.Content = $borde
+    $v.add_MouseLeftButtonDown({ try { $v.DragMove() } catch { Write-Verbose 'Sin arrastre.' } })
+    [void]$v.ShowDialog()
+}
+
 # Cambio de modo directo (lo usan los accesos directos): -Modo Gaming
 if ($Modo) {
     $resultado = Set-AetherModo -Modo $Modo
     if (-not $resultado.Ok) {
-        [void][System.Windows.Forms.MessageBox]::Show($resultado.Mensaje, 'Aether OS', 'OK', 'Warning')
+        Show-AetherAviso -Texto $resultado.Mensaje
     }
     exit 0
 }
@@ -400,7 +430,7 @@ if ($Bienvenida) {
                     Show-AetherCentro
                 }
                 if ($avisos.Count -gt 0) {
-                    [void][System.Windows.MessageBox]::Show(($avisos -join "`n"), 'Aether OS', 'OK', 'Information')
+                    Show-AetherAviso -Texto ($avisos -join "`n")
                 }
                 $ventanaB.Close()
             }
@@ -640,7 +670,7 @@ foreach ($par in @(@('BtnTrabajo', 'Trabajo'), @('BtnGaming', 'Gaming'), @('BtnB
                 $resultado = Set-AetherModo -Modo $destino
                 Set-AetherEstado -Texto $resultado.Mensaje
                 if ($resultado.Ok -and $destino -eq 'Gaming') {
-                    [void][System.Windows.MessageBox]::Show('¿El ventilador está conectado?', 'Modo Gaming', 'OK', 'Information')
+                    Show-AetherAviso -Texto '¿El ventilador está conectado?' -Titulo 'Modo Gaming'
                 }
                 Update-AetherVistaModo
             }
