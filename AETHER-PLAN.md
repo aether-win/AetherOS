@@ -363,7 +363,10 @@ se endureció `Install-AetherApps.ps1` (Windhawk cli) contra rutas nulas.
   legítimo y adyacente: estabilidad del Wi-Fi, detección fiable de portales cautivos, y Wi-Fi a
   máximo rendimiento. Para su propia privacidad puede usar un DNS propio (Cloudflare/Google) o una VPN.
 
-## 7. Centro nativo en WinUI 3 (en construcción) — sesión 2026-11-20 (tarde)
+## 7. Centro nativo en WinUI 3 (HISTÓRICO: ya migrado a WPF, ver sección 9) — sesión 2026-11-20 (tarde)
+
+> **Actualización 2026-11-21 (noche): el Centro YA ESTÁ EN WPF** (sección 9). Lo de abajo queda
+> como historia; las notas de build de WinUI ya no aplican.
 
 > ### ⚠️ AVISO CRÍTICO (2026-11-21): WinUI 3 no arranca en la laptop de Daniel
 > En la sesión del 2026-11-21 se descubrió que una app **WinUI 3 unpackaged + self-contained**
@@ -431,12 +434,45 @@ navegar). Compila en verde: workflow **"Aether Transfer (WPF)"** → un solo `.e
 
 Detalle completo, decisiones y lecciones: **AETHER-TRANSFER.md** y **TRASPASO-AETHER.md Parte C**.
 
+**Estado 2026-11-21 (noche): CONGELADO** por decisión de Daniel. Pendientes anotados arriba para
+más adelante. El siguiente trabajo pasó al Centro (sección 9).
+
+## 9. Centro Aether migrado a WPF (sesión 2026-11-21 noche, vuelta a la primera cuenta)
+
+Decisiones de Daniel (21-nov, 21:40): congelar Aether Transfer; migrar Centro; mandos solo
+**DualShock 4 → Xbox** + mandos Xbox; probar el Centro en su **laptop de pruebas** bajando el
+artefacto de Actions (no es el .exe final; Regla 38 vigente); borrar las ❌ ya corregidas (hecho).
+
+- [x] Migración WinUI 3 → WPF (.NET 8), commit `c06f888`. **Compila en verde a la primera, sin
+      advertencias** (workflow "Centro Aether (WPF)", artefacto `Centro-Aether-<sha>`, un solo .exe).
+      * Se conservó intacta la lógica: `Services/` (puente a PowerShell, motor ViGEm, DS4 por HID,
+        perfiles, Background Intelligence, etc.) y `Models/`. Solo cambió `InteligenciaFondo.cs`
+        (DispatcherTimer de WPF).
+      * `centro/Controles/`: sustitutos propios de WinUI con el mismo nombre/uso para no reescribir
+        la lógica de las páginas: `FontIcon` (Segoe Fluent Icons/MDL2), `Pila` (StackPanel con
+        Spacing y Padding), `InfoBar`, `ToggleSwitch` (IsOn, Toggled **solo al cambiarlo el usuario**:
+        cargar el estado inicial nunca ejecuta acciones), `PaginaBase` (OnNavigatedTo/From) y
+        `Sistema.Abrir` (en vez de Windows.System.Launcher).
+      * `App.xaml`: tema oscuro Aether global (colores de Aether Transfer) con los **mismos nombres de
+        recursos de WinUI** (`TextFillColorSecondaryBrush`, `AccentButtonStyle`, `TitleTextBlockStyle`…).
+        Barra de título oscura (`Tema.cs`). Ventana 1160×780, menú lateral por categorías.
+      * Overlay de modos en WPF: sin bordes, siempre al frente, fuera de la barra de tareas, sin robar
+        el foco, fundido y auto-cierre a 3 s; barra "cargando" animada propia.
+      * Respaldo: selector de carpeta `OpenFolderDialog` de .NET 8 (antes FolderPicker de WinRT).
+      * Errores: se escriben en `CentroAether-aether-crash.log` (Escritorio, %TEMP% y junto al .exe) y
+        se muestra un aviso **sin cerrar el Centro**.
+      * `centro.yml` y `aether-app.yml`: `dotnet publish -r win-x64 --self-contained -p:PublishSingleFile=true`
+        (ya no MSBuild ni Windows App SDK). El instalador sigue copiando a
+        `AtlasModules\Aether\Centro\app\CentroAether.exe` (misma ruta, el tweak `aether-centro` no cambia).
+- [ ] **Prueba de Daniel en la laptop de pruebas**: bajar `Centro-Aether-<sha>` de Actions, abrir
+      `CentroAether.exe` (pide administrador), recorrer las secciones. Si algo falla, mandar el
+      `CentroAether-aether-crash.log` del Escritorio.
+- [ ] Pendiente de decidir con Daniel: la sección **Oficina** tiene un botón "Proteger macros"
+      (VBAWarnings=2, macros bloqueadas con aviso) que **contradice** el tweak del instalador
+      `misc/aether-office-macros` (macros sin bloqueo, VBAWarnings=1 por directiva). Ver TRASPASO D.3.
+
 ### 👉 SIGUIENTE PASO EXACTO (al retomar)
-1. **Preguntar a Daniel** si congela Aether Transfer para pasar a Centro (ver preguntas
-   pendientes al final de TRASPASO-AETHER.md).
-2. **Migrar el Centro (`centro/`) de WinUI 3 a WPF**, igual que se hizo Aether Transfer:
-   conservar `Services/` y la lógica; reescribir solo la UI (App.xaml tema oscuro global,
-   MainWindow, páginas). Cambiar `centro.yml` y la parte de Centro en `aether-app.yml` de
-   MSBuild/WinUI a `dotnet publish` WPF self-contained. Motivo: el Centro WinUI 3 casi seguro
-   **no abre** en la laptop de Daniel (ver aviso crítico en la sección 7).
-3. Alcance de mandos del Centro: **solo PS4 (DualShock 4) → Xbox** + mandos Xbox. Nada más.
+1. Esperar la prueba de Daniel del Centro WPF en su laptop de pruebas y corregir lo que reporte.
+2. Resolver la contradicción de macros de la sección Oficina (pregunta en TRASPASO D.3).
+3. Después: pendientes del Centro (sección 7: inicio/bienvenida/tema) y la pasada de limpieza
+   (Borrado parte 2) del plan.

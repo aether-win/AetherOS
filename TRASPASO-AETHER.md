@@ -319,7 +319,28 @@ Decisiones de sesiones anteriores que siguen vigentes (recordatorio):
 - Preguntas 3–5 de abajo (archivos grandes, carpetas, SFTP): quedan **en pausa** con Transfer congelado.
 
 ## D.2 Trabajo de esta sesión
-- Migración del **Centro (`centro/`) de WinUI 3 a WPF** (ver AETHER-PLAN.md sección 9).
+- **Centro (`centro/`) migrado de WinUI 3 a WPF** — commit `c06f888`, compila en verde a la primera.
+  Detalle completo en **AETHER-PLAN.md sección 9**. Método: igual que Aether Transfer (lógica
+  intacta, solo UI), más una capa de controles propios en `centro/Controles/` con los mismos
+  nombres que WinUI (FontIcon, InfoBar, ToggleSwitch, Pila=StackPanel con Spacing, PaginaBase).
+- **Lección:** el `ToggleSwitch` propio dispara `Toggled` solo cuando lo cambia el usuario (no al
+  cargar datos o enlazar), para que abrir una sección nunca ejecute acciones (p. ej. activar mods).
+- **Lección:** en WPF el `ScrollViewer` por defecto deja desplazamiento horizontal y el texto no se
+  ajusta: todas las páginas usan `HorizontalScrollBarVisibility="Disabled"`.
+- WPF de .NET 8 trae `Microsoft.Win32.OpenFolderDialog` (selector de carpetas nativo).
+
+## D.4 Estado de entrega (2026-11-21, noche)
+- Último commit de código: `c06f888` (*feat(centro): migrar el Centro Aether de WinUI 3 a WPF*).
+- GitHub Actions en `c06f888`: **TODO EN VERDE** ✅ — Centro Aether (WPF), Build Playbook, Lint
+  PowerShell, Lint YAML y Test (Pester PS7 + Windows PowerShell 5.1). Sin ejecuciones con ❌.
+- El workflow viejo "Centro Aether (WinUI 3)" ahora se llama **"Centro Aether (WPF)"**.
+- Ningún .exe final compilado (Regla 38). El artefacto de CI es solo para la prueba de Daniel.
+
+## D.3 Preguntas abiertas para Daniel
+1. **Sección Oficina del Centro:** tiene un botón "Proteger macros" que pone las macros de Office en
+   "deshabilitadas con aviso". Eso **choca** con lo que pediste para el instalador (Excel con macros
+   VBA sin bloqueo; tweak `misc/aether-office-macros`). ¿Lo quito, o lo cambio por un botón
+   "Desbloquear archivo de otra PC" (Unblock-File, que ya estaba pendiente en el plan)?
 
 ## Preguntas pendientes para Daniel (sesión anterior; 1 y 2 ya respondidas en D.1)
 1. ¿**Aether Transfer** ya está lo bastante bien para **congelarlo** y pasar a **migrar Centro a
