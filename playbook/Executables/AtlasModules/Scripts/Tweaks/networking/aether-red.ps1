@@ -174,4 +174,47 @@ Invoke-AetherRedPaso 'tarea de redes privadas' {
     Write-AtlasLog -Message 'Red Aether: tarea "Aether Redes privadas" registrada.'
 }
 
+# 9. "Uso compartido protegido con contraseña" DESACTIVADO (lo que hace el interruptor de
+#    Configuración): cuenta Invitado activa y sin contraseña, sin el bloqueo de acceso por red,
+#    "Todos" incluye a los anónimos y sin restricción de sesiones nulas. Así las PCs del trabajo
+#    entran a las carpetas compartidas de esta sin pedir usuario ni contraseña.
+Invoke-AetherRedPaso 'uso compartido sin contraseña' {
+    $invitado = Get-LocalUser | Where-Object { $_.SID.Value -like 'S-1-5-*-501' } | Select-Object -First 1
+    if ($invitado) {
+        # Contraseña en blanco (net user acepta el nombre traducido: Invitado / Guest).
+        & net.exe user $invitado.Name '""' | Out-Null
+        Enable-LocalUser -SID $invitado.SID
+        Write-AtlasLog -Message "Red Aether: cuenta '$($invitado.Name)' activa para el uso compartido sin contraseña."
+
+        # Quitar a Invitado de "Denegar el acceso a este equipo desde la red" (SeDenyNetworkLogonRight).
+        $temporal = Join-Path $env:TEMP ('aether-secpol-' + [guid]::NewGuid().ToString('N'))
+        New-Item -ItemType Directory -Path $temporal -Force | Out-Null
+        try {
+            $inf = Join-Path $temporal 'actual.inf'
+            & secedit.exe /export /cfg $inf /areas USER_RIGHTS /quiet | Out-Null
+            $linea = Get-Content -LiteralPath $inf -Encoding Unicode | Where-Object { $_ -match '^SeDenyNetworkLogonRight\s*=' } | Select-Object -First 1
+            if ($linea) {
+                $sidInvitado = '*' + $invitado.SID.Value
+                $miembros = @(($linea -split '=', 2)[1].Split(',') | ForEach-Object { $_.Trim() } |
+                        Where-Object { $_ -and $_ -ne $sidInvitado -and $_ -ne $invitado.Name })
+                $nuevo = Join-Path $temporal 'nuevo.inf'
+                $db = Join-Path $temporal 'nuevo.sdb'
+                @(
+                    '[Unicode]', 'Unicode=yes',
+                    '[Version]', 'signature="$CHICAGO$"', 'Revision=1',
+                    '[Privilege Rights]', ('SeDenyNetworkLogonRight = ' + ($miembros -join ','))
+                ) | Set-Content -LiteralPath $nuevo -Encoding Unicode
+                & secedit.exe /configure /db $db /cfg $nuevo /areas USER_RIGHTS /quiet | Out-Null
+                Write-AtlasLog -Message 'Red Aether: Invitado ya no tiene denegado el acceso por red.'
+            }
+        }
+        finally { Remove-Item -LiteralPath $temporal -Recurse -Force -ErrorAction SilentlyContinue }
+    }
+    $lsa = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa'
+    Set-ItemProperty -LiteralPath $lsa -Name 'everyoneincludesanonymous' -Value 1 -Type DWord
+    Set-ItemProperty -LiteralPath $lsa -Name 'forceguest' -Value 0 -Type DWord   # cuentas locales con su propio usuario
+    Set-ItemProperty -LiteralPath (Join-Path $serviciosRoot 'LanmanServer\Parameters') -Name 'RestrictNullSessAccess' -Value 0 -Type DWord
+    Write-AtlasLog -Message 'Red Aether: uso compartido protegido con contraseña desactivado.'
+}
+
 Write-AtlasLog -Message 'Red Aether: red de trabajo aplicada.'

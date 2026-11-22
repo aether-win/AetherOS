@@ -1,5 +1,5 @@
 ﻿@{
     Name        = 'Red de trabajo Aether'
-    Description = 'Aether: aplica sin preguntas lo que hace Reparar-Red-Aether (probado contra el error 0x80070035): drivers y servicios del cliente SMB, proveedor de red, enlaces de los adaptadores, NetBIOS, redes en Privada (también las Wi-Fi nuevas, con la tarea "Aether Redes privadas"), reglas de firewall de detección y uso compartido, impresión, y quita la firma SMB obligatoria y el bloqueo de invitado de Windows 11 24H2+.'
+    Description = 'Aether: aplica sin preguntas lo que hace Reparar-Red-Aether (probado contra el error 0x80070035): drivers y servicios del cliente SMB, proveedor de red, enlaces de los adaptadores, NetBIOS, redes en Privada (también las Wi-Fi nuevas, con la tarea "Aether Redes privadas"), reglas de firewall de detección y uso compartido, impresión, quita la firma SMB obligatoria y el bloqueo de invitado de Windows 11 24H2+, y desactiva el uso compartido protegido con contraseña.'
     Script      = 'aether-red.ps1'
 }
