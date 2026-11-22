@@ -1,0 +1,113 @@
+name: Verificar paquete de Aether OS
+
+# Aether: corre a mano con el número de una compilación de "Compilar Aether (instalador)".
+# Baja ESE artefacto (el mismo zip que se descarga), lo abre y compara archivo por archivo
+# con el repositorio: todo lo de playbook/ debe estar dentro del .apbx con el mismo contenido,
+# más lo que se genera al compilar (Aether Toolbox, Aether Transfer, drivers de mandos).
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Número de la compilación (run id) a verificar'
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  verificar:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout del commit compilado
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Bajar el artefacto de esa compilación
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: artefacto
+
+      - name: Comparar todo
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $sha = gh api "repos/${{ github.repository }}/actions/runs/${{ inputs.run_id }}" --jq .head_sha
+          git fetch --depth 1 origin $sha
+          git checkout --force $sha
+          Write-Host "Compilación ${{ inputs.run_id }} del commit $sha"
+
+          Write-Host "`n== Contenido del zip =="
+          Get-ChildItem -Recurse -File artefacto | ForEach-Object { '{0,12:N0}  {1}' -f $_.Length, $_.FullName.Substring((Resolve-Path artefacto).Path.Length + 1) }
+          $exe = Get-ChildItem -Recurse -File artefacto -Filter 'AETHER OS*.exe' | Select-Object -First 1
+          $apbx = Get-ChildItem -Recurse -File artefacto -Filter '*.apbx' | Select-Object -First 1
+          $lic = Get-ChildItem -Recurse -File artefacto -Filter 'LICENSE.txt' | Select-Object -First 1
+          $fallos = New-Object System.Collections.Generic.List[string]
+          if (-not $exe) { $fallos.Add('Falta el instalador AETHER OS *.exe') }
+          if (-not $apbx) { $fallos.Add('Falta el paquete .apbx') }
+          if (-not $lic) { $fallos.Add('Falta LICENSE.txt') }
+          if ($exe -and $exe.Length -lt 5MB) { $fallos.Add("El instalador pesa muy poco ($($exe.Length) bytes)") }
+
+          if ($apbx) {
+            $dentro = Join-Path $env:RUNNER_TEMP 'apbx'
+            & 7z x -y -p'malte' "-o$dentro" $apbx.FullName | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw "7z no pudo abrir el .apbx ($LASTEXITCODE)" }
+
+            # 1) Cada archivo del repositorio bajo playbook/ está dentro y es idéntico.
+            $raiz = (Resolve-Path 'playbook').Path
+            $repo = git ls-files playbook | Where-Object { $_ -notmatch '\.apbx$' }
+            $iguales = 0; $distintos = 0
+            foreach ($f in $repo) {
+              $rel = $f.Substring('playbook/'.Length) -replace '/', '\'
+              $destino = Join-Path $dentro $rel
+              if (-not (Test-Path -LiteralPath $destino)) { $fallos.Add("Falta en el paquete: $rel"); continue }
+              # playbook.conf y Set-OemInformation.ps1 se reescriben al compilar (versión): se comprueban aparte.
+              if ($rel -in @('playbook.conf') -or $rel -like '*Set-OemInformation.ps1') { continue }
+              if ((Get-FileHash -LiteralPath (Join-Path $raiz $rel)).Hash -ne (Get-FileHash -LiteralPath $destino).Hash) {
+                $distintos++; $fallos.Add("Distinto al repositorio: $rel")
+              } else { $iguales++ }
+            }
+            Write-Host "`nArchivos del repositorio dentro del paquete e idénticos: $iguales de $($repo.Count)"
+
+            # 2) Lo que se genera al compilar.
+            $generados = @(
+              'Executables\AtlasModules\Aether\Centro\app\AetherToolbox.exe',
+              'Executables\AtlasModules\Aether\Transfer\AetherTransfer.exe',
+              'Executables\AtlasModules\Aether\Drivers\ViGEmBus-Setup.exe',
+              'Executables\AtlasModules\Aether\Drivers\HidHide-Setup.exe'
+            )
+            foreach ($g in $generados) {
+              $p = Join-Path $dentro $g
+              if (-not (Test-Path -LiteralPath $p)) { $fallos.Add("Falta (generado): $g"); continue }
+              $info = Get-Item -LiteralPath $p
+              $firma = if ($g -like '*Drivers*') { (Get-AuthenticodeSignature -LiteralPath $p).Status } else { '-' }
+              $ver = $info.VersionInfo.ProductVersion
+              Write-Host ('Generado OK: {0}  ({1:N1} MB, versión {2}, firma {3})' -f $g, ($info.Length / 1MB), $ver, $firma)
+              if ($g -like '*Drivers*' -and $firma -ne 'Valid') { $fallos.Add("Firma no válida: $g") }
+            }
+            $tb = Get-Item -LiteralPath (Join-Path $dentro 'Executables\AtlasModules\Aether\Centro\app\AetherToolbox.exe') -ErrorAction SilentlyContinue
+            if ($tb -and $tb.VersionInfo.ProductVersion -notlike '3.0.0*') { $fallos.Add("Aether Toolbox no es 3.0.0 ($($tb.VersionInfo.ProductVersion))") }
+
+            # 3) Versión del paquete.
+            [xml]$conf = Get-Content -LiteralPath (Join-Path $dentro 'playbook.conf') -Raw
+            Write-Host "playbook.conf: $($conf.Playbook.Title) / versión $($conf.Playbook.Version)"
+            if ($conf.Playbook.Version -ne '3.0.0') { $fallos.Add("Versión del paquete: $($conf.Playbook.Version)") }
+
+            # 4) Nada de lo que se quitó (Wind-Aether) quedó dentro.
+            if (Test-Path -LiteralPath (Join-Path $dentro 'Executables\AtlasModules\Aether\Wind-Aether')) { $fallos.Add('Quedó la carpeta Wind-Aether (debía quitarse)') }
+            foreach ($r in 'Aether-Windhawk-Glass.json', 'Aether-Windhawk-Limpio.json', 'Aether-Windhawk-Todo-apagado.json') {
+              if (-not (Test-Path -LiteralPath (Join-Path $dentro "Executables\AtlasModules\Aether\Windhawk\$r"))) { $fallos.Add("Falta el respaldo $r") }
+            }
+            $total = (Get-ChildItem -Recurse -File $dentro).Count
+            Write-Host "Total de archivos dentro del .apbx: $total"
+          }
+
+          if ($fallos.Count) {
+            Write-Host "`n== PROBLEMAS ($($fallos.Count)) =="
+            $fallos | ForEach-Object { Write-Host " - $_" }
+            throw "La verificación encontró $($fallos.Count) problemas."
+          }
+          Write-Host "`nVERIFICADO: el zip trae el instalador, el paquete completo e idéntico al repositorio y todo lo generado."
