@@ -1,0 +1,23 @@
+AETHER OS - Scripts sueltos
+
+Doble clic en el que necesites. Cada uno pide permisos de administrador solo.
+
+1. Red de trabajo completa - compartir sin contrasena
+   Todo lo de red de Aether, sin preguntas: cliente SMB, NetBIOS, redes en Privada
+   (tambien las nuevas, con una tarea), reglas de firewall para detectar y compartir,
+   impresion, sin firma SMB obligatoria ni bloqueo de invitado (Windows 11 24H2+),
+   uso compartido SIN contrasena, unidades de red visibles en el Explorador y Excel,
+   y prioridad total a la red. Reinicia la PC al terminar.
+
+2. Reparar red - con preguntas y prueba con otra PC
+   El reparador original: guarda un respaldo del registro en el Escritorio, puede
+   probar la conexion con otra PC (nombre o IP) y al final pide reiniciar.
+
+3. Bluetooth solido
+   Servicios de Bluetooth siempre listos; Windows ya no apaga el radio, los mandos,
+   audifonos ni su concentrador USB para ahorrar energia; coexistencia Wi-Fi/Bluetooth.
+
+4. Apagado y encendido rapido
+   Menos espera al apagar y reiniciar, apps de inicio sin retraso, sin limpiar el
+   archivo de paginacion y con el inicio rapido de Windows activo. No cierra a la
+   fuerza programas con trabajo sin guardar.

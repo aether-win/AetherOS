@@ -13,6 +13,16 @@ Describe 'Centro Aether' {
         }
     }
 
+    It 'parses every standalone Aether script without syntax errors' {
+        $carpeta = Join-Path $script:AtlasTestRepoRoot 'aether\scripts-sueltos\scripts'
+        foreach ($archivo in Get-ChildItem -LiteralPath $carpeta -Filter '*.ps1') {
+            $tokens = $null
+            $errores = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile($archivo.FullName, [ref]$tokens, [ref]$errores)
+            @($errores).Count | Should -Be 0 -Because "$($archivo.Name) must parse"
+        }
+    }
+
     It 'loads the window layout and names every control the script uses' {
         $ruta = Join-Path $script:CentroRoot 'Centro-Aether.ps1'
         $tokens = $null
